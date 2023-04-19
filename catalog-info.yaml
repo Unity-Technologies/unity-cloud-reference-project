@@ -1,0 +1,20 @@
+# For more information about the available options please visit: http://go/backstage (VPN required)
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  annotations:
+    github.com/project-slug: Unity-Technologies/unity-cloud-reference-project
+  name: unity-cloud-reference-project
+  description: "Unity Cloud Reference Project"
+  labels:
+    costcenter: "2212"
+  tags:
+    - planned-public
+  links:
+    - url: https://unity.slack.com/messages/C04AT7P0FHT/
+      title: "#cloud-st-reference-project"
+      icon: chat
+spec:
+  type: other
+  lifecycle: pre-production
+  owner: unity-technologies/reference-project-team
