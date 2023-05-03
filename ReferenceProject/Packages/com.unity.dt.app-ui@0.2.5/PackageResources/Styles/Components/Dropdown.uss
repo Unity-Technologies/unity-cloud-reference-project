@@ -1,0 +1,116 @@
+/* Dropdown */
+.appui-dropdown {
+    border-width: var(--appui-alias-control-border-width);
+    /*border-style: var(--appui-control-border-style);*/
+    border-radius: var(--appui-alias-control-border-radius);
+    display: flex;
+    padding-left: var(--appui-spacing-150); /*padding-inline-start: var(--appui-spacing-150);*/
+    padding-right: var(--appui-alias-control-gap-md); /* padding-inline-end: var(--appui-alias-control-gap-md); */
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--appui-base-100);
+    border-color: var(--appui-base-400);
+    font-size: var(--appui-font-sizes-body-sm);
+    color: var(--appui-foregrounds-50);
+    --unity-image-tint-color: var(--appui-foregrounds-50); /*fill: var(--appui-foregrounds-50);*/
+    cursor: var(--appui-alias-control-cursor-pointer);
+    flex-shrink: 0;
+}
+
+.appui-dropdown .appui-icon {
+    /*fill: inherit;*/
+}
+
+.appui-dropdown:hover {
+    background-color: var(--appui-base-200);
+    border-color: var(--appui-base-500);
+    color: var(--appui-foregrounds-200);
+    --unity-image-tint-color: var(--appui-foregrounds-200); /*fill: var(--appui-foregrounds-200);*/
+}
+
+.appui-dropdown.keyboard-focus  {
+    background-color: var(--appui-base-50);
+    border-color: var(--appui-base-400);
+    color: var(--appui-foregrounds-200);
+    --unity-image-tint-color: var(--appui-foregrounds-200); /*fill: var(--appui-foregrounds-200);*/
+    /* converted from : outline-width: var(--appui-alias-control-outline-width); */
+    --outline-width: var(--appui-alias-control-outline-width);
+    /* converted from : outline-color: var(--appui-alias-control-outline-color); */
+    --outline-color: var(--appui-alias-control-outline-color);
+    /* converted from : outline-offset: var(--appui-alias-control-outline-offset); */
+    --outline-offset: var(--appui-alias-control-outline-offset);
+    /* converted from : outline-style: var(--appui-alias-control-outline-style); */
+}
+
+.appui-dropdown:active {
+    background-color: var(--appui-base-50);
+    border-color: var(--appui-base-400);
+    color: var(--appui-foregrounds-200);
+    --unity-image-tint-color: var(--appui-foregrounds-200); /*fill: var(--appui-foregrounds-200);*/
+}
+
+.appui-dropdown--emphasized {
+    background-color: var(--appui-accent-100);
+    border-color: var(--appui-accent-100);
+    color: var(--appui-color-white);
+    --unity-image-tint-color: var(--appui-color-white); /*fill: var(--appui-color-white);*/
+    -unity-font-style: bold; /*font-weight: 700;*/
+}
+
+.appui-dropdown--emphasized:hover {
+    background-color: var(--appui-accent-50);
+    border-color: var(--appui-accent-50);
+    color: var(--appui-color-white);
+    --unity-image-tint-color: var(--appui-color-white); /*fill: var(--appui-color-white);*/
+}
+
+.appui-dropdown--emphasized.keyboard-focus {
+    background-color: var(--appui-accent-25);
+    border-color: var(--appui-accent-25);
+    color: var(--appui-color-white);
+    --unity-image-tint-color: var(--appui-color-white); /*fill: var(--appui-color-white);*/
+}
+
+.appui-dropdown--emphasized:active {
+    background-color: var(--appui-accent-25);
+    border-color: var(--appui-accent-25);
+    color: var(--appui-color-white);
+    --unity-image-tint-color: var(--appui-color-white); /*fill: var(--appui-color-white);*/
+}
+
+.appui-dropdown:disabled {
+    background-color: var(--appui-base-100);
+    border-color: var(--appui-base-300);
+    cursor: var(--appui-alias-control-cursor-disabled);
+    color: var(--appui-foregrounds-25);
+    --unity-image-tint-color: var(--appui-foregrounds-25); /*fill: var(--appui-foregrounds-25);*/
+}
+
+.appui-dropdown--size-s {
+    height: var(--appui-alias-control-sizing-sm-height);
+}
+
+.appui-dropdown--size-m {
+    height: var(--appui-alias-control-sizing-md-height);
+}
+
+.appui-dropdown--size-l {
+    height: var(--appui-alias-control-sizing-lg-height);
+}
+
+.appui-dropdown__trailingcontainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.appui-icon.appui-dropdown__caret {
+    width: var(--appui-sizing-300);
+    height: var(--appui-sizing-300);
+    margin-left: var(--appui-alias-control-gap-md);
+}
+
+.appui-dropdown__menu {
+    max-height: 180px;
+}

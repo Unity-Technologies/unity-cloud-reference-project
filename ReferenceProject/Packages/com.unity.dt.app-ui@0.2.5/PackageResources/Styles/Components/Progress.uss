@@ -1,0 +1,32 @@
+/* Progress */
+.appui-circular-progress {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 100%;
+    justify-content: center;
+    align-items: stretch;
+
+    --progress-color: var(--appui-foregrounds-100);
+}
+
+.appui-progress__image {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.appui-linear-progress {
+    display: flex;
+    height: 8px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 4px;
+    justify-content: center;
+    align-items: stretch;
+
+    --progress-color: var(--appui-foregrounds-100);
+}

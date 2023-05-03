@@ -1,0 +1,10 @@
+/* Context */
+.appui {
+  -unity-font-definition: url('../../Fonts/Inter-Regular.ttf');
+  font-size: var(--appui-font-sizes-body-sm);
+  color: var(--appui-foregrounds-100);
+  background-color: var(--appui-backgrounds-100);
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}

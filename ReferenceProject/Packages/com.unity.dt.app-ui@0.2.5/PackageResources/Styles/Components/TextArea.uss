@@ -1,0 +1,150 @@
+/* TextArea */
+.appui-textarea {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-width: var(--appui-alias-control-border-width);
+    /*border-style: var(--appui-control-border-style);*/
+    border-radius: var(--appui-alias-control-border-radius);
+    /*gap: var(--appui-control-gap);*/
+    background-color: var(--appui-base-100);
+    border-color: var(--appui-base-400);
+    cursor: var(--appui-alias-control-cursor-text);
+    color: var(--appui-foregrounds-50);
+    width: 100%;
+    min-height: var(--appui-sizing-1350);
+    height: var(--appui-sizing-1350);
+    position: relative;
+    padding: 2px;
+}
+
+.appui-textarea__scrollview {
+    height: 100%;
+    width: 100%;
+}
+
+.appui-textarea .unity-scroller .unity-base-slider__tracker,
+.appui-textarea .unity-scroller .unity-base-slider__tracker:hover,
+.appui-textarea .unity-scroller .unity-base-slider__tracker:active,
+.appui-textarea .unity-scroller .unity-base-slider__tracker:focus {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.appui-textarea .unity-scroller .unity-base-slider__dragger {
+    background-color: var(--appui-foregrounds-25);
+}
+
+.appui-textarea .unity-scroller .unity-base-slider__dragger:hover,
+.appui-textarea .unity-scroller .unity-base-slider__dragger:active,
+.appui-textarea .unity-scroller .unity-base-slider__dragger:focus {
+    background-color: var(--appui-foregrounds-50);
+}
+
+.appui-textarea .unity-scroller--vertical {
+    margin-bottom: var(--appui-sizing-250);
+}
+
+.appui-textarea__resize-handle {
+    position: absolute;
+    bottom: var(--appui-sizing-25);
+    right: var(--appui-sizing-25);
+    width: var(--appui-sizing-200);
+    height: var(--appui-sizing-200);
+    cursor: var(--appui-alias-control-cursor-nsresize);
+    background-image: url("../../Icons/TextAreaResizer.png");
+    -unity-background-image-tint-color: var(--appui-foregrounds-50);
+}
+
+.appui-textarea__resize-handle:hover,
+.appui-textarea__resize-handle:active {
+    -unity-background-image-tint-color: var(--appui-foregrounds-100);
+}
+
+.appui-textarea__input,
+.appui-textarea__placeholder {
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    color: var(--appui-foregrounds-100);
+    overflow: hidden;
+    white-space: normal;
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 100%;
+    margin: 0;
+    padding: var(--appui-spacing-100);
+    -unity-text-align: upper-left;
+}
+
+.appui-textarea__placeholder {
+    color: var(--appui-foregrounds-50);
+    position: absolute;
+    align-self: flex-start;
+}
+
+.appui-textarea:hover {
+    background-color: var(--appui-base-200);
+    border-color: var(--appui-base-500);
+}
+
+.appui-textarea:hover .appui-textarea__input {
+    color: var(--appui-foregrounds-100);
+}
+
+.appui-textarea.is-focused {
+    background-color: var(--appui-base-100);
+    border-color: var(--appui-accent-100);
+}
+
+.appui-textarea.keyboard-focus {
+    /* converted from : outline-width: var(--appui-alias-control-outline-width); */
+    --outline-width: var(--appui-alias-control-outline-width);
+    /* converted from : outline-color: var(--appui-alias-control-outline-color); */
+    --outline-color: var(--appui-alias-control-outline-color);
+    /* converted from : outline-offset: var(--appui-alias-control-outline-offset); */
+    --outline-offset: var(--appui-alias-control-outline-offset);
+    /* converted from : outline-style: var(--appui-alias-control-outline-style); */
+}
+
+.appui-textarea .appui-textarea__input:focus {
+    color: var(--appui-foregrounds-100);
+}
+
+.appui-textarea:active {
+    background-color: var(--appui-base-100);
+    border-color: var(--appui-base-500);
+}
+
+.appui-textarea:active .appui-textarea__input {
+    color: var(--appui-foregrounds-100);
+}
+
+.is-invalid.appui-textarea {
+    border-color: var(--appui-destructive-100);
+}
+
+.appui-textarea:disabled, /*.is-disabled.appui-textarea*/
+.appui-textarea:hover:disabled /*.is-disabled.appui-textarea*/
+{
+    background-color: var(--appui-base-100);
+    border-color: var(--appui-base-400);
+    color: var(--appui-foregrounds-25);
+    cursor: var(--appui-alias-control-cursor-disabled);
+}
+
+.appui-textarea:disabled .appui-textarea__input /*.is-disabled.appui-textarea .appui-textarea__input*/,
+.appui-textarea:disabled .appui-textarea__placeholder /*.is-disabled.appui-textarea .appui-textarea__placeholder*/
+{
+    color: var(--appui-foregrounds-25);
+    cursor: var(--appui-alias-control-cursor-disabled);
+}
+
+.appui-textarea:disabled .appui-textarea__resize-handle, /*.is-disabled.appui-textarea .appui-textarea-resize-handle*/
+.appui-textarea:disabled .appui-textarea__resize-handle:hover /*.is-disabled.appui-textarea .appui-textarea__resize-handle*/
+{
+    cursor: var(--appui-alias-control-cursor-disabled);
+    -unity-background-image-tint-color: var(--appui-foregrounds-25);
+}
+
+.is-invalid.appui-textarea:disabled {
+    border-color: var(--appui-destructive-25);
+}

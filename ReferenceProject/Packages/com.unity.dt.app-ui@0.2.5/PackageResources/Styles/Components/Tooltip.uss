@@ -1,0 +1,52 @@
+/* Tooltip */
+.appui-tooltip {
+    position: absolute;
+    padding: 12px;
+}
+
+.appui-tooltip__container {
+    background-color: var(--appui-backgrounds-300);
+    border-radius: var(--appui-alias-control-border-radius);
+    padding: var(--appui-spacing-150);
+
+    --box-shadow-offset-y: 8;
+    --box-shadow-spread: 16;
+    --box-shadow-blur: 15;
+    --box-shadow-color: rgba(0,0,0,.65);
+}
+
+.appui-tooltip__content {
+    color: var(--appui-foregrounds-100);
+}
+
+.appui-tooltip__tip {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    rotate: 45deg;
+    background-color: var(--appui-backgrounds-300);
+}
+
+.appui-tooltip--up > .appui-tooltip__tip {
+    top: 6px;
+    left: 24px;
+    margin-left: -6px;
+}
+
+.appui-tooltip--down > .appui-tooltip__tip {
+    bottom: 6px;
+    left: 24px;
+    margin-left: -6px;
+}
+
+.appui-tooltip--left > .appui-tooltip__tip {
+    left: 6px;
+    top: 24px;
+    margin-top: -6px;
+}
+
+.appui-tooltip--right > .appui-tooltip__tip {
+    right: 6px;
+    top: 24px;
+    margin-top: -6px;
+}

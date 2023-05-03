@@ -1,0 +1,44 @@
+/* Text */
+.appui-text {
+  color: var(--appui-foregrounds-50);
+  /* Nothing */ /* converted from : line-height: var(--appui-global-dimension-regular-line-height); */
+  -unity-font-style: normal; /* converted from : font-weight: var(--appui-global-font-weight-regular); */
+  flex-shrink: 0;
+}
+
+.appui-text--size-xs {
+  font-size: var(--appui-font-sizes-body-xs);
+}
+
+.appui-text--size-s {
+  font-size: var(--appui-font-sizes-body-sm);
+}
+
+.appui-text--size-m {
+  font-size: var(--appui-font-sizes-body-md);
+}
+
+.appui-text--size-l {
+  font-size: var(--appui-font-sizes-body-lg);
+}
+
+.appui-text--size-xl {
+  font-size: var(--appui-font-sizes-body-xl);
+}
+
+.appui-text--size-xxl {
+  font-size: var(--appui-font-sizes-body-xxl);
+}
+
+.appui-text--size-xxxl {
+  font-size: var(--appui-font-sizes-body-xxxl);
+}
+
+.appui-text--primary {
+  color: var(--appui-foregrounds-100);
+}
+
+.unity-disabled.appui-text /* converted from : .is-disabled.appui-text */,
+.unity-disabled .appui-text /* converted from : .is-disabled .appui-text */ {
+  color: var(--appui-foregrounds-25);
+}

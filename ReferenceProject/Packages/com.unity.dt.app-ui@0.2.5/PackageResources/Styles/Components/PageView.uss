@@ -1,0 +1,20 @@
+/* PageView */
+.appui-pageview {
+    display: flex;
+}
+
+.appui-pageview__swipeview {
+    flex-grow: 1;
+}
+
+.appui-pageview__page-indicator {
+    flex-shrink: 0;
+}
+
+.appui-pageview--horizontal {
+    flex-direction: column;
+}
+
+.appui-pageview--vertical {
+    flex-direction: row;
+}

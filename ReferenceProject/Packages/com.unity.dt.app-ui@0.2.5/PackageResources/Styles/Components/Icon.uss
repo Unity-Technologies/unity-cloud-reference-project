@@ -1,0 +1,32 @@
+@import url("../../Icons/Icons.uss");
+
+/* Icon */
+.appui-icon {
+    --unity-image-tint-color: var(--appui-foregrounds-50); /* converted from : fill: var(--appui-foregrounds-50); */
+    --unity-image-size: scale-to-fit;
+    flex-shrink: 0;
+}
+
+.appui-icon--primary {
+    --unity-image-tint-color: var(--appui-foregrounds-100); /* converted from : fill: var(--appui-foregrounds-100); */
+}
+
+.unity-disabled .appui-icon /* converted from : .is-disabled .appui-icon */,
+.unity-disabled.appui-icon /* converted from : .is-disabled.appui-icon */ {
+    --unity-image-tint-color:  var(--appui-foregrounds-25); /* converted from : fill: var(--appui-foregrounds-25); */
+}
+
+.appui-icon--size-s {
+    width: var(--appui-sizing-300);
+    height: var(--appui-sizing-300);
+}
+
+.appui-icon--size-m {
+    width: var(--appui-sizing-400);
+    height: var(--appui-sizing-400);
+}
+
+.appui-icon--size-l {
+    width: var(--appui-sizing-500);
+    height: var(--appui-sizing-500);
+}

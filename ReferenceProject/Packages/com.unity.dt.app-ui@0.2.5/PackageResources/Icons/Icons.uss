@@ -1,0 +1,741 @@
+.appui-icon--360 {
+    --unity-image: url("./360.png");
+}
+.appui-icon--add-brush {
+    --unity-image: url("./AddBrush.png");
+}
+.appui-icon--add-layer {
+    --unity-image: url("./AddLayer.png");
+}
+.appui-icon--annotation {
+    --unity-image: url("./Annotation.png");
+}
+.appui-icon--apperature {
+    --unity-image: url("./Apperature.png");
+}
+.appui-icon--apperature-off {
+    --unity-image: url("./ApperatureOff.png");
+}
+.appui-icon--ar-mode {
+    --unity-image: url("./ARMode.png");
+}
+.appui-icon--ar-mode-off {
+    --unity-image: url("./ARModeOff.png");
+}
+.appui-icon--arrow-clockwise {
+    --unity-image: url("./ArrowClockwise.png");
+}
+.appui-icon--arrow-counter-clockwise {
+    --unity-image: url("./ArrowCounterClockwise.png");
+}
+.appui-icon--arrow-down {
+    --unity-image: url("./ArrowDown.png");
+}
+.appui-icon--arrow-left {
+    --unity-image: url("./ArrowLeft.png");
+}
+.appui-icon--arrow-right {
+    --unity-image: url("./ArrowRight.png");
+}
+.appui-icon--arrows-clockwise {
+    --unity-image: url("./ArrowsClockwise.png");
+}
+.appui-icon--arrows-counter-clockwise {
+    --unity-image: url("./ArrowsCounterClockwise.png");
+}
+.appui-icon--arrows-out-cardinal {
+    --unity-image: url("./ArrowsOutCardinal.png");
+}
+.appui-icon--arrow-square-out {
+    --unity-image: url("./ArrowSquareOut.png");
+}
+.appui-icon--arrows-u-clockwise {
+    --unity-image: url("./ArrowsUClockwise.png");
+}
+.appui-icon--arrows-u-counter-clockwise {
+    --unity-image: url("./ArrowsUCounterClockwise.png");
+}
+.appui-icon--arrow-u-down-left {
+    --unity-image: url("./ArrowUDownLeft.png");
+}
+.appui-icon--arrow-u-down-right {
+    --unity-image: url("./ArrowUDownRight.png");
+}
+.appui-icon--arrow-up {
+    --unity-image: url("./ArrowUp.png");
+}
+.appui-icon--arrow-u-up-left {
+    --unity-image: url("./ArrowUUpLeft.png");
+}
+.appui-icon--arrow-u-up-right {
+    --unity-image: url("./ArrowUUpRight.png");
+}
+.appui-icon--backplate {
+    --unity-image: url("./Backplate.png");
+}
+.appui-icon--calendar {
+    --unity-image: url("./Calendar.png");
+}
+.appui-icon--camera {
+    --unity-image: url("./Camera.png");
+}
+.appui-icon--camera-dynamic {
+    --unity-image: url("./CameraDynamic.png");
+}
+.appui-icon--camera-follow {
+    --unity-image: url("./CameraFollow.png");
+}
+.appui-icon--camera-move {
+    --unity-image: url("./CameraMove.png");
+}
+.appui-icon--camera-move-lock {
+    --unity-image: url("./CameraMoveLock.png");
+}
+.appui-icon--camera-overhead {
+    --unity-image: url("./CameraOverhead.png");
+}
+.appui-icon--camera-rotate {
+    --unity-image: url("./CameraRotate.png");
+}
+.appui-icon--camera-rotate-lock {
+    --unity-image: url("./CameraRotateLock.png");
+}
+.appui-icon--camera-scale {
+    --unity-image: url("./CameraScale.png");
+}
+.appui-icon--camera-settings {
+    --unity-image: url("./CameraSettings.png");
+}
+.appui-icon--camera-shake {
+    --unity-image: url("./CameraShake.png");
+}
+.appui-icon--camera-sidelines {
+    --unity-image: url("./CameraSidelines.png");
+}
+.appui-icon--camera-x {
+    --unity-image: url("./CameraX.png");
+}
+.appui-icon--camera-y {
+    --unity-image: url("./CameraY.png");
+}
+.appui-icon--camera-z {
+    --unity-image: url("./CameraZ.png");
+}
+.appui-icon--caret-double-down {
+    --unity-image: url("./CaretDoubleDown.png");
+}
+.appui-icon--caret-double-left {
+    --unity-image: url("./CaretDoubleLeft.png");
+}
+.appui-icon--caret-double-right {
+    --unity-image: url("./CaretDoubleRight.png");
+}
+.appui-icon--caret-double-up {
+    --unity-image: url("./CaretDoubleUp.png");
+}
+.appui-icon--caret-down {
+    --unity-image: url("./CaretDown.png");
+}
+.appui-icon--caret-down-shallow {
+    --unity-image: url("./CaretDownShallow.png");
+}
+.appui-icon--caret-left {
+    --unity-image: url("./CaretLeft.png");
+}
+.appui-icon--caret-right {
+    --unity-image: url("./CaretRight.png");
+}
+.appui-icon--caret-up {
+    --unity-image: url("./CaretUp.png");
+}
+.appui-icon--caret-up-shallow {
+    --unity-image: url("./CaretUpShallow.png");
+}
+.appui-icon--car-rim {
+    --unity-image: url("./CarRim.png");
+}
+.appui-icon--check {
+    --unity-image: url("./Check.png");
+}
+.appui-icon--clap-board {
+    --unity-image: url("./ClapBoard.png");
+}
+.appui-icon--clippers {
+    --unity-image: url("./Clippers.png");
+}
+.appui-icon--clipping {
+    --unity-image: url("./Clipping.png");
+}
+.appui-icon--clipping-x {
+    --unity-image: url("./ClippingX.png");
+}
+.appui-icon--clipping-y {
+    --unity-image: url("./ClippingY.png");
+}
+.appui-icon--clipping-z {
+    --unity-image: url("./ClippingZ.png");
+}
+.appui-icon--cloud {
+    --unity-image: url("./Cloud.png");
+}
+.appui-icon--color-picker {
+    --unity-image: url("./ColorPicker.png");
+}
+.appui-icon--communication {
+    --unity-image: url("./Communication.png");
+}
+.appui-icon--connection-slash-1 {
+    --unity-image: url("./ConnectionSlash-1.png");
+}
+.appui-icon--connection-slash {
+    --unity-image: url("./ConnectionSlash.png");
+}
+.appui-icon--damping-high {
+    --unity-image: url("./DampingHigh.png");
+}
+.appui-icon--damping-low {
+    --unity-image: url("./DampingLow.png");
+}
+.appui-icon--damping-medium {
+    --unity-image: url("./DampingMedium.png");
+}
+.appui-icon--damping-off {
+    --unity-image: url("./DampingOff.png");
+}
+.appui-icon--debug {
+    --unity-image: url("./Debug.png");
+}
+.appui-icon--delete {
+    --unity-image: url("./Delete.png");
+}
+.appui-icon--do-f-disabled {
+    --unity-image: url("./DoFDisabled.png");
+}
+.appui-icon--dome {
+    --unity-image: url("./Dome.png");
+}
+.appui-icon--draghandle {
+    --unity-image: url("./Draghandle.png");
+}
+.appui-icon--drywall-installer {
+    --unity-image: url("./DrywallInstaller.png");
+}
+.appui-icon--ellipsis {
+    --unity-image: url("./Ellipsis.png");
+}
+.appui-icon--equipment-operator {
+    --unity-image: url("./EquipmentOperator.png");
+}
+.appui-icon--export {
+    --unity-image: url("./Export.png");
+}
+.appui-icon--eye {
+    --unity-image: url("./Eye.png");
+}
+.appui-icon--eye-slash {
+    --unity-image: url("./EyeSlash.png");
+}
+.appui-icon--face-mesh {
+    --unity-image: url("./FaceMesh.png");
+}
+.appui-icon--fast-forward {
+    --unity-image: url("./FastForward.png");
+}
+.appui-icon--film-roll {
+    --unity-image: url("./FilmRoll.png");
+}
+.appui-icon--flag {
+    --unity-image: url("./Flag.png");
+}
+.appui-icon--fly {
+    --unity-image: url("./Fly.png");
+}
+.appui-icon--focal-length {
+    --unity-image: url("./FocalLength.png");
+}
+.appui-icon--focus {
+    --unity-image: url("./Focus.png");
+}
+.appui-icon--focus-apperature {
+    --unity-image: url("./FocusApperature.png");
+}
+.appui-icon--focus-auto {
+    --unity-image: url("./FocusAuto.png");
+}
+.appui-icon--focus-manual {
+    --unity-image: url("./FocusManual.png");
+}
+.appui-icon--focus-mode-tracking {
+    --unity-image: url("./FocusModeTracking.png");
+}
+.appui-icon--focus-object {
+    --unity-image: url("./FocusObject.png");
+}
+.appui-icon--folder {
+    --unity-image: url("./Folder.png");
+}
+.appui-icon--forma-backplate {
+    --unity-image: url("./FormaBackplate.png");
+}
+.appui-icon--forma-dome {
+    --unity-image: url("./FormaDome.png");
+}
+.appui-icon--forma-scene {
+    --unity-image: url("./FormaScene.png");
+}
+.appui-icon--funnel {
+    --unity-image: url("./Funnel.png");
+}
+.appui-icon--funnel-simple {
+    --unity-image: url("./FunnelSimple.png");
+}
+.appui-icon--generic-cube {
+    --unity-image: url("./GenericCube.png");
+}
+.appui-icon--generic-sphere {
+    --unity-image: url("./GenericSphere.png");
+}
+.appui-icon--grid-four {
+    --unity-image: url("./GridFour.png");
+}
+.appui-icon--hammer {
+    --unity-image: url("./Hammer.png");
+}
+.appui-icon--heart {
+    --unity-image: url("./Heart.png");
+}
+.appui-icon--help {
+    --unity-image: url("./Help.png");
+}
+.appui-icon--helper {
+    --unity-image: url("./Helper.png");
+}
+.appui-icon--hierarchy {
+    --unity-image: url("./Hierarchy.png");
+}
+.appui-icon--horizontal {
+    --unity-image: url("./Horizontal.png");
+}
+.appui-icon--hotspot {
+    --unity-image: url("./Hotspot.png");
+}
+.appui-icon--house {
+    --unity-image: url("./House.png");
+}
+.appui-icon--image {
+    --unity-image: url("./Image.png");
+}
+.appui-icon--info {
+    --unity-image: url("./Info.png");
+}
+.appui-icon--installs {
+    --unity-image: url("./Installs.png");
+}
+.appui-icon--joystick {
+    --unity-image: url("./Joystick.png");
+}
+.appui-icon--joystick-slash {
+    --unity-image: url("./JoystickSlash.png");
+}
+.appui-icon--keyboard-a {
+    --unity-image: url("./KeyboardA.png");
+}
+.appui-icon--keyboard-backspace {
+    --unity-image: url("./KeyboardBackspace.png");
+}
+.appui-icon--keyboard-control {
+    --unity-image: url("./KeyboardControl.png");
+}
+.appui-icon--keyboard-e {
+    --unity-image: url("./KeyboardE.png");
+}
+.appui-icon--keyboard-esc {
+    --unity-image: url("./KeyboardESC.png");
+}
+.appui-icon--keyboard-m {
+    --unity-image: url("./KeyboardM.png");
+}
+.appui-icon--keyboard-q {
+    --unity-image: url("./KeyboardQ.png");
+}
+.appui-icon--keyboard-return {
+    --unity-image: url("./KeyboardReturn.png");
+}
+.appui-icon--keyboard-s {
+    --unity-image: url("./KeyboardS.png");
+}
+.appui-icon--keyboard-shift {
+    --unity-image: url("./KeyboardShift.png");
+}
+.appui-icon--keyboard-space {
+    --unity-image: url("./KeyboardSpace.png");
+}
+.appui-icon--keyboard-w {
+    --unity-image: url("./KeyboardW.png");
+}
+.appui-icon--layers {
+    --unity-image: url("./Layers.png");
+}
+.appui-icon--learn {
+    --unity-image: url("./Learn.png");
+}
+.appui-icon--level {
+    --unity-image: url("./Level.png");
+}
+.appui-icon--level-active {
+    --unity-image: url("./LevelActive.png");
+}
+.appui-icon--line-brush {
+    --unity-image: url("./LineBrush.png");
+}
+.appui-icon--link {
+    --unity-image: url("./link.png");
+}
+.appui-icon--link-break {
+    --unity-image: url("./LinkBreak.png");
+}
+.appui-icon--link-ratio {
+    --unity-image: url("./LinkRatio.png");
+}
+.appui-icon--link-simple {
+    --unity-image: url("./LinkSimple.png");
+}
+.appui-icon--link-simple-break {
+    --unity-image: url("./LinkSimpleBreak.png");
+}
+.appui-icon--link-simple-horizontal {
+    --unity-image: url("./LinkSimpleHorizontal.png");
+}
+.appui-icon--link-simple-horizontal-break {
+    --unity-image: url("./LinkSimpleHorizontalBreak.png");
+}
+.appui-icon--list {
+    --unity-image: url("./List.png");
+}
+.appui-icon--local-positioning {
+    --unity-image: url("./LocalPositioning.png");
+}
+.appui-icon--lock {
+    --unity-image: url("./Lock.png");
+}
+.appui-icon--magnifying-glass {
+    --unity-image: url("./MagnifyingGlass.png");
+}
+.appui-icon--magnifying-glass-minus {
+    --unity-image: url("./MagnifyingGlassMinus.png");
+}
+.appui-icon--magnifying-glass-plus {
+    --unity-image: url("./MagnifyingGlassPlus.png");
+}
+.appui-icon--mars-corner-tool {
+    --unity-image: url("./MarsCornerTool.png");
+}
+.appui-icon--mars-proxy {
+    --unity-image: url("./MarsProxy.png");
+}
+.appui-icon--mars-scan {
+    --unity-image: url("./MarsScan.png");
+}
+.appui-icon--mars-snapping {
+    --unity-image: url("./MarsSnapping.png");
+}
+.appui-icon--mason {
+    --unity-image: url("./Mason.png");
+}
+.appui-icon--measure-angle {
+    --unity-image: url("./MeasureAngle.png");
+}
+.appui-icon--measure-length {
+    --unity-image: url("./MeasureLength.png");
+}
+.appui-icon--microphone {
+    --unity-image: url("./Microphone.png");
+}
+.appui-icon--microphone-slash {
+    --unity-image: url("./MicrophoneSlash.png");
+}
+.appui-icon--minus {
+    --unity-image: url("./Minus.png");
+}
+.appui-icon--mouse {
+    --unity-image: url("./Mouse.png");
+}
+.appui-icon--mouse-left {
+    --unity-image: url("./MouseLeft.png");
+}
+.appui-icon--mouse-right {
+    --unity-image: url("./MouseRight.png");
+}
+.appui-icon--new-folder {
+    --unity-image: url("./NewFolder.png");
+}
+.appui-icon--no-leveling {
+    --unity-image: url("./NoLeveling.png");
+}
+.appui-icon--office-editing {
+    --unity-image: url("./Office_Editing.png");
+}
+.appui-icon--ok {
+    --unity-image: url("./OK.png");
+}
+.appui-icon--orbit {
+    --unity-image: url("./Orbit.png");
+}
+.appui-icon--orbit-selection {
+    --unity-image: url("./OrbitSelection.png");
+}
+.appui-icon--orbit-world {
+    --unity-image: url("./OrbitWorld.png");
+}
+.appui-icon--paint-brush {
+    --unity-image: url("./PaintBrush.png");
+}
+.appui-icon--paint-bucket {
+    --unity-image: url("./PaintBucket.png");
+}
+.appui-icon--painter {
+    --unity-image: url("./Painter.png");
+}
+.appui-icon--pan {
+    --unity-image: url("./pan.png");
+}
+.appui-icon--pause {
+    --unity-image: url("./Pause.png");
+}
+.appui-icon--pen {
+    --unity-image: url("./Pen.png");
+}
+.appui-icon--play {
+    --unity-image: url("./Play.png");
+}
+.appui-icon--plugged-in {
+    --unity-image: url("./PluggedIn.png");
+}
+.appui-icon--plugged-in-slash {
+    --unity-image: url("./PluggedInSlash.png");
+}
+.appui-icon--plumb {
+    --unity-image: url("./Plumb.png");
+}
+.appui-icon--plus {
+    --unity-image: url("./Plus.png");
+}
+.appui-icon--point-cloud {
+    --unity-image: url("./PointCloud.png");
+}
+.appui-icon--profile {
+    --unity-image: url("./profile.png");
+}
+.appui-icon--qr-code {
+    --unity-image: url("./QRCode.png");
+}
+.appui-icon--rebase {
+    --unity-image: url("./Rebase.png");
+}
+.appui-icon--recorder {
+    --unity-image: url("./Recorder.png");
+}
+.appui-icon--reposition-camera {
+    --unity-image: url("./reposition-camera.png");
+}
+.appui-icon--review {
+    --unity-image: url("./Review.png");
+}
+.appui-icon--rewind {
+    --unity-image: url("./Rewind.png");
+}
+.appui-icon--roofer {
+    --unity-image: url("./Roofer.png");
+}
+.appui-icon--ruler {
+    --unity-image: url("./Ruler.png");
+}
+.appui-icon--scale {
+    --unity-image: url("./Scale.png");
+}
+.appui-icon--scene {
+    --unity-image: url("./3DScene.png");
+}
+.appui-icon--scene-settings {
+    --unity-image: url("./SceneSettings.png");
+}
+.appui-icon--select-object {
+    --unity-image: url("./SelectObject.png");
+}
+.appui-icon--settings {
+    --unity-image: url("./Settings.png");
+}
+.appui-icon--shape {
+    --unity-image: url("./Shape.png");
+}
+.appui-icon--skip-back {
+    --unity-image: url("./SkipBack.png");
+}
+.appui-icon--skip-next {
+    --unity-image: url("./SkipNext.png");
+}
+.appui-icon--smooth-brush {
+    --unity-image: url("./SmoothBrush.png");
+}
+.appui-icon--snapshot {
+    --unity-image: url("./Snapshot.png");
+}
+.appui-icon--speaker-high {
+    --unity-image: url("./SpeakerHigh.png");
+}
+.appui-icon--speaker-low {
+    --unity-image: url("./SpeakerLow.png");
+}
+.appui-icon--speaker-none {
+    --unity-image: url("./SpeakerNone.png");
+}
+.appui-icon--speaker-slash {
+    --unity-image: url("./SpeakerSlash.png");
+}
+.appui-icon--speaker-x {
+    --unity-image: url("./SpeakerX.png");
+}
+.appui-icon--spline-tool-1 {
+    --unity-image: url("./SplineTool-1.png");
+}
+.appui-icon--spline-tool {
+    --unity-image: url("./SplineTool.png");
+}
+.appui-icon--squares-four {
+    --unity-image: url("./SquaresFour.png");
+}
+.appui-icon--star {
+    --unity-image: url("./Star.png");
+}
+.appui-icon--steady-cam-1 {
+    --unity-image: url("./SteadyCam-1.png");
+}
+.appui-icon--steady-cam {
+    --unity-image: url("./SteadyCam.png");
+}
+.appui-icon--steel-worker {
+    --unity-image: url("./SteelWorker.png");
+}
+.appui-icon--steering-wheel {
+    --unity-image: url("./SteeringWheel.png");
+}
+.appui-icon--step-back-1 {
+    --unity-image: url("./StepBack1.png");
+}
+.appui-icon--step-back-10 {
+    --unity-image: url("./StepBack10.png");
+}
+.appui-icon--step-forward-1 {
+    --unity-image: url("./StepForward1.png");
+}
+.appui-icon--step-forward-10 {
+    --unity-image: url("./StepForward10.png");
+}
+.appui-icon--stop {
+    --unity-image: url("./Stop.png");
+}
+.appui-icon--sun {
+    --unity-image: url("./Sun.png");
+}
+.appui-icon--sundial {
+    --unity-image: url("./Sundial.png");
+}
+.appui-icon--sun-study {
+    --unity-image: url("./SunStudy.png");
+}
+.appui-icon--tag {
+    --unity-image: url("./Tag.png");
+}
+.appui-icon--target {
+    --unity-image: url("./Target.png");
+}
+.appui-icon--teleport {
+    --unity-image: url("./Teleport.png");
+}
+.appui-icon--tiled {
+    --unity-image: url("./Tiled.png");
+}
+.appui-icon--tilt-device {
+    --unity-image: url("./tilt-device.png");
+}
+.appui-icon--tilt {
+    --unity-image: url("./Tilt.png");
+}
+.appui-icon--time {
+    --unity-image: url("./Time.png");
+}
+.appui-icon--timeline-play {
+    --unity-image: url("./TimelinePlay.png");
+}
+.appui-icon--timeline-scrubber {
+    --unity-image: url("./TimelineScrubber.png");
+}
+.appui-icon--timeline-scrubber-slash {
+    --unity-image: url("./TimelineScrubberSlash.png");
+}
+.appui-icon--transparency {
+    --unity-image: url("./Transparency.png");
+}
+.appui-icon--trend-down {
+    --unity-image: url("./TrendDown.png");
+}
+.appui-icon--trend-up {
+    --unity-image: url("./TrendUp.png");
+}
+.appui-icon--unity {
+    --unity-image: url("./Unity.png");
+}
+.appui-icon--unlock {
+    --unity-image: url("./Unlock.png");
+}
+.appui-icon--users {
+    --unity-image: url("./Users.png");
+}
+.appui-icon--vertical {
+    --unity-image: url("./Vertical.png");
+}
+.appui-icon--view-left {
+    --unity-image: url("./ViewLeft.png");
+}
+.appui-icon--view-right {
+    --unity-image: url("./ViewRight.png");
+}
+.appui-icon--view-top {
+    --unity-image: url("./ViewTop.png");
+}
+.appui-icon--vr {
+    --unity-image: url("./VR.png");
+}
+.appui-icon--walk-mode {
+    --unity-image: url("./WalkMode.png");
+}
+.appui-icon--warning {
+    --unity-image: url("./Warning.png");
+}
+.appui-icon--waypoint {
+    --unity-image: url("./Waypoint.png");
+}
+.appui-icon--waypoint-add {
+    --unity-image: url("./WaypointAdd.png");
+}
+.appui-icon--waypoint-custom {
+    --unity-image: url("./WaypointCustom.png");
+}
+.appui-icon--waypoint-delete {
+    --unity-image: url("./WaypointDelete.png");
+}
+.appui-icon--waypoint-home {
+    --unity-image: url("./WaypointHome.png");
+}
+.appui-icon--world-edit {
+    --unity-image: url("./WorldEdit.png");
+}
+.appui-icon--world-positioning {
+    --unity-image: url("./WorldPositioning.png");
+}
+.appui-icon--wrench {
+    --unity-image: url("./Wrench.png");
+}
+.appui-icon--x {
+    --unity-image: url("./X.png");
+}

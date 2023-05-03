@@ -1,0 +1,32 @@
+/* SplitView */
+.appui-splitview {
+    display: flex;
+}
+
+.appui-splitview > .unity-two-pane-split-view__dragline-anchor {
+    background-color: var(--appui-backgrounds-100);
+}
+
+.appui-splitview > .unity-two-pane-split-view__dragline-anchor:hover {
+    background-color: var(--appui-primary-400);
+}
+
+.appui-splitview > .unity-two-pane-split-view__dragline-anchor--horizontal {
+    width: 2.5px;
+}
+
+.appui-splitview .unity-two-pane-split-view__dragline--horizontal {
+    width: 10px;
+    left: -4px;
+    cursor: var(--appui-alias-control-cursor-col-resize);
+}
+
+.appui-splitview > .unity-two-pane-split-view__dragline-anchor--vertical {
+    height: 3px;
+}
+
+.appui-splitview .unity-two-pane-split-view__dragline--vertical {
+    height: 10px;
+    top: -4px;
+    cursor: var(--appui-alias-control-cursor-row-resize);
+}

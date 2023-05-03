@@ -1,0 +1,32 @@
+/* Fix unity default theme */
+.unity-disabled {
+    opacity: 1;
+}
+
+.unity-base-text-field__input,
+.unity-base-text-field__input:disabled,
+.unity-base-text-field:hover > .unity-base-text-field__input,
+.unity-base-text-field:enabled > .unity-base-text-field__input,
+.unity-base-text-field:hover:enabled > .unity-base-text-field__input {
+    border-width: 0;
+    background-color: rgba(0,0,0,0);
+    margin: 0;
+    padding: 0;
+}
+
+.unity-text-field {
+    --unity-cursor-color: var(--appui-foregrounds-200);
+}
+
+.unity-text-field.appui-text-cursor--transparent {
+    --unity-cursor-color: rgba(0,0,0,0);
+}
+
+.unity-base-text-field__input {
+    cursor: var(--appui-alias-control-cursor-text);
+}
+
+.unity-base-text-field__input:disabled {
+    color: var(--appui-foregrounds-25);
+    cursor: var(--appui-alias-control-cursor-disabled);
+}

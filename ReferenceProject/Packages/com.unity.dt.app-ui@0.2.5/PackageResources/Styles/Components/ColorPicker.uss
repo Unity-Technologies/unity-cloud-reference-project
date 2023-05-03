@@ -1,0 +1,96 @@
+/* ColorPicker */
+.appui-colorpicker {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    flex-shrink: 0;
+    padding: var(--appui-spacing-400);
+}
+
+.appui-colorpicker__wheelcontainer {
+    display: flex;
+    flex-shrink: 0;
+    flex-grow: 0;
+    width: 200px;
+    height: 200px;
+    margin: auto;
+    position: relative;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.appui-colorwheel.appui-colorpicker__wheel {
+    display: flex;
+    flex-shrink: 0;
+    width: 100%;
+    height: 100%;
+
+    --inner-radius: 0.4;
+}
+
+.appui-colorpicker__svsquare {
+    display: flex;
+    flex-shrink: 0;
+    position: absolute;
+    width: 104px;
+    height: 104px;
+}
+
+.appui-colorpicker__svsquare > .appui-svsquare__image {
+    border-radius: var(--appui-alias-control-border-radius);
+    overflow: hidden;
+}
+
+.appui-colorpicker__colortoolbar {
+    display: flex;
+    flex-shrink: 0;
+    margin-bottom: var(--appui-spacing-300);
+}
+
+.appui-colorpicker__alphaslider {
+    display: flex;
+    flex-shrink: 0;
+    margin: var(--appui-spacing-300) 0;
+}
+
+.appui-colorpicker__channels-container {
+    display: flex;
+    flex-shrink: 0;
+}
+
+.appui-colorpicker__channels-dropdown {
+    display: flex;
+    flex-shrink: 0;
+}
+
+.appui-colorpicker__red-channel-slider,
+.appui-colorpicker__hue-slider {
+    display: flex;
+    margin: var(--appui-spacing-300) var(--appui-sizing-25) 0 var(--appui-sizing-25);
+}
+
+.appui-colorpicker__hex-field {
+    display: flex;
+    margin: var(--appui-spacing-275) 0 0 0;
+}
+
+.appui-colorpicker__green-channel-slider,
+.appui-colorpicker__blue-channel-slider,
+.appui-colorpicker__saturation-slider,
+.appui-colorpicker__brightness-slider {
+    display: flex;
+    margin: var(--appui-spacing-275) var(--appui-sizing-25) 0 var(--appui-sizing-25);
+}
+
+.appui-colorpicker__red-channel-slider .appui-slider__progress {
+    background-color: #c22424;
+}
+
+.appui-colorpicker__green-channel-slider .appui-slider__progress {
+    background-color: #50d21b;
+}
+
+.appui-colorpicker__blue-channel-slider .appui-slider__progress {
+    background-color: #0051ff;
+}

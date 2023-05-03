@@ -1,0 +1,50 @@
+{
+  "name": "com.unity.dt.app-ui",
+  "displayName": "Replica App UI",
+  "version": "0.2.5",
+  "unity": "2021.3",
+  "keywords": [
+    "app",
+    "ui",
+    "runtime",
+    "framework",
+    "digital twins",
+    "dt",
+    "digital",
+    "twins",
+    "replica",
+    "unity",
+    "app ui",
+    "app-ui"
+  ],
+  "repository": {
+    "url": "https://github.cds.internal.unity3d.com/unity/com.unity.dt.app-ui.git",
+    "type": "git",
+    "revision": "e818eb3ea94395d6532a7798684418a5c69da481"
+  },
+  "description": "App UI is a versatile and customizable UI library for Unity that provides essential building blocks for creating beautiful and responsive user interfaces. With support for MVVM architecture, state management, and localization, App UI simplifies app development while maintaining flexibility and extensibility. The library includes a wide range of UI components, design tokens, and symbols, all of which can be easily customized to fit your app's unique style and branding.",
+  "dependencies": {
+    "com.unity.modules.androidjni": "1.0.0",
+    "com.unity.modules.uielements": "1.0.0",
+    "com.unity.modules.physics": "1.0.0"
+  },
+  "samples": [
+    {
+      "displayName": "UI Kit",
+      "description": "Every component in a single page",
+      "path": "Samples~/UI Kit"
+    },
+    {
+      "displayName": "StoryBook",
+      "description": "StoryBookJS-like window in the Editor",
+      "path": "Samples~/StoryBook"
+    }
+  ],
+  "_upm": {
+    "changelog": "### Added\n\n- Added `SnapTo` and `GoTo` methods in the SwipeView component.\n- Added `startSwipeThreshold` property in the SwipeView component.\n- Added Scrollable Manipulator which uses a threshold before beginning to scroll.\n- Added Pressable Manipulator which can be used to capture a pointer during press but can continue propagation of Move and Up events.\n\n### Fixed\n\n- Removed the use of System.Linq in the App UI package.\n\n### Changed\n\n- SwipeView now uses the Scrollable Manipulator instead of Draggable."
+  },
+  "upmCi": {
+    "footprint": "f562d6d86a5c4e498dbe0b22721c1ba5de54bcce"
+  },
+  "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.dt.app-ui@0.2/manual/index.html"
+}

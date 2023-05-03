@@ -1,0 +1,200 @@
+/* Elevation */
+.appui-elevation-0 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-0);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-0);
+    --box-shadow-spread: var(--appui-elevations-spread-0);
+    --box-shadow-blur: var(--appui-elevations-blur-0);
+    --box-shadow-color: var(--appui-elevations-shadow-color-0);
+}
+
+.appui-elevation-1 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-1);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-1);
+    --box-shadow-spread: var(--appui-elevations-spread-1);
+    --box-shadow-blur: var(--appui-elevations-blur-1);
+    --box-shadow-color: var(--appui-elevations-shadow-color-1);
+}
+
+.appui-elevation-2 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-2);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-2);
+    --box-shadow-spread: var(--appui-elevations-spread-2);
+    --box-shadow-blur: var(--appui-elevations-blur-2);
+    --box-shadow-color: var(--appui-elevations-shadow-color-2);
+}
+
+.appui-elevation-3 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-3);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-3);
+    --box-shadow-spread: var(--appui-elevations-spread-3);
+    --box-shadow-blur: var(--appui-elevations-blur-3);
+    --box-shadow-color: var(--appui-elevations-shadow-color-3);
+}
+
+.appui-elevation-4 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-4);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-4);
+    --box-shadow-spread: var(--appui-elevations-spread-4);
+    --box-shadow-blur: var(--appui-elevations-blur-4);
+    --box-shadow-color: var(--appui-elevations-shadow-color-4);
+}
+
+.appui-elevation-5 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-5);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-5);
+    --box-shadow-spread: var(--appui-elevations-spread-5);
+    --box-shadow-blur: var(--appui-elevations-blur-5);
+    --box-shadow-color: var(--appui-elevations-shadow-color-5);
+}
+
+.appui-elevation-6 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-6);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-6);
+    --box-shadow-spread: var(--appui-elevations-spread-6);
+    --box-shadow-blur: var(--appui-elevations-blur-6);
+    --box-shadow-color: var(--appui-elevations-shadow-color-6);
+}
+
+.appui-elevation-7 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-7);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-7);
+    --box-shadow-spread: var(--appui-elevations-spread-7);
+    --box-shadow-blur: var(--appui-elevations-blur-7);
+    --box-shadow-color: var(--appui-elevations-shadow-color-7);
+}
+
+.appui-elevation-8 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-8);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-8);
+    --box-shadow-spread: var(--appui-elevations-spread-8);
+    --box-shadow-blur: var(--appui-elevations-blur-8);
+    --box-shadow-color: var(--appui-elevations-shadow-color-8);
+}
+
+.appui-elevation-9 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-9);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-9);
+    --box-shadow-spread: var(--appui-elevations-spread-9);
+    --box-shadow-blur: var(--appui-elevations-blur-9);
+    --box-shadow-color: var(--appui-elevations-shadow-color-9);
+}
+
+.appui-elevation-10 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-10);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-10);
+    --box-shadow-spread: var(--appui-elevations-spread-10);
+    --box-shadow-blur: var(--appui-elevations-blur-10);
+    --box-shadow-color: var(--appui-elevations-shadow-color-10);
+}
+
+.appui-elevation-11 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-11);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-11);
+    --box-shadow-spread: var(--appui-elevations-spread-11);
+    --box-shadow-blur: var(--appui-elevations-blur-11);
+    --box-shadow-color: var(--appui-elevations-shadow-color-11);
+}
+
+.appui-elevation-12 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-12);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-12);
+    --box-shadow-spread: var(--appui-elevations-spread-12);
+    --box-shadow-blur: var(--appui-elevations-blur-12);
+    --box-shadow-color: var(--appui-elevations-shadow-color-12);
+}
+
+.appui-elevation-13 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-13);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-13);
+    --box-shadow-spread: var(--appui-elevations-spread-13);
+    --box-shadow-blur: var(--appui-elevations-blur-13);
+    --box-shadow-color: var(--appui-elevations-shadow-color-13);
+}
+
+.appui-elevation-14 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-14);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-14);
+    --box-shadow-spread: var(--appui-elevations-spread-14);
+    --box-shadow-blur: var(--appui-elevations-blur-14);
+    --box-shadow-color: var(--appui-elevations-shadow-color-14);
+}
+
+.appui-elevation-15 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-15);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-15);
+    --box-shadow-spread: var(--appui-elevations-spread-15);
+    --box-shadow-blur: var(--appui-elevations-blur-15);
+    --box-shadow-color: var(--appui-elevations-shadow-color-15);
+}
+
+.appui-elevation-16 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-16);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-16);
+    --box-shadow-spread: var(--appui-elevations-spread-16);
+    --box-shadow-blur: var(--appui-elevations-blur-16);
+    --box-shadow-color: var(--appui-elevations-shadow-color-16);
+}
+
+.appui-elevation-17 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-17);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-17);
+    --box-shadow-spread: var(--appui-elevations-spread-17);
+    --box-shadow-blur: var(--appui-elevations-blur-17);
+    --box-shadow-color: var(--appui-elevations-shadow-color-17);
+}
+
+.appui-elevation-18 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-18);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-18);
+    --box-shadow-spread: var(--appui-elevations-spread-18);
+    --box-shadow-blur: var(--appui-elevations-blur-18);
+    --box-shadow-color: var(--appui-elevations-shadow-color-18);
+}
+
+.appui-elevation-19 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-19);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-19);
+    --box-shadow-spread: var(--appui-elevations-spread-19);
+    --box-shadow-blur: var(--appui-elevations-blur-19);
+    --box-shadow-color: var(--appui-elevations-shadow-color-19);
+}
+
+.appui-elevation-20 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-20);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-20);
+    --box-shadow-spread: var(--appui-elevations-spread-20);
+    --box-shadow-blur: var(--appui-elevations-blur-20);
+    --box-shadow-color: var(--appui-elevations-shadow-color-20);
+}
+
+.appui-elevation-21 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-21);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-21);
+    --box-shadow-spread: var(--appui-elevations-spread-21);
+    --box-shadow-blur: var(--appui-elevations-blur-21);
+    --box-shadow-color: var(--appui-elevations-shadow-color-21);
+}
+
+.appui-elevation-22 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-22);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-22);
+    --box-shadow-spread: var(--appui-elevations-spread-22);
+    --box-shadow-blur: var(--appui-elevations-blur-22);
+    --box-shadow-color: var(--appui-elevations-shadow-color-22);
+}
+
+.appui-elevation-23 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-23);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-23);
+    --box-shadow-spread: var(--appui-elevations-spread-23);
+    --box-shadow-blur: var(--appui-elevations-blur-23);
+    --box-shadow-color: var(--appui-elevations-shadow-color-23);
+}
+
+.appui-elevation-24 {
+    --box-shadow-offset-x: var(--appui-elevations-offset-x-24);
+    --box-shadow-offset-y: var(--appui-elevations-offset-y-24);
+    --box-shadow-spread: var(--appui-elevations-spread-24);
+    --box-shadow-blur: var(--appui-elevations-blur-24);
+    --box-shadow-color: var(--appui-elevations-shadow-color-24);
+}

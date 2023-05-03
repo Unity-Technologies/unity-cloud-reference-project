@@ -1,0 +1,100 @@
+/* Avatar */
+.appui-avatar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: var(--appui-sizing-60);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.appui-avatar--size-s {
+    width: var(--appui-sizing-500);
+    height: var(--appui-sizing-500);
+}
+
+.appui-avatar--size-m {
+    width: var(--appui-sizing-650);
+    height: var(--appui-sizing-650);
+}
+
+.appui-avatar--size-l {
+    width: var(--appui-sizing-800);
+    height: var(--appui-sizing-800);
+}
+
+.appui-avatar__container {
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    /*background-position: center;*/
+    /*background-size: cover;*/
+    /*-unity-background-scale-mode: scale-and-crop;*/
+    /*kbackground-color: #5e5e5e;*/
+    /*--outline-style: solid;*/
+    --outline-offset: 2;
+    --outline-width: 2;
+}
+
+.appui-avatar__label {
+    /*font-weight: 600;*/
+    -unity-font-style: bold;
+    /*line-height: 110%;*/
+    letter-spacing: -0.3px;
+    color: #fff;
+}
+
+.appui-avatar--size-s .appui-avatar__label {
+    font-size: var(--appui-font-sizes-75);
+}
+
+.appui-avatar--size-m .appui-avatar__label {
+    font-size: var(--appui-font-sizes-100);
+}
+
+.appui-avatar--size-l .appui-avatar__label {
+    font-size: var(--appui-font-sizes-200);
+}
+
+.appui-avatar__iconcontainer {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: var(--appui-sizing-160);
+    height: var(--appui-sizing-160);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.appui-avatar__notificationcontainer {
+    position: absolute;
+    width: var(--appui-sizing-160);
+    height: var(--appui-sizing-160);
+    top: -1px;
+    right: -1px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.appui-avatar__notification {
+    position: absolute;
+}
+
+.appui-avatar:disabled {
+    opacity: var(--appui-opacity-25);
+}
+
+.appui-avatar:disabled .appui-avatar__notificationcontainer,
+.appui-avatar:disabled .appui-avatar__iconcontainer {
+    display: none;
+}

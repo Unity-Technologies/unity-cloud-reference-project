@@ -1,0 +1,172 @@
+#root-main {
+  width: 100%;
+  height: 100%;
+}
+
+.example {
+  padding: 16px;
+  align-items: flex-start;
+}
+
+.example-header {
+  height: 72px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  align-self: stretch;
+}
+
+.example-logo {
+  --unity-image: url('/Packages/com.unity.dt.app-ui/PackageResources/Logos/appui-logo-dark.png');
+  width: 128px;
+  height: 32px;
+}
+
+.appui--light .example-logo {
+  --unity-image: url('/Packages/com.unity.dt.app-ui/PackageResources/Logos/appui-logo-light.png');
+}
+
+.example-title {
+  color: var(--appui-foregrounds-100);
+  -unity-font-definition: url('/Packages/com.unity.dt.app-ui/PackageResources/Fonts/NotoSans-Black.ttf');
+  font-size: 64px;
+  margin: 24px 0 0 0;
+}
+
+.example-subtitle {
+  color: var(--appui-foregrounds-100);
+  font-size: 14px;
+  margin: 24px 0;
+  padding: var(--appui-alias-control-gap-md);
+  border-radius: 6px;
+  align-self: flex-start;
+  background-color: var(--appui-base-50);
+}
+
+.example-section {
+  border-width: 1px;
+  border-color: #7B61FF;
+  border-radius: 5px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 16px;
+  flex-wrap: nowrap;
+  width: 450px;
+  max-width: 97%;
+}
+
+.align-start {
+  align-items: flex-start;
+}
+
+.example-section-fullwidth {
+  align-self: stretch;
+  align-items: center;
+}
+
+.example-section > .appui-button {
+  margin: 8px 0;
+}
+
+.example-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: nowrap;
+  flex-grow: 0;
+  flex-shrink: 0;
+  max-width: 100%;
+}
+
+.example-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 8px;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+.example-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.example-context-switcher-panel {
+  position: absolute;
+  top: 100px;
+  right: 18px;
+  padding: 16px;
+  border-radius: 5px;
+  width: 150px;
+  background-color: var(--appui-backgrounds-200);
+}
+
+.appui-linear-progress {
+  margin: 8px 0;
+}
+
+.appui--large .example-context-switcher-panel {
+  right: 24px;
+}
+
+.appui-swipeview {
+  background-color: var(--appui-backgrounds-200);
+}
+
+#swipeview-distance {
+  background-color: rgba(0,0,0,0);
+}
+
+.appui-swipeview-item > .appui-avatar {
+  cursor: var(--appui-alias-control-cursor-pointer);
+}
+
+.appui-swipeview-item.is-selected > .appui-avatar > .appui-avatar__container {
+  border-color: #2369ff;
+  border-width: 2px;
+}
+
+.appui-stackview {
+  height: 300px;
+  margin-bottom: var(--appui-alias-control-gap-lg);
+  background-color: var(--appui-backgrounds-200);
+}
+
+.appui-stackview-item > .appui-text {
+  width: 100px;
+  height: 100px;
+  -unity-text-align: middle-center;
+  background-color: var(--appui-backgrounds-300);
+  border-width: 2px;
+  border-color: var(--appui-accent-100);
+  border-radius: 8px;
+}
+
+.appui-pageview .appui-text {
+  width: 150px;
+  height: 150px;
+  -unity-text-align: middle-center;
+  background-color: var(--appui-backgrounds-300);
+  border-width: 2px;
+  border-color: var(--appui-accent-100);
+  border-radius: 8px;
+}
+
+.appui-splitview {
+  background-color: var(--appui-backgrounds-200);
+}
+
+.example-elevation-card {
+  width: 36%;
+  height: 40px;
+  margin: 24px;
+  border-radius: 2px;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
+}
+
+.example-elevation-card > .appui-text {
+  color: rgb(143, 143, 143);
+}

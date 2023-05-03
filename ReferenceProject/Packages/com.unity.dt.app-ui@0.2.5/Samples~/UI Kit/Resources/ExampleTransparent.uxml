@@ -1,0 +1,34 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="UnityEngine.Dt.App.UI" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    
+    <appui:Panel style="width: 100%; height: 100%; background-color: rgba(0,0,0,0);">
+        
+        <ui:VisualElement style="width: 100%; height: 100%; justify-content: center; align-items: center;" picking-mode="Ignore" >
+            
+            <appui:DialogTrigger type="Popover">
+                <appui:ActionButton label="Open Popup Dismissable from outside" />
+                <appui:Dialog title="My Dialog">
+                    <appui:Text text="You can dismiss this Popup while clicking outside of it" />
+                </appui:Dialog>
+            </appui:DialogTrigger>
+
+            <appui:DialogTrigger type="Popover" style="margin-top: 8px;" outside-click-dismiss-enabled="false">
+                <appui:ActionButton label="Open Popup Not Dismissable from outside" />
+                <appui:Dialog title="Not Dismissable Popup" dismissable="true">
+                    <appui:Text text="You can't dismiss this Popup while clicking outside of it" />
+                    <appui:Text text="You can only dismiss it by clicking on the close button" />
+                </appui:Dialog>
+            </appui:DialogTrigger>
+
+            <appui:DialogTrigger type="Popover" style="margin-top: 8px;" outside-click-dismiss-enabled="false" modal-backdrop="true">
+                <appui:ActionButton label="Open Popover with Modal Backdrop" />
+                <appui:Dialog title="Not Dismissable Popup" dismissable="true">
+                    <appui:Text text="You can't dismiss this Popup while clicking outside of it" />
+                    <appui:Text text="You can only dismiss it by clicking on the close button" />
+                </appui:Dialog>
+            </appui:DialogTrigger>
+            
+        </ui:VisualElement>
+        
+    </appui:Panel>
+
+</ui:UXML>

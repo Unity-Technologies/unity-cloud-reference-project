@@ -1,0 +1,136 @@
+/* TextField */
+.appui-textfield {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-width: var(--appui-alias-control-border-width);
+    /*border-style: var(--appui-control-border-style);*/
+    border-radius: var(--appui-alias-control-border-radius);
+    padding: 0 6px;
+    /*gap: var(--appui-control-gap);*/
+    background-color: var(--appui-base-100);
+    border-color: var(--appui-base-400);
+    cursor: var(--appui-alias-control-cursor-text);
+    color: var(--appui-foregrounds-50);
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.appui-textfield--size-s {
+    height: var(--appui-alias-control-sizing-sm-height);
+}
+
+.appui-textfield--size-m {
+    height: var(--appui-alias-control-sizing-md-height);
+}
+
+.appui-textfield--size-l {
+    height: var(--appui-alias-control-sizing-lg-height);
+}
+
+.appui-textfield__leadingcontainer {
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: row;
+    align-items: center;
+    margin-right: var(--appui-alias-control-gap-md); /* todo : remove when gap will be supported */
+}
+
+.appui-textfield__inputcontainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-grow: 1;
+    flex-shrink: 1;
+    height: 100%;
+    overflow: hidden;
+}
+
+.appui-textfield__trailingcontainer {
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: row;
+    align-items: center;
+    margin-left: var(--appui-alias-control-gap-md); /* todo : remove when gap will be supported */
+}
+
+.appui-textfield__input,
+.appui-textfield__placeholder {
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    color: var(--appui-foregrounds-100);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    -unity-text-align: middle-left;
+}
+
+.appui-textfield__placeholder {
+    color: var(--appui-foregrounds-50);
+    position: absolute;
+}
+
+.appui-textfield:hover {
+    background-color: var(--appui-base-200);
+    border-color: var(--appui-base-500);
+}
+
+.appui-textfield:hover .appui-textfield__input {
+    color: var(--appui-foregrounds-100);
+}
+
+.appui-textfield.is-focused {
+    background-color: var(--appui-base-100);
+    border-color: var(--appui-accent-100);
+}
+
+.appui-textfield.keyboard-focus {
+    /* converted from : outline-width: var(--appui-alias-control-outline-width); */
+    --outline-width: var(--appui-alias-control-outline-width);
+    /* converted from : outline-color: var(--appui-alias-control-outline-color); */
+    --outline-color: var(--appui-alias-control-outline-color);
+    /* converted from : outline-offset: var(--appui-alias-control-outline-offset); */
+    --outline-offset: var(--appui-alias-control-outline-offset);
+    /* converted from : outline-style: var(--appui-alias-control-outline-style); */
+}
+
+.appui-textfield .appui-textfield__input:focus {
+    color: var(--appui-foregrounds-100);
+}
+
+.appui-textfield:active {
+    background-color: var(--appui-base-100);
+    border-color: var(--appui-base-500);
+}
+
+.appui-textfield:active .appui-textfield__input {
+    color: var(--appui-foregrounds-100);
+}
+
+.is-invalid.appui-textfield {
+    border-color: var(--appui-destructive-100);
+}
+
+.appui-textfield:disabled /*.is-disabled.appui-textfield*/
+{
+    background-color: var(--appui-base-100);
+    border-color: var(--appui-base-400);
+    color: var(--appui-foregrounds-25);
+    cursor: var(--appui-alias-control-cursor-disabled);
+}
+
+.appui-textfield:disabled .appui-textfield__input /*.is-disabled.appui-textfield .appui-textfield__input*/,
+.appui-textfield:disabled .appui-textfield__placeholder /*.is-disabled.appui-textfield .appui-textfield__placeholder*/
+{
+    color: var(--appui-foregrounds-25);
+    cursor: var(--appui-alias-control-cursor-disabled);
+}
+
+.is-invalid.appui-textfield:disabled {
+    border-color: var(--appui-destructive-25);
+}

@@ -1,0 +1,44 @@
+/* Cursors */
+:root {
+    cursor: var(--appui-alias-control-cursor-default);
+}
+
+.cursor--pointer {
+    cursor: var(--appui-alias-control-cursor-pointer);
+}
+
+.cursor--text {
+    cursor: var(--appui-alias-control-cursor-text);
+}
+
+.cursor--disabled {
+    cursor: var(--appui-alias-control-cursor-disabled);
+}
+
+.cursor--ew-resize {
+    cursor: var(--appui-alias-control-cursor-ewresize);
+}
+
+.cursor--ns-resize {
+    cursor: var(--appui-alias-control-cursor-nsresize);
+}
+
+.cursor--nesw-resize {
+    cursor: var(--appui-alias-control-cursor-neswresize);
+}
+
+.cursor--nwse-resize {
+    cursor: var(--appui-alias-control-cursor-nwseresize);
+}
+
+.cursor--move {
+    cursor: var(--appui-alias-control-cursor-move);
+}
+
+.cursor--grab {
+    cursor: var(--appui-alias-control-cursor-grab);
+}
+
+.cursor--grabbing {
+    cursor: var(--appui-alias-control-cursor-grabbing);
+}

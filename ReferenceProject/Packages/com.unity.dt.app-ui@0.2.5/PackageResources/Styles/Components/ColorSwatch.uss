@@ -1,0 +1,38 @@
+/* ColorSwatch */
+.appui-colorswatch {
+    --checker-color-1: rgba(239, 239, 239, 1);
+    --checker-color-2: rgba(189, 189, 189, 1);
+    --checker-size: 5;
+
+    overflow: hidden;
+    border-width: var(--appui-alias-control-border-width);
+    border-radius: var(--appui-alias-control-border-radius);
+    flex-shrink: 0;
+}
+
+.appui-colorswatch--round {
+    border-radius: 100%;
+}
+
+.appui-colorswatch--size-s {
+    width: var(--appui-sizing-225);
+    height: var(--appui-sizing-225);
+}
+
+.appui-colorswatch--size-m {
+    width: var(--appui-sizing-300);
+    height: var(--appui-sizing-300);
+}
+
+.appui-colorswatch--size-l {
+    width: var(--appui-sizing-400);
+    height: var(--appui-sizing-400);
+}
+
+.appui-colorswatch__checker {
+    --unity-image-size: initial;
+}
+
+.appui-colorswatch__gradient {
+    --unity-image-size: initial;
+}

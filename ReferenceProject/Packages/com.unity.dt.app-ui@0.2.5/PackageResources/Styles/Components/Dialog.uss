@@ -1,0 +1,128 @@
+/* Dialog */
+/*.appui-modalwrapper {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.appui-modalwrapper.example-dialog {
+    position: relative;
+    align-self: stretch;
+    padding: 32px;
+}*/
+
+.appui-modal {
+    display: flex;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--appui-color-transparent-black-400);
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+}
+
+.appui-modal--fullscreen-takeover {
+    padding: 0;
+}
+
+.appui-modal__content {
+    background-color: var(--appui-backgrounds-200);
+    border-radius: var(--appui-border-radius-lg);
+
+    /*box-shadow: var(--appui-toast-box-shadow);*/
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+
+    --box-shadow-offset-y: 10;
+    --box-shadow-spread: 20;
+    --box-shadow-blur: 15;
+    --box-shadow-color: rgba(0,0,0,.65);
+}
+
+.appui-modal--fullscreen > .appui-modal__content,
+.appui-modal--fullscreen-takeover > .appui-modal__content {
+    flex-grow: 1;
+    align-self: stretch;
+}
+
+.appui-dialog {
+    /*outline: none;*/
+    padding: var(--appui-spacing-400);
+    max-width: 100%;
+}
+
+.appui-dialog__heading {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.appui-dialog__heading > .appui-header {
+    -unity-font-style: bold; /* font-weight: var(--appui-global-font-weight-bold); */
+    flex-grow: 1;
+}
+
+.appui-dialog__heading > .appui-button {
+    flex-shrink: 0;
+    display: none;
+}
+
+.appui-dialog--dismissable > .appui-dialog__heading > .appui-button {
+    display: flex;
+}
+
+.appui-dialog__divider {
+
+}
+
+.appui-dialog__content {
+    margin-top: var(--appui-spacing-400); /* margin-block-start: var(--appui-spacing-400); */
+}
+
+.appui-dialog__content .appui-text {
+    -unity-text-align: initial; /*text-align: justify;*/
+}
+
+.appui-dialog__buttongroup {
+    margin-top: var(--appui-spacing-400); /*margin-block-start: var(--appui-spacing-400);*/
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.appui-dialog__buttongroup > .appui-button {
+    margin-left: var(--appui-alias-control-gap-md); /*margin-inline-start: var(--appui-alias-control-gap-md);*/
+}
+
+.appui-dialog--size-s {
+    width: 400px;
+}
+
+.appui-dialog--size-m {
+    width: 500px;
+}
+
+.appui-dialog--size-l {
+    width: 640px;
+}
+
+.appui-tray__content > .appui-dialog {
+    width: auto;
+}
+
+.appui-modal--fullscreen > .appui-modal__content > .appui-dialog,
+.appui-modal--fullscreen-takeover > .appui-modal__content > .appui-dialog {
+    width: auto;
+    flex-grow: 1;
+    align-self: stretch;
+}

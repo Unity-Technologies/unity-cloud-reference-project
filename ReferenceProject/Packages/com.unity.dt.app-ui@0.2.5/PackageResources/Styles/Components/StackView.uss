@@ -1,0 +1,15 @@
+/* StackView */
+.appui-stackview {
+    display: flex;
+    position: relative;
+    overflow: hidden;
+}
+
+.appui-stackview-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}

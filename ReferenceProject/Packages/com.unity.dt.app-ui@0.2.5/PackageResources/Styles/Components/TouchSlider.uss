@@ -1,0 +1,118 @@
+/* TouchSlider */
+.appui-touchslider {
+    background-color: var(--appui-base-100);
+    border-color: var(--appui-base-300);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: var(--appui-alias-control-border-radius);
+    border-width: var(--appui-alias-control-border-width);
+    /*border-style: var(--appui-control-border-style);*/
+    padding: 0 var(--appui-spacing-150);
+    position: relative;
+    /*overflow: hidden;*/
+    cursor: var(--appui-alias-control-cursor-ewresize); /*cursor: ew-resize;*/
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.appui-touchslider--size-s {
+    height: var(--appui-alias-control-sizing-sm-height);
+}
+
+.appui-touchslider--size-m {
+    height: var(--appui-alias-control-sizing-md-height);
+}
+
+.appui-touchslider--size-l {
+    height: var(--appui-alias-control-sizing-lg-height);
+}
+
+.appui-touchslider__input {
+    display: none;
+}
+
+.appui-touchslider__progress {
+    position: absolute;
+    background-color: var(--appui-base-200);
+    top: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: var(--appui-alias-control-border-radius);
+}
+
+.appui-touchslider__progress:hover {
+    background-color: var(--appui-base-500);
+}
+
+.appui-touchslider__label {
+    position: absolute;
+    left: 12px;
+    font-size: var(--appui-font-sizes-body-sm);
+    color: var(--appui-foregrounds-50);
+    transition: color var(--appui-animation-easing-ease-out) var(--appui-animation-duration-100);
+}
+
+.appui-touchslider__valuelabel {
+    right: 12px;
+    position: absolute;
+    font-size: var(--appui-font-sizes-body-sm);
+    color: var(--appui-foregrounds-50);
+    transition: color var(--appui-animation-easing-ease-out) var(--appui-animation-duration-100);
+}
+
+.appui-touchslider:hover {
+    background-color: var(--appui-base-100);
+    border-color: var(--appui-base-500);
+}
+
+.appui-touchslider:focus {
+    background-color: var(--appui-base-100);
+    border-color: var(--appui-base-400);
+}
+
+.appui-touchslider.keyboard-focus {
+    /* converted from : outline-width: var(--appui-alias-control-outline-width); */
+    --outline-width: var(--appui-alias-control-outline-width);
+    /* converted from : outline-color: var(--appui-alias-control-outline-color); */
+    --outline-color: var(--appui-alias-control-outline-color);
+    /* converted from : outline-offset: var(--appui-alias-control-outline-offset); */
+    --outline-offset: var(--appui-alias-control-outline-offset);
+    /* converted from : outline-style: var(--appui-alias-control-outline-style); */
+}
+
+.appui-touchslider:active {
+    background-color: var(--appui-base-100);
+    border-color: var(--appui-base-400);
+}
+
+.appui-touchslider:active > .appui-touchslider__label {
+    color: var(--appui-foregrounds-100);
+}
+
+.appui-touchslider:active > .appui-touchslider__valuelabel {
+    color: var(--appui-foregrounds-100);
+}
+
+.appui-touchslider.is-invalid {
+    border-color: var(--appui-destructive-100);
+}
+
+.appui-touchslider:disabled /*.appui-touchslider.is-disabled*/ {
+    background-color: var(--appui-base-100);
+    border-color: var(--appui-base-400);
+    cursor: var(--appui-alias-control-cursor-disabled);
+}
+
+.appui-touchslider__progress:disabled /*.is-disabled > .appui-touchslider__progress*/ {
+    background-color: var(--appui-base-200);
+}
+
+.appui-touchslider__label:disabled /*.is-disabled > .appui-touchslider__label*/ {
+    color: var(--appui-foregrounds-25);
+}
+
+.appui-touchslider__valuelabel:disabled /*.is-disabled > .appui-touchslider__valuelabel*/ {
+    color: var(--appui-foregrounds-25);
+}

@@ -1,0 +1,115 @@
+/* Tray */
+.appui-tray {
+    position: absolute;
+    display: flex;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--appui-color-transparent-black-300);
+}
+
+.appui-tray--bottom {
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.appui-tray--left {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.appui-tray--right {
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.appui-tray__tray {
+    display: flex;
+    position: absolute;
+    overflow: hidden;
+    background-color: var(--appui-backgrounds-200);
+}
+
+.appui-tray--bottom .appui-tray__tray {
+    bottom: 0;
+    width: 100%;
+    max-width: 640px;
+    flex-direction: column;
+    border-top-left-radius: var(--appui-border-radius-lg);
+    border-top-right-radius: var(--appui-border-radius-lg);
+}
+
+.appui-tray--left .appui-tray__tray {
+    left: 0;
+    height: 100%;
+    flex-direction: row-reverse;
+    border-bottom-right-radius: var(--appui-border-radius-lg);
+    border-top-right-radius: var(--appui-border-radius-lg);
+}
+
+.appui-tray--right .appui-tray__tray {
+    right: 0;
+    height: 100%;
+    flex-direction: row;
+    border-top-left-radius: var(--appui-border-radius-lg);
+    border-bottom-left-radius: var(--appui-border-radius-lg);
+}
+
+.appui-tray__handle-zone {
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: var(--appui-control-gap);
+    cursor: var(--appui-alias-control-cursor-grab);
+}
+
+.appui-tray__handle-zone:active {
+    cursor: var(--appui-alias-control-cursor-grabbing);
+}
+
+.appui-tray__handle {
+    display: flex;
+    flex-shrink: 0;
+    align-self: center;
+    width: 24px;
+    height: 4px;
+    background-color: var(--appui-foregrounds-50);
+    border-radius: 2px;
+    margin: 8px;
+}
+
+.appui-tray--left .appui-tray__handle,
+.appui-tray--right .appui-tray__handle {
+    height: 24px;
+    width: 4px;
+}
+
+.appui-tray__container {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    flex-grow: 1;
+}
+
+.appui-tray--left .appui-tray__container {
+    align-items: flex-end;
+}
+
+.appui-tray--right .appui-tray__container {
+    align-items: flex-start;
+}
+
+.appui-tray--bottom .appui-tray__container {
+    justify-content: flex-start;
+}
+
+.appui-tray__content {
+    display: flex;
+    position: absolute;
+}

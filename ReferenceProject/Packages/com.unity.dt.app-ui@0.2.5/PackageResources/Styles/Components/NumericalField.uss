@@ -1,0 +1,112 @@
+/* NumericalField */
+.appui-numericalfield {
+    background-color: var(--appui-base-100);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-radius: var(--appui-alias-control-border-radius);
+    border-width: var(--appui-alias-control-border-width);
+    /*border-style: var(--appui-control-border-style);*/
+    border-color: var(--appui-base-400);
+    padding: 0 var(--appui-spacing-150);
+    cursor: var(--appui-alias-control-cursor-text);
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.appui-numericalfield--size-s {
+    height: var(--appui-alias-control-sizing-sm-height);
+}
+
+.appui-numericalfield--size-m {
+    height: var(--appui-alias-control-sizing-md-height);
+}
+
+.appui-numericalfield--size-l {
+    height: var(--appui-alias-control-sizing-lg-height);
+}
+
+.appui-numericalfield:hover {
+    background-color: var(--appui-base-200);
+    border-color: var(--appui-base-500);
+}
+
+.appui-numericalfield__input:hover {
+    color: var(--appui-foregrounds-100);
+}
+
+.appui-numericalfield.is-focused {
+    background-color: var(--appui-base-100);
+    border-color: var(--appui-accent-100);
+}
+
+.appui-numericalfield.keyboard-focus {
+    /* converted from : outline-width: var(--appui-alias-control-outline-width); */
+    --outline-width: var(--appui-alias-control-outline-width);
+    /* converted from : outline-color: var(--appui-alias-control-outline-color); */
+    --outline-color: var(--appui-alias-control-outline-color);
+    /* converted from : outline-offset: var(--appui-alias-control-outline-offset); */
+    --outline-offset: var(--appui-alias-control-outline-offset);
+    /* converted from : outline-style: var(--appui-alias-control-outline-style); */
+}
+
+.appui-numericalfield:active {
+    background-color: var(--appui-base-100);
+    border-color: var(--appui-base-500);
+    color: var(--appui-foregrounds-200);
+}
+
+.appui-numericalfield:disabled /*.appui-numericalfield.is-disabled*/ {
+    border-color: var(--appui-base-300);
+    background-color: var(--appui-base-50);
+}
+
+.appui-numericalfield__inputcontainer {
+    flex-grow: 1;
+    height: 100%;
+}
+
+.appui-numericalfield__input {
+    background-color: rgba(0,0,0,0);
+    border-width: 0;
+    font-size: var(--appui-font-sizes-body-sm);
+    /*outline: none;*/
+    color: var(--appui-foregrounds-50);
+    /*text-indent: 0;*/
+    width: 100%;
+    cursor: var(--appui-alias-control-cursor-text);
+    height: 100%;
+    margin: 0;
+    -unity-text-align: middle-left;
+}
+
+.appui-numericalfield:disabled .appui-numericalfield__input /*.appui-numericalfield.is-disabled .appui-numericalfield__input*/ {
+    color: var(--appui-foregrounds-25);
+    cursor: var(--appui-alias-control-cursor-disabled);
+}
+
+.appui-numericalfield:disabled /*.appui-numericalfield.is-disabled*/ {
+    cursor: var(--appui-alias-control-cursor-disabled);
+}
+
+.appui-numericalfield__trailingcontainer {
+    flex-shrink: 0;
+    margin-left: var(--appui-alias-control-gap-md); /*margin-inline-start: var(--appui-alias-control-gap-md);*/
+}
+
+.appui-numericalfield__unit {
+    font-size: var(--appui-font-sizes-body-sm);
+    color: var(--appui-foregrounds-50);
+}
+
+.appui-numericalfield:disabled .appui-numericalfield__unit  /*.appui-numericalfield.is-disabled .appui-numericalfield__unit */{
+    color: var(--appui-foregrounds-25);
+}
+
+.appui-numericalfield.is-invalid {
+    border-color: var(--appui-destructive-100);
+}
+
+.appui-numericalfield.is-invalid:disabled {
+    border-color: var(--appui-destructive-25);
+}

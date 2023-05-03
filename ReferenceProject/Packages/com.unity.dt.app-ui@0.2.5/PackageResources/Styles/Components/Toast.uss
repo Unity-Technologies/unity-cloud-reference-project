@@ -1,0 +1,142 @@
+/* Toast */
+.appui-toast {
+    background-color: var(--appui-base-100);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 4px var(--appui-spacing-150);
+    height: var(--appui-alias-control-sizing-lg-height);
+    /*box-shadow: var(--appui-toast-box-shadow);*/
+    border-radius: var(--appui-alias-control-border-radius);
+    margin-bottom: 24px;
+    flex-shrink: 0;
+
+    --box-shadow-offset-y: 10;
+    --box-shadow-spread: 15;
+    --box-shadow-blur: 15;
+    --box-shadow-color: rgba(0,0,0,.65);
+}
+
+.appui-toast > .appui-divider {
+    margin-left: var(--appui-spacing-150); /*margin-inline-start: 18px;*/
+    margin-right: var(--appui-spacing-150);
+}
+
+.appui-toast .appui-divider__content {
+    background-color: var(--appui-color-transparent-white-300);
+}
+
+.appui-toast > .appui-icon {
+    margin-right: var(--appui-alias-control-gap-md); /*margin-inline-end: var(--appui-control-gap);*/
+    --unity-image-tint-color: var(--appui-foregrounds-200); /*fill: var(--appui-alias-text-callout);*/
+}
+
+.appui-toast--informative {
+    background-color: var(--appui-accent-100);
+}
+
+.appui-toast--informative .appui-divider__content {
+    background-color: var(--appui-color-transparent-white-300);
+}
+
+.appui-toast--informative .appui-toast__message {
+    color: var(--appui-color-white);
+}
+
+.appui-toast--informative .appui-toast__action {
+    color: var(--appui-color-white);
+}
+
+.appui-toast--informative .appui-icon {
+    color: var(--appui-color-white);
+    --unity-image-tint-color: var(--appui-color-white);
+}
+
+.appui-toast--positive {
+    background-color: var(--appui-positive-100);
+}
+
+.appui-toast--positive .appui-divider__content {
+    background-color: var(--appui-color-transparent-white-300);
+}
+
+.appui-toast--positive .appui-toast__message {
+    color: var(--appui-color-white);
+}
+
+.appui-toast--positive .appui-toast__action {
+    color: var(--appui-color-white);
+}
+
+.appui-toast--positive .appui-icon {
+    color: var(--appui-color-white);
+}
+
+.appui-toast--negative {
+    background-color: var(--appui-destructive-100);
+}
+
+.appui-toast--negative .appui-divider__content {
+    background-color: var(--appui-color-transparent-white-100);
+}
+
+.appui-toast--negative .appui-toast__message {
+    color: var(--appui-color-white);
+}
+
+.appui-toast--negative .appui-toast__action {
+    color: var(--appui-color-white);
+}
+
+.appui-toast--negative .appui-icon {
+    color: var(--appui-color-white);
+    --unity-image-tint-color: var(--appui-color-white);
+}
+
+.appui-toast--warning {
+    background-color: var(--appui-warning-100);
+}
+
+.appui-toast--warning .appui-divider__content {
+    background-color: var(--appui-color-transparent-black-200);
+}
+
+.appui-toast--warning .appui-toast__message {
+    color: var(--appui-color-white);
+}
+
+.appui-toast--warning .appui-toast__action {
+    color: var(--appui-color-white);
+}
+
+.appui-toast--warning .appui-icon {
+    color: var(--appui-color-white);
+}
+
+
+
+.appui-toast__message {
+    color: var(--appui-foregrounds-200);
+    font-size: var(--appui-font-sizes-body-sm);
+    flex-shrink: 0;
+}
+
+.appui-toast__action {
+    font-size: var(--appui-font-sizes-body-sm);
+    -unity-font-style: bold; /*font-weight: 600;*/
+    color: var(--appui-foregrounds-200);
+    background-color: var(--appui-color-transparent-black-0);
+    border-width: 0;
+    cursor: var(--appui-alias-control-cursor-pointer);
+    padding: var(--appui-alias-control-gap-sm) var(--appui-alias-control-gap-md);
+    border-radius: var(--appui-alias-control-border-radius);
+    flex-shrink: 0;
+}
+
+.appui-toast__action:hover {
+    background-color: var(--appui-color-transparent-black-100);
+}
+
+.appui-toast__action:active {
+    background-color: var(--appui-color-transparent-black-300);
+}

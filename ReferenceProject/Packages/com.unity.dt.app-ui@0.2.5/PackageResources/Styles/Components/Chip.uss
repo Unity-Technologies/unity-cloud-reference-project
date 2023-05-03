@@ -1,0 +1,135 @@
+/* Chip */
+.appui-chip {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    flex-shrink: 0;
+    flex-grow: 0;
+
+    height: 32px;
+    border-radius: 16px;
+    border-width: 1px;
+
+    border-color: var(--appui-foregrounds-25);
+    background-color: var(--appui-backgrounds-100);
+
+    transition: background-color var(--appui-animation-easing-ease-out) var(--appui-animation-duration-200), border-color var(--appui-animation-easing-ease-out) var(--appui-animation-duration-200);
+}
+
+.appui-chip--filled {
+    border-color: var(--appui-base-100);
+    background-color: var(--appui-base-100);
+}
+
+.appui-chip--clickable {
+    cursor: var(--appui-alias-control-cursor-pointer);
+}
+
+.appui-chip--clickable:focus,
+.appui-chip--clickable.is-focused {
+    background-color: var(--appui-base-50);
+}
+
+.appui-chip--filled.appui-chip--clickable:focus,
+.appui-chip--filled.appui-chip--clickable.is-focused {
+    background-color: var(--appui-base-200);
+    border-color: var(--appui-base-200);
+}
+
+.appui-chip--clickable:hover {
+    background-color: var(--appui-base-50);
+}
+
+.appui-chip--filled.appui-chip--clickable:hover {
+    background-color: var(--appui-base-200);
+    border-color: var(--appui-base-200);
+}
+
+.appui-chip--clickable:active {
+    background-color: var(--appui-base-50);
+}
+
+.appui-chip--filled.appui-chip--clickable:active {
+    background-color: var(--appui-base-200);
+    border-color: var(--appui-base-200);
+}
+
+.appui-chip__ornament-container {
+    display: flex;
+    max-width: 24px;
+    height: 24px;
+    border-radius: 100%;
+    margin: 0 -6px 0 5px;
+    overflow: hidden;
+}
+
+.appui-chip--outlined > .appui-chip__ornament-container {
+    max-width: 20px;
+    height: 20px;
+}
+
+.appui-chip__label {
+    display: flex;
+    font-size: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    -unity-text-align: middle-center;
+    white-space: nowrap;
+    color: var(--appui-foregrounds-100);
+}
+
+.appui-chip__delete-icon.appui-icon {
+    width: 100%;
+    height: 100%;
+}
+
+.appui-chip__delete-button {
+    display: none;
+    width: 24px;
+    height: 24px;
+    margin: 0 5px 0 -6px;
+    border-radius: 100%;
+    justify-content: center;
+    align-items: center;
+    padding: 1px;
+    cursor: var(--appui-alias-control-cursor-pointer);
+    opacity: 0.55;
+    transition: opacity var(--appui-animation-easing-ease-out) var(--appui-animation-duration-50);
+}
+
+.appui-chip__delete-button > .appui-chip__delete-icon.appui-icon {
+    --unity-image-tint-color: var(--appui-foregrounds-100);
+}
+
+.appui-chip__delete-button:focus {
+    opacity: 1;
+}
+
+.appui-chip__delete-button:hover {
+    opacity: 1;
+}
+
+.appui-chip__delete-button:active {
+    opacity: 1.0;
+}
+
+.appui-chip--outlined > .appui-chip__delete-button {
+    width: 20px;
+    height: 20px;
+}
+
+.appui-chip--deletable > .appui-chip__delete-button {
+    display: flex;
+}
+
+.appui-chip--clickable:disabled,
+.appui-chip:disabled {
+    opacity: 0.4;
+    cursor: var(--appui-alias-control-cursor-disabled);
+}
+
+.appui-chip--clickable:disabled > .appui-chip__delete-button,
+.appui-chip:disabled > .appui-chip__delete-button {
+    cursor: var(--appui-alias-control-cursor-disabled);
+}

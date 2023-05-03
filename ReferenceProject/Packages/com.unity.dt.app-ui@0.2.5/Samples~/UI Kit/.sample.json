@@ -1,0 +1,5 @@
+{
+	"displayName":"UI Kit Sample",
+	"description": "A sample project that demonstrates all available UI components from Runtime UI framework.",
+	"createSeparatePackage": false
+}

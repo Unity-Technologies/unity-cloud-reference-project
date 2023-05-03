@@ -1,0 +1,51 @@
+{
+    "name": "Unity.DigitalTwins.AppUI",
+    "rootNamespace": "UnityEngine.Dt.App",
+    "references": [
+        "GUID:343deaaf83e0cee4ca978e7df0b80d21",
+        "GUID:2bafac87e7f4b9b418d9448d219b01ab",
+        "GUID:eec0964c48f6f4e40bc3ec2257ccf8c5",
+        "GUID:2e77701fe0ceda44fb763f03ee704c37",
+        "GUID:84651a3751eca9349aac36a66bba901b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "Unity",
+            "expression": "2021.3.6",
+            "define": "UNITY_2021_3_NIK"
+        },
+        {
+            "name": "Unity",
+            "expression": "2022.1.7",
+            "define": "UNITY_2022_1_NIK"
+        },
+        {
+            "name": "Unity",
+            "expression": "2022.2.0a9",
+            "define": "UNITY_2022_2_NIK"
+        },
+        {
+            "name": "Unity",
+            "expression": "2023.1.0a4",
+            "define": "UNITY_2023_1_NIK"
+        },
+        {
+            "name": "Unity",
+            "expression": "2022.2.0a9",
+            "define": "UNITY_2022_2_SIC"
+        },
+        {
+            "name": "com.unity.localization",
+            "expression": "",
+            "define": "UNITY_LOCALIZATION_PRESENT"
+        }
+    ],
+    "noEngineReferences": false
+}

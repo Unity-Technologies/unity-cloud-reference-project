@@ -1,0 +1,66 @@
+/* Drawer */
+.appui-drawer {
+    flex-shrink: 0;
+    flex-direction: row;
+    overflow: hidden;
+    height: 100%;
+}
+
+.appui-drawer--temporary {
+    position: absolute;
+}
+
+.appui-drawer--permanent {
+    position: relative;
+}
+
+.appui-drawer__backdrop {
+    position: absolute;
+    background-color: black;
+    opacity: 0;
+    top: -4096px;
+    bottom: -4096px;
+    left: -4096px;
+    right: -4096px;
+}
+
+.appui-drawer--permanent .appui-drawer__backdrop {
+    display: none;
+}
+
+.appui-drawer__drawer {
+    position: absolute;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.appui-drawer__drawer.appui-elevation-1 {
+    --box-shadow-offset-y: 10;
+    --box-shadow-spread: 20;
+    --box-shadow-blur: 15;
+    --box-shadow-color: rgba(0,0,0,.65);
+}
+
+.appui-drawer--left .appui-drawer__drawer,
+.appui-drawer--right .appui-drawer__drawer {
+    min-width: 24px;
+    height: 100%;
+}
+
+.appui-drawer--permanent .appui-drawer__drawer {
+    position: relative;
+}
+
+.appui-drawer__drawer-container {
+    display: flex;
+    flex-grow: 1;
+    background-color: var(--appui-base-50);
+}
+
+.appui-drawer--left .appui-drawer__drawer-container,
+.appui-drawer--right .appui-drawer__drawer-container {
+    height: 100%;
+}

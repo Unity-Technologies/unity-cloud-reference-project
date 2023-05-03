@@ -1,0 +1,104 @@
+/* InputLabel */
+.appui-inputlabel {
+    display: flex;
+    margin-bottom: var(--appui-alias-control-gap-sm);
+    margin-top: var(--appui-alias-control-gap-sm);
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.appui-inputlabel--size-xs {
+    display: flex;
+}
+
+.appui-inputlabel--size-s {
+    display: flex;
+}
+
+.appui-inputlabel--size-m {
+    display: flex;
+}
+
+.appui-inputlabel--size-l {
+    display: flex;
+}
+
+.appui-inputlabel--size-xl {
+    display: flex;
+}
+
+.appui-inputlabel--size-xxl {
+    display: flex;
+}
+
+.appui-inputlabel--size-xxxl {
+    display: flex;
+}
+
+.appui-inputlabel--horizontal {
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.appui-inputlabel--vertical {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.appui-inputlabel__label {
+    display: flex;
+    flex-shrink: 0;
+    flex-grow: 0;
+    -unity-text-align: middle-left;
+}
+
+.appui-inputlabel--horizontal > .appui-inputlabel__label {
+    padding-right: var(--appui-alias-control-gap-md);
+    flex-basis: 33%;
+}
+
+.appui-inputlabel--vertical > .appui-inputlabel__label {
+    padding-bottom: var(--appui-alias-control-gap-md);
+}
+
+.appui-inputlabel--label-overflow-ellipsis > .appui-inputlabel__label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -unity-text-overflow-position: end;
+}
+
+.appui-inputlabel__container {
+    display: flex;
+}
+
+.appui-inputlabel--horizontal > .appui-inputlabel__container {
+    flex-shrink: 1;
+    flex-grow: 1;
+}
+
+.appui-inputlabel--vertical > .appui-inputlabel__container {
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.appui-inputlabel--horizontal.appui-inputlabel--input-alignment-flexstart > .appui-inputlabel__container {
+    align-items: flex-start;
+}
+
+.appui-inputlabel--horizontal.appui-inputlabel--input-alignment-flexend > .appui-inputlabel__container {
+    align-items: flex-end;
+}
+
+.appui-inputlabel--horizontal.appui-inputlabel--input-alignment-stretch > .appui-inputlabel__container {
+    align-items: stretch;
+}
+
+.appui-inputlabel--horizontal.appui-inputlabel--input-alignment-auto > .appui-inputlabel__container {
+    align-items: auto;
+}
+
+.appui-inputlabel--horizontal.appui-inputlabel--input-alignment-center > .appui-inputlabel__container {
+    align-items: center;
+}

@@ -1,0 +1,21 @@
+/* Badge */
+.appui-badge {
+    min-width: var(--appui-sizing-160);
+    min-height: var(--appui-sizing-160);
+    border-width: var(--appui-alias-control-border-width);
+    /*border-style: solid;*/
+    border-color: var(--appui-backgrounds-100);
+    border-radius: var(--appui-sizing-160);
+    background-color: #ff4b4b;
+    align-self: flex-start;
+    flex-shrink: 0;
+}
+
+.appui-badge__label {
+    /*font-weight: 600;*/
+    -unity-font-style: bold;
+    font-size: var(--appui-font-sizes-50);
+    /*line-height: 110%;*/
+    color: #fff;
+    margin: var(--appui-alias-control-gap-sm);
+}

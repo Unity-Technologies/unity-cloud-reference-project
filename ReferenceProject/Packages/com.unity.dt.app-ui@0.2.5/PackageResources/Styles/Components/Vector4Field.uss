@@ -1,0 +1,35 @@
+/* Vector4Field */
+.appui-vector4field {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    flex-shrink: 0;
+    /*gap: var(--appui-control-semi-gap);*/
+}
+
+.appui-vector4field__row {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--appui-alias-control-gap-md);
+    /*gap: var(--appui-control-gap);*/
+}
+
+.appui-vector4field__row > .appui-text,
+.appui-vector4field__row > .appui-numericalfield {
+    flex-basis: 50%;
+    width: auto;
+}
+
+.appui-vector4field__label {
+    padding-left: var(--appui-spacing-300);
+}
+
+.appui-vector4field__label,
+.appui-vector4field__x-field,
+.appui-vector4field__z-field {
+    margin-right: var(--appui-alias-control-gap-sm);
+}

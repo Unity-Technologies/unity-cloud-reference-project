@@ -1,0 +1,13 @@
+/* ActionBar */
+.appui-actionbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: var(--appui-alias-control-gap-md);
+    flex-shrink: 0;
+}
+
+.appui-actionbar__actiongroup {
+    margin-left: var(--appui-sizing-500); /*margin-inline-start: var(--appui-sizing-500);*/
+}

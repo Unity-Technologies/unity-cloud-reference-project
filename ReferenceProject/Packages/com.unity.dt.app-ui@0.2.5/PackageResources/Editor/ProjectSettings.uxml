@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+
+    <ui:VisualElement class="builder-settings-container">
+
+        <ui:Label text="App UI Settings" class="builder-settings-header" />
+        <uie:PropertyField label="Editor Settings File Path" name="editor-settings-asset" />
+
+    </ui:VisualElement>
+
+</ui:UXML>
