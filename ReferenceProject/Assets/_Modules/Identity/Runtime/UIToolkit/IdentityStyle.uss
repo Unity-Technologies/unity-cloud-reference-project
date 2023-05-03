@@ -1,0 +1,31 @@
+.right-content {
+    position: absolute;
+    white-space: normal;
+    width: 270px;
+    left: 70%;
+    top: 25%;
+}
+
+.login-button {
+    justify-content: center;
+    align-items: center;
+    padding: 0px 16px;
+    width: 230px;
+    height: 40px;
+    background-color: #0892FF;
+    border-radius: 6px;
+}
+
+.loading-indicator {
+    margin-left: 10px;
+}
+
+.welcome-text-section {
+    flex-grow: 1;
+    white-space: normal;
+}
+
+.login-button-section {
+    flex-direction: row;
+    align-items: center;
+}

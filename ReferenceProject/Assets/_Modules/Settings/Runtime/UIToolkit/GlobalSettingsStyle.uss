@@ -1,0 +1,13 @@
+.global-setting-entry {
+    width: 300px;
+    margin: 5px;
+}
+
+.setting-entry-header {
+    width: 55%;
+    margin-right: 5px;
+}
+
+.setting-entry-value {
+    width: 45%;
+}

@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Instructions Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: Instructions
+  m_TableCollectionNameGuidString: 705790774ba04a1438e3eab711024622
+  m_Entries:
+  - m_Id: 46831661056
+    m_Key: Dont_Show_Again
+    m_Metadata:
+      m_Items: []
+  - m_Id: 136405217280
+    m_Key: How_To_Move_Around
+    m_Metadata:
+      m_Items: []
+  - m_Id: 783015899136
+    m_Key: Show_Navigation_Instructions
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1871043522560
+    m_Key: Look_Around
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1912776847360
+    m_Key: Pan
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1931932233728
+    m_Key: Zoom
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1962114445312
+    m_Key: Orbit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1994238619648
+    m_Key: Move_Around
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2025955946496
+    m_Key: Move_Up_Down
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2711359746048
+    m_Key: Run
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2734457778176
+    m_Key: Jump
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2807342198784
+    m_Key: Or
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 7093831783200587780
+  references:
+    version: 2
+    RefIds:
+    - rid: 7093831783200587780
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables,
+        asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1679316111123

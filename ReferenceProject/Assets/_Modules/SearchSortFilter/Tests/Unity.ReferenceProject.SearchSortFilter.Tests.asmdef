@@ -1,0 +1,19 @@
+{
+    "name": "Unity.ReferenceProject.SearchSortFilter.Tests",
+    "rootNamespace": "Unity.ReferenceProject.SearchSortFilter.Tests",
+    "references": [
+        "GUID:27619889b8ba8c24980f49ee34dbb44a",
+        "GUID:4e4f4fa18c62c5a4bb60ddf536bc2a3b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

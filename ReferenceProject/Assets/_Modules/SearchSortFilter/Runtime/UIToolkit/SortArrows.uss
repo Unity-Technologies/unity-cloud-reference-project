@@ -1,0 +1,22 @@
+.sort-header{
+    flex-direction: row;
+    align-items: center;
+}
+
+.sort-arrow {
+    margin-right: 8px;
+    margin-left: 8px;
+}
+
+.sort-arrow-increase .sort-arrow {
+    display: flex;
+}
+
+.sort-arrow-disabled .sort-arrow {
+    display: none;
+}
+
+.sort-arrow-decrease .sort-arrow {
+    rotate: 180deg;
+    display: flex;
+}

@@ -1,0 +1,13 @@
+.profile-tool-content {
+    margin: 5px 10px 10px;
+    min-width: 200px;
+    align-items: center;
+}
+
+.profile-tool-username {
+    margin-bottom: 10px;
+}
+
+.profile-tool-button {
+
+}

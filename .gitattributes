@@ -1,0 +1,29 @@
+# Collapse Unity-generated files on GitHub
+*.asset linguist-generated
+*.mat linguist-generated
+*.meta linguist-generated
+*.prefab linguist-generated
+*.unity linguist-generated
+
+# com.unity.coding
+* text=auto eol=lf
+
+# match .editorconfig
+*.vcproj eol=crlf
+*.bat eol=crlf
+*.cmd eol=crlf
+*.xaml eol=crlf
+*.tt eol=crlf
+*.t4 eol=crlf
+*.ttinclude eol=crlf
+
+*.vcxproj eol=crlf
+*.vcxproj.filters eol=crlf
+
+*.csproj eol=crlf
+*.pyproj eol=crlf
+*.props eol=crlf
+*.targets eol=crlf
+
+*.sln eol=crlf
+*.sln.template eol=crlf

@@ -1,0 +1,19 @@
+{
+    "name": "Unity.ReferenceProject.ObjectSelection.Runtime",
+    "rootNamespace": "Unity.ReferenceProject.ObjectSelection",
+    "references": [
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:807be9350277eff4182cd3600de41d3a",
+        "GUID:fe685ec1767f73d42b749ea8045bfe43",
+        "GUID:b024a75f7ab0cd44b8467e05ca5da44c",
+        "GUID:7e0d14980460abd439d6db881ce553fb"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "noEngineReferences": false
+}

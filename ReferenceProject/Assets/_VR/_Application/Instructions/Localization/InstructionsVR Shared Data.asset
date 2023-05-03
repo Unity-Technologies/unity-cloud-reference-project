@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: InstructionsVR Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: InstructionsVR
+  m_TableCollectionNameGuidString: 560f1a486deeda44dacab47420bc4637
+  m_Entries:
+  - m_Id: 10072780800
+    m_Key: FlyAround
+    m_Metadata:
+      m_Items: []
+  - m_Id: 141824258048
+    m_Key: FlyAroundDetails
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1030496612352
+    m_Key: LeftId
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1142455169024
+    m_Key: RightId
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1234612416512
+    m_Key: FlyUpDown
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1433204322304
+    m_Key: FlyUpDownDetails
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1596090118144
+    m_Key: FlyFaster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1879637651456
+    m_Key: FlyFasterDetails
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2096994873344
+    m_Key: Teleport
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2199268782080
+    m_Key: TeleportDetails
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2868029583360
+    m_Key: Rotate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2946752475136
+    m_Key: RotateDetails
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3354975694848
+    m_Key: Back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3417722482688
+    m_Key: BackDetails
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3653119406080
+    m_Key: Reset
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3816319774720
+    m_Key: ResetDetails
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 7871854020931092482
+  references:
+    version: 2
+    RefIds:
+    - rid: 7871854020931092482
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables,
+        asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1682536590214

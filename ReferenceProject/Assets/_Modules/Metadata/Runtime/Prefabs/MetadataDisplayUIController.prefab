@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4591662804553169036
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3046056788000077826}
+  - component: {fileID: 3608959133627127108}
+  - component: {fileID: 8597118929043626976}
+  - component: {fileID: 8942787002623175417}
+  m_Layer: 0
+  m_Name: MetadataDisplayUIController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3046056788000077826
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4591662804553169036}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3608959133627127108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4591662804553169036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c17db092c4049e6857d971aff37cfb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ListElementTemplate: {fileID: 9197481963319205126, guid: e521f16108797d249a0f3806b3a7774d,
+    type: 3}
+  m_UseHover: 0
+  m_StringAllInformation: '@MetadataDisplay:AllInformation'
+--- !u!114 &8597118929043626976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4591662804553169036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4f5f7447bfe5424187c9d212332fa20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DisplayName: '@MetadataDisplay:MetadataDisplay'
+  m_Icon: {fileID: 21300000, guid: b1fdff1a969b2a0488b9b660e8b366dd, type: 3}
+  m_Template: {fileID: 9197481963319205126, guid: e270a72ea79602945ad34a87b4231df0,
+    type: 3}
+  ToolOpened:
+    m_PersistentCalls:
+      m_Calls: []
+  ToolClosed:
+    m_PersistentCalls:
+      m_Calls: []
+  ToolPointerEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  ToolPointerExited:
+    m_PersistentCalls:
+      m_Calls: []
+  ToolFocusIn:
+    m_PersistentCalls:
+      m_Calls: []
+  ToolFocusOut:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Controller: {fileID: 3608959133627127108}
+--- !u!114 &8942787002623175417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4591662804553169036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b082702ef30b454aabce6b64f95e935, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideTypes: 6

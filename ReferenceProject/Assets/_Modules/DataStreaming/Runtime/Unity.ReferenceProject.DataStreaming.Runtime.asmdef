@@ -1,0 +1,18 @@
+{
+    "name": "Unity.ReferenceProject.DataStreaming.Runtime",
+    "rootNamespace": "Unity.ReferenceProject.DataStreaming",
+    "references": [
+        "GUID:498d02e03062b2649b108f31a9668c56",
+        "GUID:786a25291c56430c910c997c4a7e195b",
+        "GUID:a570873a4d8399244a70dbfa167a1a8a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

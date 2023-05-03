@@ -1,0 +1,112 @@
+.tooluimanager-transparent-background {
+    background-color: var(--appui-color-transparent-black-0);
+}
+
+.tooluimanager-background {
+    background-color: var(--appui-color-transparent-black-400);
+}
+
+.tooluimanager-main-screen{
+    flex-grow: 1;
+}
+
+.tooluimanager-topbar{
+    right: 0px;
+    left: 0px;
+    top: 0px;
+    height: 48px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: var(--appui-color-transparent-black-400);
+}
+
+.tooluimanager-topbar-left{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.tooluimanager-topbar-center{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.tooluimanager-topbar-right{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.tooluimanager-toolbar{
+    --appui-alias-control-border-radius: 32px;
+    display: flex;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    bottom: 12px;
+    width: 64px;
+}
+
+.tooluimanager-topbar-button{
+    width: 48px;
+    height: 48px;
+    border-width: 0;
+    border-radius: 0;
+}
+
+.tooluimanager-toolbar-button{
+    height: 64px;
+    border-width: 0;
+}
+
+.tooluimanager-panel-container{
+    width: 300px; 
+    left: auto;
+    margin: 12px;
+    right: 0px; 
+    top: 0px; 
+    bottom: 0px; 
+    display: flex;
+    position: absolute;
+}
+
+.tooluimanager-panel{
+    background-color: var(--appui-backgrounds-50);
+    flex-grow: 1;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.tooluimanager-panel-header{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+}
+
+.tooluimanager-popover-panel{
+    width: 250px;
+}
+
+.tooluimanager-fullscreen{
+    border-width: 0;
+    flex-grow: 1;
+}
+
+.tooluimanager-fullscreen-panel{
+    border-radius: 0;
+}
+
+.appui-icon--size-l {
+    width: 48px;
+    height: 48px;
+}
+
+.is-selected.appui-actionbutton {
+    background-color: var(--appui-accent-100);
+}

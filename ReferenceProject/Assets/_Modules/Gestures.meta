@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:ReferenceProject/Assets/_Modules/WalkController.meta
+guid: f7eb7a517314bc1459c3062856339198
+========
+guid: c41fb15a9047f3845aa0297bc17b3cd0
+>>>>>>>> a5423b64 (Moving local packages into Modules):ReferenceProject/Assets/_Modules/Gestures.meta
+folderAsset: yes
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

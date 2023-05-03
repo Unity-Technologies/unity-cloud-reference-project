@@ -1,0 +1,14 @@
+{
+    "name": "Unity.ReferenceProject.StateMachine.Runtime",
+    "rootNamespace": "Unity.ReferenceProject.StateMachine",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

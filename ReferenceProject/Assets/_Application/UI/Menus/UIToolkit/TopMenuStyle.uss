@@ -1,0 +1,50 @@
+.top-menu-background
+{
+    height: 48px;
+    background-color: var(--appui-transparent-backgrounds-900); 
+}
+
+.top-menu{
+    height: 48px;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.top-menu-left{
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.top-menu-center{
+    flex-direction: row;
+    justify-content: center;
+}
+
+.top-menu-right{
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.top-menu-button{
+    width: 48px;
+    height: 48px;
+    border-width: 0;
+    border-radius: 0;
+    background-color: var(--appui-color-transparent-black-0);
+}
+
+.is-selected.top-menu-button{
+    background-color: var(--appui-accent-100);
+}
+
+.top-menu-button:hover {
+    background-color: var(--appui-base-50);
+}
+
+.is-selected.top-menu-button:hover{
+    background-color: var(--appui-accent-200);
+}
+
+.top-menu-button:active {
+    background-color: var(--appui-accent-50);
+}

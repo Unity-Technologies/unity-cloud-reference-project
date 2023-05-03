@@ -1,0 +1,10 @@
+.content {
+    flex-grow: 1;
+}
+
+.loading-indicator {
+    position: absolute;
+    left: 20%;
+    right: 20%;
+    bottom: 20%;
+}

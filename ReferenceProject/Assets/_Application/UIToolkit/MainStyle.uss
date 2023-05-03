@@ -1,0 +1,28 @@
+.appui-icon--size-l {
+    width: 32px;
+    height: 32px;
+}
+
+.menu-top-margin {
+    margin-top: 48px;
+}
+
+.appui-menuitem__label {
+    white-space: nowrap;
+}
+
+.appui-divider {
+    flex-shrink: 0;
+}
+
+.appui-dropdown {
+    flex-shrink: 0;
+}
+
+.appui-searchbar {
+    flex-shrink: 0;
+}
+
+.is-selected.appui-actionbutton {
+    background-color: var(--appui-accent-100);
+}

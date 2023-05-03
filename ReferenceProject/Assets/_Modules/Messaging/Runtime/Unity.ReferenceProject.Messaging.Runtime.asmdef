@@ -1,0 +1,17 @@
+{
+    "name": "Unity.ReferenceProject.Messaging.Runtime",
+    "rootNamespace": "Unity.ReferenceProject.Messaging",
+    "references": [
+        "GUID:4aeaeeb0056afe04598df332ce196040",
+        "GUID:2f101f87087d58f4ba92ca00188e763d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
