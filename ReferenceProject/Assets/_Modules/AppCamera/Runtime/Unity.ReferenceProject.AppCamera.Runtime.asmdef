@@ -1,0 +1,16 @@
+{
+    "name": "Unity.ReferenceProject.AppCamera.Runtime",
+    "rootNamespace": "Unity.ReferenceProject.AppCamera",
+    "references": [
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:258badbd7eaf44630b705bf5d2434387"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "noEngineReferences": false
+}

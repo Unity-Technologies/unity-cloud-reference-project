@@ -1,0 +1,34 @@
+{% metadata_file .yamato/globals.metafile %}
+---
+
+increment_build_version:
+  name: Increment Build Version
+  agent:
+    type: Unity::VM
+    image: package-ci/win10:stable
+    flavor: b1.small
+  interpreter: powershell
+  commands:
+    - |
+      $lastCommit = git log -1 --pretty=format:'%B'
+      $commitMessage = "CI VERSION BUMP"
+
+      if ($lastCommit.Contains($commitMessage)) { 
+        Write-Output "Version Already Bumped. Skipping..."
+        Exit
+      }
+
+      Write-Output "New Commit(s) Found Since Last Bump. Bumping Version..."
+
+      node ./ci-tools/punchBuildNumber.js ./{{project_name}} "$env:RP_APP_DISPLAY_NAME" "{{project_version}}"
+
+      git config user.email $env:GIT_COMMIT_EMAIL
+      git config user.name $env:GIT_COMMIT_NAME
+      git checkout "$env:GIT_BRANCH"
+      git add ./{{project_name}}/ProjectSettings/ProjectSettings.asset
+      git add ./{{project_name}}/Assets/_Application/AssemblyInfo.cs
+      git commit -m "$commitMessage"
+      git push --force origin "$env:GIT_BRANCH"
+  dependencies:
+    - .yamato/triggers.yml#verify
+

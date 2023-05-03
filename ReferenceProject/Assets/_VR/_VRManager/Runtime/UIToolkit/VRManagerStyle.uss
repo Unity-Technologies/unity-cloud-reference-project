@@ -1,0 +1,141 @@
+:root
+{
+    --rigui-button-margin: 5px;
+    --rigui-button-size: 60px;
+    --rigui-button-size-with-margin: 70px;
+    --rigui-border-radius: 30px;
+    --rigui-border-radius-with-margin: 35px;
+
+    --scene-list-background-color: var(--appui-color-transparent-black-0);
+}
+
+.transparent-background
+{
+    background-color: var(--appui-color-transparent-black-0);
+}
+
+.opaque-background
+{
+    background-color: var(--appui-backgrounds-50);
+}
+
+.rigui-container
+{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.rigui-bar
+{
+    background-color: var(--appui-transparent-backgrounds-400);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: var(--rigui-border-radius-with-margin);
+}
+
+.rigui-main-bar
+{
+    background-color: var(--appui-color-transparent-black-0);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: var(--rigui-button-size-with-margin);
+}
+
+.rigui-secondary-bar
+{
+    background-color: var(--appui-transparent-backgrounds-600);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: var(--rigui-button-size-with-margin);
+    border-top-left-radius: var(--rigui-border-radius-with-margin);
+    border-top-right-radius: var(--rigui-border-radius-with-margin);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.rigui-main-bar-button
+{
+    width: var(--rigui-button-size);
+    height: var(--rigui-button-size);
+    border-radius: var(--rigui-border-radius);
+    margin: var(--rigui-button-margin);
+    border-width: 0px;
+}
+
+.rigui-tool-button
+{
+    width: var(--rigui-button-size);
+    height: var(--rigui-button-size);
+    border-radius: var(--rigui-border-radius);
+    margin: var(--rigui-button-margin);
+    border-width: 0px;
+}
+
+.rigui-panel{
+    background-color: var(--appui-backgrounds-50);
+    flex-grow: 1;
+    border-radius: 8px;
+    margin: 8px;
+    padding: 8px;
+    border-width: 1px;
+    border-color: var(--appui-backgrounds-100);
+}
+
+.rigui-panel-header{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+}
+
+.rigui-panel-header-button
+{
+    flex-direction: row;
+}
+
+.rigui-panel-icon
+{
+    width: 32px;
+    height: 32px;
+}
+
+.rigui-panel-pin-button
+{
+    width: 30px;
+    height: 30px;
+    margin-right: 6px;
+}
+
+.rigui-panel-close-button
+{
+    width: 24px;
+    height: 24px;
+}
+
+.stretch
+{
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.panel-border-radius{
+    border-radius: 8px;
+}
+
+.appui-icon--size-l {
+    width: 48px;
+    height: 48px;
+}

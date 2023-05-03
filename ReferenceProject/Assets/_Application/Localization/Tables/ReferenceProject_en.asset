@@ -1,0 +1,107 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: ReferenceProject_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 744679d1a0309714f85d968ebbfd23ae, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 611231595655168
+    m_Localized: Frame Rate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 611842047242240
+    m_Localized: Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 682314441060352
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 683013132414976
+    m_Localized: Scene Selection
+    m_Metadata:
+      m_Items: []
+  - m_Id: 683922784677888
+    m_Localized: Profile
+    m_Metadata:
+      m_Items: []
+  - m_Id: 683975670657024
+    m_Localized: Logout
+    m_Metadata:
+      m_Items: []
+  - m_Id: 694417684066304
+    m_Localized: Navigation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 694487749914624
+    m_Localized: Fly
+    m_Metadata:
+      m_Items: []
+  - m_Id: 694704419270656
+    m_Localized: Walk
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515912857120768
+    m_Localized: VR
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2812953739329536
+    m_Localized: Desktop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10396041935781888
+    m_Localized: General
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10396219241594880
+    m_Localized: Tools
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10476869227094016
+    m_Localized: Error
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10487145791987712
+    m_Localized: Dismiss
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11157830847590400
+    m_Localized: Theme
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14082381072818176
+    m_Localized: Accessed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20262697557979136
+    m_Localized: Yes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20262740780281856
+    m_Localized: No
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20262520789037056
+    m_Localized: Return to desktop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20262629618642944
+    m_Localized: Are you sure you want to quit VR mode?
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

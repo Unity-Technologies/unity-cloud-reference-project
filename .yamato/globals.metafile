@@ -1,0 +1,10 @@
+project_id: dt-reference-project
+project_name: ReferenceProject
+project_version: 0.1.0
+project_path: unity\dt.reference-project\ReferenceProject
+project_git_url: https://github.cds.internal.unity3d.com/unity/dt.reference-project
+product_name: UnityCloudReferenceProject
+
+editor_version: 2021.3.15f1
+unity_downloader_url: https://artifactory.prd.it.unity3d.com/artifactory/api/pypi/pypi/simple
+npm_artifactory: https://artifactory.prd.cds.internal.unity3d.com/artifactory/api/npm/upm-npm

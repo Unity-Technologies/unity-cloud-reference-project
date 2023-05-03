@@ -1,0 +1,17 @@
+.panel-right-container {
+    background-color: var(--appui-backgrounds-50);
+    width: 300px;
+    left: auto;
+    margin: 12px;
+    right: 0px;
+    top: 50px;
+    bottom: 0px;
+    display: flex;
+    position: absolute;
+    height: auto;
+    flex-grow: 1;
+}
+
+.panel-popover {
+    min-width: 50px;
+}

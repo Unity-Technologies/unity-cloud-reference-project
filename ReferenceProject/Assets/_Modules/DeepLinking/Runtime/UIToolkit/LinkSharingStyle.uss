@@ -1,0 +1,21 @@
+.link-sharing-content {
+    width: 250px;
+}
+
+.generate-url-button {
+    margin-bottom: 5px;
+}
+
+.open-url-section {
+    flex-direction: row;
+    align-items: center;
+}
+
+.url-text {
+    margin-right: 10px;
+    width: 70%
+}
+
+.open-url-button {
+    flex-grow: 1;
+}

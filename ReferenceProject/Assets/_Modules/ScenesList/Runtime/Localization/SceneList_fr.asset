@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: SceneList_fr
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: fr
+  m_SharedData: {fileID: 11400000, guid: 2f80b62a3b14d6f41834edb08cbf049c, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 9183887360
+    m_Localized: Espaces de travail
+    m_Metadata:
+      m_Items: []
+  - m_Id: 318673190912
+    m_Localized: Projets
+    m_Metadata:
+      m_Items: []
+  - m_Id: 420989042688
+    m_Localized: Choisir
+    m_Metadata:
+      m_Items: []
+  - m_Id: 613591482368
+    m_Localized: Entrez un texte...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 787344719872
+    m_Localized: Nom
+    m_Metadata:
+      m_Items: []
+  - m_Id: 834086043648
+    m_Localized: Organisation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5742910701568
+    m_Localized: Tout
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13753544321523712
+    m_Localized: Structure
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

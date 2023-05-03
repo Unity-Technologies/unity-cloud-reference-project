@@ -1,0 +1,21 @@
+{
+    "name": "Unity.ReferenceProject.Metadata.Runtime",
+    "rootNamespace": "Unity.ReferenceProject.Metadata",
+    "references": [
+        "GUID:861d797aa4d05294d986157ebb717a0b",
+        "GUID:a570873a4d8399244a70dbfa167a1a8a",
+        "GUID:4e4f4fa18c62c5a4bb60ddf536bc2a3b",
+        "GUID:2f101f87087d58f4ba92ca00188e763d",
+        "GUID:7e0d14980460abd439d6db881ce553fb",
+        "GUID:a3cd878ac7267624f9fb0eec6d224927"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,16 @@
+{
+    "name": "Unity.ReferenceProject.DataStores.Runtime",
+    "rootNamespace": "Unity.ReferenceProject.DataStores",
+    "references": [
+        "GUID:807be9350277eff4182cd3600de41d3a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

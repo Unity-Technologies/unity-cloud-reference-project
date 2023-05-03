@@ -1,0 +1,107 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: ReferenceProject_fr
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: fr
+  m_SharedData: {fileID: 11400000, guid: 744679d1a0309714f85d968ebbfd23ae, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 611231595655168
+    m_Localized: Images par seconde
+    m_Metadata:
+      m_Items: []
+  - m_Id: 611842047242240
+    m_Localized: Langue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 682314441060352
+    m_Localized: "Param\xE8tres"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 683013132414976
+    m_Localized: "Choix de sc\xE8ne"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 683922784677888
+    m_Localized: Profile
+    m_Metadata:
+      m_Items: []
+  - m_Id: 683975670657024
+    m_Localized: "D\xE9connexion"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 694417684066304
+    m_Localized: Navigation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 694487749914624
+    m_Localized: Voler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 694704419270656
+    m_Localized: Marcher
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515912857120768
+    m_Localized: RV
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2812953739329536
+    m_Localized: Bureau
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10476869227094016
+    m_Localized: Erreur
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10487145791987712
+    m_Localized: Ignorer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10396041935781888
+    m_Localized: "G\xE9n\xE9rale"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10396219241594880
+    m_Localized: Outils
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11157830847590400
+    m_Localized: Theme
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14082381072818176
+    m_Localized: Ouvert
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20262697557979136
+    m_Localized: Oui
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20262740780281856
+    m_Localized: Non
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20262520789037056
+    m_Localized: Retour au bureau
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20262629618642944
+    m_Localized: "Etes-vous s\xFBr de vouloir quitter le mode RV?"
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

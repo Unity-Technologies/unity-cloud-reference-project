@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4777865718874346730
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4777865718874346729}
+  - component: {fileID: 4777865718874346743}
+  - component: {fileID: 4777865718874346728}
+  - component: {fileID: 4777865718874346742}
+  m_Layer: 0
+  m_Name: Instructions
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4777865718874346729
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4777865718874346730}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4777865718874346743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4777865718874346730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dce63ea6c0796bc4f884ba8b9803d626, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UIDocument: {fileID: 0}
+  m_HeaderText: '@Instructions:How_To_Move_Around'
+  m_PlayerPrefsKey: Instructions_VRMode
+--- !u!114 &4777865718874346728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4777865718874346730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d681a9f2fc0537439ec0f1496e7863e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_InstructionPanelTemplate: {fileID: 9197481963319205126, guid: 0dd9734f4b4b474479e93e55464a38e6,
+    type: 3}
+  m_InstructionsTemplate: {fileID: 9197481963319205126, guid: 4ae99dcbb149f654a99daa73f9056d5d,
+    type: 3}
+  UIContainerName: InstructionContainer
+  m_StyleSheet: {fileID: 7433441132597879392, guid: 664bbb20b476d6b4aa0fda996af295d3,
+    type: 3}
+  m_PanelSize: {x: 400, y: 350}
+  m_PositionOffset: {x: 0, y: 0.175, z: 0.011}
+--- !u!114 &4777865718874346742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4777865718874346730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42a7ae58291af1948a0aa025ba8df3f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_LabelText: '@Instructions:Show_Navigation_Instructions'

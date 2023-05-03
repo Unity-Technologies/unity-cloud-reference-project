@@ -1,0 +1,57 @@
+@import url("/Packages/com.unity.dt.app-ui/PackageResources/Styles/Themes/App UI.tss");
+@import url("Palette.tss");
+@import url("Main-Dark.tss");
+@import url("Main-Light.tss");
+
+@import url("/Assets/_Application/UIToolkit/MainStyle.uss");
+@import url("/Assets/_Modules/Tools/Runtime/UIToolkit/ToolPanelStyle.uss");
+@import url("/Assets/_Modules/Identity/Runtime/UIToolkit/IdentityStyle.uss");
+@import url("/Assets/_Modules/ScenesList/Runtime/UIToolkit/SceneListStyle.uss");
+@import url("/Assets/_Modules/SearchSortFilter/Runtime/UIToolkit/SortArrows.uss");
+@import url("/Assets/_Modules/Metadata/Runtime/UIToolkit/MetadataDisplayStyle.uss");
+@import url("/Assets/_Modules/Instructions/Runtime/UIToolkit/InstructionsPanelStyle.uss");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+VisualElement {}

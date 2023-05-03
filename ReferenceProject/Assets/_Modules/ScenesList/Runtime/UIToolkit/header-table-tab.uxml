@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="UnityEngine.Dt.App.UI">
+    <appui:Text text="@SceneList:Name" name="filter-text" picking-mode="Ignore" class="filter-name-label" />
+    <ui:Image name="sort-arrow" picking-mode="Ignore" class="sort-arrow sort-icon" />
+</ui:UXML>

@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Localization-String-Tables-English (en)
+  m_EditorClassIdentifier: 
+  m_GroupName: Localization-String-Tables-English (en)
+  m_Data:
+    m_SerializedData: []
+  m_GUID: f03bfb67f1e562a4c964ff56c438eea4
+  m_SerializeEntries:
+  - m_GUID: e6af9a931eab6cd4f8de59ca77bc5c62
+    m_Address: ReferenceProject_en
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-en
+    - Preload
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed0cc97abb347944f9377ac7ff13f291
+    m_Address: Identity_en
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-en
+    - Preload
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fcc04a50ae3e6b3489f4127bbafe8f12
+    m_Address: SceneList_en
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-en
+    - Preload
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3854f704f3724b4468ec53898bbc89f7
+    m_Address: AppUI_en
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-en
+    - Preload
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e033469c6c5e4a246b8265d2688e7d84
+    m_Address: MetadataDisplay_en
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Preload
+    - Locale-en
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 42c2b073663b25c448aa2e5a9c0eb2ae
+    m_Address: Instructions_en
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Preload
+    - Locale-en
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f2b158fe0e8e48989656db7d235a6c8
+    m_Address: Presence_en
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-en
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07ff28d66cec1d940af2fb84b4f7b7be
+    m_Address: DeepLinking_en
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-en
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5547414ac648a764f9844d6be17b2e65
+    m_Address: InstructionsVR_en
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-en
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 1
+  m_Settings: {fileID: 11400000, guid: 43a44370dc1e75e4f93979ee9a9034bd, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 8698fc5d826d70c44b608ca3e02aa02c, type: 2}
+    - {fileID: 11400000, guid: 7acac0c2b51c67b4ca5be0a14d5d84e9, type: 2}

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbba88802efc401693d6162d8ffa8277, type: 3}
+  m_Name: Tool UI Mode Popover - Bottom
+  m_EditorClassIdentifier: 
+  AdditionalStyles:
+  - {fileID: 7433441132597879392, guid: 42aa3570404e41278b89bf14a4d7a407, type: 3}
+  PanelStyleClass: panel-popover
+  DisplayTitle: 1
+  DisplayIcon: 0
+  DisplayCloseButton: 0
+  UseScroll: 1
+  PopoverPlacement: 0

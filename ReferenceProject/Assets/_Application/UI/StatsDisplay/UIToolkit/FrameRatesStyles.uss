@@ -1,0 +1,25 @@
+.fps-entry {
+    flex-direction: row;
+    padding-right: 5px;
+}
+
+.fps-header {
+}
+
+.fps-value {
+    flex-grow: 1;
+    -unity-text-align: upper-right;
+    margin-left: 5px;
+}
+
+.fps-entries {
+    flex-direction: column;
+    border-radius: 10px;
+    background-color: var(--appui-transparent-backgrounds-800);
+    padding: 5px;
+    margin: 10px;
+    width: 100px;
+    position: absolute;
+    right: 10px;
+    bottom: 20px;
+}

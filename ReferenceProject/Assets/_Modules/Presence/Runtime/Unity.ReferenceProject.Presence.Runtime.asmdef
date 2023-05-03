@@ -1,0 +1,24 @@
+{
+    "name": "Unity.ReferenceProject.Presence.Runtime",
+    "rootNamespace": "Unity.ReferenceProject.Presence",
+    "references": [
+        "GUID:d8d9ea33f67ce9540a08cf063069808c",
+        "GUID:2a4c379945cabb84b9fb0b1fb404b8d9",
+        "GUID:498d02e03062b2649b108f31a9668c56",
+        "GUID:f2f9fbb8654eff343bf4a94f2a688687",
+        "GUID:276bf4fd0c825cf4b94eb157d3b3675f",
+        "GUID:2f101f87087d58f4ba92ca00188e763d",
+        "GUID:1491147abca9d7d4bb7105af628b223e",
+        "GUID:acd4a4024fe5b1e4ab791e2ef2b8ddc8",
+        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,3 @@
+slack_channel: dt-reference-project-notifications
+timezone: 'America/New_York'
+schedule: '0 9,13 * * 1-5'

@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: InstructionsVR_fr
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: fr
+  m_SharedData: {fileID: 11400000, guid: 560f1a486deeda44dacab47420bc4637, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 10072780800
+    m_Localized: Voler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 141824258048
+    m_Localized: Manette gauche.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1030496612352
+    m_Localized: G
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1142455169024
+    m_Localized: D
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1234612416512
+    m_Localized: Monter/Descendre
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1433204322304
+    m_Localized: Boutons gauches.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1596090118144
+    m_Localized: Voler plus vite
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1879637651456
+    m_Localized: "G\xE2chette de gauche en volant."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2096994873344
+    m_Localized: "T\xE9l\xE9porter"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2199268782080
+    m_Localized: "Manette droite vers le haut pour commencer. Tournez la manette
+      pour choisir votre orientation. Rel\xE2chez pour vous t\xE9l\xE9porter."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2868029583360
+    m_Localized: Tourner
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2946752475136
+    m_Localized: "Manette droite pour tourner de 45\xB0."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3354975694848
+    m_Localized: Reculer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3417722482688
+    m_Localized: Manette droite vers le bas pour reculer d'un pas.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3653119406080
+    m_Localized: "R\xE9initialiser"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3816319774720
+    m_Localized: "Bouton principale droit pour r\xE9initialiser la position de la
+      bar de l'interface usager devant vous."
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

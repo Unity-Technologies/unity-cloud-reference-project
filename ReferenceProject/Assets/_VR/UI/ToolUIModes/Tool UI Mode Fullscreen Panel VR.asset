@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81fbb890d235c6d43abbea82b17432e7, type: 3}
+  m_Name: Tool UI Mode Fullscreen Panel VR
+  m_EditorClassIdentifier: 
+  AdditionalStyles: []
+  PanelStyleClass: 
+  PanelSize: {x: 1366, y: 768}
+  PanelPosition: {x: 0, y: 0.384, z: 0}
+  DisplayTitle: 1
+  DisplayIcon: 1
+  DisplayCloseButton: 1
+  DisplayDockButton: 1

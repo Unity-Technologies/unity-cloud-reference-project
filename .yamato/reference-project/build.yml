@@ -1,0 +1,143 @@
+{% metadata_file .yamato/globals.metafile %}
+---
+
+build_all:
+  name: Build All
+  dependencies:
+    - .yamato/reference-project/build.yml#build_on_windows
+    - .yamato/reference-project/build.yml#build_on_windows_vr
+    - .yamato/reference-project/build.yml#build_on_android
+    - .yamato/reference-project/build.yml#build_on_osx
+    #- .yamato/reference-project/build.yml#build_on_iOS
+    - .yamato/reference-project/build.yml#build_on_webgl
+
+build_on_android:
+  name: Build on Android ({{editor_version}})
+  agent:
+    type: Unity::VM
+    image: mobile/android-package-ci-win:latest
+    flavor: b1.large
+  commands:
+      - git submodule update --init --recursive
+      - unity-downloader-cli -u {{editor_version}} -c Editor -c Windows -c Android -c il2cpp -w
+      - reg add "HKCU\software\Unity Technologies\Unity Editor 5.x" /v AndroidJVMMaxHeapSize_h2018428162 /t REG_DWORD /d 0x1000 /f
+      - .Editor\Unity.exe -quit -batchmode -silent-crashes -username %RP_DEV_USER% -password %RP_DEV_PWD% -appId %RP_APP_ID% -appName %RP_APP_NAME% -appDisplayName %RP_APP_DISPLAY_NAME% -projectPath {{project_name}} -logfile - -buildTarget Android -executeMethod Unity.{{project_name}}.Editor.Builder.PerformBuild
+  artifacts:
+    artifacts:
+      paths:
+        - "*/Builds/Android/*"
+    logs:
+      paths:
+        - "*/editorLogs.*"
+
+build_on_iOS:
+  name: Build on iOS ({{editor_version}})
+  agent:
+    type: Unity::VM::osx
+    image: slough-ops/macos-12-xcode:stable
+    flavor: m1.mac
+  variables:
+    LC_ALL: en_US.UTF-8
+    LANG: en_US.UTF-8
+  commands:
+      - brew install fastlane
+      - git submodule update --init --recursive
+      - |
+        curl https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer --output AppleWWDRCAG3.cer
+        security add-certificates -k login.keychain AppleWWDRCAG3.cer
+      - pip install unity-downloader-cli --index-url {{unity_downloader_url}} --upgrade
+      - unity-downloader-cli -u {{editor_version}} -c Editor -c macOS -c iOS -w
+      - .Editor/Unity.app/Contents/MacOS/Unity -quit -batchmode -silent-crashes -username $RP_DEV_USER -password $RP_DEV_PWD -appId $RP_APP_ID -appName $RP_APP_NAME -appDisplayName $RP_APP_DISPLAY_NAME -projectPath {{project_name}} -logfile - -buildTarget iOS -executeMethod Unity.{{project_name}}.Editor.Builder.PerformBuild
+      - |
+        cd {{project_name}}
+        fastlane ios distribution_build
+  artifacts:
+    artifacts:
+      paths:
+        - "*/Builds/**"
+    logs:
+      paths:
+        - "*/editorLogs.*"
+
+build_on_windows:
+  name: Build on Windows ({{editor_version}})
+  agent:
+    type: Unity::VM
+    image: package-ci/win10:stable
+    flavor: b1.large
+  commands:
+      - git submodule update --init --recursive
+      - unity-downloader-cli -u {{editor_version}} -c Editor -c Windows -c il2cpp -w
+      - .Editor\Unity.exe -quit -batchmode -silent-crashes -username %RP_DEV_USER% -password %RP_DEV_PWD% -appId %RP_APP_ID% -appName %RP_APP_NAME% -appDisplayName "%RP_APP_DISPLAY_NAME%" -projectPath {{project_name}} -logfile - -buildTarget StandaloneWindows64 -executeMethod Unity.{{project_name}}.Editor.Builder.PerformBuildWithOpenXR
+      - powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('.\{{project_name}}\Builds\StandaloneWindows64', '.\{{product_name}}_Win64.zip'); }"
+  artifacts:
+    artifacts:
+      paths:
+        - "{{product_name}}_Win64.zip"
+    logs:
+      paths:
+        - "*/editorLogs.*"
+
+build_on_osx:
+  name: Build on MacOS ({{editor_version}})
+  agent:
+    type: Unity::VM::osx
+    image: slough-ops/macos-12-xcode:stable
+    flavor: m1.mac
+  variables:
+    LC_ALL: en_US.UTF-8
+    LANG: en_US.UTF-8
+  commands:
+      - git submodule update --init --recursive
+      - pip install unity-downloader-cli --index-url {{unity_downloader_url}} --upgrade
+      - unity-downloader-cli -u {{editor_version}} -c Editor -c macOS -c il2cpp -w
+      - .Editor/Unity.app/Contents/MacOS/Unity -quit -batchmode -silent-crashes -username $RP_DEV_USER -password $RP_DEV_PWD -appId $RP_APP_ID -appName $RP_APP_NAME -appDisplayName $RP_APP_DISPLAY_NAME -projectPath {{project_name}} -logfile - -buildTarget StandaloneOSX -executeMethod Unity.{{project_name}}.Editor.Builder.PerformBuild
+      - |
+        cd ${YAMATO_SOURCE_DIR}/{{project_name}}/Builds/StandaloneOSX
+        zip -9 -r ${YAMATO_SOURCE_DIR}/{{product_name}}_Osx.zip {{product_name}}.app
+  artifacts:
+    artifacts:
+      paths:
+        - "{{product_name}}_Osx.zip"
+    logs:
+      paths:
+        - "*/editorLogs.*"
+
+build_on_webgl:
+  name: Build on WebGL ({{editor_version}})
+  agent:
+    type: Unity::VM
+    image: package-ci/win10:stable
+    flavor: b1.large
+  commands:
+      - git submodule update --init --recursive
+      - unity-downloader-cli -u {{editor_version}} -c Editor -c WebGL -w
+      - .Editor\Unity.exe -quit -batchmode -silent-crashes -username %RP_DEV_USER% -password %RP_DEV_PWD% -appId %RP_APP_ID% -appName %RP_APP_NAME% -appDisplayName "%RP_APP_DISPLAY_NAME%" -projectPath {{project_name}} -logfile - -buildTarget WebGL -executeMethod Unity.{{project_name}}.Editor.Builder.PerformBuild
+      - powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('.\{{project_name}}\Builds\WebGL', '.\{{product_name}}_WebGL.zip'); }"
+  artifacts:
+    artifacts:
+      paths:
+        - "{{product_name}}_WebGL.zip"
+    logs:
+      paths:
+        - "*/editorLogs.*"
+ 
+build_on_windows_vr:
+  name: Build on Windows in VR ({{editor_version}})
+  agent:
+    type: Unity::VM
+    image: package-ci/win10:stable
+    flavor: b1.large
+  commands:
+      - git submodule update --init --recursive
+      - unity-downloader-cli -u {{editor_version}} -c Editor -c Windows -c il2cpp -w
+      - .Editor\Unity.exe -quit -batchmode -silent-crashes -username %RP_DEV_USER% -password %RP_DEV_PWD% -appId %RP_APP_ID% -appName %RP_APP_NAME% -appDisplayName "%RP_APP_DISPLAY_NAME%" -projectPath {{project_name}} -logfile - -buildTarget StandaloneWindows64 -executeMethod Unity.{{project_name}}.Editor.Builder.PerformBuildVR
+      - powershell.exe -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('.\{{project_name}}\Builds\StandaloneWindows64', '.\{{product_name}}_Win64_VR.zip'); }"
+  artifacts:
+    artifacts:
+      paths:
+        - "{{product_name}}_Win64_VR.zip"
+    logs:
+      paths:
+        - "*/editorLogs.*"
+
