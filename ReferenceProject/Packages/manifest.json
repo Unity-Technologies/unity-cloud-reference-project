@@ -1,15 +1,4 @@
 {
-  "scopedRegistries": [
-    {
-      "name": "Artifactory",
-      "url": "https://artifactory.prd.cds.internal.unity3d.com/artifactory/api/npm/upm-candidates-master",
-      "scopes": [
-        "com.unity.cloud",
-        "com.unity.replica",
-        "com.unity.dt"
-      ]
-    }
-  ],
   "dependencies": {
     "com.svermeulen.extenject": "https://github.com/Unity-Technologies/Zenject.git?path=/UnityProject/Assets/Plugins/Zenject",
     "com.unity.cloud.data-streaming": "0.10.0",
