@@ -1,126 +1,161 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Unity.Cloud.Presence;
+using Unity.Cloud.Presence.Runtime;
 using UnityEngine;
 using UnityEngine.Dt.App.UI;
 using UnityEngine.UIElements;
+using Avatar = UnityEngine.Dt.App.UI.Avatar;
 
 namespace Unity.ReferenceProject.Presence
 {
     public class AvatarBadgesContainer : VisualElement
     {
-        public event Action OnParticipantsChanged;
-        readonly Dictionary<string, UnityEngine.Dt.App.UI.Avatar> m_Participants = new();
-        const int m_FullyShownAvatarsCount = 2;
+        public static readonly string avatarsContainerUssClassName = "avatar-badge-container";
         
-        AvatarBadgesContainer()
-        {
-            name = "avatars-container";
-            AddToClassList("avatars-container");
-
-            style.flexDirection = FlexDirection.Row;
-        }
-
-        public static AvatarBadgesContainer Build()
-        {
-            var panel = new AvatarBadgesContainer();
-
-            return panel;
-        }
+        public static readonly string avatarBadgeUssClassName = "avatar-badge";
         
-        public AvatarBadgesContainer SetWidth(StyleLength value)
-        {
-            style.width = value;
-
-            return this;
-        }
-
-        public void AddParticipants(IEnumerable<Participant> players)
-        {
-            bool isParticipantsCountChanged = false;
-            foreach (var connectedParticipant in players)
-            {
-                isParticipantsCountChanged |= TryAddParticipant(connectedParticipant);
-            }
-
-            if (isParticipantsCountChanged)
-            {
-                OnParticipantsChanged?.Invoke(); 
-            }
-        }
-
-        public void AddParticipant(Participant player)
-        {
-            if (TryAddParticipant(player))
-            {
-                OnParticipantsChanged?.Invoke();
-            }
-        }
+        Room m_Room;
         
-        bool TryAddParticipant(Participant player)
+        bool m_RemoveOwner;
+        
+        public bool removeOwner
         {
-            if (!player.IsSelf && !m_Participants.ContainsKey(player.Id))
+            get
             {
-                var avatar = new UnityEngine.Dt.App.UI.Avatar
-                {
-                    text = AvatarUtils.GetInitials(player.Name),
-                    tooltip = player.Name,
-                    backgroundColor = AvatarUtils.GetColor(player.ColorIndex),
-                    size = Size.M
-                };
-                
-                m_Participants[player.Id] = avatar;
-                return true;
+                return m_RemoveOwner;
             }
-            return false;
+            set
+            {
+                m_RemoveOwner = value;
+                RefreshContainer(m_Room);
+            }
         }
 
-        public void RemoveParticipant(Participant player)
+        int m_MaxAvatarsCount;
+        
+        public int maxParticipantsCount
         {
-            if (!m_Participants.ContainsKey(player.Id))
-                return;
+            get
+            {
+                return m_MaxAvatarsCount;
+            }
+            set
+            {
+                m_MaxAvatarsCount = value;
+                RefreshContainer(m_Room);
+            }
+        }
 
-            m_Participants.Remove(player.Id);
+        public AvatarBadgesContainer()
+        {
+            name = "avatar-badges-container";
+            maxParticipantsCount = 2;
+            RegisterCallback<DetachFromPanelEvent>(_ => UnbindRoomWithoutNotify());
+            AddToClassList(avatarsContainerUssClassName);
+        }
+
+        public void BindRoom(Room room)
+        {
+            UnbindRoomWithoutNotify();
             
-            OnParticipantsChanged?.Invoke();
+            m_Room = room;
+
+            if (m_Room != null)
+            {
+                m_Room.ParticipantAdded += OnParticipantAdded;
+                m_Room.ParticipantRemoved += OnParticipantRemoved;
+            }
+
+            RefreshContainer(m_Room);
         }
 
-        public void DrawAvatarsToContainer(VisualElement container)
+        void UnbindRoomWithoutNotify()
+        {
+            if (m_Room != null)
+            {
+                m_Room.ParticipantAdded -= OnParticipantAdded;
+                m_Room.ParticipantRemoved -= OnParticipantRemoved;
+            }
+        }
+
+        void OnParticipantRemoved(IParticipant obj) => RefreshContainer(m_Room);
+
+        void OnParticipantAdded(IParticipant obj) => RefreshContainer(m_Room);
+
+        void RefreshContainer(Room room)
         {
             Clear();
 
+            if (room == null || room.ConnectedParticipants.Count == 0)
+                return;
+
             var count = 0;
-            foreach (var pair in m_Participants)
+            bool isOwnerRemoved = false;
+            foreach (var participant in room.ConnectedParticipants)
             {
                 count++;
-                if (count > m_FullyShownAvatarsCount)
-                    break;
-                Add(pair.Value);
+                if (m_RemoveOwner && participant.IsSelf)
+                {
+                    isOwnerRemoved = true;
+                    continue;
+                }
+                
+                if (count <= m_MaxAvatarsCount)
+                    Add(CreateParticipantBadge(participant));
             }
-
-            if (m_Participants.Count > m_FullyShownAvatarsCount)
+            
+            var participantsOverflowCount = count - m_MaxAvatarsCount - (isOwnerRemoved ? 1 : 0);
+            
+            if (participantsOverflowCount > 0)
             {
-                var plusSign = new UnityEngine.Dt.App.UI.Avatar();
-                plusSign.text = "+" + (m_Participants.Count - m_FullyShownAvatarsCount);
-                plusSign.backgroundColor = Color.gray;
-                plusSign.size = Size.M;
-                Add(plusSign);
+                Add(CreatePlusBadge(participantsOverflowCount));
             }
         }
 
-        public void ClearParticipants()
+        static VisualElement CreateParticipantBadge(IParticipant participant)
         {
-            foreach (var avatar in m_Participants.Values)
+            var avatar = new UnityEngine.Dt.App.UI.Avatar
             {
-                if (avatar != null)
-                    Remove(avatar);
-            }
+                text = AvatarUtils.GetInitials(participant.Name),
+                tooltip = participant.Name,
+                backgroundColor = AvatarUtils.GetColor(participant.ColorIndex), // This is temporary as the Presence Package will update its implementation
+                size = Size.M
+            };
+            avatar.AddToClassList(avatarBadgeUssClassName);
+            return avatar;
+        }
+        
+        static VisualElement CreatePlusBadge(int count)
+        {
+            var plusSign = new UnityEngine.Dt.App.UI.Avatar();
+            plusSign.text = "+" + (count);
+            plusSign.backgroundColor = new Color(156, 156, 156, 255) / 255f;
+            plusSign.size = Size.M;
+            plusSign.AddToClassList(avatarBadgeUssClassName);
+            return plusSign;
+        }
 
-            m_Participants.Clear();
+        public new class UxmlFactory : UxmlFactory<AvatarBadgesContainer, UxmlTraits>
+        {
+        }
+
+        public new class UxmlTraits : VisualElement.UxmlTraits
+        {
+            readonly UxmlBoolAttributeDescription m_RemoveOwner = new () { name = "remove-owner", defaultValue = false };
             
-            OnParticipantsChanged?.Invoke();
+            readonly UxmlIntAttributeDescription m_MaxParticipantsCount = new() { name = "max-participants-count", defaultValue = 2 };
+
+            public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
+            {
+                base.Init(ve, bag, cc);
+                var container = (AvatarBadgesContainer)ve;
+                container.removeOwner = m_RemoveOwner.GetValueFromBag(bag, cc);
+                container.maxParticipantsCount = m_MaxParticipantsCount.GetValueFromBag(bag, cc);
+                
+            }
         }
     }
 }

@@ -25,7 +25,8 @@ namespace Unity.ReferenceProject.Instructions
         void Awake()
         {
             m_Controller = GetComponent<InstructionsUIController>();
-            m_Controller.OnInstructionPanelEnabled += OnInstructionPanelEnabled;
+            m_Controller.InstructionPanelEnabled += OnInstructionPanelEnabled;
+            m_Controller.InstructionsAvailable += (isSupport) => enabled = isSupport;
         }
 
         void OnEnable()

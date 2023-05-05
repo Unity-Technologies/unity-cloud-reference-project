@@ -1,6 +1,0 @@
----
-uid: services
----
-
-# Services
-

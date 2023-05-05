@@ -10,48 +10,6 @@
 @import url("/Assets/_Modules/SearchSortFilter/Runtime/UIToolkit/SortArrows.uss");
 @import url("/Assets/_Modules/Metadata/Runtime/UIToolkit/MetadataDisplayStyle.uss");
 @import url("/Assets/_Modules/Instructions/Runtime/UIToolkit/InstructionsPanelStyle.uss");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@import url("/Assets/_Modules/Presence/Runtime/UIToolkit/AvatarBadgeContainerStyle.uss");
 
 VisualElement {}

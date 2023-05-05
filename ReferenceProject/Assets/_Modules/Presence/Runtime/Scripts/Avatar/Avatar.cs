@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.Cloud.Presence;
 using Unity.Cloud.Presence.Runtime;
 using UnityEngine;
 using Zenject;
@@ -68,7 +69,7 @@ namespace Unity.ReferenceProject.Presence
             RefreshParticipant(m_Participant);
         }
 
-        void OnParticipantIDChanged(INetcodeParticipant participant, string id)
+        void OnParticipantIDChanged(INetcodeParticipant participant, ParticipantId id)
         {
             RefreshParticipant(participant);
         }
@@ -76,8 +77,16 @@ namespace Unity.ReferenceProject.Presence
         void RefreshParticipant(INetcodeParticipant participant)
         {
             var roomParticipant = m_PresenceStreamingRoom.GetParticipantFromID(participant.ParticipantId);
-            var participantName = participant.IsOwner ? "Owner" : roomParticipant.Name;
-            var color = AvatarUtils.GetColor(roomParticipant.ColorIndex);
+
+            var participantName = "Unknown";
+            var color = Color.grey;
+
+            if (roomParticipant != null)
+            {
+                participantName = participant.IsOwner ? "Owner" : roomParticipant.Name;
+                color = AvatarUtils.GetColor(roomParticipant.ColorIndex);
+            }
+            
             var visible = !participant.IsOwner;
             
             gameObject.name = $"Avatar ({participantName})";

@@ -11,21 +11,32 @@ namespace Unity.ReferenceProject
 {
     class CameraDefaultPositionController : MonoBehaviour
     {
-        const int k_VolumeProcessingIterations = 50;
         [SerializeField]
         float m_PitchAngle = 20.0f;
 
         [SerializeField]
         float m_BoundsFillRatio = 0.9f;
+        
+        [SerializeField]
+        int m_VolumeProcessingIterations = 5;
+        
+        [SerializeField]
+        int m_VolumeProcessingDelay = 50;
 
         IDataStreamer m_DataStreamer;
         INavigationManager m_NavigationManager;
         Camera m_StreamingCamera;
 
+        ISceneEvents m_SceneEvents;
+
+        bool m_IsProcessing;
+
         [Inject]
         void Setup(ISceneEvents sceneEvents, IDataStreamerProvider dataStreamerProvider, Camera streamingCamera, INavigationManager navigationManager)
         {
-            sceneEvents.SceneOpened += OnSceneOpening;
+            m_SceneEvents = sceneEvents;
+            m_SceneEvents.SceneOpened += OnSceneOpened;
+            m_SceneEvents.SceneClosed += OnSceneClosed;
 
             m_DataStreamer = dataStreamerProvider.DataStreamer;
 
@@ -33,15 +44,35 @@ namespace Unity.ReferenceProject
             m_NavigationManager = navigationManager;
         }
 
-        void OnSceneOpening(IScene scene)
+        void OnDestroy()
+        {
+            m_SceneEvents.SceneOpened -= OnSceneOpened;
+            m_SceneEvents.SceneClosed -= OnSceneClosed;
+        }
+
+        void OnSceneOpened(IScene scene)
         {
             m_DataStreamer.StreamingStateChanged += OnStreamingStateChanged;
+        }
+        
+        void OnSceneClosed()
+        {
+            m_DataStreamer.StreamingStateChanged -= OnStreamingStateChanged;
         }
 
         async void OnStreamingStateChanged(StreamingState state)
         {
+            if (m_IsProcessing)
+                return;
+            
+            m_IsProcessing = true;
+            
             if (await ProcessDefaultVolumeOfInterestAsync())
+            {
                 m_DataStreamer.StreamingStateChanged -= OnStreamingStateChanged;
+            }
+            
+            m_IsProcessing = false;
         }
 
         async Task<bool> ProcessDefaultVolumeOfInterestAsync()
@@ -49,7 +80,7 @@ namespace Unity.ReferenceProject
             var result = false;
             VolumeOfInterest prevVolume = new();
 
-            for (var i = 0; i < k_VolumeProcessingIterations; ++i)
+            for (var i = 0; i < m_VolumeProcessingIterations; ++i)
             {
                 var v = await m_DataStreamer.GetDefaultVolumeOfInterestAsync();
                 if (v != prevVolume)
@@ -61,7 +92,7 @@ namespace Unity.ReferenceProject
 
                     SetView(v.Bounds, m_StreamingCamera);
 
-                    await Task.Delay(100);
+                    await Task.Delay(m_VolumeProcessingDelay);
                 }
                 else
                 {

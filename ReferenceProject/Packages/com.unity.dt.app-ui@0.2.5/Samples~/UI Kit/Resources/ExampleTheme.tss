@@ -1,5 +1,0 @@
-@import url("/Packages/com.unity.dt.app-ui/PackageResources/Styles/Themes/App UI.tss");
-
-@import url("Examples.uss");
-
-VisualElement {}

@@ -31,6 +31,7 @@ To connect and find support, join the [Unity forum](https://forum.unity.com/foru
     - [Direct download](#direct-download)
   - [Configure Unity services](#configure-unity-services)
     - [Sign in or create a Unity account](#sign-in-or-create-a-unity-account)
+    - [Register your application](#register-your-application)
     - [Upload assets to review](#upload-assets-to-review)
   - [Opening the project for the first time](#opening-the-project-for-the-first-time)
   - [Exploring the project](#exploring-the-project)
@@ -79,13 +80,37 @@ You can also, through the GitHub repository:
 ### Sign in or create a Unity account
 
 1. Go to the [Unity Dashboard](https://dashboard.unity3d.com/digital-twins/) (requires beta access).
-2. Sign in to manage your assets.
+2. Sign in to register your app and manage your assets.
+
+### Register your application
+
+The Unity Cloud Reference Project requires an `App Id` in order to properly use the cloud services and to enable the custom URI scheme used in deep-linking and login operations.
+
+> **Note**: The project will fail to build if you have not set your `App Id`.
+
+#### Create an App Id
+
+To create an `App Id`, follow these steps:
+
+1. Log into the [Unity Dashboard](https://dashboard.unity3d.com/digital-twins/).
+2. Select **Developer Hub** > **Registered Applications**.
+3. Select the **+Register an application** button and follow instructions to complete the form.
+
+#### Set the App Id in the Unity Editor
+
+To use the `App Id`, follow these steps:
+
+1. Open the Unity Cloud Reference Project in the Unity Editor.
+2. Go to **Edit > Project Settings > Unity Cloud > App Registration**.
+3. Enter your `App Id` in the **App Id** field.
+
+4. Select **Refresh** to update the application data in the Unity Cloud Portal.
 
 ### Upload assets to review
 
 To view assets in the Unity Cloud Reference Project you will first need to upload them. If other members of your organization have already done this, then you can get access to them once they have invited you to join their organization. You can switch organizations in the top-right corner of the dashboard.
 
-**Note**: Make sure you read through the supported file formats before uploading an asset.
+> **Note**: Ensure you read through the supported file formats before uploading an asset.
 
 To upload an asset:
 
@@ -106,8 +131,9 @@ Once you have downloaded the project, follow these steps:
 
 > **Note**: The first time you open the project, Unity will import all assets, including packages it depends on, which will take longer than usual.
 
-4. Select **Play**.
-5. Sign into your Unity account to view your uploaded assets.
+4. [Set your App Id](#register-your-application)
+5. Select **Play**.
+6. Sign into your Unity account to view your uploaded assets.
 
 ## Exploring the project
 

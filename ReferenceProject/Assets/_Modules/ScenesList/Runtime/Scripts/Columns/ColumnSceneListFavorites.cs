@@ -80,13 +80,17 @@ namespace Unity.ReferenceProject.ScenesList
         
         protected override void OnMakeCell(VisualElement e, IColumnData columnData)
         {
-            var button = new IconButton();
-            button.name = GetButtonName(columnData.Name);
-            button.primary = false;
-            button.quiet = true;
-            button.focusable = false;
+            var button = new IconButton
+            {
+                name = GetButtonName(columnData.Name),
+                primary = false,
+                quiet = true,
+                focusable = false
+            };
 
-            button.clickable.clicked += () => OnButtonClick(button);
+            button.clickable = null; // AppUI 0.2.9 has currently a bug with Pressables. Use a Clickable manipulator instead.
+            var manipulator = new UnityEngine.Dt.App.UI.Clickable(() => OnButtonClick(button));
+            button.AddManipulator(manipulator);
             e.Add(button);
         }
 

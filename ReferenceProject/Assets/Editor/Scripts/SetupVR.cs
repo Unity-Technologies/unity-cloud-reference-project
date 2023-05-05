@@ -15,7 +15,7 @@ namespace Unity.ReferenceProject.Editor
 {
     public class SetupVR : UnityEditor.Editor
     {
-        const string k_VRPath = "Assets/_VR";
+        const string k_VRPath = "Assets/_VR/_Application";
         const string k_MainVRPath = k_VRPath + "/Scenes/MainVR.unity";
         const string k_OpenXRLoader = "UnityEngine.XR.OpenXR.OpenXRLoader";
         const string k_XRPath = "Assets/XR";

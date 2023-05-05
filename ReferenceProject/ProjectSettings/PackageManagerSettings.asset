@@ -26,21 +26,11 @@ MonoBehaviour:
     m_IsDefault: 1
     m_Capabilities: 7
     m_ConfigSource: 0
-  - m_Id: scoped:project:Artifactory
-    m_Name: Artifactory
-    m_Url: https://artifactory.prd.cds.internal.unity3d.com/artifactory/api/npm/upm-candidates-master
-    m_Scopes:
-    - com.unity.cloud
-    - com.unity.replica
-    - com.unity.dt
-    m_IsDefault: 0
-    m_Capabilities: 0
-    m_ConfigSource: 4
-  m_UserSelectedRegistryName: Artifactory
+  m_UserSelectedRegistryName: 
   m_UserAddingNewScopedRegistry: 0
   m_RegistryInfoDraft:
     m_Modified: 0
     m_ErrorMessage: 
-    m_UserModificationsInstanceId: -830
-    m_OriginalInstanceId: -834
+    m_UserModificationsInstanceId: -826
+    m_OriginalInstanceId: -830
   m_LoadAssets: 0

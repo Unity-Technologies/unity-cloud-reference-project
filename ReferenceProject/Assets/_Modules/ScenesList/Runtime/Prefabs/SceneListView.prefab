@@ -165,7 +165,7 @@ MonoBehaviour:
   m_Width: 0
   m_ColumnStyles:
   - project-list-column-full-width
-  - project-list-cell-margin
+  - project-list-cell
   m_VisualTreeAsset: {fileID: 9197481963319205126, guid: 38e5b2dcf9e8f684f8c8bbe0fd632786,
     type: 3}
   m_TextName: scene-title
@@ -189,7 +189,7 @@ MonoBehaviour:
   m_Width: 0
   m_ColumnStyles:
   - project-list-column-fixed-width
-  - project-list-cell-margin
+  - project-list-cell
   m_IsUseEllipsisText: 1
   m_EllipsisTextStyle: ellipsis-text
 --- !u!114 &5770999630819768376
@@ -210,7 +210,7 @@ MonoBehaviour:
   m_Width: 0
   m_ColumnStyles:
   - project-list-column-fixed-width
-  - project-list-cell-margin
+  - project-list-cell
   m_IsUseEllipsisText: 1
   m_EllipsisTextStyle: ellipsis-text
 --- !u!114 &1868824982470230259
@@ -231,7 +231,8 @@ MonoBehaviour:
   m_Width: 0
   m_ColumnStyles:
   - project-list-column-fixed-width
-  - project-list-cell-margin
+  - project-list-cell
+  m_IsRemoveOwner: 1
   m_AvatarsContainerName: avatars-container
   m_AvatarsStyles: []
 --- !u!114 &4770454088538204782

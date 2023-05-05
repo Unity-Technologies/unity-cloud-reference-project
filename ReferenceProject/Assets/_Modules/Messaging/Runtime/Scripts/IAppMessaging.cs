@@ -10,7 +10,7 @@ namespace Unity.ReferenceProject.Messaging
         public void ShowSuccess(string message, bool dismissable = false, params object[] args);
         public void ShowWarning(string message, bool dismissable = false, params object[] args);
         public void ShowError(string message, bool dismissable = false, params object[] args);
-        public void ShowException(Exception exception, string message = null, params object[] args);
+        public void ShowException(Exception exception, string title = null, params object[] args);
         public void ShowDialog(string title, string message,
             string cancelButtonLabel, Action cancelCallback = null,
             string primaryActionLabel = null, Action primaryActionCallback = null,

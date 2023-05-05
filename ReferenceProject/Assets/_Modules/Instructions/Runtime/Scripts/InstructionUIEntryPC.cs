@@ -5,6 +5,10 @@ namespace Unity.ReferenceProject.Instructions
 {
     public class InstructionUIEntryPC : InstructionUIEntry
     {
-        protected override bool IsSupportPlatform => Application.platform is RuntimePlatform.WindowsPlayer or RuntimePlatform.WindowsEditor;
+#if UNITY_IOS || UNITY_ANDROID
+        protected override bool IsSupportPlatform => false;
+#else
+        protected override bool IsSupportPlatform => true;
+#endif
     }
 }

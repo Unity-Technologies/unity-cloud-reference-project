@@ -18,6 +18,7 @@
 }
 
 .tool-panel-title {
+    flex-shrink: 1;
 }
 
 tool-panel-dismiss-button {

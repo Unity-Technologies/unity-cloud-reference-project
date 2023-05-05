@@ -297,7 +297,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_IsRemoveColliders: 1
   m_CheckRadius: 5
-  m_FrenquencyFloorCheck: 0.03
+  m_FrequencyFloorCheck: 0.03
 --- !u!114 &5305860742819525669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -393,8 +393,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PanelSettings: {fileID: 11400000, guid: 6e6c50099134f2a4fb64d80834596821, type: 2}
   m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: bec0a565dc49adc4484bbce301287d77,
-    type: 3}
+  sourceAsset: {fileID: 0}
   m_SortingOrder: 1
 --- !u!114 &374110354508172065
 MonoBehaviour:
@@ -422,8 +421,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_UIDocument: {fileID: 8160467181883359858}
+  m_InstructionsPanelAsset: {fileID: 9197481963319205126, guid: bec0a565dc49adc4484bbce301287d77,
+    type: 3}
   m_HeaderText: '@Instructions:How_To_Move_Around'
-  m_PlayerPrefsKey: Instructions_FlyMode
+  m_PlayerPrefsKey: Instructions_WalkMode
 --- !u!114 &8707041180248234922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -436,10 +437,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2674122ad2030a54ba778fc18433e0a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UIDocument: {fileID: 8160467181883359858}
-  m_TemplateUI: {fileID: 9197481963319205126, guid: 9ecc7dab5356c8f4fa1341c1286e1c70,
+  m_Template: {fileID: 9197481963319205126, guid: 9ecc7dab5356c8f4fa1341c1286e1c70,
     type: 3}
-  m_UIContainerName: InstructionContainer
 --- !u!114 &8033672594734203562
 MonoBehaviour:
   m_ObjectHideFlags: 0

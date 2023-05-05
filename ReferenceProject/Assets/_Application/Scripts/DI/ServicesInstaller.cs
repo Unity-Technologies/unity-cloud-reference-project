@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Reflection;
 using Unity.Cloud.Common;
 using Unity.Cloud.Common.Runtime;
@@ -18,8 +17,20 @@ namespace Unity.ReferenceProject
 {
     public class ServicesInstaller : MonoInstaller
     {
+        [SerializeField]
+        LogLevel m_ServicesLogLevel = LogLevel.Warning;
+        
+        CompositeAuthenticator m_CompositeAuthenticator;
+        ServiceMessagingClient m_JoinerClient;
+        ServiceMessagingClient m_MonitoringClient;
+
         public override void InstallBindings()
         {
+            foreach (var logOutput in LogOutputs.Outputs)
+            {
+                logOutput.CurrentLevel = m_ServicesLogLevel;
+            }
+            
             // Analytics
             var assembly = Assembly.GetExecutingAssembly();
             Debug.Log($"Adding assembly to API Headers: {assembly.FullName}.");
@@ -32,14 +43,14 @@ namespace Unity.ReferenceProject
                 .AddDefaultPkceAuthenticator(playerSettings, playerSettings)
                 .Build();
 
-            var compositeAuthenticator = new CompositeAuthenticator(compositeAuthenticatorSettings);
+            m_CompositeAuthenticator = new CompositeAuthenticator(compositeAuthenticatorSettings);
             var cloudConfiguration = UnityRuntimeServiceHostConfigurationFactory.Create();
-            var serviceHttpClient = new ServiceHttpClient(httpClient, compositeAuthenticator, playerSettings);
+            var serviceHttpClient = new ServiceHttpClient(httpClient, m_CompositeAuthenticator, playerSettings);
 
             var cloudWorkspaceRepository = new CloudWorkspaceRepository(serviceHttpClient, cloudConfiguration);
             
             Container.Bind(typeof(IAuthenticator), typeof(IUrlRedirectionAuthenticator), typeof(IAuthenticationStateProvider), typeof(IAccessTokenProvider))
-                .FromInstance(compositeAuthenticator).AsSingle();
+                .FromInstance(m_CompositeAuthenticator).AsSingle();
             Container.Bind<ServiceHostConfiguration>().FromInstance(cloudConfiguration).AsSingle();
             Container.Bind<IAppIdProvider>().FromInstance(playerSettings).AsSingle();
             Container.Bind<IServiceHttpClient>().FromInstance(serviceHttpClient).AsSingle();
@@ -56,18 +67,20 @@ namespace Unity.ReferenceProject
             var clipboard = ClipboardFactory.Create();
             Container.Bind<IClipboard>().FromInstance(clipboard).AsSingle();
 
-            var monitoringClient = new ServiceMessagingClient(WebSocketClientFactory.Create(), compositeAuthenticator, playerSettings);
-            var joinerClient = new ServiceMessagingClient(WebSocketClientFactory.Create(), compositeAuthenticator, playerSettings);
-            var presenceManager = new PresenceManager(monitoringClient, joinerClient, new Uri(cloudConfiguration.GetServiceAddress(ServiceProtocol.WebSocketSecure, "presence")));
+            m_MonitoringClient = new ServiceMessagingClient(WebSocketClientFactory.Create(), m_CompositeAuthenticator, playerSettings);
+            m_JoinerClient = new ServiceMessagingClient(WebSocketClientFactory.Create(), m_CompositeAuthenticator, playerSettings);
+            var presenceManager = new PresenceManager(m_MonitoringClient, m_JoinerClient, new Uri(cloudConfiguration.GetServiceAddress(ServiceProtocol.WebSocketSecure, "presence")));
             Container.Bind(typeof(IRoomProvider<Room>), typeof(ISessionProvider)).FromInstance(presenceManager).AsSingle();
 
-            foreach (var logOutput in LogOutputs.Outputs)
-            {
-                logOutput.CurrentLevel = LogLevel.Warning;
-            }
-            
             var sceneWorkspaceProvider = new SceneWorkspaceProvider(cloudWorkspaceRepository);
             Container.Bind<SceneWorkspaceProvider>().FromInstance(sceneWorkspaceProvider).AsSingle();
+        }
+        
+        void OnDestroy()
+        {
+            m_CompositeAuthenticator.Dispose();
+            m_MonitoringClient.Dispose();
+            m_JoinerClient.Dispose();
         }
     }
 }

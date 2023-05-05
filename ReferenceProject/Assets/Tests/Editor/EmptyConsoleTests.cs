@@ -19,7 +19,8 @@ namespace Unity.ReferenceProject.Tests.Editor
             "Running tests for editmode",
             "With test categories:",
             "With test settings file:",
-            "Executing tests with settings:"
+            "Executing tests with settings:",
+            "Packages/com.unity.dt.app-ui/PackageResources/Styles/Components/ColorWheel.uss"
         };
         LogEntriesWrapper m_LogEntriesWrapper;
 

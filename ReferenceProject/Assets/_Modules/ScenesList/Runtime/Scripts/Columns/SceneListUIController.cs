@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Unity.Cloud.Common;
 using Unity.ReferenceProject.UITableListView;
 using UnityEngine;
+using UnityEngine.Dt.App.UI;
 using UnityEngine.UIElements;
 using Zenject;
 using Button = UnityEngine.Dt.App.UI.Button;
@@ -77,7 +77,7 @@ namespace Unity.ReferenceProject.ScenesList
 
             if (m_Table != null && m_Table?.ListView != null)
             {
-                m_Table.ListView.onSelectionChange -= OnSelectionChange;
+                m_Table.ListView.bindItem -= OnBindItem;
             }
         }
 
@@ -111,8 +111,8 @@ namespace Unity.ReferenceProject.ScenesList
 
             m_RefreshButton.clicked += Refresh;
 
-            m_Table.ListView.onSelectionChange += OnSelectionChange;
-            
+            m_Table.ListView.bindItem += OnBindItem;
+
             var scrollView = m_Table.Q<ScrollView>();
             m_Table.ListView.RegisterCallback<WheelEvent>((evt) =>
                 {
@@ -135,13 +135,11 @@ namespace Unity.ReferenceProject.ScenesList
             }
         }
 
-        void OnSelectionChange(IEnumerable<object> selections)
+        void OnBindItem(VisualElement element, int index)
         {
-            var selection = selections.FirstOrDefault();
-            if (selection is IScene scene)
-            {
-                ProjectSelected?.Invoke(scene);
-            }
+            var scene = m_Table.ListView.itemsSource[index] as IScene;
+            var pressable = new Pressable(() => ProjectSelected?.Invoke(scene));
+            element.AddManipulator(pressable);
         }
 
         IColumnEventData[] AllColumns

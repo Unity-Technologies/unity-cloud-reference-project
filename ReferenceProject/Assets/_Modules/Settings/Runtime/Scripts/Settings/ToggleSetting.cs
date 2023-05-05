@@ -38,7 +38,6 @@ namespace Unity.ReferenceProject.Settings
             m_Toggle = new Toggle
             {
                 label = null,
-                emphasized = true,
                 size = Size.L
             };
 

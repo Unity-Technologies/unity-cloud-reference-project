@@ -7,36 +7,19 @@ namespace Unity.ReferenceProject.Instructions
     public abstract class InstructionUIEntry : MonoBehaviour
     {
         [SerializeField]
-        UIDocument m_UIDocument;
-
-        [SerializeField]
-        VisualTreeAsset m_TemplateUI;
-
-        [SerializeField]
-        string m_UIContainerName;
-        VisualElement m_Container;
-
-        VisualElement m_Instance;
+        VisualTreeAsset m_Template;
+        
+        VisualElement m_InstructionsInstance;
 
         protected abstract bool IsSupportPlatform { get; }
 
-        void OnEnable()
+        public void AddInstructions(VisualElement container)
         {
-            if (IsSupportPlatform)
-            {
-                m_Instance ??= m_TemplateUI.Instantiate();
-                m_Container = m_UIDocument.rootVisualElement.Q<VisualElement>(m_UIContainerName) ?? m_UIDocument.rootVisualElement;
-                m_Container.Add(m_Instance);
-            }
-        }
+            if (!IsSupportPlatform)
+                return;
 
-        void OnDisable()
-        {
-            if (m_Container != null && m_Instance != null)
-            {
-                m_Container.Remove(m_Instance);
-                m_Container = null;
-            }
+            var instructions = m_InstructionsInstance ??= m_Template.Instantiate();
+            container.Add(instructions);
         }
     }
 }

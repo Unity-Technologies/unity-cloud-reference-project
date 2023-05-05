@@ -75,9 +75,7 @@ namespace Unity.ReferenceProject.Presence
                 return;
             }
 
-            m_CurrentRoom = await m_RoomProvider.GetRoomAsync((string)sceneId);
-
-            await m_CurrentRoom.StartMonitoringAsync(new NoRetryPolicy(), CancellationToken.None);
+            m_CurrentRoom = await m_RoomProvider.GetRoomAsync(sceneId);
 
             await m_CurrentRoom.JoinAsync(new NoRetryPolicy(), CancellationToken.None);
             
@@ -90,7 +88,7 @@ namespace Unity.ReferenceProject.Presence
                 return;
             
             await m_CurrentRoom.LeaveAsync();
-            await m_CurrentRoom.StopMonitoringAsync(new NoRetryPolicy(), CancellationToken.None);
+            //await m_CurrentRoom.StopMonitoringAsync(new NoRetryPolicy(), CancellationToken.None);
             m_CurrentRoom = null;
 
             RoomLeft?.Invoke();
@@ -108,7 +106,7 @@ namespace Unity.ReferenceProject.Presence
         }
 
         
-        public Participant GetParticipantFromID(string id)
+        public IParticipant GetParticipantFromID(ParticipantId id)
         {
             return m_CurrentRoom.ConnectedParticipants.FirstOrDefault(p => p.Id == id);
         }

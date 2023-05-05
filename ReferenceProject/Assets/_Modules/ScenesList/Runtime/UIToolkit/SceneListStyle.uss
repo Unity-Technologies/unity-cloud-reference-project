@@ -95,7 +95,9 @@
     text-overflow: ellipsis;
 }
 
-.project-list-cell-margin {
+.project-list-cell {
+    align-content: flex-start;
+    flex-direction: row;
     margin-right: 12px;
     margin-left: 12px;
 }

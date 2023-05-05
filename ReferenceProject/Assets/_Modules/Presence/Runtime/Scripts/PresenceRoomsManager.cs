@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Unity.Cloud.Common;
@@ -9,46 +8,35 @@ using Unity.Cloud.Presence;
 using Unity.Cloud.Presence.Runtime;
 using Unity.Cloud.Storage;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Zenject;
 
 namespace Unity.ReferenceProject.Presence
 {
     public sealed class PresenceRoomsManager : MonoBehaviour, IDisposable
     {
-        readonly List<Room> m_Rooms = new();
-        readonly Dictionary<Room, AvatarBadgesContainer> m_AvatarBadgesContainers = new();
+        readonly Dictionary<SceneId, Room> m_Rooms = new();
         IRoomProvider<Room> m_RoomProvider;
         IAuthenticationStateProvider m_AuthenticationStateProvider;
-        IWorkspaceRepository m_WorkspaceRepository;
-        
-        Room m_CurrentRoom;
-        
-        List<IWorkspace> m_CurrentWorkspaces;
 
         CancellationTokenSource m_CancellationTokenSource;
         CancellationToken CancellationToken => m_CancellationTokenSource.Token;
-        public event Func<IWorkspace, Task> WorkspaceSelected;
-        public event Action<Room> RoomJoined;
-        public event Action RoomLeft;
 
-        SceneId m_SceneId = SceneId.None;
+        ISceneProvider m_SceneProvider;
 
         [Inject]
-        public void Setup(IRoomProvider<Room> roomProvider, IWorkspaceRepository workspaceRepository, IAuthenticationStateProvider authenticationStateProvider)
+        public void Setup(IRoomProvider<Room> roomProvider, IAuthenticationStateProvider authenticationStateProvider, ISceneProvider sceneProvider)
         {
             m_RoomProvider = roomProvider;
-            m_WorkspaceRepository = workspaceRepository;
+            m_SceneProvider = sceneProvider;
             m_AuthenticationStateProvider = authenticationStateProvider;
         }
 
         public async void OnEnable()
         {
             m_AuthenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
-            WorkspaceSelected += OnWorkspaceSelected;
 
-            // Update UI with current state
-            await ApplyAuthenticationState(m_AuthenticationStateProvider.AuthenticationState);
+            // Update rooms
+            await ApplyAuthenticationStateAsync(m_AuthenticationStateProvider.AuthenticationState);
         }
 
         public async void OnDisable()
@@ -56,7 +44,6 @@ namespace Unity.ReferenceProject.Presence
             await ResetRoom();
 
             m_AuthenticationStateProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
-            WorkspaceSelected -= OnWorkspaceSelected;
 
             if (m_CancellationTokenSource != null && CancellationToken.CanBeCanceled)
                 m_CancellationTokenSource.Cancel();
@@ -64,15 +51,15 @@ namespace Unity.ReferenceProject.Presence
 
         void OnAuthenticationStateChanged(AuthenticationState newAuthenticationState)
         {
-            ApplyAuthenticationState(newAuthenticationState).ConfigureAwait(false);
+           _ = ApplyAuthenticationStateAsync(newAuthenticationState).ConfigureAwait(false);
         }
 
-        async Task ApplyAuthenticationState(AuthenticationState state)
+        async Task ApplyAuthenticationStateAsync(AuthenticationState state)
         {
             switch (state)
             {
                 case AuthenticationState.LoggedIn:
-                    await PopulateWorkspaces();
+                    await StartMonitoringAllRoomsAsync();
                     break;
                 case AuthenticationState.LoggedOut:
                     await ResetRoom();
@@ -80,61 +67,33 @@ namespace Unity.ReferenceProject.Presence
             }
         }
 
-        async Task PopulateWorkspaces()
+        async Task StartMonitoringAllRoomsAsync()
         {
             await ResetRoom();
-
-            var workspaces = m_WorkspaceRepository.ListWorkspacesAsync(Range.All);
-            var list = new List<IWorkspace>();
-            await foreach (var workspace in workspaces)
-            {
-                list.Add(workspace);
-            }
-
-            m_CurrentWorkspaces = list;
-        }
-
-        async Task OnWorkspaceSelected(IWorkspace workspace)
-        {
-            await ResetRoom();
-
-            var scenes = await workspace.ListScenesAsync();
-            var sceneList = scenes.ToList();
-
+            
+            var sceneList = await m_SceneProvider.ListScenesAsync();
+            
             foreach (var scene in sceneList)
             {
-                var room = await m_RoomProvider.GetRoomAsync((string)scene.Id);
-
-                if (!m_Rooms.Contains(room))
-                {
-                    m_Rooms.Add(room);
-                    await StartMonitoringRoomAsync(room);
-                }
+                var room = await m_RoomProvider.GetRoomAsync(scene.Id);
+            
+                if (room == null)
+                    continue;
+                
+                m_Rooms[scene.Id] = room;
             }
-        }
-        
-        public void OnWorkspaceOptionChanged(ChangeEvent<int> changeEvent)
-        {
-            if (m_CurrentWorkspaces.Count > 0)
+
+            foreach (var room in m_Rooms)
             {
-                var workspace = m_CurrentWorkspaces[changeEvent.newValue];
-                WorkspaceSelected?.Invoke(workspace);
+                await StartMonitoringRoomAsync(room.Value);
             }
         }
 
         async Task ResetRoom()
         {
-            if (m_CurrentRoom != null)
-            {
-                await LeaveRoom();
-                m_CurrentRoom = null;
-            }
-
-            bool notifyRoom = true;
-
             foreach (var room in m_Rooms)
             {
-                notifyRoom = await StopMonitoringRoomAsync(room, notifyRoom);
+                await StopMonitoringRoomAsync(room.Value);
             }
 
             m_Rooms.Clear();
@@ -146,94 +105,20 @@ namespace Unity.ReferenceProject.Presence
             {
                 ManageCancellation();
                 IRetryPolicy retryPolicy = new ExponentialBackoffRetryPolicy();
-                var result = await HandleRetryQueuedAndExecuteAction(() => room.StartMonitoringAsync(retryPolicy, CancellationToken));
-
-                if (result && m_AvatarBadgesContainers.TryGetValue(room, out AvatarBadgesContainer container))
-                {
-                    BindRoomEventsToAvatarBadgesContainer(room, container);
-                }
+                await HandleRetryQueuedAndExecuteAction(() => room.StartMonitoringAsync(retryPolicy, CancellationToken));
             }
         }
 
-        async Task<bool> StopMonitoringRoomAsync(Room room, bool notifyRoom = true)
+        async Task StopMonitoringRoomAsync(Room room)
         {
             if (room != null)
             {
-                UnBindRoomEventsToAvatarBadgesContainer(room);
-
-                if (notifyRoom)
-                {
-                    ManageCancellation();
-                    IRetryPolicy retryPolicy = new ExponentialBackoffRetryPolicy();
-                    return await HandleRetryQueuedAndExecuteAction(() =>
-                        room.StopMonitoringAsync(retryPolicy, CancellationToken));
-                }
-            }
-
-            return false;
-        }
-
-        async Task JoinRoom(SceneId sceneId)
-        {
-            if (m_CurrentRoom != null)
-            {
-                Debug.LogError("Previous Room needs to be leaved before entering a new one.");
-                return;
-            }
-            
-            if (sceneId == SceneId.None)
-            {
-                Debug.LogError("No SceneId Provided.");
-                return;
-            }
-
-            ManageCancellation();
-
-            m_CurrentRoom = await m_RoomProvider.GetRoomAsync((string)sceneId);
-            
-            // No need to retry in this sample
-            IRetryPolicy retryPolicy = new NoRetryPolicy();
-            var result = await HandleRetryQueuedAndExecuteAction(() => m_CurrentRoom.JoinAsync(retryPolicy, CancellationToken));
-
-            if (result)
-            {
-                RoomJoined?.Invoke(m_CurrentRoom);
+                ManageCancellation();
+                IRetryPolicy retryPolicy = new ExponentialBackoffRetryPolicy();
+                await HandleRetryQueuedAndExecuteAction(() => room.StopMonitoringAsync(retryPolicy, CancellationToken));
             }
         }
-
-        async Task LeaveRoom()
-        {
-            if (m_CurrentRoom == null)
-            {
-                Debug.LogError("Unable to leave Room since none has been joined.");
-                return;
-            }
-            
-            await m_CurrentRoom.LeaveAsync();
-            m_CurrentRoom = null;
-
-            RoomLeft?.Invoke();
-        }
-
-        async void OnJoinRoom()
-        {
-            if (m_CurrentRoom != null)
-            {
-                await LeaveRoom();
-            }
-
-            await JoinRoom(m_SceneId);
-        }
-
-        void OnSceneSelected(IScene scene)
-        {
-            m_SceneId = SceneId.None;
-            
-            if (scene != null)
-            {
-                m_SceneId = scene.Id;
-            }
-        }
+        
 
         void ManageCancellation()
         {
@@ -243,16 +128,15 @@ namespace Unity.ReferenceProject.Presence
             m_CancellationTokenSource = new CancellationTokenSource();
         }
 
-        async Task<bool> HandleRetryQueuedAndExecuteAction(Func<Task> action)
+        async Task HandleRetryQueuedAndExecuteAction(Func<Task> action)
         {
             try
             {
                 await action();
-                return true;
             }
-            catch
+            catch (Exception e)
             {
-                return false;
+                Debug.LogError(e);
             }
             finally
             {
@@ -261,56 +145,9 @@ namespace Unity.ReferenceProject.Presence
             }
         }
 
-        public int ConnectedParticipantsForScene(IScene scene)
+        public Room GetRoomForScene(SceneId sceneId)
         {
-            if (m_Rooms.Where(x => x.RoomId == scene.Id.ToString()) is Room room)
-            {
-                return room.ConnectedParticipants.Count;
-            }
-
-            return 0;
-        }
-
-        public string GetParticipantNameFromID(string id)
-        {
-            var participant = m_CurrentRoom.ConnectedParticipants.FirstOrDefault(p => p.Id == id);
-            if (!string.IsNullOrEmpty(participant.Name))
-                return participant.Name;
-
-            return null;
-        }
-
-        public void BindRoomEventsToAvatarBadgesContainer(SceneId id, AvatarBadgesContainer container)
-        {
-            var room = m_Rooms.FirstOrDefault(x => x.RoomId == id.ToString());
-            if (room == null)
-                return;
-            BindRoomEventsToAvatarBadgesContainer(room, container);
-        }
-
-        public void BindRoomEventsToAvatarBadgesContainer(Room room, AvatarBadgesContainer container)
-        {
-            if (m_AvatarBadgesContainers.ContainsKey(room))
-            {
-                UnBindRoomEventsToAvatarBadgesContainer(room);
-                m_AvatarBadgesContainers[room] = container;
-            }
-            else
-                m_AvatarBadgesContainers.Add(room, container);
-            
-            container.AddParticipants(room.ConnectedParticipants);
-            room.ParticipantAdded += container.AddParticipant;
-            room.ParticipantRemoved += container.RemoveParticipant;
-        }
-
-        void UnBindRoomEventsToAvatarBadgesContainer(Room room)
-        {
-            if (room != null && m_AvatarBadgesContainers.TryGetValue(room, out var container))
-            {
-                container.ClearParticipants();
-                room.ParticipantAdded -= container.AddParticipant;
-                room.ParticipantRemoved -= container.RemoveParticipant;
-            }
+            return m_Rooms.ContainsKey(sceneId) ? m_Rooms[sceneId] : null;
         }
 
         public void Dispose()

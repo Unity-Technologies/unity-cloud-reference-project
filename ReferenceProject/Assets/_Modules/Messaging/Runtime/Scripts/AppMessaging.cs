@@ -35,9 +35,9 @@ namespace Unity.ReferenceProject.Messaging
             BuildToastMessage(MainUIPanel.Instance.Panel, message, NotificationStyle.Negative, NotificationDuration.Long, dismissable, args).Show();
         }
 
-        public virtual void ShowException(Exception exception, string message = null, params object[] args)
+        public virtual void ShowException(Exception exception, string title = null, params object[] args)
         {
-            BuildExceptionDialog(MainUIPanel.Instance.Panel, exception, message, args).Show();
+            BuildExceptionDialog(MainUIPanel.Instance.Panel, exception, title, args).Show();
         }
 
         public virtual void ShowDialog(string title, string message, string cancelButtonLabel, Action cancelCallback = null,
@@ -77,7 +77,7 @@ namespace Unity.ReferenceProject.Messaging
 
         protected static Toast BuildToastMessage(VisualElement panel, string message, NotificationStyle style, NotificationDuration duration, bool dismissable, params object[] args)
         {
-            Debug.Log(message);
+            LogToConsole(message, style);
 
             var toast = Toast.Build(panel, message, dismissable ? NotificationDuration.Indefinite : duration)
                 .SetStyle(style);
@@ -95,13 +95,13 @@ namespace Unity.ReferenceProject.Messaging
             return toast;
         }
 
-        protected static Modal BuildExceptionDialog(VisualElement panel, Exception exception, string message = null, params object[] args)
+        protected static Modal BuildExceptionDialog(VisualElement panel, Exception exception, string title = null, params object[] args)
         {
             Debug.LogException(exception);
 
             var dialog = new Dialog
             {
-                title = "@ReferenceProject:ExceptionTitle",
+                title = string.IsNullOrEmpty(title) ? "@ReferenceProject:ExceptionTitle" : title,
                 description = ConstructExceptionMessage(exception),
                 dismissable = true
             };
@@ -136,6 +136,22 @@ namespace Unity.ReferenceProject.Messaging
             }
 
             return stringBuilder.ToString();
+        }
+
+        static void LogToConsole(string str, NotificationStyle style)
+        {
+            switch (style)
+            {
+                case NotificationStyle.Negative:
+                    Debug.LogError(str);
+                    break;
+                case NotificationStyle.Warning:
+                    Debug.LogWarning(str);
+                    break;
+                default:
+                    Debug.Log(str);
+                    break;
+            }
         }
     }
 }
