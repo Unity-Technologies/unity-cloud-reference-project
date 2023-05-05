@@ -4,6 +4,7 @@
 }
 
 .fps-header {
+    color: white;
 }
 
 .fps-value {
@@ -15,7 +16,7 @@
 .fps-entries {
     flex-direction: column;
     border-radius: 10px;
-    background-color: var(--appui-transparent-backgrounds-800);
+    background-color: rgba(0,0,0,0.9);
     padding: 5px;
     margin: 10px;
     width: 100px;
