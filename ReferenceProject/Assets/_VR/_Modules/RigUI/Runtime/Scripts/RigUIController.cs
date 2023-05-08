@@ -124,6 +124,8 @@ namespace Unity.ReferenceProject.VR.RigUI
         {
             if (m_RigUIBarPanel != null)
             {
+                ClearSecondaryBar();
+
                 m_MainBarButtons = null;
                 m_MaxSecondaryBarButton = 0;
                 m_LastResetPosition = m_RigUIBarPanel.transform.localPosition;

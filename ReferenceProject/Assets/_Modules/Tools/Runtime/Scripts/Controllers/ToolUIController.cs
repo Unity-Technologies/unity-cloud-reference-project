@@ -99,7 +99,7 @@ namespace Unity.ReferenceProject.Tools
             m_RootVisualElement = visualElement;
         }
 
-        void RegisterCallbacks(VisualElement visualElement)
+        protected virtual void RegisterCallbacks(VisualElement visualElement)
         {
             visualElement.RegisterCallback<PointerEnterEvent>(OnPointerEntered);
             visualElement.RegisterCallback<PointerLeaveEvent>(OnPointerExited);
@@ -107,7 +107,7 @@ namespace Unity.ReferenceProject.Tools
             visualElement.RegisterCallback<FocusOutEvent>(OnFocusOut);
         }
 
-        void UnregisterCallbacks(VisualElement visualElement)
+        protected virtual void UnregisterCallbacks(VisualElement visualElement)
         {
             visualElement.UnregisterCallback<PointerEnterEvent>(OnPointerEntered);
             visualElement.UnregisterCallback<PointerLeaveEvent>(OnPointerExited);

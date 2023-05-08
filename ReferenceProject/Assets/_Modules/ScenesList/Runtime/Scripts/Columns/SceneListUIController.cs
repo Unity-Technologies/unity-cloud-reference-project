@@ -16,40 +16,40 @@ namespace Unity.ReferenceProject.ScenesList
     {
         [SerializeField]
         UIDocument m_UIDocument;
-        
+
         // TODO: remove this because in VR we do not have uiDocument reference
         public UIDocument UIDocument => m_UIDocument;
 
         Button m_RefreshButton;
 
         VisualElement m_RootVisualElement;
-        
+
         readonly List<object> m_PrimaryKeyData = new();
-        
+
         IMGUIContainer m_CurrentDisplayArrow;
-        
+
         VisualElement m_LoadingIndicator;
         TableListView m_Table;
-        
+
         ListTableServiceController m_ListTableServiceController;
 
         [SerializeField]
         float m_ScrollFactor = 100;
-        
+
         [SerializeField]
         string[] m_HeaderStyles;
-        
+
         [SerializeField]
         string[] m_RowStyles;
 
         SceneWorkspaceProvider m_SceneWorkspaceProvider;
-        
+
         Task m_Task;
-        
+
         static readonly string k_RefreshButton = "refresh-button";
         static readonly string k_LoadingIndicator = "loading";
         static readonly string k_Table = "table-scene-list";
-        
+
         public event Action<IScene> ProjectSelected;
 
         [Inject]
@@ -60,14 +60,12 @@ namespace Unity.ReferenceProject.ScenesList
 
         void Start()
         {
-            m_ListTableServiceController = new ListTableServiceController(this, GetComponents<IService>());
-            
             if (m_UIDocument != null)
             {
                 InitUIToolkit(m_UIDocument.rootVisualElement);
             }
         }
-        
+
         void OnDestroy()
         {
             if (m_RefreshButton != null)
@@ -83,9 +81,9 @@ namespace Unity.ReferenceProject.ScenesList
 
         public void InitUIToolkit(VisualElement rootVisualElement)
         {
-            if(rootVisualElement == null)
+            if (rootVisualElement == null)
                 return;
-            
+
             m_RootVisualElement = rootVisualElement;
 
             // UIToolkit
@@ -98,11 +96,13 @@ namespace Unity.ReferenceProject.ScenesList
                 Debug.LogError($"Can't find {nameof(Button)} with name: {k_RefreshButton} at root: {rootVisualElement.name}");
                 return;
             }
+
             if (m_LoadingIndicator == null)
             {
                 Debug.LogError($"Can't find {nameof(VisualElement)} with name: {k_LoadingIndicator} at root: {rootVisualElement.name}");
                 return;
             }
+
             if (m_Table == null)
             {
                 Debug.LogError($"Can't find {nameof(TableListView)} with name: {k_Table} at root: {rootVisualElement.name}");
@@ -121,6 +121,7 @@ namespace Unity.ReferenceProject.ScenesList
                 }
             );
 
+            m_ListTableServiceController = new ListTableServiceController(this, GetComponents<IService>());
             m_ListTableServiceController.Initialize(m_RootVisualElement, m_Table, m_LoadingIndicator, AllColumns);
             m_ListTableServiceController.itemsSource = m_PrimaryKeyData;
 
@@ -128,11 +129,16 @@ namespace Unity.ReferenceProject.ScenesList
             {
                 m_Table.AddStyleToHeader(headerStyle);
             }
-            
+
             foreach (var rowStyle in m_RowStyles)
             {
                 m_Table.AddStyleToRow(rowStyle);
             }
+        }
+
+        public void SetVisibility(bool isVisible)
+        {
+            SetVisibility(m_RootVisualElement, isVisible);
         }
 
         void OnBindItem(VisualElement element, int index)
@@ -161,23 +167,23 @@ namespace Unity.ReferenceProject.ScenesList
         {
             StartCoroutine(UpdateData());
         }
-        
+
         IEnumerator UpdateData()
         {
             if (m_Task != null && !m_Task.IsCompleted)
             {
                 yield break;
             }
-            
-            SetVisibility(m_LoadingIndicator, true);  // Show loading indicator
-            SetVisibility(m_Table, false);  // Hide list
-            
+
+            SetVisibility(m_LoadingIndicator, true); // Show loading indicator
+            SetVisibility(m_Table, false); // Hide list
+
             m_Task = RefreshServicesAsync();
             yield return new WaitWhile(() => !m_Task.IsCompleted);
 
             // Hide loading indicator
             SetVisibility(m_LoadingIndicator, false);
-            SetVisibility(m_Table, true);  // Hide list
+            SetVisibility(m_Table, true); // Hide list
 
             OnPrimaryKeyUpdate();
         }
@@ -213,11 +219,6 @@ namespace Unity.ReferenceProject.ScenesList
             {
                 visualElement.style.display = isVisible ? DisplayStyle.Flex : DisplayStyle.None;
             }
-        }
-
-        public void SetVisibility(bool isVisible)
-        {
-            SetVisibility(m_RootVisualElement, isVisible);
         }
     }
 }

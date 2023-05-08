@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Dt.App.UI;
 using UnityEngine.UIElements;
@@ -11,7 +10,7 @@ namespace Unity.ReferenceProject.Instructions
     {
         [SerializeField]
         UIDocument m_UIDocument;
-        
+
         [SerializeField]
         VisualTreeAsset m_InstructionsPanelAsset;
 
@@ -23,9 +22,11 @@ namespace Unity.ReferenceProject.Instructions
 
         public event Action<bool> InstructionPanelEnabled;
         public event Action<bool> InstructionsAvailable;
-        public bool IsInstructionsEnabled => m_UIDocument && m_UIDocument.rootVisualElement.style.display == DisplayStyle.Flex;
+        public bool IsInstructionsEnabled => m_IsEnabled;
+        public CheckboxState GetCheckboxValue() => PlayerPrefs.GetInt(m_PlayerPrefsKey, 0) == 0 ? CheckboxState.Unchecked : CheckboxState.Checked;
 
         Checkbox m_CheckboxDontShowAgain;
+        bool m_IsEnabled = true;
 
         static readonly string k_CheckboxDontShowAgain = "Checkbox_dont-show-again";
         static readonly string k_ButtonClose = "Button-close";
@@ -34,12 +35,19 @@ namespace Unity.ReferenceProject.Instructions
 
         void Start()
         {
-            InitializeUI(m_UIDocument);
+            if (m_UIDocument != null)
+            {
+                InitializeUI(m_UIDocument);
+                if (GetCheckboxValue() != CheckboxState.Unchecked)
+                {
+                    SetVisiblePanel(false);
+                }
+            }
         }
-        
+
         public void InitializeUI(UIDocument uiDocument)
         {
-            if(uiDocument == null)
+            if (uiDocument == null)
                 return;
 
             m_UIDocument = uiDocument;
@@ -50,19 +58,19 @@ namespace Unity.ReferenceProject.Instructions
             {
                 root = panel;
             }
-            
+
             var template = m_InstructionsPanelAsset.Instantiate();
             template.pickingMode = PickingMode.Ignore;
             template.style.flexGrow = 1;
             template.style.flexShrink = 0;
-            
+
             root.Add(template);
 
             m_CheckboxDontShowAgain = root.Q<Checkbox>(k_CheckboxDontShowAgain);
             var buttonClose = root.Q<Button>(k_ButtonClose);
             var textHeader = root.Q<Text>(k_TextHeader);
             var instructionPageView = template.Q<VisualElement>(k_InstructionsContainer);
-            
+
             if (buttonClose != null)
             {
                 buttonClose.clicked += OnButtonCloseClicked;
@@ -93,7 +101,7 @@ namespace Unity.ReferenceProject.Instructions
                 Debug.LogWarning(
                     $"{nameof(Text)} {nameof(textHeader)} has not been found by key {k_TextHeader} at {nameof(UIDocument)}.");
             }
-            
+
             if (instructionPageView != null)
             {
                 InitializeEntries(instructionPageView);
@@ -104,7 +112,7 @@ namespace Unity.ReferenceProject.Instructions
                     $"{nameof(VisualElement)} {nameof(instructionPageView)} has not been found by key {k_InstructionsContainer} at {nameof(UIDocument)}.");
             }
         }
-        
+
         void InitializeEntries(VisualElement container)
         {
             if (container != null)
@@ -123,7 +131,6 @@ namespace Unity.ReferenceProject.Instructions
             }
             else
             {
-                SetVisiblePanel(GetCheckboxValue() == CheckboxState.Unchecked);
                 InstructionsAvailable?.Invoke(true);
             }
         }
@@ -135,6 +142,8 @@ namespace Unity.ReferenceProject.Instructions
                 m_UIDocument.rootVisualElement.style.display = new StyleEnum<DisplayStyle>(isVisible ? DisplayStyle.Flex : DisplayStyle.None);
             }
 
+            m_IsEnabled = isVisible;
+
             InstructionPanelEnabled?.Invoke(isVisible);
 
             if (isVisible)
@@ -142,17 +151,15 @@ namespace Unity.ReferenceProject.Instructions
                 UpdateCheckboxDontShowAgain();
             }
         }
-        
+
         void UpdateCheckboxDontShowAgain()
         {
             if (m_CheckboxDontShowAgain != null)
             {
-                m_CheckboxDontShowAgain.SetValueWithoutNotify( GetCheckboxValue() );
+                m_CheckboxDontShowAgain.SetValueWithoutNotify(GetCheckboxValue());
             }
         }
-        
-        public CheckboxState GetCheckboxValue() => PlayerPrefs.GetInt(m_PlayerPrefsKey, 0) == 0 ? CheckboxState.Unchecked : CheckboxState.Checked;
-        
+
         void OnToggleValueChanged(ChangeEvent<CheckboxState> evt) => PlayerPrefs.SetInt(m_PlayerPrefsKey, evt.newValue == CheckboxState.Checked ? 1 : 0);
 
         void OnButtonCloseClicked() => SetVisiblePanel(false);

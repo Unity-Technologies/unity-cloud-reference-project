@@ -13,19 +13,41 @@ namespace Unity.ReferenceProject.Metadata
         MetadataDisplayController m_Controller;
 
         IAppMessaging m_AppMessaging;
-        
+
         [Inject]
         void Setup(IAppMessaging appMessaging)
         {
             m_AppMessaging = appMessaging;
         }
-        
+
         protected override VisualElement CreateVisualTree(VisualTreeAsset template)
         {
             var rootVisualElement = base.CreateVisualTree(template);
             m_Controller.Initialize(rootVisualElement);
 
             return rootVisualElement;
+        }
+
+        protected override void RegisterCallbacks(VisualElement visualElement)
+        {
+            var searchInput = visualElement.Q("search-input");
+            searchInput.RegisterCallback<FocusInEvent>(OnFocusIn);
+            searchInput.RegisterCallback<FocusOutEvent>(OnFocusOut);
+
+            var parameterList = visualElement.Q("ParameterList");
+            parameterList.RegisterCallback<PointerEnterEvent>(OnPointerEntered);
+            parameterList.RegisterCallback<PointerLeaveEvent>(OnPointerExited);
+        }
+
+        protected override void UnregisterCallbacks(VisualElement visualElement)
+        {
+            var searchInput = visualElement.Q("search-input");
+            searchInput.UnregisterCallback<FocusInEvent>(OnFocusIn);
+            searchInput.UnregisterCallback<FocusOutEvent>(OnFocusOut);
+
+            var parameterList = visualElement.Q("ParameterList");
+            parameterList.UnregisterCallback<PointerEnterEvent>(OnPointerEntered);
+            parameterList.UnregisterCallback<PointerLeaveEvent>(OnPointerExited);
         }
 
         public override void OnToolOpened()

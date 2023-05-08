@@ -34,7 +34,7 @@ namespace Unity.ReferenceProject.UITableListView
             m_FilterSingleUI = null;
             if (m_FilterBindNode != null)
             {
-                m_FilterBindNode.selectedOption = null;
+                m_FilterBindNode.SelectedOption = null;
             }
             
             m_FilterBindNode = null;

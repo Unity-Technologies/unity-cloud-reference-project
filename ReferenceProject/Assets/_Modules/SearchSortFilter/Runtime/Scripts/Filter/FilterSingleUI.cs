@@ -72,14 +72,14 @@ namespace Unity.ReferenceProject.SearchSortFilter
             if (m_Options == null || evt.newValue >= m_Options.Count)
                 return;
 
-            m_FilterBindNode.selectedOption =
+            m_FilterBindNode.SelectedOption =
                 m_Options[evt.newValue].Equals(m_DefaultValue) ? null : m_Options[evt.newValue];
             OnDropDownChanged?.Invoke();
         }
 
         public void SetDefaultValueWithoutNotify()
         {
-            m_FilterBindNode.selectedOption = null;
+            m_FilterBindNode.SelectedOption = null;
             m_Dropdown.SetValueWithoutNotify(0);
         }
 

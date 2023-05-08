@@ -6,7 +6,8 @@ using Zenject;
 
 namespace Unity.ReferenceProject.VR
 {
-    public class StatDisplayVR : StatsDisplay
+    [RequireComponent(typeof(StatsDisplay))]
+    public class StatDisplayVR : MonoBehaviour
     {
         [SerializeField]
         VisualTreeAsset m_VisualTreeAsset;
@@ -17,6 +18,7 @@ namespace Unity.ReferenceProject.VR
         [SerializeField]
         Vector3 m_Position;
 
+        StatsDisplay m_StatsDisplay;
         PanelController m_Panel;
 
         IRigUIController m_RigUIController;
@@ -29,15 +31,20 @@ namespace Unity.ReferenceProject.VR
             m_PanelManager = panelManager;
         }
 
-        protected override void OnSettingChanged(bool value)
+        void Awake()
         {
-            m_IsEnabled = value;
-            ShowPanel(value);
+            m_StatsDisplay = GetComponent<StatsDisplay>();
+            m_StatsDisplay.OnShowPanel += OnShowPanel;
         }
 
-        protected override void ShowPanel(bool value)
+        void OnDestroy()
         {
-            if (value)
+            m_StatsDisplay.OnShowPanel -= OnShowPanel;
+        }
+
+        void OnShowPanel(bool isVisible)
+        {
+            if (isVisible)
             {
                 if (m_Panel == null)
                 {
@@ -74,14 +81,12 @@ namespace Unity.ReferenceProject.VR
             fpsEntries.style.position = Position.Relative;
             fpsEntries.style.marginLeft = fpsEntries.style.marginRight = new StyleLength(0f);
             fpsEntries.style.backgroundColor = new StyleColor(new Color(0, 0, 0, 0));
-            InitUIToolkit(document);
+            m_StatsDisplay.InitUIToolkit(document);
         }
 
         void OnCloseButtonClicked()
         {
-            m_ToggleSetting.SetValueWithoutNotify(false);
-            m_IsEnabled = false;
-            ShowPanel(false);
+           m_StatsDisplay.ClosePanel();
         }
 
         void OnDockButtonClicked()

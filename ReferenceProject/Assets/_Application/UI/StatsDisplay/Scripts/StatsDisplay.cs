@@ -2,6 +2,7 @@
 using Unity.ReferenceProject.Settings;
 using UnityEngine;
 using UnityEngine.Dt.App.UI;
+using UnityEngine.Events;
 using UnityEngine.UIElements;
 using Zenject;
 
@@ -20,7 +21,7 @@ namespace Unity.ReferenceProject
 
         [SerializeField]
         FrameRateCalculator m_FrameRateCalculator = new();
-        
+
         [Header("UXML")]
         [SerializeField]
         string m_FrameRateElement = "fps-header";
@@ -30,21 +31,22 @@ namespace Unity.ReferenceProject
 
         [SerializeField]
         string m_MaxFrameRateElement = "fps-max-header";
-        
+
         [Header("Localization")]
         [SerializeField]
         string m_FrameRateString = "@ReferenceProject:Settings_FrameRate";
-        
+
+        public event Action<bool> OnShowPanel;
+
         Header m_FrameRateHeader;
         IGlobalSettings m_GlobalSettings;
-
-        protected bool m_IsEnabled;
+        bool m_IsEnabled;
         Header m_MaxFrameRateHeader;
         Header m_MinFrameRateHeader;
 
         VisualElement m_RootVisualElement;
-        protected ToggleSetting m_ToggleSetting;
-        
+        ToggleSetting m_ToggleSetting;
+
         static readonly string s_StatsPrefKey = "ReferenceProject-StatsProject-Enabled";
 
         [Inject]
@@ -95,15 +97,23 @@ namespace Unity.ReferenceProject
             m_FrameRateCalculator.FrameRateRefreshed += OnFrameRateRefreshed;
         }
 
-        protected virtual void OnSettingChanged(bool value)
+        public void ClosePanel()
         {
-            m_IsEnabled = value;
-            SetVisible(m_RootVisualElement, value);
+            m_ToggleSetting.SetValueWithoutNotify(false);
+            m_IsEnabled = false;
+            ShowPanel(false);
         }
 
-        protected virtual void ShowPanel(bool value)
+        void OnSettingChanged(bool value)
+        {
+            m_IsEnabled = value;
+            ShowPanel(value);
+        }
+
+        void ShowPanel(bool value)
         {
             SetVisible(m_RootVisualElement, value);
+            OnShowPanel?.Invoke(value);
         }
 
         bool ToggledValue()
@@ -120,7 +130,10 @@ namespace Unity.ReferenceProject
 
         static void SetVisible(VisualElement element, bool visible)
         {
-            element.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            if (element != null)
+            {
+                element.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            }
         }
 
         void UpdateHeader(Header header, int fps)

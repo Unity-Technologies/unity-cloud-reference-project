@@ -28,12 +28,12 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
 
             var listCached = new List<CustomClass>();
 
-            module.selectedOption = "test0";
+            module.SelectedOption = "test0";
             listCached.AddRange(list);
             module.PerformFiltering(listCached);
             Assert.AreEqual(6, listCached.Count);
 
-            module.selectedOption = "test1";
+            module.SelectedOption = "test1";
             listCached.Clear();
             listCached.AddRange(list);
             module.PerformFiltering(listCached);
@@ -62,12 +62,12 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
 
             var listCached = new List<CustomClass>();
 
-            module.selectedOption = "test0";
+            module.SelectedOption = "test0";
             listCached.AddRange(list);
             module.PerformFiltering(listCached);
             Assert.AreEqual(4, listCached.Count);
 
-            module.selectedOption = "test1";
+            module.SelectedOption = "test1";
             listCached.Clear();
             listCached.AddRange(list);
             module.PerformFiltering(listCached);
@@ -81,7 +81,7 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
 
             var module = new FilterBindNode<CustomClass>(c => c.key, FilterCompareType.Equals);
 
-            module.selectedOption = "0";
+            module.SelectedOption = "0";
             module.PerformFiltering(list);
             Assert.AreEqual(null, list);
 
@@ -102,18 +102,18 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
 
             var listCached = new List<CustomClass>();
 
-            module.selectedOption = null;
+            module.SelectedOption = null;
             listCached.AddRange(list);
             module.PerformFiltering(listCached);
             Assert.AreEqual(2, listCached.Count);
 
-            module.selectedOption = "";
+            module.SelectedOption = "";
             listCached.Clear();
             listCached.AddRange(list);
             module.PerformFiltering(listCached);
             Assert.AreEqual(2, listCached.Count);
 
-            module.selectedOption = " ";
+            module.SelectedOption = " ";
             listCached.Clear();
             listCached.AddRange(list);
             module.PerformFiltering(listCached);
@@ -134,7 +134,7 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
 
             var listCached = new List<CustomClass>();
 
-            module.selectedOption = "emptyResult";
+            module.SelectedOption = "emptyResult";
             listCached.AddRange(list);
             module.PerformFiltering(listCached);
             Assert.AreEqual(0, listCached.Count);
@@ -142,9 +142,7 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
 
         class CustomClass
         {
-            public string group;
             public string key;
-            public string value;
         }
     }
 }

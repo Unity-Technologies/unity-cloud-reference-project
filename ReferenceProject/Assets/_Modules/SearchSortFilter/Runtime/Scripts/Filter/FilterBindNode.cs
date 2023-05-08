@@ -8,7 +8,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
     public class FilterModule<T>
     {
         readonly Dictionary<string, HashSet<string>> SelectedOptions = new();
-        
+
         readonly Dictionary<string, IFilterBindNode<T>> m_AllFilterNodes = new();
 
         public Dictionary<string, IFilterBindNode<T>> AllFilterNodes => m_AllFilterNodes;
@@ -28,7 +28,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
                 SelectedOptions.Add(key, new HashSet<string>());
             SelectedOptions[key].Add(value);
         }
-        
+
         public void RemoveSelectedOption(string key, string value)
         {
             if(SelectedOptions.ContainsKey(key))
@@ -50,13 +50,13 @@ namespace Unity.ReferenceProject.SearchSortFilter
         {
             if (SelectedOptions.Count == 0 || list == null || list.Count == 0)
                 return Task.CompletedTask;
-            
+
             if (m_AllFilterNodes.Count == 0)
             {
                 Debug.LogWarning($"Count of {nameof(IFilterBindNode<T>)}s is 0. Filtering can not be performed without bindings!");
                 return Task.CompletedTask;
             }
-            
+
             int r = list.Count - 1; // Right pointer (Everything right after this - should be removed)
 
             for (int i = list.Count - 1; i >= 0; i--)
@@ -71,7 +71,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
                     }
                 }
             }
-            
+
             // Clean Up everything that right after r
             for (int i = list.Count - 1; i > r; i--)
             {
@@ -81,10 +81,10 @@ namespace Unity.ReferenceProject.SearchSortFilter
             return Task.CompletedTask;
         }
     }
-    
+
     public interface IFilterBindNode<T>
     {
-        string selectedOption { set; }
+        string SelectedOption { get; set; }
         Func<T, string> bindPath { get; }
         Task PerformFiltering(List<T> list);
         bool PerformFiltering(T element, HashSet<string> filterStringSet);
@@ -110,7 +110,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
             m_CompareType = compareType;
         }
 
-        public string selectedOption { get; set; } // if null then no filtering
+        public string SelectedOption { get; set; } // if null then no filtering
         public Func<T, string> bindPath { get; }
 
         public void SetCompareType(FilterCompareType compareType)
@@ -128,14 +128,14 @@ namespace Unity.ReferenceProject.SearchSortFilter
 
         public Task PerformFiltering(List<T> list)
         {
-            if (string.IsNullOrEmpty(selectedOption) || list == null || list.Count == 0)
+            if (string.IsNullOrEmpty(SelectedOption) || list == null || list.Count == 0)
                 return Task.CompletedTask;
 
             var r = list.Count - 1; // Right pointer (Everything right after this - should be removed)
 
             for (var i = list.Count - 1; i >= 0; i--)
             {
-                if (!m_CompareFormula((bindPath(list[i]), selectedOption)))
+                if (!m_CompareFormula((bindPath(list[i]), SelectedOption)))
                 {
                     (list[r], list[i]) = (list[i], list[r]); // Swap not visible to the end of list
                     r--;
@@ -147,14 +147,14 @@ namespace Unity.ReferenceProject.SearchSortFilter
             {
                 list.RemoveAt(i);
             }
-            
+
             return Task.CompletedTask;
         }
 
         public bool PerformFiltering(T element, HashSet<string> filterStringSet)
         {
             bool contains = filterStringSet.Contains(bindPath(element));
-            
+
             switch (m_CompareType)
             {
                 case FilterCompareType.Equals:

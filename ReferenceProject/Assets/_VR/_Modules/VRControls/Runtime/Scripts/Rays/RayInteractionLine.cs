@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Numerics;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using Vector3 = UnityEngine.Vector3;
 
 namespace Unity.ReferenceProject.VR.VRControls
 {
@@ -55,6 +57,8 @@ namespace Unity.ReferenceProject.VR.VRControls
             }
         }
 
+
+
         /// <summary>
         ///     If enabled, the line will be hidden
         /// </summary>
@@ -97,7 +101,7 @@ namespace Unity.ReferenceProject.VR.VRControls
         [BeforeRenderOrder(XRInteractionUpdateOrder.k_BeforeRenderLineVisual)]
         void OnBeforeRenderVisuals()
         {
-            UpdateLine(); // Update the line in BeforeRender so that it is based on the latest position of the controller
+            UpdateVisuals(); // Update the line in BeforeRender so that it is based on the latest position of the controller
         }
 
         /// <summary>
@@ -105,48 +109,52 @@ namespace Unity.ReferenceProject.VR.VRControls
         /// </summary>
         protected override void UpdateVisuals()
         {
-            UpdateLine();
+            if (IsLineRenderable())
+            {
+                GenerateLine();
+            }
+            else
+            {
+                m_LineRenderer.enabled = false;
+            }
         }
 
-        void UpdateLine()
+        bool IsLineRenderable()
         {
-            if (RayInteractor == null || !RayInteractor.enabled)
+            if (RayInteractor == null)
             {
-                LineRenderer.enabled = false;
-                return;
+                return false;
+            }
+
+            if (!RayInteractor.enabled)
+            {
+                return false;
             }
 
             var lineRenderable = RayInteractor as ILineRenderable;
             if (lineRenderable == null)
             {
-                LineRenderer.enabled = false;
-                return;
+                return false;
             }
 
-            lineRenderable.GetLinePoints(ref m_RaycastLinePoints, out var noPoints);
+            lineRenderable.GetLinePoints(ref m_RaycastLinePoints, out var pointCount);
 
-            if (noPoints <= 0)
-            {
-                LineRenderer.enabled = false;
-                return;
-            }
+            return pointCount > 0;
+        }
 
+        void GenerateLine()
+        {
             LineRenderer.enabled = !Hidden;
-
-            var bendable = m_LineSettings.Bendable;
 
             var forward = RayInteractor.attachTransform.forward;
             var startPosition = m_RaycastLinePoints[0] + forward * (m_LineSettings.OffsetStart);
+            var rayLength =  m_LineSettings.CapLength
+                ? Mathf.Min(CurrentRayLength, m_LineSettings.MaxRayLength)
+                : CurrentRayLength - m_LineSettings.OffsetEnd;
 
-            if (!m_LineSettings.CapLength)
-            {
-                m_StraightLineEndPoint = startPosition + forward * (CurrentRayLength - (m_LineSettings.OffsetEnd));
-            }
-            else
-            {
-                var rayLength = Mathf.Min(CurrentRayLength, m_LineSettings.MaxRayLength);
-                m_StraightLineEndPoint = startPosition + forward * rayLength;
-            }
+            m_StraightLineEndPoint = startPosition + forward * rayLength;
+
+            var bendable = m_LineSettings.Bendable;
 
             if (bendable)
             {
@@ -154,7 +162,9 @@ namespace Unity.ReferenceProject.VR.VRControls
             }
             else
             {
-                m_CurrentEndPoint = m_LineSettings.SmoothEndpoint ? Vector3.Lerp(m_CurrentEndPoint, m_StraightLineEndPoint, 1 - Mathf.Exp(-m_LineSettings.FollowTightness * Time.deltaTime)) : m_StraightLineEndPoint;
+                m_CurrentEndPoint = m_LineSettings.SmoothEndpoint
+                    ? Vector3.Lerp(m_CurrentEndPoint, m_StraightLineEndPoint, 1 - Mathf.Exp(-m_LineSettings.FollowTightness * Time.deltaTime))
+                    : m_StraightLineEndPoint;
             }
 
             if (m_SnapEndPoint)
@@ -163,25 +173,13 @@ namespace Unity.ReferenceProject.VR.VRControls
                 m_SnapEndPoint = false;
             }
 
-            var increment = 1f / (m_NewPoints.Length - 1);
-            var normalizedPointValue = 0f;
             if (bendable)
             {
-                for (var i = 0; i < m_NewPoints.Length; i++)
-                {
-                    var manipToEndPoint = Vector3.LerpUnclamped(startPosition, m_CurrentEndPoint, normalizedPointValue);
-                    var manipToAnchor = Vector3.LerpUnclamped(startPosition, m_StraightLineEndPoint, normalizedPointValue);
-                    m_NewPoints[i] = Vector3.LerpUnclamped(manipToAnchor, manipToEndPoint, normalizedPointValue);
-                    normalizedPointValue += increment;
-                }
+                LineUtil.CreateCurvePositions(startPosition, m_CurrentEndPoint, m_StraightLineEndPoint, ref m_NewPoints);
             }
             else
             {
-                for (var i = 0; i < m_NewPoints.Length; i++)
-                {
-                    m_NewPoints[i] = Vector3.LerpUnclamped(startPosition, m_CurrentEndPoint, normalizedPointValue);
-                    normalizedPointValue += increment;
-                }
+                LineUtil.CreateLinePositions(startPosition, m_CurrentEndPoint, ref m_NewPoints);
             }
 
             LineRenderer.SetPositions(m_NewPoints);
@@ -211,5 +209,36 @@ namespace Unity.ReferenceProject.VR.VRControls
             LineRenderer.colorGradient = m_LineSettings.LineColorGradient;
             m_SnapEndPoint = true;
         }
+    }
+
+    public static class LineUtil
+    {
+        public static void CreateLinePositions(Vector3 startPosition, Vector3 endPosition, ref Vector3[] positions)
+        {
+            // -1 because the set does not contain the endpoint
+            var stepping = 1f / (positions.Length - 1);
+            var t = 0f;
+            for (var i = 0; i < positions.Length; i++)
+            {
+                positions[i] = Vector3.LerpUnclamped(startPosition, endPosition, t);
+                t += stepping;
+            }
+        }
+
+        public static void CreateCurvePositions(Vector3 startPosition, Vector3 endPosition, Vector3 control, ref Vector3[] positions)
+        {
+            // -1 because the set does not contain the endpoint
+            var t = 1f / (positions.Length - 1);
+            var stepping = 0f;
+
+            for (var i = 0; i < positions.Length; i++)
+            {
+                var manipToEndPoint = Vector3.LerpUnclamped(startPosition, endPosition, stepping);
+                var manipToAnchor = Vector3.LerpUnclamped(startPosition, control, stepping);
+                positions[i] = Vector3.LerpUnclamped(manipToAnchor, manipToEndPoint, stepping);
+                stepping += t;
+            }
+        }
+
     }
 }

@@ -47,6 +47,7 @@ namespace Unity.ReferenceProject.VR
         void OnDestroy()
         {
             DestroyPanel();
+            m_InstructionsUIController.InstructionPanelEnabled -= OnInstructionPanelEnabled;
         }
 
         void DestroyPanel()

@@ -12,12 +12,14 @@ namespace Unity.ReferenceProject.VR
     {
         [SerializeField]
         protected List<ToolData> m_ToolData;
-        readonly List<IToolUIModeHandler> m_Handlers = new();
 
+        public bool IsInitialized { get; private set; }
+        public event Action OnInitialized;
+
+        readonly List<IToolUIModeHandler> m_Handlers = new();
         protected List<ActionButton> m_Buttons = new();
         IPanelManager m_PanelManager;
         protected IRigUIController m_RigUIController;
-
         protected IToolUIManager m_ToolUIManager;
 
         [Inject]
@@ -38,6 +40,9 @@ namespace Unity.ReferenceProject.VR
                     m_Handlers.Add(handler);
                 }
             }
+
+            IsInitialized = true;
+            OnInitialized?.Invoke();
         }
 
         public virtual void Activate(bool activate, bool clearPanel = true)

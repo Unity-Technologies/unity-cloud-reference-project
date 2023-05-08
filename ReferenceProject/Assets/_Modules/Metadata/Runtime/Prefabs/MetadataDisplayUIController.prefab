@@ -97,4 +97,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b082702ef30b454aabce6b64f95e935, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_OverrideTypes: 4
+  m_OverrideTypes: 6

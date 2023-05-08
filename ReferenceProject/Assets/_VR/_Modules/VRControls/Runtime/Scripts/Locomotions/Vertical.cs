@@ -64,18 +64,6 @@ namespace Unity.ReferenceProject.VR.VRControls
             }
         }
 
-        bool IsWorkDone()
-        {
-
-            if (m_Snap)
-            {
-                m_Coroutine = null;
-                return true;
-            }
-
-            return false;
-        }
-
         bool CanLocomote()
         {
             return (m_UpAction.IsPressed() || m_DownAction.IsPressed()) && BeginLocomotion();
@@ -113,7 +101,6 @@ namespace Unity.ReferenceProject.VR.VRControls
                 yield return null;
             }
             m_Coroutine = null;
-            yield return null;
         }
     }
 }

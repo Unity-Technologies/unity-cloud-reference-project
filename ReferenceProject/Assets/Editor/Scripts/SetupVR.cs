@@ -17,6 +17,7 @@ namespace Unity.ReferenceProject.Editor
     {
         const string k_VRPath = "Assets/_VR/_Application";
         const string k_MainVRPath = k_VRPath + "/Scenes/MainVR.unity";
+        const string k_StreamingVRPath = k_VRPath + "/Scenes/StreamingVR.unity";
         const string k_OpenXRLoader = "UnityEngine.XR.OpenXR.OpenXRLoader";
         const string k_XRPath = "Assets/XR";
         static AddRequest s_AddRequest;
@@ -25,7 +26,7 @@ namespace Unity.ReferenceProject.Editor
         public static void SetVRBuildScenes()
         {
             EditorBuildSettings.scenes = Array.Empty<EditorBuildSettingsScene>();
-            AddBuildScenes(new[] { k_MainVRPath });
+            AddBuildScenes(new[] { k_MainVRPath, k_StreamingVRPath });
         }
 
         public static void SetupOpenXR()
