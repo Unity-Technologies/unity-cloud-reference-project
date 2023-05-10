@@ -97,7 +97,7 @@ namespace Unity.ReferenceProject.UITableListView
             }
 
             m_Table.SetColumns(columns);
-            m_Table.itemsSource = m_PrimaryKey;
+            m_Table.ItemsSource = m_PrimaryKey;
             m_Table.RefreshItems();
         }
 
@@ -180,26 +180,38 @@ namespace Unity.ReferenceProject.UITableListView
 
         void OnMakeCell(VisualElement e, IColumnData column)
         {
-            var checkBox = new Checkbox();
-            checkBox.name = GetCheckBoxName(column.Name);
-            checkBox.clickable.clicked += () => OnCheckBoxClicked(checkBox);
+            var checkbox = new Checkbox
+            {
+                name = GetCheckBoxName(column.Name)
+            };
+            RegisterCheckboxClick(checkbox);
 
-            e.Add(checkBox);
+            e.Add(checkbox);
         }
-
         void OnCreateHeader(VisualElement e, IColumnData column)
         {
             var checkbox = new Checkbox();
             var name = column.Name;
             checkbox.name = GetCheckBoxName(name);
             checkbox.label = column.Name;
-            checkbox.clickable.clicked += () => OnCheckBoxClicked(checkbox); 
+            RegisterCheckboxClick(checkbox);
             m_CheckboxMap[checkbox] = (name, -1);
 
             e.Add(checkbox);
             
             m_HeaderCheckBoxMap.Add(column.Name, checkbox);
         }
+
+        void RegisterCheckboxClick(Checkbox checkbox)
+        {
+            checkbox.clickable = null; // AppUI 0.2.9 has currently a bug with Pressables. Use a Clickable manipulator instead.
+            checkbox.AddManipulator(new UnityEngine.Dt.App.UI.Clickable(() =>
+            {
+                checkbox.value = checkbox.value == CheckboxState.Checked ? CheckboxState.Unchecked : CheckboxState.Checked;
+                OnCheckBoxClicked(checkbox);
+            }));
+        }
+
 
         void OnCheckBoxClicked(Checkbox checkBox)
         {

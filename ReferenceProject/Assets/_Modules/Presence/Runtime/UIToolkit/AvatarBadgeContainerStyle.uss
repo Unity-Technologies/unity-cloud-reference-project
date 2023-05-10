@@ -8,3 +8,34 @@
 .avatar-badge {
     margin-left: -15px;
 }
+
+.top-menu-button-avatar-badge-container{
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: row;
+    min-width: 0px;
+    max-width: 150px;
+    height: 48px;
+    border-width: 0;
+    border-radius: 0;
+    background-color: var(--appui-color-transparent-black-0);
+}
+
+.collaborator-data{
+    justify-content: flex-start;
+    align-items: flex-end;
+    flex-direction: row;
+}
+
+.collaborator-data-badge{
+    align-items: center;
+}
+
+.collaborator-data-header{
+    padding-left: 15px;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: row;
+    min-width: 200px;
+    max-width: 500px;
+}

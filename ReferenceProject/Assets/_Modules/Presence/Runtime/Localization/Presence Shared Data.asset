@@ -19,6 +19,10 @@ MonoBehaviour:
     m_Key: SceneList_Collaborators
     m_Metadata:
       m_Items: []
+  - m_Id: 17177659447435264
+    m_Key: Tool_Name
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

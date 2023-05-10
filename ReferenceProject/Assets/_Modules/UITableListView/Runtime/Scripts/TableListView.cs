@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Dt.App.UI;
 using UnityEngine.UIElements;
 
 namespace Unity.ReferenceProject.UITableListView
@@ -25,7 +26,7 @@ namespace Unity.ReferenceProject.UITableListView
 
         CollectionVirtualizationMethod m_VirtualizationMethod = CollectionVirtualizationMethod.DynamicHeight;
 
-        public CollectionVirtualizationMethod virtualizationMethod
+        public CollectionVirtualizationMethod VirtualizationMethod
         {
             get => m_VirtualizationMethod;
             set
@@ -38,16 +39,16 @@ namespace Unity.ReferenceProject.UITableListView
             }
         }
 
-        static int defaultfixedItemHeight => 30;
+        static readonly int s_DefaultFixedItemHeight = 30;
 
-        int m_fixedItemHeight = defaultfixedItemHeight;
+        int m_FixedItemHeight = s_DefaultFixedItemHeight;
 
-        public int fixedItemHeight
+        public int FixedItemHeight
         {
-            get => m_fixedItemHeight;
+            get => m_FixedItemHeight;
             set
             {
-                m_fixedItemHeight = value;
+                m_FixedItemHeight = value;
                 if (m_ListView != null)
                 {
                     m_ListView.fixedItemHeight = value;
@@ -65,34 +66,42 @@ namespace Unity.ReferenceProject.UITableListView
         readonly HashSet<string> m_HeaderStyles = new HashSet<string>();
         readonly HashSet<string> m_RowStyles = new HashSet<string>();
 
-        public event Action<MouseEnterEvent> OnMouseEnterListElementEvent;
-        public event Action<MouseLeaveEvent> OnMouseLeaveListElementEvent;
+        public event Action<MouseEnterEvent> MouseEnterListElementEvent;
+        public event Action<MouseLeaveEvent> MouseLeaveListElementEvent;
+        public event Action<VisualElement> ItemClicked;
 
         readonly List<VisualElement> m_Rows = new List<VisualElement>();
 
-        public IList itemsSource
+        public IList ItemsSource
         {
+            get => m_ListView.itemsSource;
             set
             {
                 m_ListView.itemsSource = value;
                 m_ListView.RefreshItems();
             }
-            get => m_ListView.itemsSource;
         }
 
         public TableListView()
         {
-            m_Header = new VisualElement();
-            m_Header.name = "table-header";
-            m_Header.style.flexDirection = FlexDirection.Row;
-            m_Header.style.flexShrink = 0;
-            m_Header.style.display = showTableHeader ? DisplayStyle.Flex : DisplayStyle.None;
-            
+            m_Header = new VisualElement
+            {
+                name = "table-header",
+                style =
+                {
+                    flexDirection = FlexDirection.Row,
+                    flexShrink = 0,
+                    display = showTableHeader ? DisplayStyle.Flex : DisplayStyle.None
+                }
+            };
+
             hierarchy.Add(m_Header);
 
-            m_ListView = new ListView();
-            m_ListView.fixedItemHeight = fixedItemHeight;
-            m_ListView.virtualizationMethod = virtualizationMethod;
+            m_ListView = new ListView
+            {
+                fixedItemHeight = FixedItemHeight,
+                virtualizationMethod = VirtualizationMethod
+            };
 
             hierarchy.Add(m_ListView);
 
@@ -133,8 +142,8 @@ namespace Unity.ReferenceProject.UITableListView
                 if (column.IsVisible)
                 {
                     m_Columns.Add(column);
-                    OnMouseEnterListElementEvent += column.InvokeMouseEnterListElementEvent;
-                    OnMouseLeaveListElementEvent += column.InvokeMouseLeaveListElementEvent;
+                    MouseEnterListElementEvent += column.InvokeMouseEnterListElementEvent;
+                    MouseLeaveListElementEvent += column.InvokeMouseLeaveListElementEvent;
                 }
             }
 
@@ -183,13 +192,16 @@ namespace Unity.ReferenceProject.UITableListView
 
         VisualElement MakeItem()
         {
-            var rowContainer = new VisualElement();
-            rowContainer.style.flexDirection = FlexDirection.Row;
+            var rowContainer = new VisualElement
+            {
+                style = { flexDirection = FlexDirection.Row },
+                name = $"Row-{m_Rows.Count}"
+            };
 
-            rowContainer.name = $"Row-{m_Rows.Count}";
-
-            rowContainer.RegisterCallback<MouseEnterEvent>(x => OnMouseEnterListElementEvent?.Invoke(x));
-            rowContainer.RegisterCallback<MouseLeaveEvent>(x => OnMouseLeaveListElementEvent?.Invoke(x));
+            rowContainer.RegisterCallback<MouseEnterEvent>(x => MouseEnterListElementEvent?.Invoke(x));
+            rowContainer.RegisterCallback<MouseLeaveEvent>(x => MouseLeaveListElementEvent?.Invoke(x));
+            
+            rowContainer.AddManipulator(new Pressable(() => ItemClicked?.Invoke(rowContainer)));
 
             foreach (var style in m_RowStyles)
             {
@@ -333,7 +345,6 @@ namespace Unity.ReferenceProject.UITableListView
             }
         }
 
-
         public new class UxmlFactory : UxmlFactory<TableListView, UxmlTraits>
         {
         }
@@ -344,7 +355,7 @@ namespace Unity.ReferenceProject.UITableListView
                 { name = "show-table-header", defaultValue = false };
 
             readonly UxmlIntAttributeDescription m_FixedItemHeight = new UxmlIntAttributeDescription()
-                { name = "fixed-item-height", defaultValue = TableListView.defaultfixedItemHeight };
+                { name = "fixed-item-height", defaultValue = TableListView.s_DefaultFixedItemHeight };
 
             readonly UxmlEnumAttributeDescription<CollectionVirtualizationMethod> m_VirtualizationMethod =
                 new UxmlEnumAttributeDescription<CollectionVirtualizationMethod>()
@@ -355,12 +366,12 @@ namespace Unity.ReferenceProject.UITableListView
             public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
             {
                 base.Init(ve, bag, cc);
-                var num = TableListView.defaultfixedItemHeight;
+                var num = TableListView.s_DefaultFixedItemHeight;
                 var listTableView = (TableListView)ve;
                 listTableView.showTableHeader = m_ShowTableHeader.GetValueFromBag(bag, cc);
                 if (m_FixedItemHeight.TryGetValueFromBag(bag, cc, ref num))
-                    listTableView.fixedItemHeight = num;
-                listTableView.virtualizationMethod = m_VirtualizationMethod.GetValueFromBag(bag, cc);
+                    listTableView.FixedItemHeight = num;
+                listTableView.VirtualizationMethod = m_VirtualizationMethod.GetValueFromBag(bag, cc);
             }
         }
     }

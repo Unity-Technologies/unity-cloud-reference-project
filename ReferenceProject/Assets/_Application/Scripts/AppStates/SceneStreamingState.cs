@@ -15,7 +15,6 @@ namespace Unity.ReferenceProject
     {
         [SerializeField]
         string m_DataStreamingSceneName = "Streaming";
-        IAccessHistoryController m_AccessHistoryController;
 
         IDataStreamController m_DataStreamController;
 
@@ -27,11 +26,10 @@ namespace Unity.ReferenceProject
         StreamingSceneLoader m_StreamingSceneLoader;
 
         [Inject]
-        void Setup(IDataStreamController dataStreamController, PropertyValue<IScene> selectedScene, IAccessHistoryController accessHistoryController)
+        void Setup(IDataStreamController dataStreamController, PropertyValue<IScene> selectedScene)
         {
             m_SelectedScene = selectedScene;
             m_DataStreamController = dataStreamController;
-            m_AccessHistoryController = accessHistoryController;
         }
 
         void Awake()
@@ -53,8 +51,6 @@ namespace Unity.ReferenceProject
         void OnSceneLoaded()
         {
             var scene = m_SelectedScene.GetValue();
-
-            m_AccessHistoryController.AddData(scene);
             m_DataStreamController.Open(scene);
         }
 

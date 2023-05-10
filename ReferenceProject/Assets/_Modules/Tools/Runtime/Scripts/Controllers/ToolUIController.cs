@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Dt.App.UI;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
 
@@ -35,7 +36,9 @@ namespace Unity.ReferenceProject.Tools
         public UnityEvent ToolFocusOut;
 
         public Action Close;
-
+        
+        static readonly string k_ActionButtonIconUssClassName = "appui-actionbutton__icon";
+        
         VisualElement m_RootVisualElement;
 
         public string DisplayName
@@ -137,6 +140,15 @@ namespace Unity.ReferenceProject.Tools
         public virtual void OnFocusOut(FocusOutEvent evt)
         {
             ToolFocusOut?.Invoke();
+        }
+
+        public virtual VisualElement GetIcon()
+        {
+            var icon = new Icon();
+            icon.sprite = m_Icon;
+            icon.size = IconSize.L;
+            icon.AddToClassList(k_ActionButtonIconUssClassName);
+            return icon;
         }
     }
 }

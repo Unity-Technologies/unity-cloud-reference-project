@@ -89,8 +89,7 @@ namespace Unity.ReferenceProject.ScenesList
             };
 
             button.clickable = null; // AppUI 0.2.9 has currently a bug with Pressables. Use a Clickable manipulator instead.
-            var manipulator = new UnityEngine.Dt.App.UI.Clickable(() => OnButtonClick(button));
-            button.AddManipulator(manipulator);
+            button.AddManipulator(new UnityEngine.Dt.App.UI.Clickable(() => OnButtonClick(button)));
             e.Add(button);
         }
 

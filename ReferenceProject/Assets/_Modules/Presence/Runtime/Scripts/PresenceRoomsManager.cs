@@ -22,6 +22,12 @@ namespace Unity.ReferenceProject.Presence
         CancellationToken CancellationToken => m_CancellationTokenSource.Token;
 
         ISceneProvider m_SceneProvider;
+        
+        Room m_CurrentRoom;
+        public Room CurrentRoom => m_CurrentRoom;
+        
+        Task m_LeaveRoomTask;
+        Task m_JoinRoomTask;
 
         [Inject]
         public void Setup(IRoomProvider<Room> roomProvider, IAuthenticationStateProvider authenticationStateProvider, ISceneProvider sceneProvider)
@@ -31,7 +37,7 @@ namespace Unity.ReferenceProject.Presence
             m_AuthenticationStateProvider = authenticationStateProvider;
         }
 
-        public async void OnEnable()
+        async void OnEnable()
         {
             m_AuthenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
 
@@ -39,7 +45,7 @@ namespace Unity.ReferenceProject.Presence
             await ApplyAuthenticationStateAsync(m_AuthenticationStateProvider.AuthenticationState);
         }
 
-        public async void OnDisable()
+        async void OnDisable()
         {
             await ResetRoom();
 
@@ -153,6 +159,56 @@ namespace Unity.ReferenceProject.Presence
         public void Dispose()
         {
             m_CancellationTokenSource?.Dispose();
+        }
+
+        public async Task<bool> JoinRoom(SceneId sceneId)
+        {
+            if (m_CurrentRoom != null)
+            {
+                Debug.LogError("Previous Room needs to be leaved before entering a new one.");
+                return false;
+            }
+            
+            if (sceneId == SceneId.None)
+            {
+                Debug.LogError("No SceneId Provided.");
+                return false;
+            }
+
+            if (m_JoinRoomTask != null && !m_JoinRoomTask.IsCompleted)
+            {
+                Debug.LogError($"Can't join room {sceneId} because previous join process still in progress.");
+                return false;
+            }
+
+            if (!m_Rooms.TryGetValue(sceneId, out m_CurrentRoom))
+            {
+                m_CurrentRoom = await m_RoomProvider.GetRoomAsync(sceneId);
+            }
+            
+            m_JoinRoomTask = m_CurrentRoom.JoinAsync(new NoRetryPolicy(), CancellationToken.None);
+            await m_JoinRoomTask;
+            
+            return true;
+        }
+
+        public async Task<bool> LeaveRoom()
+        {
+            if (m_CurrentRoom == null)
+                return false;
+
+            if (m_LeaveRoomTask != null && !m_LeaveRoomTask.IsCompleted)
+            {
+                Debug.LogWarning($"Already attempting to disconnect from Joined room");
+                await m_LeaveRoomTask;
+                return true;
+            }
+
+            m_LeaveRoomTask = m_CurrentRoom.LeaveAsync();
+            await m_LeaveRoomTask;
+
+            m_CurrentRoom = null;
+            return true;
         }
     }
 }

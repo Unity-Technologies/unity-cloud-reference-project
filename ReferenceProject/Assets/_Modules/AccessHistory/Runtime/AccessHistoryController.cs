@@ -49,7 +49,7 @@ namespace Unity.ReferenceProject.AccessHistory
             return new(m_accessHistory);
         }
 
-        string FormLastAccessPathName()
+        static string FormLastAccessPathName()
         {
             var sb = new StringBuilder();
             sb.Append(Application.persistentDataPath);

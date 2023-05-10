@@ -7,8 +7,7 @@ namespace Unity.ReferenceProject.AccessHistory
     {
         public override void InstallBindings()
         {
-            var accessHistory = new AccessHistoryController();
-            Container.Bind<IAccessHistoryController>().FromInstance(accessHistory);
+            Container.Bind<IAccessHistoryController>().To<AccessHistoryController>().AsSingle();
         }
     }
 }

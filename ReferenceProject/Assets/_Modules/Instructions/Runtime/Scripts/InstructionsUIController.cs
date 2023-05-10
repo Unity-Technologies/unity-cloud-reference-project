@@ -32,6 +32,7 @@ namespace Unity.ReferenceProject.Instructions
         static readonly string k_ButtonClose = "Button-close";
         static readonly string k_TextHeader = "Text-header";
         static readonly string k_InstructionsContainer = "Instructions-container";
+        static readonly string k_TemplateInstructions = "Template-instructions";
 
         void Start()
         {
@@ -58,13 +59,18 @@ namespace Unity.ReferenceProject.Instructions
             {
                 root = panel;
             }
-
-            var template = m_InstructionsPanelAsset.Instantiate();
-            template.pickingMode = PickingMode.Ignore;
-            template.style.flexGrow = 1;
-            template.style.flexShrink = 0;
-
-            root.Add(template);
+            
+            var template = root.Q<VisualElement>(k_TemplateInstructions);
+            
+            if (template == null)
+            {
+                template = m_InstructionsPanelAsset.Instantiate();
+                template.pickingMode = PickingMode.Ignore;
+                template.style.flexGrow = 1;
+                template.style.flexShrink = 0;
+                template.name = k_TemplateInstructions;
+                root.Add(template);
+            }
 
             m_CheckboxDontShowAgain = root.Q<Checkbox>(k_CheckboxDontShowAgain);
             var buttonClose = root.Q<Button>(k_ButtonClose);
@@ -73,6 +79,7 @@ namespace Unity.ReferenceProject.Instructions
 
             if (buttonClose != null)
             {
+                buttonClose.clicked -= OnButtonCloseClicked;
                 buttonClose.clicked += OnButtonCloseClicked;
             }
             else
@@ -83,6 +90,7 @@ namespace Unity.ReferenceProject.Instructions
 
             if (m_CheckboxDontShowAgain != null)
             {
+                m_CheckboxDontShowAgain.UnregisterValueChangedCallback(OnToggleValueChanged);
                 m_CheckboxDontShowAgain.RegisterValueChangedCallback(OnToggleValueChanged);
                 UpdateCheckboxDontShowAgain();
             }
@@ -117,6 +125,7 @@ namespace Unity.ReferenceProject.Instructions
         {
             if (container != null)
             {
+                container.Clear();
                 var entries = GetComponents<InstructionUIEntry>();
                 foreach (var entry in entries)
                 {

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Unity.Cloud.Common;
 using Unity.ReferenceProject.UITableListView;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
 using UnityEngine.UIElements;
 using Zenject;
 using Button = UnityEngine.Dt.App.UI.Button;
@@ -73,9 +72,15 @@ namespace Unity.ReferenceProject.ScenesList
                 m_RefreshButton.clicked -= Refresh;
             }
 
-            if (m_Table != null && m_Table?.ListView != null)
+            if (m_Table != null)
+            {
+                m_Table.ItemClicked -= OnItemClicked;
+            }
+
+            if (m_Table?.ListView != null)
             {
                 m_Table.ListView.bindItem -= OnBindItem;
+                m_Table.ListView.unbindItem -= OnUnbindItem;
             }
         }
 
@@ -111,7 +116,10 @@ namespace Unity.ReferenceProject.ScenesList
 
             m_RefreshButton.clicked += Refresh;
 
+            m_Table.ItemClicked += OnItemClicked;
+
             m_Table.ListView.bindItem += OnBindItem;
+            m_Table.ListView.unbindItem += OnUnbindItem;
 
             var scrollView = m_Table.Q<ScrollView>();
             m_Table.ListView.RegisterCallback<WheelEvent>((evt) =>
@@ -136,16 +144,23 @@ namespace Unity.ReferenceProject.ScenesList
             }
         }
 
-        public void SetVisibility(bool isVisible)
+        void OnItemClicked(VisualElement element)
         {
-            SetVisibility(m_RootVisualElement, isVisible);
+            if (element.userData is int index and >= 0)
+            {
+                var scene = (IScene) m_Table.ListView.itemsSource[index];
+                ProjectSelected?.Invoke(scene);
+            }
         }
 
-        void OnBindItem(VisualElement element, int index)
+        static void OnBindItem(VisualElement element, int index)
         {
-            var scene = m_Table.ListView.itemsSource[index] as IScene;
-            var pressable = new Pressable(() => ProjectSelected?.Invoke(scene));
-            element.AddManipulator(pressable);
+            element.userData = index;
+        }
+
+        static void OnUnbindItem(VisualElement element, int index)
+        {
+            element.userData = -1;
         }
 
         IColumnEventData[] AllColumns
@@ -166,6 +181,11 @@ namespace Unity.ReferenceProject.ScenesList
         public void Refresh()
         {
             StartCoroutine(UpdateData());
+        }
+        
+        public void SetVisibility(bool isVisible)
+        {
+            SetVisibility(m_RootVisualElement, isVisible);
         }
 
         IEnumerator UpdateData()

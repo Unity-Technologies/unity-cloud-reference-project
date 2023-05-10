@@ -85,29 +85,13 @@ namespace Unity.ReferenceProject.Tools
 
         public static ActionButton CreateActionButton(ToolUIController toolUIController, string buttonStyleClass)
         {
+            var iconElement = toolUIController.GetIcon();
             var button = new ActionButton();
             button.accent = true;
-            var icon = (Icon)button.hierarchy.ElementAt(0);
-            icon.size = IconSize.L;
-
-            Action<Sprite> onIconChange = sprite =>
-            {
-                if (sprite != null)
-                {
-                    button.icon = "notnull";
-                    icon.sprite = sprite;
-                }
-                else
-                {
-                    button.icon = "warning";
-                }
-            };
-            toolUIController.IconChanged += onIconChange;
-            onIconChange.Invoke(toolUIController.Icon); // Set current icon
-
             button.focusable = false;
             button.tooltip = toolUIController.DisplayName;
-
+            button.hierarchy.Add(iconElement);
+            
             if (!string.IsNullOrWhiteSpace(buttonStyleClass))
             {
                 button.AddToClassList(buttonStyleClass);

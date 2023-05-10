@@ -1,13 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Unity.Cloud.Presence;
 using Unity.Cloud.Presence.Runtime;
 using UnityEngine;
 using UnityEngine.Dt.App.UI;
 using UnityEngine.UIElements;
-using Avatar = UnityEngine.Dt.App.UI.Avatar;
 
 namespace Unity.ReferenceProject.Presence
 {

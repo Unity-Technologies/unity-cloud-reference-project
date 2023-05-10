@@ -15,25 +15,23 @@ namespace Unity.ReferenceProject.Presence
 {
     public sealed class PresenceStreamingRoom : MonoBehaviour
     {
-        IRoomProvider<Room> m_RoomProvider;
         IAuthenticationStateProvider m_AuthenticationStateProvider;
-
-        Room m_CurrentRoom;
-
+        PresenceRoomsManager m_RoomManager;
+        
         public event Action<Room> RoomJoined;
         public event Action RoomLeft;
 
         [Inject]
-        public void Setup(IRoomProvider<Room> roomProvider, IAuthenticationStateProvider authenticationStateProvider, ISceneEvents sceneEvents)
+        public void Setup(IAuthenticationStateProvider authenticationStateProvider, ISceneEvents sceneEvents, PresenceRoomsManager roomManager)
         {
-            m_RoomProvider = roomProvider;
             m_AuthenticationStateProvider = authenticationStateProvider;
+            m_RoomManager = roomManager;
 
             sceneEvents.SceneOpened += OnSceneOpened;
             sceneEvents.SceneClosed += OnSceneClosed;
         }
 
-        public async void OnEnable()
+        async void OnEnable()
         {
             m_AuthenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
 
@@ -41,10 +39,10 @@ namespace Unity.ReferenceProject.Presence
             await ApplyAuthenticationState(m_AuthenticationStateProvider.AuthenticationState);
         }
 
-        public async void OnDisable()
+        async void OnDisable()
         {
             await LeaveRoom();
-
+            
             m_AuthenticationStateProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
         }
 
@@ -63,35 +61,20 @@ namespace Unity.ReferenceProject.Presence
 
         async Task JoinRoom(SceneId sceneId)
         {
-            if (m_CurrentRoom != null)
-            {
-                Debug.LogError("Previous Room needs to be leaved before entering a new one.");
-                return;
-            }
+            var isJoined = await m_RoomManager.JoinRoom(sceneId);
             
-            if (sceneId == SceneId.None)
-            {
-                Debug.LogError("No SceneId Provided.");
+            if(!isJoined)
                 return;
-            }
-
-            m_CurrentRoom = await m_RoomProvider.GetRoomAsync(sceneId);
-
-            await m_CurrentRoom.JoinAsync(new NoRetryPolicy(), CancellationToken.None);
             
-            RoomJoined?.Invoke(m_CurrentRoom);
+            RoomJoined?.Invoke(m_RoomManager.CurrentRoom);
         }
 
         async Task LeaveRoom()
         {
-            if (m_CurrentRoom == null)
-                return;
+            var currentRoomLeft= await m_RoomManager.LeaveRoom();
             
-            await m_CurrentRoom.LeaveAsync();
-            //await m_CurrentRoom.StopMonitoringAsync(new NoRetryPolicy(), CancellationToken.None);
-            m_CurrentRoom = null;
-
-            RoomLeft?.Invoke();
+            if(currentRoomLeft)
+                RoomLeft?.Invoke();
         }
 
         async void OnSceneOpened(IScene scene)
@@ -104,11 +87,10 @@ namespace Unity.ReferenceProject.Presence
         {
             await LeaveRoom();
         }
-
         
         public IParticipant GetParticipantFromID(ParticipantId id)
         {
-            return m_CurrentRoom.ConnectedParticipants.FirstOrDefault(p => p.Id == id);
+            return m_RoomManager.CurrentRoom?.ConnectedParticipants.FirstOrDefault(p => p.Id == id);
         }
     }
 }

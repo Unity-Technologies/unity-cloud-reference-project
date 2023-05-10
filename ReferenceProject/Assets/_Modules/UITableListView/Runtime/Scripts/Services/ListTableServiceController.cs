@@ -41,7 +41,7 @@ namespace Unity.ReferenceProject.UITableListView
                 {
                     service.Value?.OnPrimaryKeysCreated(m_ItemsSource);
                 }
-                m_Table.itemsSource = m_ItemsSourceCache;
+                m_Table.ItemsSource = m_ItemsSourceCache;
             }
         }
         
