@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/_Application/Scenes/Main.unity
+    guid: 35fa68ad7fd607245a90ee992fcff946
+  - enabled: 1
+    path: Assets/_Application/Scenes/Streaming.unity
+    guid: 2354f3df93e484348aa7019d1fa0037b
+  - enabled: 1
+    path: Assets/_VR/_Application/Scenes/MainVR.unity
+    guid: f79d0b969a112214b8f62544cd379433
+  - enabled: 1
+    path: Assets/_VR/_Application/Scenes/StreamingVR.unity
+    guid: f26a485304a7e1945941ac2bbec22b44
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: d64494c3796b6174f93ff773b888f829,
+      type: 2}
+    com.unity.input.settings: {fileID: 11400000, guid: 0d693cc65d1393c4dbeb41e11b77f445,
+      type: 2}
+    com.unity.localization.settings: {fileID: 11400000, guid: a23b65091f8afc5498e64bc006433372,
+      type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 3b626a85c7770754780be8de89afa3b1,
+      type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 5e000526ecb2d4747bf4ce80327ff334,
+      type: 2}

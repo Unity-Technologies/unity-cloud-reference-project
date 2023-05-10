@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bcce7012e8b4163afa1e5f076397ea5, type: 3}
+  m_Name: CameraProxySettings
+  m_EditorClassIdentifier: 
+  maxTimeToTravelMinSpeed: 30
+  maxTimeToTravelFullSpeed: 3
+  maxTimeToAccelerate: 5
+  minSpeedScaling: 1
+  maxSpeedScaling: 1
+  accelerationScaling: 1
+  waitingDecelerationScaling: 4
+  initialLookAt: {x: 0, y: 1, z: 0}
+  minDistanceFromLookAt: 3
+  maxPitchAngle: 85
+  positionElasticity: 0.05
+  rotationElasticity: 0.02
+  scalingElasticity: 0.02
+  panScaling: 0.15
+  moveOnAxisScaling: 0.05
+  maxLookAtDistanceScaling: 2

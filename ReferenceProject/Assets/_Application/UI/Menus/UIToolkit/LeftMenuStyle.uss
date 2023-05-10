@@ -1,0 +1,17 @@
+.left-toolbar{
+    --appui-alias-control-border-radius: 32px;
+    display: flex;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+    position: absolute;
+    left: 12px;
+    top: 50px;
+    bottom: 50px;
+    width: 64px;
+}
+
+.left-toolbar-button{
+    height: 64px;
+    border-width: 0;
+}

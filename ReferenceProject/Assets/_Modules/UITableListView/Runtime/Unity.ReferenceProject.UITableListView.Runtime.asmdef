@@ -1,0 +1,17 @@
+{
+    "name": "Unity.ReferenceProject.TableListView.Runtime",
+    "rootNamespace": "Unity.ReferenceProject.TableListView",
+    "references": [
+        "GUID:4e4f4fa18c62c5a4bb60ddf536bc2a3b",
+        "GUID:2f101f87087d58f4ba92ca00188e763d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

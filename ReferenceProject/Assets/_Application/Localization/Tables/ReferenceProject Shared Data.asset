@@ -1,0 +1,113 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: ReferenceProject Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: ReferenceProject
+  m_TableCollectionNameGuidString: 744679d1a0309714f85d968ebbfd23ae
+  m_Entries:
+  - m_Id: 611231595655168
+    m_Key: Settings_FrameRate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 611842047242240
+    m_Key: Settings_Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 682314441060352
+    m_Key: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 683013132414976
+    m_Key: SceneList
+    m_Metadata:
+      m_Items: []
+  - m_Id: 683922784677888
+    m_Key: Profile
+    m_Metadata:
+      m_Items: []
+  - m_Id: 683975670657024
+    m_Key: Profile_Logout
+    m_Metadata:
+      m_Items: []
+  - m_Id: 694417684066304
+    m_Key: Navigation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 694487749914624
+    m_Key: Navigation_Fly
+    m_Metadata:
+      m_Items: []
+  - m_Id: 694704419270656
+    m_Key: Navigation_Walk
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515912857120768
+    m_Key: Navigation_VR
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2812953739329536
+    m_Key: Navigation_Desktop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10476869227094016
+    m_Key: ExceptionTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10487145791987712
+    m_Key: Dismiss
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10396041935781888
+    m_Key: General
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10396219241594880
+    m_Key: Tools
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11157830847590400
+    m_Key: Settings_Theme
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14082381072818176
+    m_Key: LastAccess
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20262520789037056
+    m_Key: Navigation_ReturnDesktop_Title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20262629618642944
+    m_Key: Navigation_ReturnDesktop_Message
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20262697557979136
+    m_Key: Yes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20262740780281856
+    m_Key: No
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 1847637086902943768
+  references:
+    version: 2
+    RefIds:
+    - rid: 1847637086902943768
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables,
+        asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1678135869153

@@ -1,0 +1,16 @@
+{
+    "name": "Unity.ReferenceProject.InputDisabling.Runtime",
+    "rootNamespace": "Unity.ReferenceProject.InputDisabling",
+    "references": [
+        "GUID:861d797aa4d05294d986157ebb717a0b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

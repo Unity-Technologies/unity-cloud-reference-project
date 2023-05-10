@@ -1,0 +1,3 @@
+:root {
+  --appui-color-transparent-white-010: rgba(255, 255, 255, 0.01);
+}

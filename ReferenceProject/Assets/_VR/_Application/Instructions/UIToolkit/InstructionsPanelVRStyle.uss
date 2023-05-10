@@ -1,0 +1,119 @@
+:root{
+    --instructions-color: #30ffff;
+}
+
+.panel-instruction {
+    bottom: 0;
+    position: relative;
+}
+
+.container__instruction_block{
+    align-items: center;
+    flex-shrink: 0;
+    flex-grow: 1;
+    width: 95px;
+}
+
+.container__instruction-keys
+{
+    width: 46px;
+    flex-shrink: 0;
+    height: 118px;
+}
+
+.vr-instructions-page-view{
+    width: 325px;
+    height:250px;
+}
+
+.vr-instructions-arrow-left-position {
+    position: absolute;
+    width: 6px;
+    height: 12px;
+    left: 6px;
+    top: 36px;
+}
+
+.vr-instructions-arrow-up-position {
+    position: absolute;
+    width: 6px;
+    height: 12px;
+    left: 15px;
+    top: 27px;
+    rotate: 90deg;
+}
+
+.vr-instructions-arrow-right-position {
+    position: absolute;
+    width: 6px;
+    height: 12px;
+    left: 24px;
+    top: 36px;
+    rotate: 180deg;
+}
+
+.vr-instructions-arrow-down-position {
+    position: absolute;
+    width: 6px;
+    height: 12px;
+    left: 15px;
+    top: 45px;
+    rotate: -90deg;
+}
+
+.vr-instructions-identifier-position {
+    position: absolute;
+    bottom: 5px;
+}
+
+.vr-instructions-button-primary-position {
+    position: absolute;
+    top: 48px;
+    left: 24px;
+}
+
+.vr-instructions-button-secondary-position {
+    position: absolute;
+    top: 38px;
+    left: 30px;
+}
+
+.vr-instructions-trigger-position {
+    position: absolute;
+    top: 20px;
+    left: 8px;
+}
+
+.vr-instructions-line-pointer-position {
+    position: absolute;
+    top: 0;
+    left: 18px;
+}
+
+.vr-instructions-reverse {
+    scale: -1 1;
+}
+
+.vr-instructions--controller {
+    --unity-image: url("../Sprites/VRController@2x.png");
+}
+
+.vr-instructions--button {
+    --unity-image: url("../Sprites/ControllerButton@2x.png");
+    --unity-image-tint-color: var(--instructions-color);
+}
+
+.vr-instructions--arrow {
+    --unity-image: url("../Sprites/ThumbstickArrow.png");
+    --unity-image-tint-color: var(--instructions-color);
+}
+
+.vr-instructions--line-pointer {
+    --unity-image: url("../Sprites/LinePointer@2x.png");
+    --unity-image-tint-color: var(--instructions-color);
+}
+
+.vr-instructions--trigger-button {
+    --unity-image: url("../Sprites/TriggerButton@2x.png");
+    --unity-image-tint-color: var(--instructions-color);
+}

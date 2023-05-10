@@ -1,0 +1,18 @@
+
+
+.appui--light {
+     --appui-transparent-backgrounds-1000: var(--appui-color-transparent-white-1000);
+     --appui-transparent-backgrounds-900: var(--appui-color-transparent-white-900);
+     --appui-transparent-backgrounds-800: var(--appui-color-transparent-white-800);
+     --appui-transparent-backgrounds-700: var(--appui-color-transparent-white-700);
+     --appui-transparent-backgrounds-600: var(--appui-color-transparent-white-600);
+     --appui-transparent-backgrounds-500: var(--appui-color-transparent-white-500);
+     --appui-transparent-backgrounds-400: var(--appui-color-transparent-white-400);
+     --appui-transparent-backgrounds-300: var(--appui-color-transparent-white-300);
+     --appui-transparent-backgrounds-200: var(--appui-color-transparent-white-200);
+     --appui-transparent-backgrounds-100: var(--appui-color-transparent-white-100);
+     --appui-transparent-backgrounds-0: var(--appui-color-transparent-white-0);
+     --appui-transparent-backgrounds-active-300: var(--appui-color-transparent-black-300);
+     --appui-transparent-backgrounds-active-100: var(--appui-color-transparent-black-100);
+     --appui-transparent-backgrounds-active-010: var(--appui-color-transparent-black-100);
+}

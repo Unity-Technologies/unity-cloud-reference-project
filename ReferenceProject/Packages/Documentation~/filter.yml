@@ -1,0 +1,13 @@
+apiRules:
+  - exclude:
+      uidRegex: Samples$
+      type: Namespace
+  - exclude:
+      uidRegex: Samples.Editor$
+      type: Namespace
+  - exclude:
+      uidRegex: Tests$
+      type: Namespace
+  - exclude:
+      uidRegex: Tests.Editor$
+      type: Namespace

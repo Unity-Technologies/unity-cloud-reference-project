@@ -1,0 +1,17 @@
+{
+    "name": "Unity.ReferenceProject.Settings.Runtime",
+    "rootNamespace": "Unity.ReferenceProject.Settings",
+    "references": [
+        "GUID:2f101f87087d58f4ba92ca00188e763d",
+        "GUID:861d797aa4d05294d986157ebb717a0b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

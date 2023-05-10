@@ -1,0 +1,15 @@
+.panel-instruction {
+    align-self: center;
+    border-radius: 10px;
+    position: absolute;
+    bottom: 12px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 15px;
+    padding-bottom: 10px;
+    background-color: var(--appui-transparent-backgrounds-300);
+}
+
+.divider--empty > .appui-divider__content {
+    background-color: rgba(0, 0, 0, 0);
+}

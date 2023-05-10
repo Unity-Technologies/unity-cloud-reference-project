@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: DeepLinking_fr
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: fr
+  m_SharedData: {fileID: 11400000, guid: 5ded018bb3aed8d4daa8b7561c60077e, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 107909115904
+    m_Localized: Partage de lien
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8332797151272960
+    m_Localized: "G\xE9n\xE9rer le lien"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10135689406607360
+    m_Localized: Saisir un lien...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2039713263616
+    m_Localized: Ouvrir
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10431074339549184
+    m_Localized: "Un lien a \xE9t\xE9 copi\xE9 dans le presse-papiers"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10431362676977664
+    m_Localized: "Une erreur s'est produite lors de la cr\xE9ation du lien:"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10431734585913344
+    m_Localized: Impossible d'ouvrir le lien fourni
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10432575787134976
+    m_Localized: "Ouveture de la sc\xE8ne \"{0}\" \xE0 partir du lien..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10432927760543744
+    m_Localized: "La sc\xE8ne \"{0}\" est d\xE9j\xE0 ouverte"
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

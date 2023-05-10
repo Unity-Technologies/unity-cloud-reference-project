@@ -1,0 +1,30 @@
+{
+    "name": "Unity.ReferenceProject.ScenesList.Runtime",
+    "rootNamespace": "Unity.ReferenceProject.ScenesList",
+    "references": [
+        "GUID:f2f9fbb8654eff343bf4a94f2a688687",
+        "GUID:498d02e03062b2649b108f31a9668c56",
+        "GUID:b344fc90df84f5a4f968af99d3b862a9",
+        "GUID:276bf4fd0c825cf4b94eb157d3b3675f",
+        "GUID:807be9350277eff4182cd3600de41d3a",
+        "GUID:4e4f4fa18c62c5a4bb60ddf536bc2a3b",
+        "GUID:2f101f87087d58f4ba92ca00188e763d",
+        "GUID:861d797aa4d05294d986157ebb717a0b",
+        "GUID:7e0d14980460abd439d6db881ce553fb",
+        "GUID:6700007b7397d124286577fbb1db6663",
+        "GUID:45c2a79abb918924ca46286a990ae290",
+        "GUID:e5b7fee6c12e6ef47b835f8aec40fa44",
+        "GUID:d34f188292de74ed691d9b7d4ee6dc0e",
+        "GUID:d8d9ea33f67ce9540a08cf063069808c",
+        "GUID:2a4c379945cabb84b9fb0b1fb404b8d9"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

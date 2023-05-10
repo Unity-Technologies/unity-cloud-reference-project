@@ -1,0 +1,7 @@
+.left-bottom-toolbar {
+    position: absolute;
+    bottom: 12px;
+    justify-content: flex-end;
+    flex-grow: 0;
+    top: auto;
+}

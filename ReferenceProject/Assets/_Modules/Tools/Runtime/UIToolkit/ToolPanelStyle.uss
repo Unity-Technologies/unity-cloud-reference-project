@@ -1,0 +1,27 @@
+.tool-panel {
+    flex-grow: 1;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.tool-panel-header {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.tool-panel-icon {
+    height: 32px;
+    width: 32px;
+}
+
+.tool-panel-title {
+    flex-shrink: 1;
+}
+
+tool-panel-dismiss-button {
+    height: 32px;
+    width: 32px;
+}
