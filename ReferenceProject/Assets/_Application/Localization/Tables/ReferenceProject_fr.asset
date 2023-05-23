@@ -102,6 +102,14 @@ MonoBehaviour:
     m_Localized: "Etes-vous s\xFBr de vouloir quitter le mode RV?"
     m_Metadata:
       m_Items: []
+  - m_Id: 25308710870966272
+    m_Localized: Sombre
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25308774330785792
+    m_Localized: Clair
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

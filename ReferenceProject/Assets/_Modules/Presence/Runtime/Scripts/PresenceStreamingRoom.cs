@@ -71,7 +71,7 @@ namespace Unity.ReferenceProject.Presence
 
         async Task LeaveRoom()
         {
-            var currentRoomLeft= await m_RoomManager.LeaveRoom();
+            var currentRoomLeft = await m_RoomManager.LeaveRoom();
             
             if(currentRoomLeft)
                 RoomLeft?.Invoke();

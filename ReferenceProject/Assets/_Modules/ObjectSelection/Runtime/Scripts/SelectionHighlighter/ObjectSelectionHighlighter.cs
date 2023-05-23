@@ -23,8 +23,8 @@ namespace Unity.ReferenceProject.ObjectSelection
         void Setup(PropertyValue<IObjectSelectionInfo> objectSelectionProperty)
         {
             m_ObjectSelectionProperty = objectSelectionProperty;
-            m_ObjectSelectionProperty.OnValueChanged -= OnObjectSelectionChanged;
-            m_ObjectSelectionProperty.OnValueChanged += OnObjectSelectionChanged;
+            m_ObjectSelectionProperty.ValueChanged -= OnObjectSelectionChanged;
+            m_ObjectSelectionProperty.ValueChanged += OnObjectSelectionChanged;
         }
 
         void Start()
@@ -35,7 +35,7 @@ namespace Unity.ReferenceProject.ObjectSelection
         void OnDestroy()
         {
             if (m_ObjectSelectionProperty != null)
-                m_ObjectSelectionProperty.OnValueChanged -= OnObjectSelectionChanged;
+                m_ObjectSelectionProperty.ValueChanged -= OnObjectSelectionChanged;
         }
 
         void OnObjectSelectionChanged(IObjectSelectionInfo obj) => SetTargetGameObject(obj.SelectedGameObject);

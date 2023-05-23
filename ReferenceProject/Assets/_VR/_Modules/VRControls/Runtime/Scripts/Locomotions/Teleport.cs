@@ -40,8 +40,6 @@ namespace Unity.ReferenceProject.VR.VRControls
         InputAction m_TeleportDirectionAction;
         TeleportVisuals m_TeleportVisuals;
 
-        GameObject m_TeleportVisualsGO;
-
         /// <summary>
         ///     A prefab that will be shown when aiming that determines the target position and rotation.
         /// </summary>
@@ -85,16 +83,16 @@ namespace Unity.ReferenceProject.VR.VRControls
 
         void Start()
         {
-            m_TeleportVisualsGO = Instantiate(m_TeleportVisualsPrefab.gameObject, system.xrOrigin.transform);
-            m_TeleportVisualsGO.SetActive(false);
-            m_TeleportVisuals = m_TeleportVisualsGO.GetComponentInChildren<TeleportVisuals>();
+            var teleportGameObject = Instantiate(m_TeleportVisualsPrefab.gameObject, system.xrOrigin.transform);
+            teleportGameObject.SetActive(false);
+            m_TeleportVisuals = teleportGameObject.GetComponentInChildren<TeleportVisuals>();
 
             var ignoreColliders = new List<Collider>();
             system.xrOrigin.gameObject.GetComponentsInChildren(true, ignoreColliders);
 
             m_TeleportVisuals.ignoredGameObjects = new HashSet<GameObject>(ignoreColliders.ConvertAll(rigCollider => rigCollider.gameObject));
-            m_TeleportVisualsGO.transform.localPosition = Vector3.zero;
-            m_TeleportVisualsGO.transform.localRotation = Quaternion.identity;
+            teleportGameObject.transform.localPosition = Vector3.zero;
+            teleportGameObject.transform.localRotation = Quaternion.identity;
 
             var rayInteractor = transform.parent.GetComponent<XRRayInteractor>();
             m_TeleportVisuals.xrRayInteractor = rayInteractor;

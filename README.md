@@ -25,8 +25,6 @@ The Unity Reference Project is compatible with the [latest Unity Long Term Suppo
 - WebGL
 - Tethered VR headsets
 
-It supports the following file formats: `.3dm`, `.3ds`, `.3dxml`, `.asm`, `.catpart`, `.catproduct`, `.cgr`, `.dae`, `.dwg`, `.dxf`, `.fbx`, `.gds`, `.glb`, `.gltf`, `.iam`, `.ifc`, `.igs`, `.iges`, `.ipt`, `.jt`, `.neu`, `.nwc`, `.nwd`, `.obj`, `.par`, `.plmxml`, `.prc`, `.prt`, `.psm`, `.pvs`, `.pvz`, `.pxz`, `.pwd`, `.rfa`, `.rvt`, `.rvm`, `.sab`, `.sat`, `.sldasm`, `.sldprt`, `.step`, `.stepx`, `.stepz`, `.stl`, `.stp`, `.stpx`, `.stpxz`, `.stpz`, `.u3d`, `.usd`, `.usda`, `.usdc`, `.usdz`, `.vda`, `.vrml`, `.wrl`, `.xas`, `.xpr`.
-
 ## Contents
 
 - [Unity Reference Project](#unity-reference-project)
@@ -42,6 +40,7 @@ It supports the following file formats: `.3dm`, `.3ds`, `.3dxml`, `.asm`, `.catp
       - [Set the App Id in the Unity Editor](#set-the-app-id-in-the-unity-editor)
     - [Upload assets to review](#upload-assets-to-review)
   - [Open the project for the first time](#open-the-project-for-the-first-time)
+    - [Setup VR](#setup-vr) 
   - [Run the project](#run-the-project)
     - [View 3D assets](#view-3d-assets)
     - [Manage assets](#manage-assets)
@@ -55,21 +54,21 @@ It supports the following file formats: `.3dm`, `.3ds`, `.3dxml`, `.asm`, `.catp
 
 The Unity Reference Project is a Unity project intended to be used as a starting point for building a collaborative 3D asset review tool. It can be built for many platforms, including WebGL, making it highly accessible and simple to share. The Unity Reference Project is designed to be highly customizable so you can add, remove, or change its features, tools, and UI; while still being able to pull in the latest updates with minimal conflicts.
 
-This project features Unity services that make it easier to:
-
-- Authenticate with your Unity account.
-- List and select an asset from cloud storage.
-- Stream a large 3D asset from cloud storage (vast support for 3D formats).
-- Collaborate online with voice chat and user avatars.
-- Share a deep-link to an asset for others to view.
-
-It also lets you customize your application. For example, you can:
+This project lets you customize your application. For example, you can:
 
 - Customize navigation modes.
 - Localize your application.
 - Add a view that you can toggle to troubleshoot performance.
 - Customize the user interface and tools.
 - Add and customize tools for VR.
+
+It also leverages Unity services that make it easier to:
+
+- Authenticate with your Unity account.
+- List and select an asset from cloud storage.
+- Stream a large 3D asset from cloud storage (vast support for 3D formats).
+- Collaborate online with voice chat and user avatars.
+- Share a deep-link to an asset for others to view.
 
 ## Get the project
 
@@ -136,6 +135,15 @@ Once you have downloaded the project, follow these steps:
 4. [Set your App Id](#create-an-id-for-your-application).
 5. Open the `Main` scene (`Assets/_Application/Scenes/Main.unity`).
 
+### Setup VR
+
+To enable VR navigation, follow these steps:
+
+1. Activate the OpenXR plug-in by going to **Edit > Project Settings > XR Plug-in Management**.
+2. Ensure that **Initialize XR on Startup** is unchecked.
+3. Your VR hardware must be connected prior to running the app in order to be detected.
+4. (Optional) To launch the app in VR, use the `MainVR` scene found in `Assets/_VR/_Applications/Scenes`.
+
 ## Run the project
 
 After you run the `Main` scene, you must sign in.
@@ -143,15 +151,15 @@ After you run the `Main` scene, you must sign in.
 
 ### View 3D assets
 
-1. To open an asset in the viewer, select it from the list.
-2. (Optional) To move the camera, you can do any of the following:
+- To open an asset in the viewer, select it from the list.
+- To move the camera, you can do any of the following:
    - select
    - touch
    - drag-and-drop
    - zoom in and out
    - scroll
    - pinch
-</br> To change the navigation mode, select the icon in the lower-left corner.
+- To change the navigation mode, select the icon in the lower-left corner.
 
 ### Manage assets
 

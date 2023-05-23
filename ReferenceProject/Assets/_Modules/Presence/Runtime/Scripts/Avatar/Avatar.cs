@@ -13,12 +13,16 @@ namespace Unity.ReferenceProject.Presence
 
         [SerializeField]
         AvatarTag m_Tag;
+        
+        [Header("Localization")]
+        [SerializeField]
+        string m_LoadingString = "@Presence:Loading_Name";
 
         INetcodeParticipant m_Participant;
         PresenceStreamingRoom m_PresenceStreamingRoom;
-        
         Camera m_StreamingCamera;
         Transform m_Transform;
+        String m_CurrentAvatarName;
 
         [Inject]
         void Setup(PresenceStreamingRoom presenceStreamingRoom, Camera streamingCamera)
@@ -34,21 +38,20 @@ namespace Unity.ReferenceProject.Presence
             
             if (m_Participant.IsOwner)
             {
+                // Set up the owner Avatar and the INetcodeParticipant to follow the camera
                 var cameraTransform = m_StreamingCamera.transform;
                 transform.SetPositionAndRotation(cameraTransform.position, cameraTransform.rotation);
+                m_Participant.SetParticipantTransform(cameraTransform.position, cameraTransform.rotation);
+            }
+            else
+            {
+                transform.SetPositionAndRotation(m_Transform.position, m_Transform.rotation);
             }
 
-            if (m_Participant != null)
+            if (m_CurrentAvatarName.Equals(m_LoadingString) 
+                && m_PresenceStreamingRoom.GetParticipantFromID(m_Participant.ParticipantId) != null)
             {
-                if (m_Participant.IsOwner)
-                {
-                    var t = transform;
-                    m_Participant.SetParticipantTransform(t.position, t.rotation);
-                }
-                else
-                {
-                    transform.SetPositionAndRotation(m_Transform.position, m_Transform.rotation);
-                }
+                RefreshParticipant(m_Participant);
             }
         }
 
@@ -65,7 +68,7 @@ namespace Unity.ReferenceProject.Presence
             m_Participant = participant;
             m_Transform = participant.Transform;
             m_Participant.ParticipantIdChanged += OnParticipantIDChanged;
-
+            m_CurrentAvatarName = m_LoadingString;
             RefreshParticipant(m_Participant);
         }
 
@@ -77,25 +80,23 @@ namespace Unity.ReferenceProject.Presence
         void RefreshParticipant(INetcodeParticipant participant)
         {
             var roomParticipant = m_PresenceStreamingRoom.GetParticipantFromID(participant.ParticipantId);
-
-            var participantName = "Unknown";
             var color = Color.grey;
 
             if (roomParticipant != null)
             {
-                participantName = participant.IsOwner ? "Owner" : roomParticipant.Name;
+                m_CurrentAvatarName = participant.IsOwner ? "Owner" : roomParticipant.Name;
                 color = AvatarUtils.GetColor(roomParticipant.ColorIndex);
             }
             
             var visible = !participant.IsOwner;
             
-            gameObject.name = $"Avatar ({participantName})";
+            gameObject.name = $"Avatar ({m_CurrentAvatarName})";
             
             m_Model.SetVisible(visible);
             m_Model.SetColor(color);
             
             m_Tag.SetVisible(visible);
-            m_Tag.SetName(participantName);
+            m_Tag.SetName(m_CurrentAvatarName);
             m_Tag.SetColor(color);
         }
     }

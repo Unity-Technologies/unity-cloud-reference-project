@@ -24,8 +24,8 @@ namespace Unity.ReferenceProject.UITableListView
         void InvokeMakeCell(VisualElement element, IColumnData columnData);
         void InvokeBindCell(VisualElement element, IColumnData columnData, object data);
         void InvokeUnbindCell(VisualElement element, IColumnData columnData, object data);
-        void InvokeMouseEnterListElementEvent(MouseEnterEvent mouseEventData);
-        void InvokeMouseLeaveListElementEvent(MouseLeaveEvent mouseEventData);
+        void InvokePointerEnterListElementEvent(PointerEnterEvent pointerEventData);
+        void InvokePointerLeaveListElementEvent(PointerLeaveEvent pointerEventData);
         void InvokeSelectionChanged(object selection);
         void InvokeReset();
     }

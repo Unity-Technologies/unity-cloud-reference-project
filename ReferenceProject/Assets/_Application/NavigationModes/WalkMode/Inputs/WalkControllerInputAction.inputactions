@@ -276,7 +276,7 @@
                 },
                 {
                     "name": "Mouse Drag",
-                    "id": "9628c526-3004-44a1-a2f5-ce15b129f6bc",
+                    "id": "258dcaef-abe6-4a29-90fe-3c2b0e5f262c",
                     "path": "MouseDrag",
                     "interactions": "",
                     "processors": "ScaleVector2(x=0.1,y=0.1)",
@@ -286,8 +286,8 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "Button",
-                    "id": "b803bfe4-7b78-473e-b09b-38e2ed8a6c73",
+                    "name": "m_Button",
+                    "id": "3dce811b-e528-4a0c-ab88-ea9c4c7726d7",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
@@ -297,8 +297,8 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Axis1",
-                    "id": "38222649-af85-41d7-bfd7-8a2d59988a35",
+                    "name": "m_Axis1",
+                    "id": "13eeeba3-8c07-4b13-83dc-fe4af28d704e",
                     "path": "<Mouse>/delta/x",
                     "interactions": "",
                     "processors": "",
@@ -308,8 +308,8 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Axis2",
-                    "id": "1821857a-3f32-441e-8ed9-e07bdf351d16",
+                    "name": "m_Axis2",
+                    "id": "d1363c7f-44fa-48f4-9fdd-c1205cd5cfc2",
                     "path": "<Mouse>/delta/y",
                     "interactions": "",
                     "processors": "",

@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a4977c9cf9d4ef692e448324c72998c, type: 3}
   m_Name: Tool UI Mode Tool Panel
   m_EditorClassIdentifier: 
-  AdditionalStyles:
+  m_AdditionalStyles:
   - {fileID: 7433441132597879392, guid: 42aa3570404e41278b89bf14a4d7a407, type: 3}
-  PanelStyleClass: panel-right-container
-  DisplayTitle: 1
-  DisplayIcon: 1
-  DisplayCloseButton: 1
-  UseScroll: 1
+  m_PanelStyleClass: panel-right-container
+  m_DisplayTitle: 1
+  m_DisplayIcon: 1
+  m_DisplayCloseButton: 1

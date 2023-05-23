@@ -5,7 +5,11 @@ namespace Unity.ReferenceProject.WorldSpaceUIToolkit
 {
     public class UIXRCursor : MonoBehaviour
     {
-        public float MaxDistance = 5f;
+        [SerializeField]
+        float m_MaxDistance = 5f;
+
+        public float MaxDistance => m_MaxDistance;
+        
         public Vector3 Position => transform.position;
         public Vector3 Direction => transform.forward;
     }

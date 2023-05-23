@@ -48,6 +48,11 @@ namespace Unity.ReferenceProject.WalkController
 
         void OnApplicationFocus(bool hasFocus)
         {
+            if (!hasFocus)
+            {
+                return;
+            }
+
             m_MoveAction.Reset();
             m_RunAction.Reset();
             m_JumpAction.Reset();

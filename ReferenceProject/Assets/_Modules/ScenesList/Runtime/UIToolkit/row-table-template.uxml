@@ -1,3 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" appui="UnityEngine.Dt.App.UI" editor-extension-mode="False">
-    <ui:VisualElement focusable="true" name="row-template" class="row-template" />
-</ui:UXML>

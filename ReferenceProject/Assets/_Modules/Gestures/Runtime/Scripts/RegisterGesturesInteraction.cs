@@ -6,12 +6,15 @@ namespace Unity.ReferenceProject.Gestures
 {
     public class RegisterGesturesInteraction : MonoBehaviour
     {
-        const string m_TwoFingerMedian = "TwoFinger/Median";
-        const string m_TwoFingerDistance = "TwoFinger/Distance";
+        static readonly string k_TwoFingerMedian = "TwoFinger/Median";
+        static readonly string k_TwoFingerDistance = "TwoFinger/Distance";
+        
         [SerializeField]
         bool m_RegisterMouseDragInteraction = true;
+        
         [SerializeField]
         bool m_RegisterTwoFingerDragInteraction = true;
+        
         [SerializeField]
         bool m_RegisterPinchInteraction = true;
 
@@ -25,13 +28,13 @@ namespace Unity.ReferenceProject.Gestures
 
             if (m_RegisterTwoFingerDragInteraction)
             {
-                InputSystem.RegisterBindingComposite<TwoFingerMedianComposite>(m_TwoFingerMedian);
+                InputSystem.RegisterBindingComposite<TwoFingerMedianComposite>(k_TwoFingerMedian);
                 InputSystem.RegisterInteraction<TwoFingerDragGestureInteraction>();
             }
 
             if (m_RegisterPinchInteraction)
             {
-                InputSystem.RegisterBindingComposite<TwoFingerDistanceComposite>(m_TwoFingerDistance);
+                InputSystem.RegisterBindingComposite<TwoFingerDistanceComposite>(k_TwoFingerDistance);
                 InputSystem.RegisterInteraction<PinchGestureInteraction>();
             }
         }

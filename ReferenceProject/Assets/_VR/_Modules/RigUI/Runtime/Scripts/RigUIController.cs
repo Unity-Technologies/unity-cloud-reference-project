@@ -250,11 +250,17 @@ namespace Unity.ReferenceProject.VR.RigUI
                         (m_SecondaryBarButtons != null && m_SecondaryBarButtons.Count > 0 ? 1f : 0f))
                     * m_ButtonSize / 1000f) * Vector3.up;
 
-            m_DockPoint.localPosition = position;
-            m_DockPoint.localRotation = Quaternion.identity;
+            if (m_DockPoint != null)
+            {
+                m_DockPoint.localPosition = position;
+                m_DockPoint.localRotation = Quaternion.identity;
+            }
 
-            m_PermanentDockPoint.localPosition = position;
-            m_PermanentDockPoint.localRotation = Quaternion.identity;
+            if (m_PermanentDockPoint != null)
+            {
+                m_PermanentDockPoint.localPosition = position;
+                m_PermanentDockPoint.localRotation = Quaternion.identity;
+            }
         }
 
         void OnPanelBuilt(UIDocument document)

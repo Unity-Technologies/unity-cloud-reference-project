@@ -6,9 +6,11 @@ namespace Unity.ReferenceProject.WorldSpaceUIToolkit
 {
     public class UITextureProjection : MonoBehaviour
     {
-        public Camera m_TargetCamera;
+        [SerializeField]
+        Camera m_TargetCamera;
 
-        public PanelSettings TargetPanel;
+        [SerializeField]
+        PanelSettings m_TargetPanel;
 
         Func<Vector2, Vector2> m_DefaultRenderTextureScreenTranslation;
 
@@ -31,23 +33,23 @@ namespace Unity.ReferenceProject.WorldSpaceUIToolkit
 
         void OnEnable()
         {
-            if (TargetPanel != null)
+            if (m_TargetPanel != null)
             {
                 if (m_DefaultRenderTextureScreenTranslation == null)
                 {
                     m_DefaultRenderTextureScreenTranslation = pos => ScreenCoordinatesToRenderTexture(pos);
                 }
 
-                TargetPanel.SetScreenToPanelSpaceFunction(m_DefaultRenderTextureScreenTranslation);
+                m_TargetPanel.SetScreenToPanelSpaceFunction(m_DefaultRenderTextureScreenTranslation);
             }
         }
 
         void OnDisable()
         {
             //we reset it back to the default behavior
-            if (TargetPanel != null)
+            if (m_TargetPanel != null)
             {
-                TargetPanel.SetScreenToPanelSpaceFunction(null);
+                m_TargetPanel.SetScreenToPanelSpaceFunction(null);
             }
         }
 
@@ -74,7 +76,7 @@ namespace Unity.ReferenceProject.WorldSpaceUIToolkit
                 return invalidPosition;
             }
 
-            var targetTexture = TargetPanel.targetTexture;
+            var targetTexture = m_TargetPanel.targetTexture;
             var rend = hit.transform.GetComponent<MeshRenderer>();
 
             if (rend == null || rend.sharedMaterial.mainTexture != targetTexture)

@@ -105,7 +105,7 @@ namespace Unity.ReferenceProject.Navigation
         void OnModeClick(int idMode)
         {
             m_NavigationManager.ChangeNavigationMode(idMode);
-            Close.Invoke();
+            CloseSelf();
         }
     }
 }

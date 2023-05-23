@@ -1,9 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="UnityEngine.Dt.App.UI" editor-extension-mode="False">
-    <ui:VisualElement focusable="true" name="scene-template" class="scene-template">
-        <ui:VisualElement name="scene-name" class="project-list-column-full-width project-list-row-element">
-            <ui:IMGUIContainer name="thumbnail" class="scene-icon-thumbnail" />
-            <appui:Text text="Scene Title" display-tooltip-when-elided="true" name="scene-title" class="scene-list-element" />
-        </ui:VisualElement>
-        <appui:Text text="Organisation" display-tooltip-when-elided="true" name="scene-organization" class="project-list-column-fixed-width project-list-row-element" />
-    </ui:VisualElement>
-</ui:UXML>

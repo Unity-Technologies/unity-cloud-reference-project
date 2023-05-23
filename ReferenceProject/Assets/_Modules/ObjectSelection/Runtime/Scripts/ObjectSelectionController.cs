@@ -50,7 +50,7 @@ namespace Unity.ReferenceProject.ObjectSelection
 
         void PerformPick(Ray ray)
         {
-            if (m_ObjectSelectionActivator.IsActive == false)
+            if (!m_ObjectSelectionActivator.IsActive)
                 return;
 
             if (m_PickTask?.IsCompleted ?? true)

@@ -31,7 +31,7 @@ namespace Unity.ReferenceProject.VR.VRControls
 
         void Awake()
         {
-            m_RayInteractorRenderer.OnShow.AddListener(OnShow);
+            m_RayInteractorRenderer.Showed += OnRayInteractorShowed;
         }
 
         void LateUpdate()
@@ -62,10 +62,10 @@ namespace Unity.ReferenceProject.VR.VRControls
 
         void OnDestroy()
         {
-            m_RayInteractorRenderer.OnShow.RemoveListener(OnShow);
+            m_RayInteractorRenderer.Showed -= OnRayInteractorShowed;
         }
 
-        void OnShow(bool show)
+        void OnRayInteractorShowed(bool show)
         {
             m_Blendshape.gameObject.SetActive(show);
         }

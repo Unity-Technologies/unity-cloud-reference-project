@@ -30,7 +30,7 @@ namespace Unity.ReferenceProject.Tools
         {
             Button = button;
             ToolUIController = toolUIController;
-            toolUIController.Close = CloseTool;
+            ToolUIController.SetCloseAction(CloseTool);
 
             return CreateVisualTreeInternal();
         }
@@ -41,14 +41,14 @@ namespace Unity.ReferenceProject.Tools
         {
             Button.selected = true;
             OnToolOpenedInternal();
-            ToolUIController.ToolOpened?.Invoke();
+            ToolUIController.InvokeToolOpened();
         }
 
         public void CloseTool()
         {
             Button.selected = false;
             OnToolClosedInternal();
-            ToolUIController.ToolClosed?.Invoke();
+            ToolUIController.InvokeToolClosed();
         }
 
         protected abstract VisualElement CreateVisualTreeInternal();

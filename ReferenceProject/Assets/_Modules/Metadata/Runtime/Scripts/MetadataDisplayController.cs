@@ -71,8 +71,8 @@ namespace Unity.ReferenceProject.Metadata
 
             if (m_ObjectSelectionProperty != null)
             {
-                m_ObjectSelectionProperty.OnValueChanged -= OnSelectionChanged;
-                m_ObjectSelectionProperty.OnValueChanged += OnSelectionChanged;
+                m_ObjectSelectionProperty.ValueChanged -= OnSelectionChanged;
+                m_ObjectSelectionProperty.ValueChanged += OnSelectionChanged;
 
                 OnSelectionChanged(m_ObjectSelectionProperty.GetValue()); // Refresh panel
             }
@@ -81,7 +81,7 @@ namespace Unity.ReferenceProject.Metadata
         public void CloseTool()
         {
             if (m_ObjectSelectionProperty != null)
-                m_ObjectSelectionProperty.OnValueChanged -= OnSelectionChanged;
+                m_ObjectSelectionProperty.ValueChanged -= OnSelectionChanged;
 
             // Disable selection tool
             m_ObjectSelectionActivator?.Unsubscribe(this);
@@ -98,7 +98,7 @@ namespace Unity.ReferenceProject.Metadata
             SetupList(m_ParameterListView, m_CacheMetadataList);
 
             // Search setup
-            m_SearchModule = new SearchModule<MetadataList>( 
+            m_SearchModule = new SearchModule<MetadataList>(
                 (nameof(MetadataList.Key), new SearchBindNode<MetadataList>((x) => x.Key))
             );
 
@@ -140,7 +140,7 @@ namespace Unity.ReferenceProject.Metadata
 
             if (target != null)
             {
-                // FixMe : use Metadata package
+                // TODO: use Metadata package
                 Debug.LogWarning("No metadata on selection");
             }
 
@@ -169,7 +169,7 @@ namespace Unity.ReferenceProject.Metadata
                 {
                     var parameterLabel = element.Q<Text>(k_TextListElementKey);
                     var parameterValue = element.Q<Text>(k_TextListElementValue);
-                    
+
                     parameterLabel.text = m_HighlightModule.IsHighlighted(nameof(MetadataList.Key), data.Key).Item2;
                     parameterValue.text = data.Value;
                 }
@@ -182,9 +182,9 @@ namespace Unity.ReferenceProject.Metadata
 
         class MetadataList
         {
-            public string Group;
-            public string Key;
-            public string Value;
+            public string Group = string.Empty;
+            public string Key = string.Empty;
+            public string Value = string.Empty;
         }
     }
 }

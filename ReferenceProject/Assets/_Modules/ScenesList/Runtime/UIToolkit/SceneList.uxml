@@ -7,7 +7,7 @@
             <appui:Button name="refresh-button" leading-icon="arrows-clockwise" />
         </ui:VisualElement>
         <appui:Divider size="M" />
-        <refui:TableListView name="table-scene-list" virtualization-method="DynamicHeight" show-table-header="true" />
+        <refui:TableListView name="table-scene-list" virtualization-method="DynamicHeight" show-table-header="true" horizontal-scroller-visibility="Hidden" />
         <ui:VisualElement name="loading" class="loading-container no-shrink">
             <appui:CircularProgress />
         </ui:VisualElement>

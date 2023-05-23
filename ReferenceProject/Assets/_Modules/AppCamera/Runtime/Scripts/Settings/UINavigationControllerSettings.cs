@@ -8,14 +8,21 @@ namespace Unity.ReferenceProject.AppCamera
     {
         [Header("Input Lag Skip Threshold")]
         [Tooltip("If an input event is older than the indicated value, one out of \"Input Lag Skip Amount\" events will be taken into considerations.  Others will be skipped.")]
-        public float inputLagSkipThreshold = .25f;
+        [SerializeField]
+        float m_InputLagSkipThreshold = .25f;
 
         [Header("Input Lag Skip Amount")]
         [Tooltip("If the \"Input Lag Skip Threshold\" is reached, Only one out of this value event will be treated.")]
-        public int inputLagSkipAmount = 3;
+        [SerializeField]
+        int m_InputLagSkipAmount = 3;
 
         [Header("Input Lag Cutoff Threshold")]
         [Tooltip("If an input event is older than the indicated value, it will remain untreated")]
-        public float inputLagCutoffThreshold = 1.0f;
+        [SerializeField]
+        float m_InputLagCutoffThreshold = 1.0f;
+        
+        public float InputLagSkipThreshold => m_InputLagSkipThreshold;
+        public int InputLagSkipAmount => m_InputLagSkipAmount;
+        public float InputLagCutoffThreshold => m_InputLagCutoffThreshold;
     }
 }

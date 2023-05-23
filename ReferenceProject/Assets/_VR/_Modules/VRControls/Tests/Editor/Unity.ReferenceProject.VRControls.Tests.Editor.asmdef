@@ -1,0 +1,22 @@
+{
+    "name": "Unity.ReferenceProject.VRControls.Tests",
+    "rootNamespace": "Unity.ReferenceProject.VRControls.Tests",
+    "references": [
+        "GUID:5e746f3ac74b0f644b33b958ec61300c",
+        "GUID:fe685ec1767f73d42b749ea8045bfe43",
+        "GUID:0acc523941302664db1f4e527237feb3"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

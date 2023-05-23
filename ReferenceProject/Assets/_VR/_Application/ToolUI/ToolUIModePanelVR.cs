@@ -11,15 +11,38 @@ namespace Unity.ReferenceProject.VR
     [CreateAssetMenu(menuName = "ReferenceProject/ToolUIMode/ToolUIModePanelVR")]
     public class ToolUIModePanelVR : ToolUIMode
     {
-        public List<StyleSheet> AdditionalStyles;
+        [SerializeField]
+        List<StyleSheet> m_AdditionalStyles;
 
-        public string PanelStyleClass;
-        public Vector2 PanelSize;
-        public Vector3 PanelPosition;
-        public bool DisplayTitle;
-        public bool DisplayIcon;
-        public bool DisplayCloseButton;
-        public bool DisplayDockButton;
+        [SerializeField]
+        string m_PanelStyleClass;
+        
+        [SerializeField]
+        Vector2 m_PanelSize;
+        
+        [SerializeField]
+        Vector3 m_PanelPosition;
+        
+        [SerializeField]
+        bool m_DisplayTitle;
+        
+        [SerializeField]
+        bool m_DisplayIcon;
+        
+        [SerializeField]
+        bool m_DisplayCloseButton;
+        
+        [SerializeField]
+        bool m_DisplayDockButton;
+        
+        public List<StyleSheet> AdditionalStyles => m_AdditionalStyles;
+        public string PanelStyleClass => m_PanelStyleClass;
+        public Vector2 PanelSize => m_PanelSize;
+        public Vector3 PanelPosition => m_PanelPosition;
+        public bool DisplayTitle => m_DisplayTitle;
+        public bool DisplayIcon => m_DisplayIcon;
+        public bool DisplayCloseButton => m_DisplayCloseButton;
+        public bool DisplayDockButton => m_DisplayDockButton;
 
         public override IToolUIModeHandler CreateHandler()
         {

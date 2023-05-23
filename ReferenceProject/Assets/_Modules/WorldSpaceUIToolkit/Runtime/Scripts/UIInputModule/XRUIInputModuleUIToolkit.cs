@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -11,7 +12,7 @@ using TouchPhase = UnityEngine.TouchPhase;
 namespace Unity.ReferenceProject.WorldSpaceUIToolkit
 {
     /// <summary>
-    ///     Custom class for input modules that send UI input in XR. Adapted for UIToolkit runtime worldspace panels.
+    ///     Custom class for input modules that send UI input in XR. Adapted for UIToolkit runtime world space panels.
     /// </summary>
     public class XRUIInputModuleUIToolkit : UIInputModuleUIToolkit
     {
@@ -206,6 +207,7 @@ namespace Unity.ReferenceProject.WorldSpaceUIToolkit
                         ProcessTrackedDevice(ref registeredInteractor.Model);
                         m_RegisteredInteractors[i] = registeredInteractor;
                     }
+                    registeredInteractor.Model.OnFrameFinished();
                 }
             }
 
@@ -246,62 +248,51 @@ namespace Unity.ReferenceProject.WorldSpaceUIToolkit
             }
         }
 
+        void EnsureTouchIsRegistered(Touch touch)
+        {
+            var registeredTouchIndex = m_RegisteredTouches.FindIndex(x => x.TouchId == touch.fingerId);
+
+            if (registeredTouchIndex < 0)
+            {
+                // Not found, search empty pool
+                var freeIndex = m_RegisteredTouches.FindIndex(x => !x.IsValid);
+                if (freeIndex > 0)
+                {
+                    var pointerId = m_RegisteredTouches[freeIndex].Model.PointerId;
+                    m_RegisteredTouches[freeIndex] = new RegisteredTouch(touch, pointerId);
+                    registeredTouchIndex = freeIndex;
+                }
+                else
+                {
+                    // No Empty slots, add one
+                    registeredTouchIndex = m_RegisteredTouches.Count;
+                    m_RegisteredTouches.Add(new RegisteredTouch(touch, m_RollingInteractorIndex++));
+                }
+            }
+
+            var registeredTouch = m_RegisteredTouches[registeredTouchIndex];
+            registeredTouch.Model.SelectPhase = touch.phase;
+            registeredTouch.Model.Position = touch.position;
+            m_RegisteredTouches[registeredTouchIndex] = registeredTouch;
+        }
+
         void ProcessTouches()
         {
-            if (Input.touchCount > 0)
+            if (Input.touchCount <= 0)
+                return;
+
+            foreach (var touch in Input.touches)
             {
-                var touches = Input.touches;
-                foreach (var touch in touches)
-                {
-                    var registeredTouchIndex = -1;
+                EnsureTouchIsRegistered(touch);
+            }
 
-                    // Find if touch already exists
-                    for (var j = 0; j < m_RegisteredTouches.Count; j++)
-                    {
-                        if (touch.fingerId == m_RegisteredTouches[j].TouchId)
-                        {
-                            registeredTouchIndex = j;
-                            break;
-                        }
-                    }
-
-                    if (registeredTouchIndex < 0)
-                    {
-                        // Not found, search empty pool
-                        for (var j = 0; j < m_RegisteredTouches.Count; j++)
-                        {
-                            if (!m_RegisteredTouches[j].IsValid)
-                            {
-                                // Re-use the Id
-                                var pointerId = m_RegisteredTouches[j].Model.PointerId;
-                                m_RegisteredTouches[j] = new RegisteredTouch(touch, pointerId);
-                                registeredTouchIndex = j;
-                                break;
-                            }
-                        }
-
-                        if (registeredTouchIndex < 0)
-                        {
-                            // No Empty slots, add one
-                            registeredTouchIndex = m_RegisteredTouches.Count;
-                            m_RegisteredTouches.Add(new RegisteredTouch(touch, m_RollingInteractorIndex++));
-                        }
-                    }
-
-                    var registeredTouch = m_RegisteredTouches[registeredTouchIndex];
-                    registeredTouch.Model.SelectPhase = touch.phase;
-                    registeredTouch.Model.Position = touch.position;
-                    m_RegisteredTouches[registeredTouchIndex] = registeredTouch;
-                }
-
-                for (var i = 0; i < m_RegisteredTouches.Count; i++)
-                {
-                    var registeredTouch = m_RegisteredTouches[i];
-                    ProcessTouch(ref registeredTouch.Model);
-                    if (registeredTouch.Model.SelectPhase == (TouchPhase)UnityEngine.InputSystem.TouchPhase.Ended || registeredTouch.Model.SelectPhase == (TouchPhase)UnityEngine.InputSystem.TouchPhase.Canceled)
-                        registeredTouch.IsValid = false;
-                    m_RegisteredTouches[i] = registeredTouch;
-                }
+            for (var i = 0; i < m_RegisteredTouches.Count; i++)
+            {
+                var registeredTouch = m_RegisteredTouches[i];
+                ProcessTouch(registeredTouch.Model);
+                if (registeredTouch.Model.SelectPhase == (TouchPhase)UnityEngine.InputSystem.TouchPhase.Ended || registeredTouch.Model.SelectPhase == (TouchPhase)UnityEngine.InputSystem.TouchPhase.Canceled)
+                    registeredTouch.IsValid = false;
+                m_RegisteredTouches[i] = registeredTouch;
             }
         }
 

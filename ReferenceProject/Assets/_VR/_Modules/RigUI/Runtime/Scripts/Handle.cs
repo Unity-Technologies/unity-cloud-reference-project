@@ -65,7 +65,7 @@ namespace Unity.ReferenceProject.VR.RigUI
 
             if (m_SelectingInteractors.Any())
             {
-                OnHandleSelecting(m_SelectingInteractors[0]);
+                OnHandleSelecting();
             }
 
             foreach (var interactor in m_SelectingInteractors)
@@ -146,7 +146,7 @@ namespace Unity.ReferenceProject.VR.RigUI
             DragStarted?.Invoke();
         }
 
-        void OnHandleSelecting(IXRInteractor interactor)
+        void OnHandleSelecting()
         {
             var inputAxis = m_PushPullInputAction.ReadValue<float>();
             if (m_PushPullInputAction.inProgress)

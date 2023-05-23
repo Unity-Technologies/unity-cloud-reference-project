@@ -26,3 +26,7 @@
 .is-selected.appui-actionbutton {
     background-color: var(--appui-accent-100);
 }
+
+.unity-collection-view__item:hover:enabled {
+    background-color: var(--appui-transparent-backgrounds-active-010);
+}

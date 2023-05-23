@@ -4,6 +4,7 @@ using Unity.ReferenceProject.SearchSortFilter;
 using UnityEngine;
 using UnityEngine.Dt.App.UI;
 using UnityEngine.UIElements;
+using TextOverflow = UnityEngine.UIElements.TextOverflow;
 
 namespace Unity.ReferenceProject.UITableListView
 {
@@ -24,8 +25,10 @@ namespace Unity.ReferenceProject.UITableListView
 
         readonly List<int> m_PrimaryKey = new ();
 
+        readonly string[] m_ColumnStyles;
+
         public FilterTableUI(FilterModule<T> filterBindNode, VisualElement root, Action onFilterChanged,
-            string buttonName = "")
+            string buttonName = "", string[] columnStyles = null)
         {
             m_FilterModule = filterBindNode;
             m_OnFilterChanged = onFilterChanged;
@@ -37,6 +40,8 @@ namespace Unity.ReferenceProject.UITableListView
                 Debug.LogError($"Can't find {nameof(ActionButton)} with name: {buttonName} in {root.name}");
                 return;
             }
+
+            m_ColumnStyles = columnStyles;
             
             m_Button.clickable.clicked += OnShowFilterPopover;
         }
@@ -60,7 +65,7 @@ namespace Unity.ReferenceProject.UITableListView
         {
             m_ContentContainer = new VisualElement();
             m_Table = new TableListView();
-            m_Table.ListView.style.maxHeight = new StyleLength(StyleKeyword.None); // Because there is a bug with popover
+            m_Table.ListView.style.maxHeight = new StyleLength(StyleKeyword.None); // Because there is a bug with popover. When shadow element of popover takes this value and become 4k height
             m_Table.showTableHeader = true;
             m_ContentContainer.Add(m_Table);
         }
@@ -86,7 +91,7 @@ namespace Unity.ReferenceProject.UITableListView
             var i = 0;
             foreach (var item in m_AllOptions)
             {
-                var column = new TableListColumnData(item.Key, true, inlineWidth > 0, inlineWidth);
+                var column = new TableListColumnData(item.Key, true, inlineWidth > 0, inlineWidth, m_ColumnStyles);
                 column.MakeCell += OnMakeCell;
                 column.BindCell += OnBindCell;
                 column.CreateHeader += OnCreateHeader;
@@ -157,23 +162,24 @@ namespace Unity.ReferenceProject.UITableListView
             if(data is not int id)
                 return;
 
-            var checkBox = e.Q<Checkbox>(GetCheckBoxName(column.Name));
-            if (checkBox != null && m_AllOptions.TryGetValue(column.Name, out var optionList))
+            var checkbox = e.Q<Checkbox>(GetCheckBoxName(column.Name));
+            if (checkbox != null && m_AllOptions.TryGetValue(column.Name, out var optionList))
             {
                 if (id >= 0 && id < optionList.Count)
                 {
                     // Show option
-                    checkBox.label = optionList[id];
-                    checkBox.style.display = DisplayStyle.Flex;
-                    m_CheckboxMap[checkBox] = (column.Name, id);
+                    checkbox.label = optionList[id];
+                    checkbox.tooltip = optionList[id];
+                    checkbox.style.display = DisplayStyle.Flex;
+                    m_CheckboxMap[checkbox] = (column.Name, id);
                     
-                    checkBox.SetValueWithoutNotify(m_FilterModule.ContainsOption(column.Name, optionList[id]) 
+                    checkbox.SetValueWithoutNotify(m_FilterModule.ContainsOption(column.Name, optionList[id]) 
                         ? CheckboxState.Checked : CheckboxState.Unchecked);
                 }
                 else
                 {
                     // Hide checkbox
-                    checkBox.style.display = DisplayStyle.None;
+                    checkbox.style.display = DisplayStyle.None;
                 }
             }
         }
@@ -184,17 +190,31 @@ namespace Unity.ReferenceProject.UITableListView
             {
                 name = GetCheckBoxName(column.Name)
             };
-            RegisterCheckboxClick(checkbox);
+            checkbox.style.flexShrink = 1;
+            
+            checkbox.clickable.clicked += () => OnCheckBoxClicked(checkbox);
+
+            EllipsisText(checkbox);
 
             e.Add(checkbox);
         }
+        
         void OnCreateHeader(VisualElement e, IColumnData column)
         {
-            var checkbox = new Checkbox();
             var name = column.Name;
-            checkbox.name = GetCheckBoxName(name);
-            checkbox.label = column.Name;
-            RegisterCheckboxClick(checkbox);
+            var checkbox = new Checkbox()
+            {
+                name = GetCheckBoxName(name),
+                label = column.Name,
+                tooltip = column.Name,
+                style =
+                {
+                    flexShrink = 1,
+                },
+            };
+                
+            EllipsisText(checkbox);
+            checkbox.clickable.clicked += () => OnCheckBoxClicked(checkbox);
             m_CheckboxMap[checkbox] = (name, -1);
 
             e.Add(checkbox);
@@ -202,16 +222,12 @@ namespace Unity.ReferenceProject.UITableListView
             m_HeaderCheckBoxMap.Add(column.Name, checkbox);
         }
 
-        void RegisterCheckboxClick(Checkbox checkbox)
+        static void EllipsisText(Checkbox checkbox)
         {
-            checkbox.clickable = null; // AppUI 0.2.9 has currently a bug with Pressables. Use a Clickable manipulator instead.
-            checkbox.AddManipulator(new UnityEngine.Dt.App.UI.Clickable(() =>
-            {
-                checkbox.value = checkbox.value == CheckboxState.Checked ? CheckboxState.Unchecked : CheckboxState.Checked;
-                OnCheckBoxClicked(checkbox);
-            }));
+            var text = checkbox.Q<LocalizedTextElement>();
+            text.style.textOverflow = TextOverflow.Ellipsis;
+            text.style.whiteSpace = WhiteSpace.NoWrap;
         }
-
 
         void OnCheckBoxClicked(Checkbox checkBox)
         {

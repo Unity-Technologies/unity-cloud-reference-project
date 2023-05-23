@@ -14,7 +14,6 @@ namespace Unity.ReferenceProject
         [SerializeField]
         int m_FrameBufferCount = 30;
         int m_CurrentIndex;
-        int m_CurrentValidFrameCount;
 
         float[] m_FrameCounts;
 
@@ -23,7 +22,6 @@ namespace Unity.ReferenceProject
         float m_MinFrameRate;
 
         float m_Timer;
-        float m_TotalFrameRate;
 
         public FrameRateCalculator()
         {
@@ -54,8 +52,8 @@ namespace Unity.ReferenceProject
 
         void Calculate()
         {
-            m_CurrentValidFrameCount = 0;
-            m_TotalFrameRate = 0;
+            var currentValidFrameCount = 0;
+            var totalFrameRate = 0.0f;
             m_MinFrameRate = float.MaxValue;
             m_MaxFrameRate = float.MinValue;
             for (var i = 0; i < m_FrameCounts.Length; ++i)
@@ -64,15 +62,15 @@ namespace Unity.ReferenceProject
                 if (value <= 0)
                     continue;
 
-                ++m_CurrentValidFrameCount;
-                m_TotalFrameRate += value;
+                ++currentValidFrameCount;
+                totalFrameRate += value;
 
                 if (m_MinFrameRate > value) m_MinFrameRate = value;
                 if (m_MaxFrameRate < value) m_MaxFrameRate = value;
             }
 
-            if (m_CurrentValidFrameCount > 0)
-                m_FrameRate = m_TotalFrameRate / m_CurrentValidFrameCount;
+            if (currentValidFrameCount > 0)
+                m_FrameRate = totalFrameRate / currentValidFrameCount;
         }
     }
 }

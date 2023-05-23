@@ -5,7 +5,7 @@ using UnityEngine.XR.Interaction.Toolkit.UI;
 
 namespace Unity.ReferenceProject.WorldSpaceUIToolkit
 {
-    public class IUIInteractorRegister : MonoBehaviour
+    public class UIInteractorRegister : MonoBehaviour
     {
         void OnEnable()
         {

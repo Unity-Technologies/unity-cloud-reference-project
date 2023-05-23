@@ -64,7 +64,7 @@ namespace Unity.ReferenceProject.Identity
         async void Logout()
         {
             await m_Authenticator.LogoutAsync();
-            Close();
+            CloseSelf();
 
             m_AppStateController.PrepareTransition(m_LogoutState).Apply();
         }

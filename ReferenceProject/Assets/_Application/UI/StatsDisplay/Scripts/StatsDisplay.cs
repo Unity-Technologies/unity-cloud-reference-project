@@ -37,6 +37,7 @@ namespace Unity.ReferenceProject
         string m_FrameRateString = "@ReferenceProject:Settings_FrameRate";
 
         public event Action<bool> OnShowPanel;
+        public bool IsEnabled => m_IsEnabled;
 
         Header m_FrameRateHeader;
         IGlobalSettings m_GlobalSettings;

@@ -56,24 +56,24 @@ namespace Unity.ReferenceProject.UIPanel.Tests
             yield return null;
 
             LogAssert.ignoreFailingMessages = true;
-            Assert.AreSame(MainUIPanel.Instance, null);
+            Assert.AreSame(null, MainUIPanel.Instance, "MainUIPanel.Instance must equal null, after mainUIPanel is destroyed");
         }
 
         [UnityTest]
         public IEnumerator RecreatingMainUIPanelAfterDestroyingUIDocument_ShouldReturnNewInstance()
         {
             var mainUIPanel = m_TestGameObjects.NewMainUIPanel(null);
-            Assert.AreNotSame(MainUIPanel.Instance, null);
+            Assert.AreNotSame(null, MainUIPanel.Instance, "MainUIPanel.Instance must not be null after creating new MainUIPanel");
 
             Object.Destroy(mainUIPanel.UIDocument);
             yield return null;
 
             LogAssert.ignoreFailingMessages = true;
-            Assert.AreSame(MainUIPanel.Instance, null);
+            Assert.AreSame(null, MainUIPanel.Instance, "MainUIPanel.Instance must be null after Destroying mainUIPanel");
 
             m_TestGameObjects.NewMainUIPanel(null);
 
-            Assert.AreNotSame(MainUIPanel.Instance, null);
+            Assert.AreNotSame(null, MainUIPanel.Instance, "MainUIPanel.Instance must not be null, after calling NewMainUIPanel");
         }
     }
 }

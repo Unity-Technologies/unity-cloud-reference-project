@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Dt.App.UI;
-using UnityEngine.Events;
 using UnityEngine.UIElements;
 
 namespace Unity.ReferenceProject.Tools
@@ -17,25 +16,19 @@ namespace Unity.ReferenceProject.Tools
         [SerializeField]
         VisualTreeAsset m_Template;
 
-        [HideInInspector]
-        public UnityEvent ToolOpened;
+        public event Action ToolOpened;
 
-        [HideInInspector]
-        public UnityEvent ToolClosed;
+        public event Action ToolClosed;
 
-        [HideInInspector]
-        public UnityEvent ToolPointerEntered;
+        public event Action ToolPointerEntered;
 
-        [HideInInspector]
-        public UnityEvent ToolPointerExited;
+        public event Action ToolPointerExited;
 
-        [HideInInspector]
-        public UnityEvent ToolFocusIn;
+        public event Action ToolFocusIn;
 
-        [HideInInspector]
-        public UnityEvent ToolFocusOut;
+        public event Action ToolFocusOut;
 
-        public Action Close;
+        Action m_CloseAction;
         
         static readonly string k_ActionButtonIconUssClassName = "appui-actionbutton__icon";
         
@@ -70,8 +63,28 @@ namespace Unity.ReferenceProject.Tools
 
         protected virtual void Awake()
         {
-            ToolOpened.AddListener(OnToolOpened);
-            ToolClosed.AddListener(OnToolClosed);
+            ToolOpened += OnToolOpened;
+            ToolClosed += OnToolClosed;
+        }
+
+        public void InvokeToolOpened()
+        {
+            ToolOpened?.Invoke();
+        }
+        
+        public void InvokeToolClosed()
+        {
+            ToolClosed?.Invoke();
+        }
+
+        public void SetCloseAction(Action action)
+        {
+            m_CloseAction = action;
+        }
+        
+        protected void CloseSelf()
+        {
+            m_CloseAction?.Invoke();
         }
 
         void OnDestroy()
@@ -144,9 +157,12 @@ namespace Unity.ReferenceProject.Tools
 
         public virtual VisualElement GetIcon()
         {
-            var icon = new Icon();
-            icon.sprite = m_Icon;
-            icon.size = IconSize.L;
+            var icon = new Icon
+            {
+                sprite = m_Icon,
+                size = IconSize.L
+            };
+            
             icon.AddToClassList(k_ActionButtonIconUssClassName);
             return icon;
         }

@@ -11,7 +11,7 @@ namespace Unity.ReferenceProject.Tools
         readonly VisualElement m_Header;
         readonly Header m_Title;
 
-        public Action OnCloseClicked;
+        public event Action CloseClicked;
 
         public Panel(VisualElement rootVisualElement, VisualElement contentVisualElement)
         {
@@ -34,7 +34,7 @@ namespace Unity.ReferenceProject.Tools
 
             if (CloseButton != null)
             {
-                CloseButton.clicked += () => OnCloseClicked?.Invoke();
+                CloseButton.clicked += () => CloseClicked?.Invoke();
             }
         }
 

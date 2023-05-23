@@ -122,7 +122,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.dt.app-ui": {
-      "version": "0.2.9",
+      "version": "0.2.11",
       "depth": 0,
       "source": "registry",
       "dependencies": {
