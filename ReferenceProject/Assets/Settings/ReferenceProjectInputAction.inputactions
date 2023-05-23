@@ -91,7 +91,7 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "Button",
+                    "name": "m_Button",
                     "id": "13724655-dbe4-40a6-8304-3aeaa3f72345",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
@@ -102,7 +102,7 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Axis1",
+                    "name": "m_Axis1",
                     "id": "5ce21615-fa89-450b-a879-be753c3329b8",
                     "path": "<Mouse>/delta/x",
                     "interactions": "",
@@ -113,7 +113,7 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Axis2",
+                    "name": "m_Axis2",
                     "id": "3f2867f8-b4e5-45b3-9435-907af126df6e",
                     "path": "<Mouse>/delta/y",
                     "interactions": "",
@@ -146,7 +146,7 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "Button",
+                    "name": "m_Button",
                     "id": "710d32af-f62f-4acf-8707-79df461b9878",
                     "path": "<Mouse>/middleButton",
                     "interactions": "",
@@ -157,7 +157,7 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Axis1",
+                    "name": "m_Axis1",
                     "id": "e3317d35-919b-4ffd-a6da-f2a5b9890114",
                     "path": "<Mouse>/delta/x",
                     "interactions": "",
@@ -168,7 +168,7 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Axis2",
+                    "name": "m_Axis2",
                     "id": "fb5b920e-180c-4467-9644-2480edb87d42",
                     "path": "<Mouse>/delta/y",
                     "interactions": "",
@@ -190,7 +190,7 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "Finger1",
+                    "name": "m_Finger1",
                     "id": "4b3c4564-e68e-4d60-ae1d-999f517a72cc",
                     "path": "<Touchscreen>/touch0",
                     "interactions": "",
@@ -201,7 +201,7 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Finger2",
+                    "name": "m_Finger2",
                     "id": "a2be3907-6f38-4bcd-8728-9108f52437d3",
                     "path": "<Touchscreen>/touch1",
                     "interactions": "",
@@ -377,7 +377,7 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "Button",
+                    "name": "m_Button",
                     "id": "2b442ec5-9fd3-4fde-9b19-cca6f95f55ae",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
@@ -388,7 +388,7 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Axis1",
+                    "name": "m_Axis1",
                     "id": "8a03c46c-7a3a-44fd-8692-abf179c738f6",
                     "path": "<Mouse>/delta/x",
                     "interactions": "",
@@ -399,7 +399,7 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Axis2",
+                    "name": "m_Axis2",
                     "id": "9928c9dd-8006-4cd3-b91a-f1f5eb3a5b77",
                     "path": "<Mouse>/delta/y",
                     "interactions": "",
@@ -443,7 +443,7 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "Finger1",
+                    "name": "m_Finger1",
                     "id": "a33e44d7-5e81-42ff-b55a-6382f441861f",
                     "path": "<Touchscreen>/touch0",
                     "interactions": "",
@@ -454,7 +454,7 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Finger2",
+                    "name": "m_Finger2",
                     "id": "b14fd4bb-b1c4-407c-aa13-100836aaa0c4",
                     "path": "<Touchscreen>/touch1",
                     "interactions": "",

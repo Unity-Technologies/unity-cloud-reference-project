@@ -36,8 +36,8 @@ namespace Unity.ReferenceProject.UITableListView
         public event Action<VisualElement, IColumnData> MakeCell;
         public event Action<VisualElement, IColumnData, object> BindCell;
         public event Action<VisualElement, IColumnData, object> UnbindCell;
-        public event Action<MouseEnterEvent> MouseEnterListElementEvent;
-        public event Action<MouseLeaveEvent> MouseLeaveListElementEvent;
+        public event Action<PointerEnterEvent> PointerEnterListElementEvent;
+        public event Action<PointerLeaveEvent> PointerLeaveListElementEvent;
         
         /// <summary>
         /// Calls when row has been selected on the table
@@ -73,8 +73,8 @@ namespace Unity.ReferenceProject.UITableListView
         void IColumnEventData.InvokeMakeCell(VisualElement element, IColumnData columnData) => MakeCell?.Invoke(element, columnData);
         void IColumnEventData.InvokeBindCell(VisualElement element, IColumnData columnData, object data) => BindCell?.Invoke(element, columnData, data);
         void IColumnEventData.InvokeUnbindCell(VisualElement element, IColumnData columnData, object data) => UnbindCell?.Invoke(element, columnData, data);
-        void IColumnEventData.InvokeMouseEnterListElementEvent(MouseEnterEvent mouseEventData) => MouseEnterListElementEvent?.Invoke(mouseEventData);
-        void IColumnEventData.InvokeMouseLeaveListElementEvent(MouseLeaveEvent mouseEventData) => MouseLeaveListElementEvent?.Invoke(mouseEventData);
+        void IColumnEventData.InvokePointerEnterListElementEvent(PointerEnterEvent pointerEventData) => PointerEnterListElementEvent?.Invoke(pointerEventData);
+        void IColumnEventData.InvokePointerLeaveListElementEvent(PointerLeaveEvent pointerEventData) => PointerLeaveListElementEvent?.Invoke(pointerEventData);
         void IColumnEventData.InvokeSelectionChanged(object selection) => SelectionChanged?.Invoke(selection);
         void IColumnEventData.InvokeReset() => Reset?.Invoke();
         

@@ -1,4 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="UnityEngine.Dt.App.UI">
-   <ui:VisualElement name="panel-content" >
-   </ui:VisualElement>
-</ui:UXML>

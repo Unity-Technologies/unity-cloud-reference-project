@@ -37,8 +37,8 @@ namespace Unity.ReferenceProject.UITableListView
                     m_Column.MakeCell += OnMakeCell;
                     m_Column.BindCell += OnBindCell;
                     m_Column.UnbindCell += OnUnbindCell;
-                    m_Column.MouseEnterListElementEvent += OnMouseEnterListElementEvent;
-                    m_Column.MouseLeaveListElementEvent += OnMouseLeaveListElementEvent;
+                    m_Column.PointerEnterListElementEvent += OnPointerEnterListElementEvent;
+                    m_Column.PointerLeaveListElementEvent += OnPointerLeaveListElementEvent;
                     m_Column.SelectionChanged += OnSelectionChanged;
                     m_Column.Reset += OnReset;
                     
@@ -63,12 +63,12 @@ namespace Unity.ReferenceProject.UITableListView
             // Implemented by inheritance
         }
 
-        protected virtual void OnMouseEnterListElementEvent(MouseEnterEvent mouseEventData)
+        protected virtual void OnPointerEnterListElementEvent(PointerEnterEvent pointerEventData)
         {
             // Implemented by inheritance
         }
 
-        protected virtual void OnMouseLeaveListElementEvent(MouseLeaveEvent mouseEventData)
+        protected virtual void OnPointerLeaveListElementEvent(PointerLeaveEvent pointerEventData)
         {
             // Implemented by inheritance
         }

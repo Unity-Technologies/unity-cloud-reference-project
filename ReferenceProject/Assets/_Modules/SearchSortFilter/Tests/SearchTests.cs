@@ -9,15 +9,14 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
         SearchModule<CustomClass> m_SearchModule;
         List<CustomClass> m_TestList;
         readonly List<CustomClass> m_CashedList = new List<CustomClass>();
-        
+
         [SetUp]
         public void Setup()
         {
             m_SearchModule = new SearchModule<CustomClass>((nameof(CustomClass.key), new SearchBindNode<CustomClass>(c => c.key)));
             m_TestList = CreateTestList();
         }
-        
-        
+
         [Test]
         public void Search_Correctness()
         {
@@ -36,7 +35,7 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
             m_SearchModule.searchString = "0";
             m_SearchModule.PerformSearch(list);
             Assert.AreEqual(null, list);
-            
+
             list = new List<CustomClass>();
             m_SearchModule.PerformSearch(list);
             Assert.AreEqual(0, list.Count);
@@ -47,10 +46,10 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
         {
             PerformSearch(m_SearchModule, null, m_CashedList, m_TestList);
             Assert.AreEqual(8, m_CashedList.Count);
-            
+
             PerformSearch(m_SearchModule, "", m_CashedList, m_TestList);
             Assert.AreEqual(8, m_CashedList.Count);
-            
+
             PerformSearch(m_SearchModule, " ", m_CashedList, m_TestList);
             Assert.AreEqual(8, m_CashedList.Count);
         }
@@ -95,9 +94,7 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
 
         class CustomClass
         {
-            public string group;
             public string key;
-            public string value;
         }
     }
 }

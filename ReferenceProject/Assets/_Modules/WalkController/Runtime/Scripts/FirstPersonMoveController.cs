@@ -22,7 +22,6 @@ namespace Unity.ReferenceProject.WalkController
         float m_MaxSlopeAngle = 50;
 
         CharacterController m_Controller;
-        RaycastHit m_GroundHitInfo;
         bool m_IsJumpingInput;
         Vector3 m_MoveDirectionInput;
         Vector3 m_PlayerVelocity;
@@ -49,17 +48,18 @@ namespace Unity.ReferenceProject.WalkController
 
         void Move()
         {
-            m_GroundHitInfo = GroundCheck();
-            isGrounded = m_Controller.isGrounded || m_GroundHitInfo.transform;
+            var groundHitInfo = GroundCheck();
+            isGrounded = m_Controller.isGrounded || groundHitInfo.transform;
             var isUseGravity = GravityCheck();
 
-            var slopeAngle = Vector3.Angle(Vector3.up, m_GroundHitInfo.normal);
+            var slopeAngle = Vector3.Angle(Vector3.up, groundHitInfo.normal);
 
             // Moving
-            var dir = m_MoveDirectionInput.z * transform.forward + m_MoveDirectionInput.x * transform.right;
+            var currentTransform = transform;
+            var dir = m_MoveDirectionInput.z * currentTransform.forward + m_MoveDirectionInput.x * currentTransform.right;
             dir = Vector3.ClampMagnitude(dir, 1); // making the same movement speed in all directions
             dir = Vector3.ProjectOnPlane(dir,
-                isUseGravity && slopeAngle < m_MaxSlopeAngle ? m_GroundHitInfo.normal : Vector3.up).normalized;
+                isUseGravity && slopeAngle < m_MaxSlopeAngle ? groundHitInfo.normal : Vector3.up).normalized;
 
             var moveSpeed = isRunning ? m_SprintMoveSpeed : m_MoveSpeed;
 

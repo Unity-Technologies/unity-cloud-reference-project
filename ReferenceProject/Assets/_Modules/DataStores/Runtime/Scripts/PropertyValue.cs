@@ -26,7 +26,7 @@ namespace Unity.ReferenceProject.DataStores
         readonly PropertyDelegates<TValue> m_PropertyDelegates;
         readonly INotifyPropertyChanged m_NotifyPropertyChanged;
 
-        public Action<TValue> OnValueChanged;
+        public event Action<TValue> ValueChanged;
 
         public PropertyValue(string propertyName, PropertyDelegates<TValue> delegates, INotifyPropertyChanged notifyPropertyChanged)
         {
@@ -44,7 +44,7 @@ namespace Unity.ReferenceProject.DataStores
         void OnPropertyChanged(string propertyName)
         {
             if (propertyName == m_PropertyName)
-                OnValueChanged?.Invoke(GetValue());
+                ValueChanged?.Invoke(GetValue());
         }
 
         public TValue GetValue()

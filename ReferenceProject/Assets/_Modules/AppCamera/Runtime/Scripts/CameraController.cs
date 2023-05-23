@@ -25,21 +25,17 @@ namespace Unity.ReferenceProject.AppCamera
         uint m_InputSkipper;
         Vector3 m_LastMovingAction;
         bool m_MoveEnabled = true;
-
-        InputAction m_MovingAction;
-        DeltaCalculator m_PanDelta;
+        
         Coroutine m_PanGestureCoroutine;
         bool m_PanGestureInProgress;
-        DeltaCalculator m_WorldOrbitDelta;
-        DeltaCalculator m_ZoomDelta;
         Coroutine m_ZoomGestureCoroutine;
         bool m_ZoomGestureInProgress;
+        
+        readonly DeltaCalculator m_PanDelta = new ();
+        readonly DeltaCalculator m_WorldOrbitDelta = new ();
+        readonly DeltaCalculator m_ZoomDelta = new ();
 
-        public InputAction MovingAction
-        {
-            get { return m_MovingAction; }
-            set { m_MovingAction = value; }
-        }
+        public InputAction MovingAction { get; set; }
 
         public void Reset()
         {
@@ -76,19 +72,19 @@ namespace Unity.ReferenceProject.AppCamera
 
         public void UpdateMovingAction()
         {
-            if (m_MovingAction == null)
+            if (MovingAction == null)
                 return;
 
-            if (Time.unscaledDeltaTime <= m_UINavigationControllerSettings.inputLagCutoffThreshold)
+            if (Time.unscaledDeltaTime <= m_UINavigationControllerSettings.InputLagCutoffThreshold)
             {
-                ToggleMovingAction(Time.unscaledDeltaTime <= m_UINavigationControllerSettings.inputLagSkipThreshold);
+                ToggleMovingAction(Time.unscaledDeltaTime <= m_UINavigationControllerSettings.InputLagSkipThreshold);
 
                 if (!m_MoveEnabled)
                 {
                     return;
                 }
 
-                var val = m_MovingAction.ReadValue<Vector3>();
+                var val = MovingAction.ReadValue<Vector3>();
                 if (val != m_LastMovingAction)
                 {
                     m_LastMovingAction = val;
@@ -97,7 +93,7 @@ namespace Unity.ReferenceProject.AppCamera
             }
             else
             {
-                m_MovingAction.Disable();
+                MovingAction.Disable();
                 m_Camera.ForceStop();
                 m_LastMovingAction = Vector3.zero;
                 m_Camera.MoveInLocalDirection(Vector3.zero, LookAtConstraint.Follow);
@@ -108,11 +104,11 @@ namespace Unity.ReferenceProject.AppCamera
         {
             switch (value)
             {
-                case true when !m_MovingAction.enabled:
-                    m_MovingAction.Enable();
+                case true when !MovingAction.enabled:
+                    MovingAction.Enable();
                     break;
-                case false when m_MovingAction.enabled:
-                    m_MovingAction.Disable();
+                case false when MovingAction.enabled:
+                    MovingAction.Disable();
                     break;
             }
         }
@@ -254,8 +250,8 @@ namespace Unity.ReferenceProject.AppCamera
         bool CheckTreatInput(double deltaTime)
         {
             return
-                deltaTime <= m_UINavigationControllerSettings.inputLagSkipThreshold ||
-                ((deltaTime <= m_UINavigationControllerSettings.inputLagCutoffThreshold) && (m_InputSkipper % m_UINavigationControllerSettings.inputLagSkipAmount == 0));
+                deltaTime <= m_UINavigationControllerSettings.InputLagSkipThreshold ||
+                ((deltaTime <= m_UINavigationControllerSettings.InputLagCutoffThreshold) && (m_InputSkipper % m_UINavigationControllerSettings.InputLagSkipAmount == 0));
         }
 
         bool CheckTreatInput(InputAction.CallbackContext context)

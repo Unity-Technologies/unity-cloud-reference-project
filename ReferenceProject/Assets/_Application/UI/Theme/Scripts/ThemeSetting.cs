@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.ReferenceProject.Settings;
 using Unity.ReferenceProject.UIPanel;
 using UnityEngine;
@@ -27,7 +28,7 @@ namespace Unity.ReferenceProject
 
         void Awake()
         {
-            m_DropdownSettings = new DropdownSettings("@ReferenceProject:Settings_Theme", m_ThemeIds.ToArray(), OnSettingChanged, SelectedValue);
+            m_DropdownSettings = new DropdownSettings("@ReferenceProject:Settings_Theme", m_ThemeIds.Select(x=>$"@ReferenceProject:{x}").ToArray(), OnSettingChanged, SelectedValue);
             m_CurrentTheme = PlayerPrefs.GetString(k_ThemePrefKey, m_ThemeIds[0]);
         }
 

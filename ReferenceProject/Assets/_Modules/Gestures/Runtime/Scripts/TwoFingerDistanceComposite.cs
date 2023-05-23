@@ -17,6 +17,14 @@ namespace Unity.ReferenceProject.Gestures
     [Preserve]
     public class TwoFingerDistanceComposite : InputBindingComposite<TouchState>
     {
+        [InputControl(layout = "Finger")]
+        [UsedImplicitly]
+        int m_Finger1;
+
+        [InputControl(layout = "Finger")]
+        [UsedImplicitly]
+        int m_Finger2;
+        
         [Preserve]
         static TwoFingerDistanceComposite()
         {
@@ -25,8 +33,8 @@ namespace Unity.ReferenceProject.Gestures
 
         public override TouchState ReadValue(ref InputBindingCompositeContext context)
         {
-            var touch1 = context.ReadValue<TouchState, TouchStateComparer>(Finger1);
-            var touch2 = context.ReadValue<TouchState, TouchStateComparer>(Finger2);
+            var touch1 = context.ReadValue<TouchState, TouchStateComparer>(m_Finger1);
+            var touch2 = context.ReadValue<TouchState, TouchStateComparer>(m_Finger2);
 
             if (!touch1.isInProgress)
                 return touch1;
@@ -59,17 +67,5 @@ namespace Unity.ReferenceProject.Gestures
                 return -1;
             }
         }
-
-        #region Fields
-
-        [InputControl(layout = "Finger")]
-        [UsedImplicitly]
-        public int Finger1;
-
-        [InputControl(layout = "Finger")]
-        [UsedImplicitly]
-        public int Finger2;
-
-        #endregion
     }
 }

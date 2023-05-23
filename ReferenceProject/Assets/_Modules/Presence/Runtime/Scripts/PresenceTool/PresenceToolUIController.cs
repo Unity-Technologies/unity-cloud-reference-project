@@ -17,11 +17,14 @@ namespace Unity.ReferenceProject.Presence
         int m_MaxParticipantsCount = 4;
 
         PresenceStreamingRoom m_PresenceStreamingRoom;
-        Room m_CurrentRoom;
         AvatarBadgesContainer m_AvatarsBadgesContainer;
         VisualElement m_ListContainerVisualElement;
         CollaboratorsDataPanel m_CollaboratorsDataPanel;
-        
+
+        protected bool IsRemoveOwner => m_IsRemoveOwner;
+        protected CollaboratorsDataPanel CollaboratorsDataPanel => m_CollaboratorsDataPanel;
+        protected Room CurrentRoom { get; set; }
+
         [Inject]
         void Setup(PresenceStreamingRoom presenceStreamingRoom)
         {
@@ -45,10 +48,10 @@ namespace Unity.ReferenceProject.Presence
             m_PresenceStreamingRoom.RoomJoined -= OnRoomJoined;
             m_PresenceStreamingRoom.RoomLeft -= OnRoomLeft;
         }
-
-        void OnRoomJoined(Room room)
+        
+        protected virtual void OnRoomJoined(Room room)
         {
-            m_CurrentRoom = room;
+            CurrentRoom = room;
             m_AvatarsBadgesContainer.BindRoom(room);
 
             foreach (var participant in room.ConnectedParticipants)
@@ -58,27 +61,29 @@ namespace Unity.ReferenceProject.Presence
             
             RefreshVisualTree();
             
-            m_CurrentRoom.ParticipantAdded += OnParticipantAdded;
-            m_CurrentRoom.ParticipantRemoved += OnParticipantRemoved;
+            CurrentRoom.ParticipantAdded += OnParticipantAdded;
+            CurrentRoom.ParticipantRemoved += OnParticipantRemoved;
         }
         
-        void OnRoomLeft()
+        protected void OnRoomLeft()
         {
             m_CollaboratorsDataPanel.ClearParticipants();
             
-            RefreshVisualTree();
+            CurrentRoom.ParticipantAdded -= OnParticipantAdded;
+            CurrentRoom.ParticipantRemoved -= OnParticipantRemoved;
+
+            CurrentRoom = null;
             
-            m_CurrentRoom.ParticipantAdded -= OnParticipantAdded;
-            m_CurrentRoom.ParticipantRemoved -= OnParticipantRemoved;
+            RefreshVisualTree();
         }
         
-        void OnParticipantRemoved(IParticipant participant)
+        protected void OnParticipantRemoved(IParticipant participant)
         {
             m_CollaboratorsDataPanel.RemoveParticipant(participant);
             RefreshVisualTree();
         }
 
-        void OnParticipantAdded(IParticipant participant)
+        protected void OnParticipantAdded(IParticipant participant)
         {
             if (m_IsRemoveOwner && participant.IsSelf)
                 return;
@@ -101,7 +106,7 @@ namespace Unity.ReferenceProject.Presence
             return rootVisualElement;
         }
         
-        void RefreshVisualTree()
+        protected virtual void RefreshVisualTree()
         {
             if (m_CollaboratorsDataPanel.IsDirty)
             {

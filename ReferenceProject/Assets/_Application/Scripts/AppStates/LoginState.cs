@@ -16,12 +16,12 @@ namespace Unity.ReferenceProject
 
         protected override void EnterStateInternal()
         {
-            m_IdentityUIController.OnLoggedIn.AddListener(OnLoggedIn);
+            m_IdentityUIController.LoggedIn += OnLoggedIn;
         }
 
         protected override void ExitStateInternal()
         {
-            m_IdentityUIController.OnLoggedIn.RemoveListener(OnLoggedIn);
+            m_IdentityUIController.LoggedIn -= OnLoggedIn;
         }
 
         void OnLoggedIn()

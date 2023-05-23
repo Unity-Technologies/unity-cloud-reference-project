@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1155115325}
-  - component: {fileID: 1508460343925123556}
   - component: {fileID: -1407504425093679733}
   m_Layer: 0
   m_Name: PresenceTool
@@ -33,19 +32,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1508460343925123556
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1155115324}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b082702ef30b454aabce6b64f95e935, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideTypes: 4
 --- !u!114 &-1407504425093679733
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,23 +47,5 @@ MonoBehaviour:
   m_DisplayName: '@Presence:Tool_Name'
   m_Icon: {fileID: 0}
   m_Template: {fileID: 0}
-  ToolOpened:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolClosed:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolPointerEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolPointerExited:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolFocusIn:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolFocusOut:
-    m_PersistentCalls:
-      m_Calls: []
   m_IsRemoveOwner: 0
   m_MaxParticipantsCount: 4

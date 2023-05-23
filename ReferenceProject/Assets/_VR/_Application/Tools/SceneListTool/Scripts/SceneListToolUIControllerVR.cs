@@ -52,7 +52,7 @@ namespace Unity.ReferenceProject.VR
 
         void OnSceneSelected(IScene scene)
         {
-            Close?.Invoke();
+            CloseSelf();
 
             if (scene != m_ScenePropertyValue.GetValue())
             {

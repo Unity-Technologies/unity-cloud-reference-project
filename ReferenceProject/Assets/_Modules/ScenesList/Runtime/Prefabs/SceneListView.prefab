@@ -98,6 +98,8 @@ MonoBehaviour:
   m_PopoverStyle: project-list-filter-service-popover
   m_FilterHeaderStyle: project-list-filter-service-header
   m_FilterRowStyle: project-list-filter-service-row
+  m_ColumnStyles:
+  - project-list-filter-service-cell
 --- !u!114 &6171362006321056438
 MonoBehaviour:
   m_ObjectHideFlags: 0

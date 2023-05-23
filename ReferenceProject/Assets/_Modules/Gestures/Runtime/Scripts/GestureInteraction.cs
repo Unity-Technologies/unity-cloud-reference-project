@@ -122,7 +122,7 @@ namespace Unity.ReferenceProject.Gestures
             }
             else
             {
-                if (m_StartedRegistered == false)
+                if (!m_StartedRegistered)
                 {
                     m_GestureRecognizer.onGestureStarted += OnGestureStarted;
                     m_StartedRegistered = true;

@@ -30,8 +30,8 @@ namespace Unity.ReferenceProject.Identity
         [SerializeField]
         string m_RetryString = "@Identity:Retry";
         
-        public UnityEvent OnLoggedIn;
-        public UnityEvent OnLoggedOut;
+        public event Action LoggedIn;
+        public event Action LoggedOut;
 
         IUrlRedirectionAuthenticator m_Authenticator;
 
@@ -40,7 +40,6 @@ namespace Unity.ReferenceProject.Identity
         bool m_IsRetrying;
         VisualElement m_LoadingIndicator;
         Button m_LoginLogoutButton;
-        VisualElement m_RootVisualElement;
 
         IAppMessaging m_AppMessaging;
 
@@ -76,9 +75,8 @@ namespace Unity.ReferenceProject.Identity
 
         public void InitUIToolkit(VisualElement rootVisualElement)
         {
-            m_RootVisualElement = rootVisualElement;
-            m_LoginLogoutButton = m_RootVisualElement.Q<Button>(m_LoginButtonElement);
-            m_LoadingIndicator = m_RootVisualElement.Q<VisualElement>(m_IndicatorElement);
+            m_LoginLogoutButton = rootVisualElement.Q<Button>(m_LoginButtonElement);
+            m_LoadingIndicator = rootVisualElement.Q<VisualElement>(m_IndicatorElement);
 
             SetVisible(m_LoadingIndicator, false);
 
@@ -129,7 +127,7 @@ namespace Unity.ReferenceProject.Identity
                     m_LoginLogoutButton.title = m_LogoutString;
                     m_LoginLogoutButton.SetEnabled(false);
                     SetVisible(m_LoadingIndicator, false);
-                    OnLoggedIn?.Invoke();
+                    LoggedIn?.Invoke();
                     break;
                 }
 
@@ -151,7 +149,7 @@ namespace Unity.ReferenceProject.Identity
 
                     m_LoginLogoutButton.title = m_LoginString;
                     SetVisible(m_LoadingIndicator, false);
-                    OnLoggedOut?.Invoke();
+                    LoggedOut?.Invoke();
                     break;
                 }
 

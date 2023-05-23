@@ -10,11 +10,26 @@ namespace Unity.ReferenceProject.Tools
     [Serializable]
     public struct ToolData
     {
-        public ToolUIMode ToolUIMode;
-        public string ToolbarElementName;
-        public string ButtonStyleClass;
-        public bool CloseOtherTools;
-        public ToolUIController ToolUIController;
+        [SerializeField]
+        ToolUIMode m_ToolUIMode;
+        
+        [SerializeField]
+        string m_ToolbarElementName;
+        
+        [SerializeField]
+        string m_ButtonStyleClass;
+        
+        [SerializeField]
+        bool m_CloseOtherTools;
+        
+        [SerializeField]
+        ToolUIController m_ToolUIController;
+        
+        public ToolUIMode ToolUIMode => m_ToolUIMode;
+        public string ToolbarElementName => m_ToolbarElementName;
+        public string ButtonStyleClass => m_ButtonStyleClass;
+        public bool CloseOtherTools => m_CloseOtherTools;
+        public ToolUIController ToolUIController => m_ToolUIController;
     }
 
     [RequireComponent(typeof(UIDocument))]
@@ -26,8 +41,6 @@ namespace Unity.ReferenceProject.Tools
         [SerializeField]
         List<ToolData> m_ToolData;
 
-        VisualElement m_Root;
-
         IToolUIManager m_ToolUIManager;
 
         [Inject]
@@ -38,11 +51,11 @@ namespace Unity.ReferenceProject.Tools
 
         void Awake()
         {
-            m_Root = GetComponent<UIDocument>().rootVisualElement;
+            var root = GetComponent<UIDocument>().rootVisualElement;
 
             foreach (var style in m_AdditionalStyles)
             {
-                m_Root.styleSheets.Add(style);
+                root.styleSheets.Add(style);
             }
 
             var panelContainer = new VisualElement
@@ -55,11 +68,11 @@ namespace Unity.ReferenceProject.Tools
                 pickingMode = PickingMode.Ignore // Ignore because now it is fullscreen
             };
 
-            m_Root.Add(panelContainer);
+            root.Add(panelContainer);
 
             foreach (var toolData in m_ToolData)
             {
-                var buttonContainer = string.IsNullOrEmpty(toolData.ToolbarElementName) ? null : m_Root.Q<VisualElement>(toolData.ToolbarElementName);
+                var buttonContainer = string.IsNullOrEmpty(toolData.ToolbarElementName) ? null : root.Q<VisualElement>(toolData.ToolbarElementName);
                 var handler = AddTool(panelContainer, buttonContainer, toolData);
                 m_ToolUIManager.RegisterHandler(handler);
             }

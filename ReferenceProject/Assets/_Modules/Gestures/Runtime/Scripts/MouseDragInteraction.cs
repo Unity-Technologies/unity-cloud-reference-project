@@ -33,9 +33,7 @@ namespace Unity.ReferenceProject.Gestures
                 return;
             }
 
-            var phase = context.phase;
-
-            switch (phase)
+            switch (context.phase)
             {
                 case InputActionPhase.Disabled:
                     break;
@@ -46,7 +44,6 @@ namespace Unity.ReferenceProject.Gestures
                         context.Started();
                         context.SetTimeout(float.PositiveInfinity);
                     }
-
                     break;
 
                 case InputActionPhase.Started:
@@ -71,14 +68,13 @@ namespace Unity.ReferenceProject.Gestures
                             context.Canceled();
                         }
                     }
-
                     break;
 
                 case InputActionPhase.Canceled:
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(phase), phase, null);
+                    throw new ArgumentOutOfRangeException(nameof(context), context, $"Context.phase field is invalid, phase = {context.phase}");
             }
         }
     }

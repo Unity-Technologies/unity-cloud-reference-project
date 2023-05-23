@@ -7,7 +7,10 @@ namespace Unity.ReferenceProject.Tools
     [CreateAssetMenu(menuName = "ReferenceProject/ToolUIMode/ToolUIModePopover")]
     public class ToolUIModePopover : ToolUIModePanel
     {
-        public PopoverPlacement PopoverPlacement;
+        [SerializeField]
+        PopoverPlacement m_PopoverPlacement;
+
+        public PopoverPlacement PopoverPlacement => m_PopoverPlacement;
 
         public override IToolUIModeHandler CreateHandler()
         {

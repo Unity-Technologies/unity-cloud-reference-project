@@ -26,9 +26,8 @@ namespace Unity.ReferenceProject.VR.VRControls
         ///     An event that is fired when the renderer changes visibility. The boolean value is true when shown, and false when
         ///     hidden.
         /// </summary>
-        public BoolEvent OnShow = new BoolEvent();
+        public event Action<bool> Showed;
 
-        public BoolEvent OnUIToolkitSelect = new BoolEvent();
         Vector3 m_CurrentHitNormal;
         Vector3 m_CurrentHitOrSelectPoint;
 
@@ -164,19 +163,17 @@ namespace Unity.ReferenceProject.VR.VRControls
         bool UpdateCurrentHitInfo(Transform rayOrigin)
         {
             var startPoint = rayOrigin.position;
+            // Get Hit Info
             if (RayInteractor.TryGetHitInfo(out m_CurrentHitOrSelectPoint, out m_CurrentHitNormal, out _, out var isValidTarget))
             {
                 CurrentRayLength = Vector3.Distance(m_CurrentHitOrSelectPoint, startPoint);
-
-                if (!isValidTarget)
+                if (!isValidTarget
+                    && RayInteractor.TryGetCurrentRaycast(out var raycastHit, out var raycastHitIndex, out var uiRaycastHit, out var uiRaycastHitIndex, out var isUIHitClosest)
+                    && raycastHit.HasValue
+                    && raycastHit.Value.transform != null
+                    && raycastHit.Value.transform.gameObject.layer == LayerMask.NameToLayer("UI"))
                 {
-                    if (RayInteractor.TryGetCurrentRaycast(out var raycastHit, out var raycastHitIndex, out var uiRaycastHit, out var uiRaycastHitIndex, out var isUIHitClosest)
-                        && raycastHit.HasValue
-                        && raycastHit.Value.transform != null
-                        && raycastHit.Value.transform.gameObject.layer == LayerMask.NameToLayer("UI"))
-                    {
-                        isValidTarget = true;
-                    }
+                    isValidTarget = true;
                 }
             }
             else
@@ -225,13 +222,7 @@ namespace Unity.ReferenceProject.VR.VRControls
 
         void Show(bool show)
         {
-            OnShow?.Invoke(show);
+            Showed?.Invoke(show);
         }
-
-        /// <summary>
-        ///     Serializable class for a Unity boolean event
-        /// </summary>
-        [Serializable]
-        public class BoolEvent : UnityEvent<bool> { }
     }
 }

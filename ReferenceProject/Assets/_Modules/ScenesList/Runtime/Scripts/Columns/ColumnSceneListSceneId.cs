@@ -9,8 +9,6 @@ namespace Unity.ReferenceProject.ScenesList
 {
     public class ColumnSceneListSceneId : TableListColumn
     {
-        readonly Dictionary<Button, string> m_ButtonMap = new();
-
         protected override void OnCreateHeader(VisualElement e, IColumnData columnData)
         {
             TableListColumnData.BuildTextHeader(e, columnData);
@@ -36,26 +34,20 @@ namespace Unity.ReferenceProject.ScenesList
             }
 
             var button = e.Q<Button>(GetButtonName(columnData));
-            
-            m_ButtonMap[button] = dataSet.Id.ToString();
-            button.title = dataSet.Id.ToString();
-        }
 
-        protected override void OnReset()
-        {
-            base.OnReset();
-            m_ButtonMap.Clear();
+            button.userData = dataSet.Id.ToString();
+            button.title = dataSet.Id.ToString();
         }
 
         string GetButtonName(IColumnData columnData) => $"{nameof(ColumnSceneListSceneId)}-{columnData.Name}";
         
         void OnButtonClick(Button button)
         {
-            if (m_ButtonMap.TryGetValue(button, out var value))
-            {
-                GUIUtility.systemCopyBuffer = value;
-                Debug.Log($"Copied to clipboard: {value}");
-            }
+            if(button.userData is not string sceneId)
+                return;
+
+            GUIUtility.systemCopyBuffer = sceneId;
+            Debug.Log($"Copied to clipboard: {sceneId}");
         }
     }
 }

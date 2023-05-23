@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81fbb890d235c6d43abbea82b17432e7, type: 3}
   m_Name: Settings Panel VR
   m_EditorClassIdentifier: 
-  AdditionalStyles: []
-  PanelStyleClass: 
-  PanelSize: {x: 350, y: 500}
-  PanelPosition: {x: 0, y: 0.25, z: 0}
-  DisplayTitle: 1
-  DisplayIcon: 1
-  DisplayCloseButton: 1
-  DisplayDockButton: 1
+  m_AdditionalStyles: []
+  m_PanelStyleClass: 
+  m_PanelSize: {x: 350, y: 500}
+  m_PanelPosition: {x: 0, y: 0.25, z: 0}
+  m_DisplayTitle: 1
+  m_DisplayIcon: 1
+  m_DisplayCloseButton: 1
+  m_DisplayDockButton: 1

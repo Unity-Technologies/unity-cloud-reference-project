@@ -122,7 +122,7 @@ namespace Unity.ReferenceProject.Gestures
             gap = (touch1.position.ReadValue() - touch2.position.ReadValue()).magnitude;
             startGap = gap;
             var separation = GestureTouchesUtility.PixelsToInches(Mathf.Abs(gap - deltaPosition));
-            return !(separation < pinchRecognizer.m_SlopInches);
+            return separation >= pinchRecognizer.m_SlopInches;
         }
 
         /// <summary>

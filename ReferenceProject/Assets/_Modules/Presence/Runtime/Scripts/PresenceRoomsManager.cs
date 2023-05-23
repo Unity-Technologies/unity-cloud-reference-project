@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Unity.Cloud.Common;
@@ -79,14 +80,14 @@ namespace Unity.ReferenceProject.Presence
             
             var sceneList = await m_SceneProvider.ListScenesAsync();
             
-            foreach (var scene in sceneList)
+            foreach (var sceneId in sceneList.Select(scene => scene.Id))
             {
-                var room = await m_RoomProvider.GetRoomAsync(scene.Id);
+                var room = await m_RoomProvider.GetRoomAsync(sceneId);
             
                 if (room == null)
                     continue;
                 
-                m_Rooms[scene.Id] = room;
+                m_Rooms[sceneId] = room;
             }
 
             foreach (var room in m_Rooms)

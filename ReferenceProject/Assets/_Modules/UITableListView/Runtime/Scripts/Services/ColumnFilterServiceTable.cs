@@ -25,6 +25,9 @@ namespace Unity.ReferenceProject.UITableListView
         [SerializeField]
         string m_FilterRowStyle;
         
+        [SerializeField]
+        string[] m_ColumnStyles;
+
         FilterModule<object> m_FilterModule;
         FilterTableUI<object> m_FilterTableUI;
         
@@ -47,7 +50,7 @@ namespace Unity.ReferenceProject.UITableListView
         public void InitializeService(VisualElement root)
         {
             m_FilterModule = new FilterModule<object>();
-            m_FilterTableUI = new FilterTableUI<object>(m_FilterModule, root, OnRefresh, m_ButtonName);
+            m_FilterTableUI = new FilterTableUI<object>(m_FilterModule, root, OnRefresh, m_ButtonName, m_ColumnStyles);
             m_FilterTableUI.SetStylesToHeader(m_FilterHeaderStyle);
             m_FilterTableUI.SetStylesToRow(m_FilterRowStyle);
             m_FilterTableUI.SetStylesToPopover(m_PopoverStyle);

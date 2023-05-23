@@ -23,6 +23,10 @@ MonoBehaviour:
     m_Key: Tool_Name
     m_Metadata:
       m_Items: []
+  - m_Id: 20329663543894016
+    m_Key: Loading_Name
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.Dt.App.UI;
 using UnityEngine.UIElements;
 
@@ -19,7 +20,8 @@ namespace Unity.ReferenceProject.UITableListView
                 m_ShowTableHeader = value;
                 if (m_Header != null)
                 {
-                    m_Header.style.display = value ? DisplayStyle.Flex : DisplayStyle.None;
+                   m_Header.style.height = value ? StyleKeyword.Auto : 0;
+                   m_Header.style.visibility = value ? Visibility.Visible : Visibility.Hidden;
                 }
             }
         }
@@ -36,6 +38,19 @@ namespace Unity.ReferenceProject.UITableListView
                 {
                     m_ListView.virtualizationMethod = value;
                 }
+            }
+        }
+
+        ScrollerVisibility m_HorizontalScrollerVisibility;
+
+        public ScrollerVisibility HorizontalScrollerVisibility
+        {
+            get => m_HorizontalScrollerVisibility;
+            set
+            {
+                m_HorizontalScrollerVisibility = value;
+                var scrollView = m_ListView.Q<ScrollView>();
+                scrollView.horizontalScrollerVisibility = value;
             }
         }
 
@@ -66,11 +81,15 @@ namespace Unity.ReferenceProject.UITableListView
         readonly HashSet<string> m_HeaderStyles = new HashSet<string>();
         readonly HashSet<string> m_RowStyles = new HashSet<string>();
 
-        public event Action<MouseEnterEvent> MouseEnterListElementEvent;
-        public event Action<MouseLeaveEvent> MouseLeaveListElementEvent;
+        public event Action<PointerEnterEvent> PointerEnterListElementEvent;
+        public event Action<PointerLeaveEvent> PointerLeaveListElementEvent;
         public event Action<VisualElement> ItemClicked;
 
         readonly List<VisualElement> m_Rows = new List<VisualElement>();
+        
+        static readonly string k_ListContentViewportName = "unity-content-viewport";
+        
+        static string GetCellName(IColumnEventData column) => $"Cell-{column.Name}";
 
         public IList ItemsSource
         {
@@ -91,11 +110,12 @@ namespace Unity.ReferenceProject.UITableListView
                 {
                     flexDirection = FlexDirection.Row,
                     flexShrink = 0,
-                    display = showTableHeader ? DisplayStyle.Flex : DisplayStyle.None
                 }
             };
 
             hierarchy.Add(m_Header);
+            
+            showTableHeader = m_ShowTableHeader;
 
             m_ListView = new ListView
             {
@@ -104,6 +124,18 @@ namespace Unity.ReferenceProject.UITableListView
             };
 
             hierarchy.Add(m_ListView);
+            
+            HorizontalScrollerVisibility = m_HorizontalScrollerVisibility;
+            
+            // Makes header align with m_ListView content width
+            m_ListView.Q<VisualElement>(k_ListContentViewportName).RegisterCallback<GeometryChangedEvent>(eventData =>
+            {
+                // When only width has been changed
+                if (Mathf.FloorToInt(eventData.newRect.width) != Mathf.FloorToInt(eventData.oldRect.width))
+                {
+                    m_Header.style.width = eventData.newRect.width;
+                }
+            });
 
             m_ListView.bindItem = BindItem;
             m_ListView.unbindItem = UnbindItem;
@@ -142,8 +174,8 @@ namespace Unity.ReferenceProject.UITableListView
                 if (column.IsVisible)
                 {
                     m_Columns.Add(column);
-                    MouseEnterListElementEvent += column.InvokeMouseEnterListElementEvent;
-                    MouseLeaveListElementEvent += column.InvokeMouseLeaveListElementEvent;
+                    PointerEnterListElementEvent += column.InvokePointerEnterListElementEvent;
+                    PointerLeaveListElementEvent += column.InvokePointerLeaveListElementEvent;
                 }
             }
 
@@ -159,13 +191,19 @@ namespace Unity.ReferenceProject.UITableListView
             {
                 CreateHeader(column);
             }
-
-            RemakeAllRows();
         }
 
         void CreateHeader(IColumnEventData column)
         {
             var headerContainer = new VisualElement() { name = column.Name };
+            headerContainer.RegisterCallback<GeometryChangedEvent>(eventData =>
+            {
+                // When only width has been changed
+                if (Mathf.FloorToInt(eventData.newRect.width) != Mathf.FloorToInt(eventData.oldRect.width))
+                {
+                    RecalculateAllCellsWidth(column);
+                }
+            });
 
             if (column.UseInlineWidth)
             {
@@ -194,12 +232,12 @@ namespace Unity.ReferenceProject.UITableListView
         {
             var rowContainer = new VisualElement
             {
-                style = { flexDirection = FlexDirection.Row },
-                name = $"Row-{m_Rows.Count}"
+                name = $"Row-{m_Rows.Count}",
+                style = { flexDirection = FlexDirection.Row }
             };
-
-            rowContainer.RegisterCallback<MouseEnterEvent>(x => MouseEnterListElementEvent?.Invoke(x));
-            rowContainer.RegisterCallback<MouseLeaveEvent>(x => MouseLeaveListElementEvent?.Invoke(x));
+            
+            rowContainer.RegisterCallback<PointerEnterEvent>(x => PointerEnterListElementEvent?.Invoke(x));
+            rowContainer.RegisterCallback<PointerLeaveEvent>(x => PointerLeaveListElementEvent?.Invoke(x));
             
             rowContainer.AddManipulator(new Pressable(() => ItemClicked?.Invoke(rowContainer)));
 
@@ -214,16 +252,16 @@ namespace Unity.ReferenceProject.UITableListView
 
             return rowContainer;
         }
-
+        
         void MakeRow(VisualElement rowContainer)
         {
             foreach (var column in m_Columns)
             {
-                var cell = new VisualElement();
-                if (column.UseInlineWidth)
+                var cell = new VisualElement()
                 {
-                    cell.style.width = column.Width;
-                }
+                    name = GetCellName(column),
+                    style = { height = Length.Percent(100) }
+                };
 
                 if (column.ColumnStyles != null)
                 {
@@ -236,6 +274,8 @@ namespace Unity.ReferenceProject.UITableListView
                 column.InvokeMakeCell(cell, column);
                 rowContainer.Add(cell);
             }
+            
+            RecalculateCellsWidthForRow(rowContainer);
         }
 
         void RemakeAllRows()
@@ -272,6 +312,32 @@ namespace Unity.ReferenceProject.UITableListView
             foreach (var column in m_Columns)
             {
                 column.InvokeUnbindCell(e, column, data);
+            }
+        }
+
+        /// <summary>
+        /// Makes cells width equal to header column width in a particular row
+        /// </summary>
+        void RecalculateCellsWidthForRow(VisualElement rowContainer)
+        {
+            foreach (var column in m_Columns)
+            {
+                var headerCell = m_Header.Q<VisualElement>(column.Name);
+                var cell = rowContainer.Q<VisualElement>(GetCellName(column));
+                cell.style.width = headerCell.resolvedStyle.width;
+            }
+        }
+        
+        /// <summary>
+        /// Recalculates the width for all cells at the table and makes them equal to the header column width
+        /// </summary>
+        void RecalculateAllCellsWidth(IColumnEventData column)
+        {
+            var headerCell = m_Header.Q<VisualElement>(column.Name);
+            foreach (var row in m_Rows)
+            {
+                var cell = row.Q<VisualElement>(GetCellName(column));
+                cell.style.width = headerCell.resolvedStyle.width;
             }
         }
 
@@ -351,17 +417,17 @@ namespace Unity.ReferenceProject.UITableListView
 
         public new class UxmlTraits : BindableElement.UxmlTraits
         {
-            readonly UxmlBoolAttributeDescription m_ShowTableHeader = new UxmlBoolAttributeDescription
+            readonly UxmlBoolAttributeDescription m_ShowTableHeader = new ()
                 { name = "show-table-header", defaultValue = false };
 
-            readonly UxmlIntAttributeDescription m_FixedItemHeight = new UxmlIntAttributeDescription()
+            readonly UxmlIntAttributeDescription m_FixedItemHeight = new ()
                 { name = "fixed-item-height", defaultValue = TableListView.s_DefaultFixedItemHeight };
 
-            readonly UxmlEnumAttributeDescription<CollectionVirtualizationMethod> m_VirtualizationMethod =
-                new UxmlEnumAttributeDescription<CollectionVirtualizationMethod>()
-                {
-                    name = "virtualization-method", defaultValue = CollectionVirtualizationMethod.FixedHeight
-                };
+            readonly UxmlEnumAttributeDescription<CollectionVirtualizationMethod> m_VirtualizationMethod = new ()
+                { name = "virtualization-method", defaultValue = CollectionVirtualizationMethod.FixedHeight };
+            
+            readonly UxmlEnumAttributeDescription<ScrollerVisibility> m_HorizontalScrollerVisibility = new ()
+                { name = "horizontal-scroller-visibility", defaultValue = ScrollerVisibility.Auto };
 
             public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
             {
@@ -372,6 +438,7 @@ namespace Unity.ReferenceProject.UITableListView
                 if (m_FixedItemHeight.TryGetValueFromBag(bag, cc, ref num))
                     listTableView.FixedItemHeight = num;
                 listTableView.VirtualizationMethod = m_VirtualizationMethod.GetValueFromBag(bag, cc);
+                listTableView.HorizontalScrollerVisibility = m_HorizontalScrollerVisibility.GetValueFromBag(bag, cc);
             }
         }
     }

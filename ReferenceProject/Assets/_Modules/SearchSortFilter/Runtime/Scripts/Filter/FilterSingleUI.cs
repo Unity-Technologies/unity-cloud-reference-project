@@ -15,7 +15,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
         readonly string m_DefaultValue;
 
         readonly IFilterBindNode<T> m_FilterBindNode;
-        Dropdown m_Dropdown;
+        readonly Dropdown m_Dropdown;
 
         List<string> m_Options;
 

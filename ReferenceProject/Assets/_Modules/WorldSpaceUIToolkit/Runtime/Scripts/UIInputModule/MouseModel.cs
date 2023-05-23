@@ -247,6 +247,7 @@ namespace Unity.ReferenceProject.WorldSpaceUIToolkit
         /// </summary>
         public bool LeftButtonPressed
         {
+            get => m_LeftButton.IsDown;
             set
             {
                 ChangedThisFrame |= m_LeftButton.IsDown != value;
@@ -275,6 +276,7 @@ namespace Unity.ReferenceProject.WorldSpaceUIToolkit
         /// </summary>
         public bool RightButtonPressed
         {
+            get => m_RightButton.IsDown;
             set
             {
                 ChangedThisFrame |= m_RightButton.IsDown != value;
@@ -303,6 +305,7 @@ namespace Unity.ReferenceProject.WorldSpaceUIToolkit
         /// </summary>
         public bool MiddleButtonPressed
         {
+            get => m_MiddleButton.IsDown;
             set
             {
                 ChangedThisFrame |= m_MiddleButton.IsDown != value;

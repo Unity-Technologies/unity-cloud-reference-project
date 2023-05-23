@@ -31,7 +31,7 @@ namespace Unity.ReferenceProject.WorldSpaceUIToolkit
         [SerializeField]
         protected float m_PanelScale = 1.0f;
 
-        [Tooltip("Pixels per world units, it will the termine the real panel size in the world based on panel pixel width and height.")]
+        [Tooltip("Pixels per world units, it will the determine the real panel size in the world based on panel pixel width and height.")]
         [SerializeField]
         protected float m_PixelsPerUnit = 1000.0f;
 
@@ -39,11 +39,11 @@ namespace Unity.ReferenceProject.WorldSpaceUIToolkit
         [Header("UI Toolkit Document Values")]
         [Tooltip("Visual tree element object of this panel.")]
         [SerializeField]
-        public VisualTreeAsset m_VisualTreeAsset;
+        VisualTreeAsset m_VisualTreeAsset;
 
         [Tooltip("PanelSettings that will be used to create a new instance for this panel.")]
         [SerializeField]
-        public PanelSettings m_PanelSettingsPrefab;
+        PanelSettings m_PanelSettingsPrefab;
 
         [Tooltip("RenderTexture that will be used to create a new instance for this panel.")]
         [SerializeField]
@@ -58,13 +58,11 @@ namespace Unity.ReferenceProject.WorldSpaceUIToolkit
         protected MeshFilter m_MeshFilter;
 
         protected MeshRenderer m_MeshRenderer;
-        protected Material m_OpaqueMaterial;
         protected RenderTexture m_OutputTexture;
         protected PanelEventHandler m_PanelEventHandler;
         protected PanelSettings m_PanelSettings;
 
         PhysicsRaycaster m_Raycaster;
-        protected Material m_TransparentMaterial;
         protected UIDocument m_UIDocument;
 
         public bool UseDragEventFix => m_UseDragEventFix;
@@ -167,17 +165,9 @@ namespace Unity.ReferenceProject.WorldSpaceUIToolkit
             }
         }
 
-        public Material OpaqueMaterial
-        {
-            get => m_OpaqueMaterial;
-            set => m_OpaqueMaterial = value;
-        }
+        public Material OpaqueMaterial { get; set; }
 
-        public Material TransparentMaterial
-        {
-            get => m_TransparentMaterial;
-            set => m_TransparentMaterial = value;
-        }
+        public Material TransparentMaterial { get; set; }
 
         void Awake()
         {
@@ -289,11 +279,13 @@ namespace Unity.ReferenceProject.WorldSpaceUIToolkit
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+            TransformPointerEventForUIToolkit(eventData);
             m_PanelEventHandler?.OnPointerEnter(eventData);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
+            TransformPointerEventForUIToolkit(eventData);
             m_PanelEventHandler?.OnPointerExit(eventData);
         }
 
@@ -446,11 +438,11 @@ namespace Unity.ReferenceProject.WorldSpaceUIToolkit
             // decide on transparent or opaque material, and check if a preset is given, otherwise generate a material
             if (m_PanelSettings.colorClearValue.a < 1.0f)
             {
-                m_ActiveMaterial = m_TransparentMaterial != null ? new Material(m_TransparentMaterial) : GenerateMaterial(true);
+                m_ActiveMaterial = TransparentMaterial != null ? new Material(TransparentMaterial) : GenerateMaterial(true);
             }
             else
             {
-                m_ActiveMaterial = m_OpaqueMaterial != null ? new Material(m_OpaqueMaterial) : GenerateMaterial(false);
+                m_ActiveMaterial = OpaqueMaterial != null ? new Material(OpaqueMaterial) : GenerateMaterial(false);
             }
 
             m_ActiveMaterial.SetTexture("_BaseMap", m_OutputTexture);

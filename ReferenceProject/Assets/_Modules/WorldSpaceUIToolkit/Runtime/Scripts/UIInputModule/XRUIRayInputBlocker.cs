@@ -15,7 +15,6 @@ namespace Unity.ReferenceProject.WorldSpaceUIToolkit
         XRUIInputModuleUIToolkit m_InputModule;
 
         int m_PointerID;
-        XRRayInteractor m_RayInteractor;
 
         Transform m_RayOrigin;
 
@@ -27,9 +26,9 @@ namespace Unity.ReferenceProject.WorldSpaceUIToolkit
 
         void Start()
         {
-            m_RayInteractor = GetComponent<XRRayInteractor>();
-            m_RayOrigin = m_RayInteractor.rayOriginTransform;
-            if (m_RayInteractor.TryGetUIModel(out var model))
+            var rayInteractor = GetComponent<XRRayInteractor>();
+            m_RayOrigin = rayInteractor.rayOriginTransform;
+            if (rayInteractor.TryGetUIModel(out var model))
             {
                 m_PointerID = model.pointerId;
             }
@@ -42,8 +41,12 @@ namespace Unity.ReferenceProject.WorldSpaceUIToolkit
 
         void OnEnable()
         {
-            m_InputModule = EventSystem.current?.GetComponent<XRUIInputModuleUIToolkit>();
-            if (m_InputModule)
+            if (EventSystem.current != null)
+            {
+                m_InputModule = EventSystem.current.GetComponent<XRUIInputModuleUIToolkit>();
+            }
+            
+            if (m_InputModule != null)
             {
                 m_InputModule.PointerDown += OnPointerDown;
             }
@@ -56,7 +59,7 @@ namespace Unity.ReferenceProject.WorldSpaceUIToolkit
 
         void OnDisable()
         {
-            if (m_InputModule)
+            if (m_InputModule != null)
             {
                 m_InputModule.PointerDown -= OnPointerDown;
             }

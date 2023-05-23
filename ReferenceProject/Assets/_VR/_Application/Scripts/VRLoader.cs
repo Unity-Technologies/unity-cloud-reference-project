@@ -63,15 +63,7 @@ namespace Unity.ReferenceProject.VR
             }
 
             var manager = XRGeneralSettings.Instance.Manager;
-            XRLoader vrLoader = null;
-            foreach (var loader in manager.activeLoaders)
-            {
-                if (loader is OpenXRLoader)
-                {
-                    vrLoader = loader;
-                    break;
-                }
-            }
+            var vrLoader = manager.activeLoaders.FirstOrDefault(loader => loader is OpenXRLoader);
 
             if (vrLoader == null)
             {
@@ -117,13 +109,10 @@ namespace Unity.ReferenceProject.VR
         void DeinitializeVRLoader()
         {
             var loaders = XRGeneralSettings.Instance.Manager.activeLoaders;
-            foreach (var loader in loaders)
+            foreach (var loader in loaders.Where(x => x is OpenXRLoader))
             {
-                if (loader is OpenXRLoader)
-                {
-                    loader.Stop();
-                    loader.Deinitialize();
-                }
+                loader.Stop();
+                loader.Deinitialize();
             }
         }
     }

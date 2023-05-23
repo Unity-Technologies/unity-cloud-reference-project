@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18018606, g: 0.22559257, b: 0.30678663, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -380,16 +380,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ToolData:
-  - ToolUIMode: {fileID: 11400000, guid: 21849b8be93e08a45b494d7d2aa1d9af, type: 2}
-    ToolbarElementName: 
-    ButtonStyleClass: rigui-main-bar-button
-    CloseOtherTools: 1
-    ToolUIController: {fileID: 957093285}
-  - ToolUIMode: {fileID: 11400000, guid: e03fffec3ea0e5a4695febb698571186, type: 2}
-    ToolbarElementName: 
-    ButtonStyleClass: rigui-main-bar-button
-    CloseOtherTools: 1
-    ToolUIController: {fileID: 623098851}
+  - m_ToolUIMode: {fileID: 11400000, guid: 21849b8be93e08a45b494d7d2aa1d9af, type: 2}
+    m_ToolbarElementName: 
+    m_ButtonStyleClass: rigui-main-bar-button
+    m_CloseOtherTools: 1
+    m_ToolUIController: {fileID: 957093285}
+  - m_ToolUIMode: {fileID: 11400000, guid: e03fffec3ea0e5a4695febb698571186, type: 2}
+    m_ToolbarElementName: 
+    m_ButtonStyleClass: rigui-main-bar-button
+    m_CloseOtherTools: 1
+    m_ToolUIController: {fileID: 623098851}
 --- !u!1001 &497205178
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -666,11 +666,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ToolData:
-  - ToolUIMode: {fileID: 11400000, guid: e03fffec3ea0e5a4695febb698571186, type: 2}
-    ToolbarElementName: 
-    ButtonStyleClass: rigui-main-bar-button
-    CloseOtherTools: 0
-    ToolUIController: {fileID: 1242721182}
+  - m_ToolUIMode: {fileID: 11400000, guid: e03fffec3ea0e5a4695febb698571186, type: 2}
+    m_ToolbarElementName: 
+    m_ButtonStyleClass: rigui-main-bar-button
+    m_CloseOtherTools: 0
+    m_ToolUIController: {fileID: 1242721182}
 --- !u!4 &629304174
 Transform:
   m_ObjectHideFlags: 0
@@ -1077,24 +1077,6 @@ MonoBehaviour:
   m_DisplayName: '@ReferenceProject:General'
   m_Icon: {fileID: 21300000, guid: f5b47f66a2870b746ab5dce0a79bbe74, type: 3}
   m_Template: {fileID: 0}
-  ToolOpened:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolClosed:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolPointerEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolPointerExited:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolFocusIn:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolFocusOut:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &916566921
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1108,26 +1090,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ToolData:
-  - ToolUIMode: {fileID: 11400000, guid: 2742bba5ea2d63141b269185ab0c141c, type: 2}
-    ToolbarElementName: 
-    ButtonStyleClass: rigui-main-bar-button
-    CloseOtherTools: 1
-    ToolUIController: {fileID: 1720743213}
-  - ToolUIMode: {fileID: 11400000, guid: e03fffec3ea0e5a4695febb698571186, type: 2}
-    ToolbarElementName: 
-    ButtonStyleClass: rigui-main-bar-button
-    CloseOtherTools: 1
-    ToolUIController: {fileID: 992739212}
-  - ToolUIMode: {fileID: 11400000, guid: 5d4287d25b6d83b4d8b80785bc7ee98d, type: 2}
-    ToolbarElementName: 
-    ButtonStyleClass: rigui-main-bar-button
-    CloseOtherTools: 1
-    ToolUIController: {fileID: 2018859852}
-  - ToolUIMode: {fileID: 11400000, guid: 21849b8be93e08a45b494d7d2aa1d9af, type: 2}
-    ToolbarElementName: 
-    ButtonStyleClass: rigui-main-bar-button
-    CloseOtherTools: 1
-    ToolUIController: {fileID: 1855128338}
+  - m_ToolUIMode: {fileID: 11400000, guid: 2742bba5ea2d63141b269185ab0c141c, type: 2}
+    m_ToolbarElementName: 
+    m_ButtonStyleClass: rigui-main-bar-button
+    m_CloseOtherTools: 1
+    m_ToolUIController: {fileID: 1720743213}
+  - m_ToolUIMode: {fileID: 11400000, guid: e03fffec3ea0e5a4695febb698571186, type: 2}
+    m_ToolbarElementName: 
+    m_ButtonStyleClass: rigui-main-bar-button
+    m_CloseOtherTools: 1
+    m_ToolUIController: {fileID: 992739212}
+  - m_ToolUIMode: {fileID: 11400000, guid: 5d4287d25b6d83b4d8b80785bc7ee98d, type: 2}
+    m_ToolbarElementName: 
+    m_ButtonStyleClass: rigui-main-bar-button
+    m_CloseOtherTools: 1
+    m_ToolUIController: {fileID: 2018859852}
+  - m_ToolUIMode: {fileID: 11400000, guid: 21849b8be93e08a45b494d7d2aa1d9af, type: 2}
+    m_ToolbarElementName: 
+    m_ButtonStyleClass: rigui-main-bar-button
+    m_CloseOtherTools: 1
+    m_ToolUIController: {fileID: 1855128338}
 --- !u!4 &957093284 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7721235549184356320, guid: 74fc791ba332bf644a9c7fcc1788b96e,
@@ -1195,12 +1177,6 @@ MonoBehaviour:
   m_LoginString: '@Identity:Login'
   m_LogoutString: '@Identity:Logout'
   m_RetryString: '@Identity:Retry'
-  OnLoggedIn:
-    m_PersistentCalls:
-      m_Calls: []
-  OnLoggedOut:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1001 &992739210
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1319,6 +1295,7 @@ Transform:
   m_Children:
   - {fileID: 916566919}
   - {fileID: 1979067869}
+  - {fileID: 2110294145}
   m_Father: {fileID: 823735108}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1335,16 +1312,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ToolData:
-  - ToolUIMode: {fileID: 11400000, guid: 5d4287d25b6d83b4d8b80785bc7ee98d, type: 2}
-    ToolbarElementName: 
-    ButtonStyleClass: rigui-main-bar-button
-    CloseOtherTools: 1
-    ToolUIController: {fileID: 916566920}
-  - ToolUIMode: {fileID: 11400000, guid: 5d4287d25b6d83b4d8b80785bc7ee98d, type: 2}
-    ToolbarElementName: 
-    ButtonStyleClass: rigui-main-bar-button
-    CloseOtherTools: 1
-    ToolUIController: {fileID: 1979067870}
+  - m_ToolUIMode: {fileID: 11400000, guid: 5d4287d25b6d83b4d8b80785bc7ee98d, type: 2}
+    m_ToolbarElementName: 
+    m_ButtonStyleClass: rigui-main-bar-button
+    m_CloseOtherTools: 1
+    m_ToolUIController: {fileID: 916566920}
+  - m_ToolUIMode: {fileID: 11400000, guid: 5d4287d25b6d83b4d8b80785bc7ee98d, type: 2}
+    m_ToolbarElementName: 
+    m_ButtonStyleClass: rigui-main-bar-button
+    m_CloseOtherTools: 1
+    m_ToolUIController: {fileID: 1979067870}
+  - m_ToolUIMode: {fileID: 11400000, guid: 21849b8be93e08a45b494d7d2aa1d9af, type: 2}
+    m_ToolbarElementName: 
+    m_ButtonStyleClass: rigui-main-bar-button
+    m_CloseOtherTools: 1
+    m_ToolUIController: {fileID: 2110294146}
 --- !u!1 &1225434497 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3929586680976920738, guid: b5de23870725a9f46b2808a5c85628c9,
@@ -1967,17 +1949,17 @@ PrefabInstance:
     - target: {fileID: 7721235549184356320, guid: 74fc791ba332bf644a9c7fcc1788b96e,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 7721235549184356320, guid: 74fc791ba332bf644a9c7fcc1788b96e,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 7721235549184356320, guid: 74fc791ba332bf644a9c7fcc1788b96e,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 7721235549184356320, guid: 74fc791ba332bf644a9c7fcc1788b96e,
         type: 3}
@@ -2184,24 +2166,6 @@ MonoBehaviour:
   m_DisplayName: '@ReferenceProject:Tools'
   m_Icon: {fileID: 21300000, guid: ef53959b6872180469ba562022a047b4, type: 3}
   m_Template: {fileID: 0}
-  ToolOpened:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolClosed:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolPointerEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolPointerExited:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolFocusIn:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolFocusOut:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1979067871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2215,11 +2179,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ToolData:
-  - ToolUIMode: {fileID: 11400000, guid: 21849b8be93e08a45b494d7d2aa1d9af, type: 2}
-    ToolbarElementName: 
-    ButtonStyleClass: rigui-main-bar-button
-    CloseOtherTools: 1
-    ToolUIController: {fileID: 1940125529}
+  - m_ToolUIMode: {fileID: 11400000, guid: 21849b8be93e08a45b494d7d2aa1d9af, type: 2}
+    m_ToolbarElementName: 
+    m_ButtonStyleClass: rigui-main-bar-button
+    m_CloseOtherTools: 0
+    m_ToolUIController: {fileID: 1940125529}
 --- !u!4 &2018859851 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5138305973425947177, guid: 37b3944f6d001a8469ee0616535e5af4,
@@ -2236,6 +2200,93 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cfbceb60e04cd3d4f92664234de8e24c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1001 &2110294144
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1088208322}
+    m_Modifications:
+    - target: {fileID: 9097125803921984776, guid: 38e1b88ea78194e0eaa943ace3b99002,
+        type: 3}
+      propertyPath: m_Name
+      value: PresenceToolVR
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097125803921984777, guid: 38e1b88ea78194e0eaa943ace3b99002,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097125803921984777, guid: 38e1b88ea78194e0eaa943ace3b99002,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097125803921984777, guid: 38e1b88ea78194e0eaa943ace3b99002,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097125803921984777, guid: 38e1b88ea78194e0eaa943ace3b99002,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097125803921984777, guid: 38e1b88ea78194e0eaa943ace3b99002,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097125803921984777, guid: 38e1b88ea78194e0eaa943ace3b99002,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097125803921984777, guid: 38e1b88ea78194e0eaa943ace3b99002,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097125803921984777, guid: 38e1b88ea78194e0eaa943ace3b99002,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097125803921984777, guid: 38e1b88ea78194e0eaa943ace3b99002,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097125803921984777, guid: 38e1b88ea78194e0eaa943ace3b99002,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097125803921984777, guid: 38e1b88ea78194e0eaa943ace3b99002,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 38e1b88ea78194e0eaa943ace3b99002, type: 3}
+--- !u!4 &2110294145 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9097125803921984777, guid: 38e1b88ea78194e0eaa943ace3b99002,
+    type: 3}
+  m_PrefabInstance: {fileID: 2110294144}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2110294146 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 260969353805654087, guid: 38e1b88ea78194e0eaa943ace3b99002,
+    type: 3}
+  m_PrefabInstance: {fileID: 2110294144}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07805759dc9744c78ab0433fbcd01ba2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &5138305974897416546

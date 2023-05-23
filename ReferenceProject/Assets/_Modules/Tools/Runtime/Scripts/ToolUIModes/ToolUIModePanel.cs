@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
 namespace Unity.ReferenceProject.Tools
@@ -9,15 +8,30 @@ namespace Unity.ReferenceProject.Tools
     [CreateAssetMenu(menuName = "ReferenceProject/ToolUIMode/ToolUIModePanel")]
     public class ToolUIModePanel : ToolUIMode
     {
-        public List<StyleSheet> AdditionalStyles;
+        [SerializeField]
+        List<StyleSheet> m_AdditionalStyles;
 
-        public string PanelStyleClass;
-        [FormerlySerializedAs("PanelHeader")]
-        public bool DisplayTitle;
-        [FormerlySerializedAs("PanelHeaderIcon")]
-        public bool DisplayIcon;
-        [FormerlySerializedAs("PanelHeaderCloseButton")]
-        public bool DisplayCloseButton;
+        [SerializeField]
+        string m_PanelStyleClass;
+        
+        [SerializeField]
+        bool m_DisplayTitle;
+        
+        [SerializeField]
+        bool m_DisplayIcon;
+        
+        [SerializeField]
+        bool m_DisplayCloseButton;
+        
+        public List<StyleSheet> AdditionalStyles => m_AdditionalStyles;
+
+        public string PanelStyleClass => m_PanelStyleClass;
+
+        public bool DisplayTitle => m_DisplayTitle;
+        
+        public bool DisplayIcon => m_DisplayIcon;
+        
+        public bool DisplayCloseButton => m_DisplayCloseButton;
 
         public override IToolUIModeHandler CreateHandler()
         {

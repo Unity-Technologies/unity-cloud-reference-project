@@ -31,7 +31,7 @@ namespace Unity.ReferenceProject.ScenesList
             m_SceneListUIController.SetVisibility(true);
             m_SceneListUIController.Refresh();
 
-            m_SceneListUIController.ProjectSelected += _ => Close();
+            m_SceneListUIController.ProjectSelected += _ => CloseSelf();
         }
 
         public override void OnToolClosed()

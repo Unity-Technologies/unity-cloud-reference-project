@@ -21,9 +21,7 @@ namespace Unity.ReferenceProject.ScenesList
         [SerializeField]
         string m_DisabledStyle;
         
-        readonly HashSet<string> m_HashSet = new ();
-        
-        readonly Dictionary<VisualElement, string> m_ButtonMap = new();
+        readonly HashSet<string> m_MarkedSet = new ();
         
         Saves m_Saves;
 
@@ -62,7 +60,7 @@ namespace Unity.ReferenceProject.ScenesList
             
             foreach (var scene in m_Saves.IdList)
             {
-                m_HashSet.Add(scene);
+                m_MarkedSet.Add(scene);
             }
         }
         
@@ -70,7 +68,7 @@ namespace Unity.ReferenceProject.ScenesList
         {
             base.AddServices(services);
             services.Add(new SortBindNodeInt<object>(x =>
-                x is IScene dataSet && m_HashSet.Contains(dataSet.Id.ToString()) ? -1 : 1));
+                x is IScene dataSet && m_MarkedSet.Contains(dataSet.Id.ToString()) ? -1 : 1));
         }
 
         protected override void OnCreateHeader(VisualElement e, IColumnData columnData)
@@ -88,8 +86,7 @@ namespace Unity.ReferenceProject.ScenesList
                 focusable = false
             };
 
-            button.clickable = null; // AppUI 0.2.9 has currently a bug with Pressables. Use a Clickable manipulator instead.
-            button.AddManipulator(new UnityEngine.Dt.App.UI.Clickable(() => OnButtonClick(button)));
+            button.clickable.clicked += () => OnButtonClick(button);
             e.Add(button);
         }
 
@@ -106,14 +103,15 @@ namespace Unity.ReferenceProject.ScenesList
 
             if (button == null) 
                 return;
-            
-            RefreshIcon(button, m_HashSet.Contains(dataSet.Id.ToString()));
-            m_ButtonMap[button] = dataSet.Id.ToString();
+
+            var sceneId = dataSet.Id.ToString();
+            RefreshIcon(button, m_MarkedSet.Contains(sceneId));
+            button.userData = sceneId;
         }
         
-        protected override void OnMouseEnterListElementEvent(MouseEnterEvent mouseEventData)
+        protected override void OnPointerEnterListElementEvent(PointerEnterEvent pointerEventData)
         {
-            if (mouseEventData.target is not VisualElement hovered) 
+            if (pointerEventData.target is not VisualElement hovered) 
                 return;
             
             var button = hovered.Q<IconButton>(GetButtonName(ColumnName));
@@ -123,14 +121,16 @@ namespace Unity.ReferenceProject.ScenesList
             
             button.quiet = false;
             button.icon = m_IconName;
-                    
-            if(m_ButtonMap.TryGetValue(button, out var guid) && !m_HashSet.Contains(guid))
+
+            if (button.userData is string sceneId && m_MarkedSet.Contains(sceneId))
+            {
                 button.AddToClassList(m_DisabledStyle);
+            }
         }
 
-        protected override void OnMouseLeaveListElementEvent(MouseLeaveEvent mouseEventData)
+        protected override void OnPointerLeaveListElementEvent(PointerLeaveEvent pointerEventData)
         {
-            if (mouseEventData.target is not VisualElement hovered) 
+            if (pointerEventData.target is not VisualElement hovered) 
                 return;
             
             var button = hovered.Q<IconButton>(GetButtonName(ColumnName));
@@ -139,38 +139,35 @@ namespace Unity.ReferenceProject.ScenesList
                 return;
             
             button.quiet = true;
-            if(m_ButtonMap.TryGetValue(button, out var guid) && !m_HashSet.Contains(guid))
+            
+            if (button.userData is string sceneId && !m_MarkedSet.Contains(sceneId))
+            {
                 button.icon = null;
+            }
             button.RemoveFromClassList(m_DisabledStyle);
         }
 
-        protected override void OnReset()
-        {
-            base.OnReset();
-            m_ButtonMap.Clear();
-        }
-        
         string GetButtonName(string columnName) => $"{m_ButtonName}-{columnName}";
 
         void OnButtonClick(IconButton button)
         {
-            if (m_ButtonMap.TryGetValue(button, out var guid))
+            if(button.userData is not string sceneId)
+                return;
+            
+            if (m_MarkedSet.Contains(sceneId))
             {
-                if (m_HashSet.Contains(guid))
-                {
-                    button.AddToClassList(m_DisabledStyle);
-                    m_HashSet.Remove(guid);
-                }
-                else
-                {
-                    RefreshIcon(button, true);
-                    button.RemoveFromClassList(m_DisabledStyle);
-                    m_HashSet.Add(guid);
-                }
-
-                m_Saves.IdList = m_HashSet.ToList();
-                m_Saves.Save();
+                button.AddToClassList(m_DisabledStyle);
+                m_MarkedSet.Remove(sceneId);
             }
+            else
+            {
+                RefreshIcon(button, true);
+                button.RemoveFromClassList(m_DisabledStyle);
+                m_MarkedSet.Add(sceneId);
+            }
+
+            m_Saves.IdList = m_MarkedSet.ToList();
+            m_Saves.Save();
         }
 
         void RefreshIcon(IconButton button, bool isOn) => button.icon = isOn ? m_IconName : null;

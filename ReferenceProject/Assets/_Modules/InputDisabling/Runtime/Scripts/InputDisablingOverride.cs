@@ -31,33 +31,61 @@ namespace Unity.ReferenceProject.InputDisabling
 
             if ((m_OverrideTypes & OverrideTypes.Opened) != 0)
             {
-                m_ToolUIController.ToolOpened.AddListener(() => RegisterSelf(OverrideTypes.Opened));
-                m_ToolUIController.ToolClosed.AddListener(() => UnregisterSelf(OverrideTypes.Opened));
+                m_ToolUIController.ToolOpened += OnToolOpened;
+                m_ToolUIController.ToolClosed += OnToolClosed;
             }
 
             if ((m_OverrideTypes & OverrideTypes.PointerEntered) != 0)
             {
-                m_ToolUIController.ToolPointerEntered.AddListener(() => RegisterSelf(OverrideTypes.PointerEntered));
-                m_ToolUIController.ToolPointerExited.AddListener(() => UnregisterSelf(OverrideTypes.PointerEntered));
+                m_ToolUIController.ToolPointerEntered += OnToolPointerEntered;
+                m_ToolUIController.ToolPointerExited += OnToolPointerExited;
             }
 
             if ((m_OverrideTypes & OverrideTypes.Focused) != 0)
             {
-                m_ToolUIController.ToolFocusIn.AddListener(() => RegisterSelf(OverrideTypes.Focused));
-                m_ToolUIController.ToolFocusOut.AddListener(() => UnregisterSelf(OverrideTypes.Focused));
+                m_ToolUIController.ToolFocusIn += OnToolFocusIn;
+                m_ToolUIController.ToolFocusOut += OnToolFocusOut;
             }
+        }
+        
+        void OnToolOpened() 
+        {
+            RegisterSelf(OverrideTypes.Opened);
+        }
+        
+        void OnToolClosed() 
+        {
+            UnregisterSelf(OverrideTypes.Opened);
+        }
+        
+        void OnToolPointerEntered() 
+        {
+            RegisterSelf(OverrideTypes.PointerEntered);
+        }
+        
+        void OnToolPointerExited() 
+        {
+            UnregisterSelf(OverrideTypes.PointerEntered);
+        }
+        
+        void OnToolFocusIn() 
+        {
+            RegisterSelf(OverrideTypes.Focused);
+        }
+        
+        void OnToolFocusOut() 
+        {
+            UnregisterSelf(OverrideTypes.Focused);
         }
 
         void OnDestroy()
         {
-            m_ToolUIController.ToolOpened.RemoveListener(() => RegisterSelf(OverrideTypes.Opened));
-            m_ToolUIController.ToolClosed.RemoveListener(() => UnregisterSelf(OverrideTypes.Opened));
-
-            m_ToolUIController.ToolPointerEntered.RemoveListener(() => RegisterSelf(OverrideTypes.PointerEntered));
-            m_ToolUIController.ToolPointerExited.RemoveListener(() => UnregisterSelf(OverrideTypes.PointerEntered));
-
-            m_ToolUIController.ToolFocusIn.RemoveListener(() => RegisterSelf(OverrideTypes.Focused));
-            m_ToolUIController.ToolFocusOut.RemoveListener(() => UnregisterSelf(OverrideTypes.Focused));
+            m_ToolUIController.ToolOpened -= OnToolOpened;
+            m_ToolUIController.ToolClosed -= OnToolClosed;
+            m_ToolUIController.ToolPointerEntered -= OnToolPointerEntered;
+            m_ToolUIController.ToolPointerExited -= OnToolPointerExited;
+            m_ToolUIController.ToolFocusIn -= OnToolFocusIn;
+            m_ToolUIController.ToolFocusOut -= OnToolFocusOut;
         }
 
         public GameObject GameObject => gameObject;

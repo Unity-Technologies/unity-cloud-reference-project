@@ -114,7 +114,7 @@ namespace Unity.ReferenceProject.Gestures
 
             // Check both fingers move in the same direction.
             var dot = Vector3.Dot(touch1.delta.ReadValue().normalized, touch2.delta.ReadValue().normalized);
-            return !(dot < Mathf.Cos(recognizer.m_AngleThresholdRadians));
+            return dot >= Mathf.Cos(recognizer.m_AngleThresholdRadians);
         }
 
         /// <summary>

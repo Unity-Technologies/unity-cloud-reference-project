@@ -35,6 +35,7 @@ namespace Unity.ReferenceProject.VR
         {
             m_StatsDisplay = GetComponent<StatsDisplay>();
             m_StatsDisplay.OnShowPanel += OnShowPanel;
+            OnShowPanel(m_StatsDisplay.IsEnabled);
         }
 
         void OnDestroy()
@@ -80,7 +81,6 @@ namespace Unity.ReferenceProject.VR
             fpsEntries.style.bottom = fpsEntries.style.right = new StyleLength(0f);
             fpsEntries.style.position = Position.Relative;
             fpsEntries.style.marginLeft = fpsEntries.style.marginRight = new StyleLength(0f);
-            fpsEntries.style.backgroundColor = new StyleColor(new Color(0, 0, 0, 0));
             m_StatsDisplay.InitUIToolkit(document);
         }
 

@@ -101,7 +101,7 @@ namespace Unity.ReferenceProject.AppCamera
                 }
             }
 
-            var rotation = Quaternion.Lerp(m_Camera.transform.rotation, m_DesiredRotation, Mathf.Clamp(delta / m_Settings.rotationElasticity, 0.0f, 1.0f));
+            var rotation = Quaternion.Lerp(m_Camera.transform.rotation, m_DesiredRotation, Mathf.Clamp(delta / m_Settings.RotationElasticity, 0.0f, 1.0f));
             m_Camera.transform.rotation = rotation;
 
             Vector3 position;
@@ -111,12 +111,12 @@ namespace Unity.ReferenceProject.AppCamera
             }
             else
             {
-                position = Vector3.Lerp(m_Camera.transform.position, m_DesiredPosition, Mathf.Clamp(delta / m_Settings.positionElasticity, 0.0f, 1.0f));
+                position = Vector3.Lerp(m_Camera.transform.position, m_DesiredPosition, Mathf.Clamp(delta / m_Settings.PositionElasticity, 0.0f, 1.0f));
             }
 
             m_Camera.transform.position = position;
 
-            m_Camera.transform.localScale = Vector3.Lerp(m_Camera.transform.localScale, m_DesiredScale, Mathf.Clamp(delta / m_Settings.scalingElasticity, 0.0f, 1.0f));
+            m_Camera.transform.localScale = Vector3.Lerp(m_Camera.transform.localScale, m_DesiredScale, Mathf.Clamp(delta / m_Settings.ScalingElasticity, 0.0f, 1.0f));
         }
 
         void UpdateSphericalMovement(bool isSphericalMovement)
@@ -207,7 +207,7 @@ namespace Unity.ReferenceProject.AppCamera
         /// </param>
         public void MoveOnLookAtAxis(float nbUnits)
         {
-            nbUnits *= GetDistanceFromLookAt() * m_Settings.moveOnAxisScaling;
+            nbUnits *= GetDistanceFromLookAt() * m_Settings.MoveOnAxisScaling;
             var originalDistanceFromLookAt = GetDistanceFromLookAt();
 
             var forward = m_DesiredRotation * Vector3.forward;
@@ -216,9 +216,9 @@ namespace Unity.ReferenceProject.AppCamera
 
             m_DesiredPosition = pos;
 
-            if (originalDistanceFromLookAt - nbUnits < m_Settings.minDistanceFromLookAt)
+            if (originalDistanceFromLookAt - nbUnits < m_Settings.MinDistanceFromLookAt)
             {
-                m_DesiredLookAt = m_DesiredPosition + forward * m_Settings.minDistanceFromLookAt;
+                m_DesiredLookAt = m_DesiredPosition + forward * m_Settings.MinDistanceFromLookAt;
             }
 
             UpdateSphericalMovement(false);
@@ -247,7 +247,7 @@ namespace Unity.ReferenceProject.AppCamera
             m_DesiredRotationEuler += angleOffset;
             if (m_DesiredRotationEuler.x > 180)
                 m_DesiredRotationEuler.x -= 360;
-            m_DesiredRotationEuler.x = Mathf.Clamp(m_DesiredRotationEuler.x, -m_Settings.maxPitchAngle, m_Settings.maxPitchAngle);
+            m_DesiredRotationEuler.x = Mathf.Clamp(m_DesiredRotationEuler.x, -m_Settings.MaxPitchAngle, m_Settings.MaxPitchAngle);
 
             m_DesiredRotation =
                 Quaternion.AngleAxis(m_DesiredRotationEuler.y, Vector3.up) *
@@ -271,7 +271,7 @@ namespace Unity.ReferenceProject.AppCamera
             m_DesiredRotationEuler += angleOffset;
             if (m_DesiredRotationEuler.x > 180)
                 m_DesiredRotationEuler.x -= 360;
-            m_DesiredRotationEuler.x = Mathf.Clamp(m_DesiredRotationEuler.x, -m_Settings.maxPitchAngle, m_Settings.maxPitchAngle);
+            m_DesiredRotationEuler.x = Mathf.Clamp(m_DesiredRotationEuler.x, -m_Settings.MaxPitchAngle, m_Settings.MaxPitchAngle);
 
             m_DesiredRotation =
                 Quaternion.AngleAxis(m_DesiredRotationEuler.y, Vector3.up) *
@@ -285,9 +285,9 @@ namespace Unity.ReferenceProject.AppCamera
 
         public void SetDistanceFromLookAt(float distance)
         {
-            if (distance < m_Settings.minDistanceFromLookAt)
+            if (distance < m_Settings.MinDistanceFromLookAt)
             {
-                distance = m_Settings.minDistanceFromLookAt;
+                distance = m_Settings.MinDistanceFromLookAt;
             }
 
             m_DesiredPosition = m_DesiredLookAt + (m_DesiredPosition - m_DesiredLookAt).normalized * distance;
