@@ -1,4 +1,4 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="UnityEngine.Dt.App.UI">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
     <Style src="project://database/Assets/_Application/UI/Splash%20Screen/SplashScreenStyle.uss?fileID=7433441132597879392&amp;guid=5aedc7ff45a71534fbbcb30e2dac34ce&amp;type=3#SplashScreenStyle"/>
     <ui:VisualElement class="content">
         <ui:VisualElement name="loading-indicator" class="appui--dark loading-indicator">

@@ -20,7 +20,7 @@ namespace Unity.ReferenceProject.Tests.Editor
             "With test categories:",
             "With test settings file:",
             "Executing tests with settings:",
-            "Packages/com.unity.dt.app-ui/PackageResources/Styles/Components/ColorWheel.uss"
+            "[Code Coverage]"
         };
         LogEntriesWrapper m_LogEntriesWrapper;
 

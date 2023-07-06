@@ -8,6 +8,9 @@ namespace Unity.ReferenceProject
 {
     public class LocalSelector : MonoBehaviour
     {
+        [SerializeField]
+        uint m_Order;
+
         IAppLocalization m_AppLocalization;
         DropdownSettings m_DropdownSettings;
 
@@ -36,7 +39,7 @@ namespace Unity.ReferenceProject
             var locales = m_AppLocalization.Locales;
             var languages = locales.Select(l => l.LocaleName).ToArray();
             m_DropdownSettings = new DropdownSettings("@ReferenceProject:Settings_Language", languages, OnSettingChanged, SelectedValue);
-            m_GlobalSettings.AddSetting(m_DropdownSettings);
+            m_GlobalSettings.AddSetting(m_DropdownSettings, m_Order);
         }
 
         int SelectedValue()

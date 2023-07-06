@@ -12,7 +12,7 @@ namespace Unity.ReferenceProject
 
         public override void InstallBindings()
         {
-            Container.Bind<MainUIPanel>().FromInstance(MainUIPanel.CreateInstance(m_PanelSettings)).AsSingle();
+            Container.Bind<IMainUIPanel>().FromInstance(new MainUIPanel(m_PanelSettings)).AsSingle();
         }
     }
 }

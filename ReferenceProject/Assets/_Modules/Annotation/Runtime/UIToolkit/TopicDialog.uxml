@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <ui:VisualElement name="TopicDialogContainer" class="dialog-container">
+        <appui:TextField name="TopicDialogTitle" placeholder="@Annotation:AddTitle" class="topic-dialog-title"/>
+        <appui:TextField name="TopicDialogDescription" placeholder="@Annotation:AddDescription" class="topic-dialog-description"/>
+        <ui:VisualElement name="TopicDialogButtons" class="dialog-buttons">
+            <appui:ActionButton name="TopicDialogCancel" label="@Annotation:Cancel" class="dialog-cancel-button"/>
+            <appui:ActionButton name="TopicDialogSubmit" label="@Annotation:Submit" class="dialog-submit-button"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

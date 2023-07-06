@@ -1,10 +1,10 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="UnityEngine.Dt.App.UI" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI" editor-extension-mode="False">
     <ui:VisualElement name="container-access-history-element" class="container-access-history row">
         <ui:VisualElement name="thumbnail" class="scene-icon-thumbnail"/>
         <ui:VisualElement name="access-history-element-info" class="access-history-element-info" >
             <ui:VisualElement name="element-info-right-top" class="element-info-right-top">
-                <appui:Header name="project-name" class="label-scene"/>
-                <appui:Header name="workspace-name" class="label-workspace"/>
+                <appui:Heading name="project-name" class="label-scene"/>
+                <appui:Heading name="workspace-name" class="label-workspace"/>
             </ui:VisualElement>
             <ui:VisualElement name="element-info-right-bottom" class="element-info-right-bottom">
                 <ui:VisualElement name="avatars-container" class="access-history-active-users"/>

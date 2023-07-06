@@ -1,0 +1,3 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" appui="UnityEngine.Dt.App.UI" editor-extension-mode="False">
+    <ui:VisualElement name="panel-content" />
+</ui:UXML>

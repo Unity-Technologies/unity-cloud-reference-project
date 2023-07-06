@@ -1,6 +1,6 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" appui="UnityEngine.Dt.App.UI" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" appui="Unity.AppUI.UI" editor-extension-mode="False">
     <ui:VisualElement name="scene-name" class="project-list-row-element">
         <ui:IMGUIContainer name="thumbnail" class="scene-icon-thumbnail" />
-        <UnityEngine.Dt.App.UI.Text text="Scene Title" display-tooltip-when-elided="true" name="scene-title" class="scene-list-element" style="flex-shrink: 1;" />
+        <Unity.AppUI.UI.Text text="Scene Title" display-tooltip-when-elided="true" name="scene-title" class="scene-list-element" style="flex-shrink: 1;" />
     </ui:VisualElement>
 </ui:UXML>

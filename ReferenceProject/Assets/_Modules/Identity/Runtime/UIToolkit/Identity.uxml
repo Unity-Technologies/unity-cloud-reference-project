@@ -1,7 +1,7 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="UnityEngine.Dt.App.UI">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
     <ui:VisualElement class="appui appui--dark" style="background-color: rgba(0, 0, 0, 0);">
         <ui:VisualElement class="right-content">
-            <appui:Header text="@Identity:Welcome" size="L" class="welcome-text-section"/>
+            <appui:Heading text="@Identity:Welcome" size="L" class="welcome-text-section"/>
             <ui:VisualElement class="login-button-section">
                 <appui:Button name="login-button" title="@Identity:Login" primary="true" class="login-button" />
                 <ui:VisualElement name="loading-indicator" class="loading-indicator">

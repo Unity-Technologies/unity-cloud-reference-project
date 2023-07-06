@@ -3,7 +3,8 @@
     "rootNamespace": "Unity.ReferenceProject.Messaging",
     "references": [
         "GUID:4aeaeeb0056afe04598df332ce196040",
-        "GUID:2f101f87087d58f4ba92ca00188e763d"
+        "GUID:2f101f87087d58f4ba92ca00188e763d",
+        "GUID:0abbfe16792d5fb4381d5d9cc1c64637"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Unity.ReferenceProject.Navigation;
 using UnityEngine;
 using Zenject;
 
@@ -27,6 +28,7 @@ namespace Unity.ReferenceProject.AppCamera
 
         [SerializeField, Tooltip("Once set, the camera will follow this transform")]
         Camera m_Camera;
+        
         readonly float m_Acceleration = 10.0f;
         readonly float m_MaxSpeed = 1000.0f;
 
@@ -51,9 +53,10 @@ namespace Unity.ReferenceProject.AppCamera
         Task m_Task;
 
         [Inject]
-        public void Setup(Camera targetCamera)
+        public void Setup(Camera targetCamera, INavigationManager navigationManager)
         {
             m_Camera = targetCamera;
+            navigationManager.NavigationTeleported += OnTeleport;
         }
 
         public CameraProxySettings settings
@@ -328,6 +331,11 @@ namespace Unity.ReferenceProject.AppCamera
             m_DesiredLookAt = newForward;
             m_DesiredPosition = newPosition;
             m_IsSphericalMovement = false;
+        }
+        
+        void OnTeleport()
+        {
+            m_DesiredLookAt = m_DesiredRotation * new Vector3(0.0f, 0.0f, (m_DesiredLookAt - m_DesiredPosition).magnitude) + m_DesiredPosition;
         }
     }
 }

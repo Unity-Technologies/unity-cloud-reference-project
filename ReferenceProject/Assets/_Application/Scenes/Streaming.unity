@@ -231,6 +231,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 75583325314279313, guid: 0971367d8b8b5b54bacd991e06643b0d,
+        type: 3}
+      propertyPath: m_UIDocument
+      value: 
+      objectReference: {fileID: 4118221191995575301}
     - target: {fileID: 3812081694112804142, guid: 0971367d8b8b5b54bacd991e06643b0d,
         type: 3}
       propertyPath: m_Camera
@@ -261,7 +266,72 @@ PrefabInstance:
       propertyPath: m_Name
       value: '[ Controllers ] '
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 3812081695670477460, guid: 0971367d8b8b5b54bacd991e06643b0d,
+        type: 3}
+      propertyPath: m_CameraViewData.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3812081695670477460, guid: 0971367d8b8b5b54bacd991e06643b0d,
+        type: 3}
+      propertyPath: m_CameraViewDatas.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3812081695670477460, guid: 0971367d8b8b5b54bacd991e06643b0d,
+        type: 3}
+      propertyPath: m_CameraViewData.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 1103cf4adff223f44a84d27583f330de,
+        type: 2}
+    - target: {fileID: 3812081695670477460, guid: 0971367d8b8b5b54bacd991e06643b0d,
+        type: 3}
+      propertyPath: m_CameraViewData.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 865e77b10b13a544a97647a8007fa9ad,
+        type: 2}
+    - target: {fileID: 3812081695670477460, guid: 0971367d8b8b5b54bacd991e06643b0d,
+        type: 3}
+      propertyPath: m_CameraViewData.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: 41fa736d44735914283f110a3c89f8d1,
+        type: 2}
+    - target: {fileID: 3812081695670477460, guid: 0971367d8b8b5b54bacd991e06643b0d,
+        type: 3}
+      propertyPath: m_CameraViewData.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: 4caa4743ecc5dba438cd6217c7191e56,
+        type: 2}
+    - target: {fileID: 3812081695670477460, guid: 0971367d8b8b5b54bacd991e06643b0d,
+        type: 3}
+      propertyPath: m_CameraViewData.Array.data[4]
+      value: 
+      objectReference: {fileID: 11400000, guid: 2e56cde1f1ab6134eaa7981ec1b95af2,
+        type: 2}
+    - target: {fileID: 3812081695670477460, guid: 0971367d8b8b5b54bacd991e06643b0d,
+        type: 3}
+      propertyPath: m_CameraViewDatas.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 1103cf4adff223f44a84d27583f330de,
+        type: 2}
+    - target: {fileID: 3812081695670477460, guid: 0971367d8b8b5b54bacd991e06643b0d,
+        type: 3}
+      propertyPath: m_CameraViewDatas.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 865e77b10b13a544a97647a8007fa9ad,
+        type: 2}
+    - target: {fileID: 3812081695670477460, guid: 0971367d8b8b5b54bacd991e06643b0d,
+        type: 3}
+      propertyPath: m_CameraViewDatas.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: 41fa736d44735914283f110a3c89f8d1,
+        type: 2}
+    - target: {fileID: 3812081695670477460, guid: 0971367d8b8b5b54bacd991e06643b0d,
+        type: 3}
+      propertyPath: m_CameraViewDatas.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: 4caa4743ecc5dba438cd6217c7191e56,
+        type: 2}
+    m_RemovedComponents:
+    - {fileID: 5461247466333080807, guid: 0971367d8b8b5b54bacd991e06643b0d, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 0971367d8b8b5b54bacd991e06643b0d, type: 3}
 --- !u!1001 &4118221191995575300
 PrefabInstance:
@@ -282,6 +352,41 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4118221191880965646, guid: d1ef7d982ec669f4ca8941f02e4213a8,
         type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4118221191880965646, guid: d1ef7d982ec669f4ca8941f02e4213a8,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4118221191880965646, guid: d1ef7d982ec669f4ca8941f02e4213a8,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4118221191880965646, guid: d1ef7d982ec669f4ca8941f02e4213a8,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4118221191880965646, guid: d1ef7d982ec669f4ca8941f02e4213a8,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4118221191880965646, guid: d1ef7d982ec669f4ca8941f02e4213a8,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4118221191880965646, guid: d1ef7d982ec669f4ca8941f02e4213a8,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4118221191880965646, guid: d1ef7d982ec669f4ca8941f02e4213a8,
+        type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
@@ -297,6 +402,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d1ef7d982ec669f4ca8941f02e4213a8, type: 3}
+--- !u!114 &4118221191995575301 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 295608687, guid: d1ef7d982ec669f4ca8941f02e4213a8,
+    type: 3}
+  m_PrefabInstance: {fileID: 4118221191995575300}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &8167771295643016532
 Transform:
   m_ObjectHideFlags: 0

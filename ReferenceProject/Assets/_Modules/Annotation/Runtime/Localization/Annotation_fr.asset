@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Annotation_fr
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: fr
+  m_SharedData: {fileID: 11400000, guid: 0565fd0e005f1214c8c28798d6420609, type: 2}
+  m_Metadata:
+    m_Items:
+    - rid: 2811153394649792516
+  m_TableData:
+  - m_Id: 162527342592
+    m_Localized: Annotation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 345311824474112
+    m_Localized: Retour
+    m_Metadata:
+      m_Items: []
+  - m_Id: 345510860976128
+    m_Localized: Ajouter un commentaire
+    m_Metadata:
+      m_Items: []
+  - m_Id: 345664519303168
+    m_Localized: Supprimer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 345723281502208
+    m_Localized: Modifier
+    m_Metadata:
+      m_Items: []
+  - m_Id: 345794580475904
+    m_Localized: Point de vue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 346853331857408
+    m_Localized: Options
+    m_Metadata:
+      m_Items: []
+  - m_Id: 718364391665664
+    m_Localized: "{0:1 r\xE9ponse|{} r\xE9ponses}"
+    m_Metadata:
+      m_Items:
+      - rid: 2811153394649792516
+  - m_Id: 1373143476367360
+    m_Localized: Aucun commentaire
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1373231825186816
+    m_Localized: Annuler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1373285315145728
+    m_Localized: Soumettre
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1373603855757312
+    m_Localized: Ajouter un commentaire...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1408687321280512
+    m_Localized: Ajouter un titre...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1408824785399808
+    m_Localized: Ajouter une description...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1468468203515904
+    m_Localized: "Le titre ne peut pas \xEAtre vide."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1468554014781440
+    m_Localized: "Le commentaire ne peut pas \xEAtre vide."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2482510560915456
+    m_Localized: Aucun sujet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2493417835884544
+    m_Localized: Commentaires
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3621888658141184
+    m_Localized: Sujets
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 2811153394649792516
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 0070623e598d0200

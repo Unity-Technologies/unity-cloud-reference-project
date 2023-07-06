@@ -1,0 +1,21 @@
+.appui-icon--ViewHome {
+    --unity-image: url("ViewHome.png");
+}
+.appui-icon--ViewLeft {
+    --unity-image: url("ViewLeft.png");
+}
+.appui-icon--ViewRight {
+    --unity-image: url("ViewRight.png");
+}
+.appui-icon--ViewTop {
+    --unity-image: url("ViewTop.png");
+}
+.appui-icon--FlyMode {
+    --unity-image: url("FlyMode.png");
+}
+.appui-icon--WalkMode {
+    --unity-image: url("WalkMode.png");
+}
+.appui-icon--VRMode{
+    --unity-image: url("VRMode.png");
+}

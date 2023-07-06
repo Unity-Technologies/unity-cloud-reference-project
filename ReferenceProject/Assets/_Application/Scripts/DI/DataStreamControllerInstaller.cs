@@ -22,6 +22,7 @@ namespace Unity.ReferenceProject
         {
             Container.Bind(typeof(IDataStreamerProvider), typeof(IDataStreamController),
                 typeof(IDataStreamControllerWithObserver), typeof(ISceneEvents)).To<DataStreamerController>().AsSingle();
+            Container.Bind<IDataStreamBound>().To<DataStreamBound>().AsSingle();
         }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Unity.ReferenceProject.Tools;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
+using UnityEngine;
 using UnityEngine.UIElements;
 using Zenject;
 
@@ -9,6 +10,10 @@ namespace Unity.ReferenceProject.Navigation
 {
     public class NavigationSwitchTool : ToolUIController
     {
+        
+        [SerializeField]
+        VisualTreeAsset m_ButtonTemplate;
+        
         readonly Dictionary<NavigationModeData, ActionButton> m_NavigationModes = new();
         INavigationManager m_NavigationManager;
 
@@ -74,22 +79,15 @@ namespace Unity.ReferenceProject.Navigation
             if (!navigationMode)
                 return null;
 
-            var button = new ActionButton();
-            button.style.justifyContent = Justify.SpaceBetween;
-            button.label = navigationMode.ModeName;
-            button.icon = "notnull";
-            var icon = (Icon)button.hierarchy.ElementAt(0);
-            icon.size = IconSize.M;
-            icon.sprite = navigationMode.Icon;
-            icon.style.marginRight = 12;
-            button.quiet = true;
-            button.style.borderTopWidth = button.style.borderBottomWidth = button.style.borderLeftWidth = button.style.borderRightWidth = 0;
-            button.style.borderTopLeftRadius = button.style.borderTopRightRadius = button.style.borderBottomLeftRadius = button.style.borderBottomRightRadius = 0;
-            button.clickable.clicked += () => OnModeClick(idMode);
+            var buttonTemplate = m_ButtonTemplate.CloneTree();
+            buttonTemplate.tooltip = navigationMode.ModeName;
+            var actionButton = buttonTemplate.Q<ActionButton>("ActionButton");
+            actionButton.label = navigationMode.ModeName;
+            actionButton.icon = navigationMode.Icon.name;
+            actionButton.clickable.clicked += () => OnModeClick(idMode);
+            m_NavigationModes.Add(navigationMode, actionButton);
 
-            m_NavigationModes.Add(navigationMode, button);
-
-            return button;
+            return buttonTemplate;
         }
 
         void OnNavigationModeChanged()

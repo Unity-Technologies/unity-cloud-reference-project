@@ -1,17 +1,17 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" appui="UnityEngine.Dt.App.UI" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" appui="Unity.AppUI.UI" editor-extension-mode="False">
     <Style src="project://database/Assets/_Application/UI/Tools/Modes/FrameRatesStyles.uss?fileID=7433441132597879392&amp;guid=35a46e63bb5a2e948920983cb92c976d&amp;type=3#FrameRatesStyles" />
     <ui:VisualElement name="fps-entries" picking-mode="Ignore" class="fps-entries">
         <ui:VisualElement class="fps-entry">
-            <UnityEngine.Dt.App.UI.Header text="FPS" size="XS" class="fps-header" />
-            <UnityEngine.Dt.App.UI.Header name="fps-header" text="---" size="XS" class="fps-value" />
+            <Unity.AppUI.UI.Heading text="FPS" size="XS" class="fps-header" />
+            <Unity.AppUI.UI.Heading name="fps-header" text="---" size="XS" class="fps-value" />
         </ui:VisualElement>
         <ui:VisualElement class="fps-entry">
-            <UnityEngine.Dt.App.UI.Header text="MIN" size="XS" class="fps-header" />
-            <UnityEngine.Dt.App.UI.Header name="fps-min-header" text="---" size="XS" class="fps-value" />
+            <Unity.AppUI.UI.Heading text="MIN" size="XS" class="fps-header" />
+            <Unity.AppUI.UI.Heading name="fps-min-header" text="---" size="XS" class="fps-value" />
         </ui:VisualElement>
         <ui:VisualElement class="fps-entry">
-            <UnityEngine.Dt.App.UI.Header text="MAX" size="XS" class="fps-header" />
-            <UnityEngine.Dt.App.UI.Header name="fps-max-header" text="---" size="XS" class="fps-value" />
+            <Unity.AppUI.UI.Heading text="MAX" size="XS" class="fps-header" />
+            <Unity.AppUI.UI.Heading name="fps-max-header" text="---" size="XS" class="fps-value" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

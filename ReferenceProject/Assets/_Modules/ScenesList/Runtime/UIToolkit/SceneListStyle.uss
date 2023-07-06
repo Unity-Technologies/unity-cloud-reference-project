@@ -113,7 +113,7 @@
 }
 
 .project-list-filter-service-popover {
-    margin: 24px 12px 12px 12px;
+    padding: 24px 12px 12px 12px;
 }
 
 .project-list-filter-service-header {

@@ -14,6 +14,8 @@ namespace Unity.ReferenceProject.DataStreaming
     {
         public event Action<IScene> SceneOpened;
         public event Action SceneClosed;
+
+        public bool IsSceneOpened { get; }
     }
 
     public interface IDataStreamerProvider
@@ -28,12 +30,15 @@ namespace Unity.ReferenceProject.DataStreaming
 
     public class DataStreamerController : IDataStreamerProvider, IDataStreamController, IDataStreamControllerWithObserver, ISceneEvents
     {
+        public IDataStreamer DataStreamer { get; } = new DataStreamer();
+        public event Action<IScene> SceneOpened;
+        public event Action SceneClosed;
+        public bool IsSceneOpened { get; private set; }
+
         readonly ServiceHostConfiguration m_CloudConfiguration;
         readonly IServiceHttpClient m_ServiceHttpClient;
 
         ICameraObserver m_CameraObserver;
-
-        bool m_SceneOpened;
 
         public DataStreamerController(IServiceHttpClient serviceHttpClient, ServiceHostConfiguration cloudConfiguration)
         {
@@ -49,7 +54,7 @@ namespace Unity.ReferenceProject.DataStreaming
             if (scene == null)
                 throw new ArgumentNullException(nameof(scene));
 
-            if (m_SceneOpened)
+            if (IsSceneOpened)
             {
                 Close();
             }
@@ -61,19 +66,19 @@ namespace Unity.ReferenceProject.DataStreaming
             DataStreamer.AddObserver(m_CameraObserver);
             DataStreamer.Open(builder.Build());
 
-            m_SceneOpened = true;
+            IsSceneOpened = true;
             SceneOpened?.Invoke(scene);
         }
 
         public void Close()
         {
-            if (m_SceneOpened)
+            if (IsSceneOpened)
             {
                 DataStreamer.Close();
                 DataStreamer.RemoveObserver(m_CameraObserver);
             }
 
-            m_SceneOpened = false;
+            IsSceneOpened = false;
             SceneClosed?.Invoke();
         }
 
@@ -81,9 +86,5 @@ namespace Unity.ReferenceProject.DataStreaming
         {
             m_CameraObserver = cameraObserver;
         }
-
-        public IDataStreamer DataStreamer { get; } = new DataStreamer();
-        public event Action<IScene> SceneOpened;
-        public event Action SceneClosed;
     }
 }

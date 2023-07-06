@@ -147,11 +147,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RayInteractor: {fileID: 0}
+  m_XRController: {fileID: 0}
   m_HideIfNotHovering: 0
   m_DefaultLineLength: 5
-  OnShow:
-    m_PersistentCalls:
-      m_Calls: []
+  m_SnapEndpointIfAvailable: 1
+  m_HideIfSnapping: 0
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 160
   m_LineSettings: {fileID: 11400000, guid: 3c83501f1e4938a408906b731260f6d5, type: 2}
 --- !u!114 &4951106429505754903
 MonoBehaviour:

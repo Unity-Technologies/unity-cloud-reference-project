@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Annotation_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 0565fd0e005f1214c8c28798d6420609, type: 2}
+  m_Metadata:
+    m_Items:
+    - rid: 2811153394649792515
+  m_TableData:
+  - m_Id: 162527342592
+    m_Localized: Annotation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 345311824474112
+    m_Localized: Back to topic
+    m_Metadata:
+      m_Items: []
+  - m_Id: 345510860976128
+    m_Localized: Add new comment
+    m_Metadata:
+      m_Items: []
+  - m_Id: 345664519303168
+    m_Localized: Delete
+    m_Metadata:
+      m_Items: []
+  - m_Id: 345723281502208
+    m_Localized: Edit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 345794580475904
+    m_Localized: Goto
+    m_Metadata:
+      m_Items: []
+  - m_Id: 346853331857408
+    m_Localized: Options
+    m_Metadata:
+      m_Items: []
+  - m_Id: 718364391665664
+    m_Localized: '{0:1 reply|{} replies}'
+    m_Metadata:
+      m_Items:
+      - rid: 2811153394649792515
+  - m_Id: 1373143476367360
+    m_Localized: No comment
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1373231825186816
+    m_Localized: Cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1373285315145728
+    m_Localized: Submit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1373603855757312
+    m_Localized: Add a comment...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1408687321280512
+    m_Localized: Add a title...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1408824785399808
+    m_Localized: Add a description...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1468468203515904
+    m_Localized: Topic title cannot be empty.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1468554014781440
+    m_Localized: Comment cannot be empty.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2482510560915456
+    m_Localized: No topic
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2493417835884544
+    m_Localized: Comments
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3621888658141184
+    m_Localized: Topics
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 2811153394649792515
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 0070623e598d0200

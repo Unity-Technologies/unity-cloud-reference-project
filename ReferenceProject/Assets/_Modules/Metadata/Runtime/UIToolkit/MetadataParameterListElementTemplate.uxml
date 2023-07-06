@@ -1,8 +1,6 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance"
-         engine="UnityEngine.UIElements" editor="UnityEditor.UIElements"
-         noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
     <ui:VisualElement picking-mode="Ignore" class="metadata-display-list-element__parameter">
-        <UnityEngine.Dt.App.UI.Text name="ParameterLabel" primary="false" text="Key" size="S" display-tooltip-when-elided="true" picking-mode="Ignore" class="metadata-display-text__parameter-key" />
-        <UnityEngine.Dt.App.UI.Text name="ParameterValue" text="Value" size="S" display-tooltip-when-elided="true" picking-mode="Ignore" class="metadata-display-text__parameter-value" />
+        <appui:Text name="ParameterLabel" primary="false" text="Key" size="S" display-tooltip-when-elided="true" picking-mode="Ignore" class="metadata-display-text__parameter-key" />
+        <appui:Text name="ParameterValue" text="Value" size="S" display-tooltip-when-elided="true" picking-mode="Ignore" class="metadata-display-text__parameter-value" />
     </ui:VisualElement>
 </ui:UXML>

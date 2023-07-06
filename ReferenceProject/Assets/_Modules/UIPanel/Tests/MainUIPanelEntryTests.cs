@@ -4,6 +4,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UIElements;
+using Zenject;
 using Object = UnityEngine.Object;
 
 namespace Unity.ReferenceProject.UIPanel.Tests
@@ -12,6 +13,7 @@ namespace Unity.ReferenceProject.UIPanel.Tests
     {
         readonly TestGameObjects m_TestGameObjects = new();
         PanelSettings m_PanelSettings;
+        DiContainer m_DiContainer;
 
         VisualTreeAsset m_VisualTreeAsset;
 
@@ -28,16 +30,21 @@ namespace Unity.ReferenceProject.UIPanel.Tests
             m_TestGameObjects?.Cleanup();
         }
 
+        [SetUp]
+        public void CommonInstall()
+        {
+            m_DiContainer = new DiContainer();
+            m_DiContainer.Bind<IMainUIPanel>().FromInstance(m_TestGameObjects.NewMainUIPanel(m_PanelSettings)).AsSingle();
+        }
+
         [UnityTest]
         public IEnumerator MainUIPanelEntry_SortingOrder_UsesUIDocument()
         {
-            m_TestGameObjects.NewMainUIPanel(m_PanelSettings);
-
             // First entry
             var entry0 = NewGameObjectWithUIDocumentAndMainUIPanelEntry("entry0", 0);
-            var root = entry0.GetComponent<UIDocument>().rootVisualElement.parent;
             yield return null;
 
+            var root = entry0.GetComponent<UIDocument>().rootVisualElement.parent;
             AssertContent(root, entry0); // 0
 
             // Higher order
@@ -79,16 +86,13 @@ namespace Unity.ReferenceProject.UIPanel.Tests
         [UnityTest] // UCRP-137
         public IEnumerator MainUIPanelEntry_SortingOrder_IgnoreManuallyAddingElements()
         {
-            m_TestGameObjects.NewMainUIPanel(m_PanelSettings);
-
-            var entry0 = NewGameObjectWithUIDocumentAndMainUIPanelEntry("entry0", 0);
-
             // First entry
-            var root = entry0.GetComponent<UIDocument>().rootVisualElement.parent;
+            var entry0 = NewGameObjectWithUIDocumentAndMainUIPanelEntry("entry0", 0);
             var entry1 = NewGameObjectWithUIDocumentAndMainUIPanelEntry("entry1", 10);
             var entry2 = NewGameObjectWithUIDocumentAndMainUIPanelEntry("entry2", -10);
             yield return null;
 
+            var root = entry0.GetComponent<UIDocument>().rootVisualElement.parent;
             AssertContent(root, entry2, entry0, entry1); // -10, 0, 10
 
             // Manually add new elements
@@ -118,12 +122,8 @@ namespace Unity.ReferenceProject.UIPanel.Tests
         [UnityTest] // UCRP-137
         public IEnumerator MainUIPanelEntry_SortingOrder_WorksAfterDestroyingElements()
         {
-            m_TestGameObjects.NewMainUIPanel(m_PanelSettings);
-
-            var entry0 = NewGameObjectWithUIDocumentAndMainUIPanelEntry("entry0", 0);
-
             // First entry
-            var root = entry0.GetComponent<UIDocument>().rootVisualElement.parent;
+            var entry0 = NewGameObjectWithUIDocumentAndMainUIPanelEntry("entry0", 0);
             var entry1 = NewGameObjectWithUIDocumentAndMainUIPanelEntry("entry1", 10);
             var entry2 = NewGameObjectWithUIDocumentAndMainUIPanelEntry("entry2", -10);
             var entry3 = NewGameObjectWithUIDocumentAndMainUIPanelEntry("entry3", 5);
@@ -133,6 +133,7 @@ namespace Unity.ReferenceProject.UIPanel.Tests
             var entry7 = NewGameObjectWithUIDocumentAndMainUIPanelEntry("entry7", 10);
             yield return null;
 
+            var root = entry0.GetComponent<UIDocument>().rootVisualElement.parent;
             AssertContent(root, entry2, entry6, entry4, entry0, entry5, entry3, entry1, entry7); // -10, -10, -5, 0, 0, 5, 10, 10
 
             // Destroy some elements
@@ -162,7 +163,7 @@ namespace Unity.ReferenceProject.UIPanel.Tests
         {
             var go = NewGameObjectWithUIDocument(name, sortingOrder);
 
-            go.AddComponent<MainUIPanelEntry>();
+            m_DiContainer.InstantiateComponent<MainUIPanelEntry>(go);
 
             return go;
         }

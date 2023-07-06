@@ -5,8 +5,9 @@ using Unity.Cloud.Common;
 using Unity.ReferenceProject.UITableListView;
 using Unity.ReferenceProject.SearchSortFilter;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.UIElements;
+using Clickable = Unity.AppUI.UI.Clickable;
 
 namespace Unity.ReferenceProject.ScenesList
 {
@@ -86,7 +87,8 @@ namespace Unity.ReferenceProject.ScenesList
                 focusable = false
             };
 
-            button.clickable.clicked += () => OnButtonClick(button);
+            button.AddManipulator(new Clickable((_) => OnButtonClick(button)));
+            
             e.Add(button);
         }
 

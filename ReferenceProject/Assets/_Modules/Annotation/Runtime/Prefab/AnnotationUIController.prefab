@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7188676291563206931
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 481659667330648110}
+  - component: {fileID: 941548908183524618}
+  - component: {fileID: -8390870255139806586}
+  m_Layer: 0
+  m_Name: AnnotationUIController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &481659667330648110
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7188676291563206931}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &941548908183524618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7188676291563206931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 690709113944505499dec91a7d4343b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DisplayName: '@Annotation:Annotation'
+  m_Icon: {fileID: 21300000, guid: d58d86a16ac8c194ba4a0b407fe7b389, type: 3}
+  m_Template: {fileID: 9197481963319205126, guid: 898aceeb049180c44bad8a7550635845,
+    type: 3}
+  m_ColorPalette: {fileID: 11400000, guid: d738ddede4da5a24ca3103d68f0f7718, type: 2}
+  m_IndicatorsLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  m_TopicEntryTemplate: {fileID: 9197481963319205126, guid: 29750923f27949b4c8a7f1a0c06d8ba6,
+    type: 3}
+  m_CommentEntryTemplate: {fileID: 9197481963319205126, guid: 832be9597bbcc204bac3b7fccf4c4003,
+    type: 3}
+  m_TopicDialogTemplate: {fileID: 9197481963319205126, guid: ad96baa17ce878f4e899394b21e33851,
+    type: 3}
+  m_CommentDialogTemplate: {fileID: 9197481963319205126, guid: 47685aafc58ea8f48a39af3d8a3d319b,
+    type: 3}
+  m_Delete: '@Annotation:Delete'
+  m_Edit: '@Annotation:Edit'
+  m_Goto: '@Annotation:Goto'
+  m_NoTopic: '@Annotation:NoTopic'
+  m_NoComment: '@Annotation:NoComment'
+  m_NoTitleWarning: '@Annotation:NoTitleWarning'
+  m_NoCommentWarning: '@Annotation:NoCommentWarning'
+--- !u!114 &-8390870255139806586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7188676291563206931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b082702ef30b454aabce6b64f95e935, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideTypes: 6

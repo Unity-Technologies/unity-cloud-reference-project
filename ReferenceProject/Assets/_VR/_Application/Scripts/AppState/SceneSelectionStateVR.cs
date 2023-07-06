@@ -1,7 +1,7 @@
 ﻿using System;
 using Unity.ReferenceProject.ScenesList;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.UIElements;
 
 namespace Unity.ReferenceProject.VR
@@ -13,27 +13,11 @@ namespace Unity.ReferenceProject.VR
         VisualTreeAsset m_VisualTreeAsset;
 
         [SerializeField]
-        InputSingleUnifiedPointer m_SingleUnifiedPointer;
-
-        [SerializeField]
         SceneListUIController m_SceneListUIController;
 
         protected override string PanelName => "SceneSelectionPanel";
 
         protected override Vector2 PanelSize => new Vector2(1366, 768);
-
-        protected override void StateEntered()
-        {
-            // Fix a problem with ListView that only allow input from primary device
-            m_SingleUnifiedPointer.Enable();
-            base.StateEntered();
-        }
-
-        protected override void StateExited()
-        {
-            m_SingleUnifiedPointer.Disable();
-            base.StateExited();
-        }
 
         protected override void OnPanelBuilt(UIDocument document)
         {

@@ -10,7 +10,8 @@ namespace Unity.ReferenceProject.DeepLinking
 {
     public interface IDeepLinkingController : IDisposable
     {
-        event Action<IScene> DeepLinkConsumed;
+        event Action<IScene, bool> DeepLinkConsumed;
+        event Action<Exception> LinkConsumptionFailed;
         Task<Uri> GenerateUri(IScene scene);
         Task<bool> TryConsumeUri(string url);
     }
@@ -26,8 +27,11 @@ namespace Unity.ReferenceProject.DeepLinking
 
         Uri m_ForwardedDeepLink;
 
+        DeepLinkCameraInfo m_SetDeepLinkCamera;
+        DeepLinkInfo m_CurrentDeepLinkInfo;
+
         public DeepLinkingController(IQueryArgumentsProcessor argumentsProcessor, IUrlRedirectionInterceptor interceptor,
-            IDeepLinkProvider linkProvider, ISceneProvider sceneProvider, IAuthenticationStateProvider authenticator)
+            IDeepLinkProvider linkProvider, ISceneProvider sceneProvider, IAuthenticationStateProvider authenticator, DeepLinkCameraInfo deepLinkCameraInfo)
         {
             m_QueryArgumentsProcessor = argumentsProcessor;
             m_UrlRedirectionInterceptor = interceptor;
@@ -37,9 +41,13 @@ namespace Unity.ReferenceProject.DeepLinking
 
             m_Authenticator.AuthenticationStateChanged += OnAuthenticationStateChanged;
             m_UrlRedirectionInterceptor.DeepLinkForwarded += OnDeepLinkForwarded;
+
+            m_SetDeepLinkCamera = deepLinkCameraInfo;
+            m_SetDeepLinkCamera.SetCameraReady += OnSetCameraReady;
         }
 
-        public event Action<IScene> DeepLinkConsumed;
+        public event Action<IScene, bool> DeepLinkConsumed;
+        public event Action<Exception> LinkConsumptionFailed;
 
         public void Dispose()
         {
@@ -56,9 +64,18 @@ namespace Unity.ReferenceProject.DeepLinking
         {
             if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
             {
-                return await TryConsumeUri(uri);
+                try
+                {
+                    if (await TryConsumeUri(uri))
+                    {
+                        return true;   
+                    }
+                }
+                catch (Exception e)
+                {
+                    LinkConsumptionFailed?.Invoke(e);
+                }
             }
-
             return false;
         }
 
@@ -71,21 +88,41 @@ namespace Unity.ReferenceProject.DeepLinking
             if (deepLinkInfo is { ResourceType: DeepLinkResourceType.Scene })
             {
                 var scene = await m_SceneProvider.GetSceneAsync(new SceneId(deepLinkInfo.ResourceId));
-                DeepLinkConsumed?.Invoke(scene);
+                m_SetDeepLinkCamera.SetDeepLinkCamera = true;
+                // check if Query Arguments hold a different scene state. For now, just a null check instead of a full comparison of states
+                var hasNewSceneState = !string.IsNullOrEmpty(deepLinkInfo.QueryArguments);
+                DeepLinkConsumed?.Invoke(scene, hasNewSceneState);
             }
-
-            m_QueryArgumentsProcessor.Process(deepLinkInfo);
+            
+            m_CurrentDeepLinkInfo = deepLinkInfo;
             return true;
+        }
+        
+        void OnSetCameraReady()
+        {
+            if (m_CurrentDeepLinkInfo != null && !string.IsNullOrEmpty(m_CurrentDeepLinkInfo.QueryArguments))
+            {
+                m_QueryArgumentsProcessor.Process(m_CurrentDeepLinkInfo);
+            }
         }
 
         async Task TryConsumeForwardedDeepLink()
         {
             if (m_ForwardedDeepLink == null)
-                return;
-
-            if (await TryConsumeUri(m_ForwardedDeepLink))
             {
-                m_ForwardedDeepLink = null;
+                return;
+            }
+            
+            try
+            {
+                if (await TryConsumeUri(m_ForwardedDeepLink))
+                {
+                    m_ForwardedDeepLink = null;
+                }
+            }
+            catch (Exception e)
+            {
+                LinkConsumptionFailed?.Invoke(e);
             }
         }
 

@@ -1,0 +1,22 @@
+{
+    "name": "Unity.ReferenceProject.VR.UIInputBlockerVR.Runtime",
+    "rootNamespace": "Unity.ReferenceProject.VR.UIInputBlockerVR",
+    "references": [
+        "GUID:b024a75f7ab0cd44b8467e05ca5da44c",
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:87ae9fc85f4959c45847c74b00857548",
+        "GUID:807be9350277eff4182cd3600de41d3a",
+        "GUID:7e0d14980460abd439d6db881ce553fb",
+        "GUID:fe685ec1767f73d42b749ea8045bfe43",
+        "GUID:da5749944c50f764887a2df69388c74d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

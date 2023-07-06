@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <Style src="project://database/Assets/_Modules/DataStreaming/Runtime/UIToolkit/StreamingIndicatorStyle.uss?fileID=7433441132597879392&amp;guid=e379a7461191f584e81b5e4739051674&amp;type=3#StreamingIndicatorStyle" />
+    <ui:VisualElement picking-mode="Ignore" class="streaming-indicator">
+        <ui:VisualElement class="streaming-indicator-container">
+            <appui:Heading text="@DataStreaming:Streaming" size="XS" />
+            <appui:CircularProgress class="streaming-indicator-progress" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

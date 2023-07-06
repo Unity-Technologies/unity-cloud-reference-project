@@ -1,0 +1,5 @@
+.navigation-switch-tool-button{
+    justify-content: space-between;
+    border-width: 0;
+    border-radius: 0;
+}

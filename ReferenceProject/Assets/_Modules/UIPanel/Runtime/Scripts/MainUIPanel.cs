@@ -1,12 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.UIElements;
 
 namespace Unity.ReferenceProject.UIPanel
 {
-    public partial class MainUIPanel
+    public partial interface IMainUIPanel
+    {
+        public Panel Panel { get; }
+        public void Add(UIDocument uiDocument);
+    }
+
+    public partial class MainUIPanel : IMainUIPanel
     {
         readonly Panel m_Panel;
 
@@ -16,36 +22,9 @@ namespace Unity.ReferenceProject.UIPanel
 
         public Panel Panel => m_Panel;
 
-        static MainUIPanel s_Instance;
-
-        public static MainUIPanel Instance
-        {
-            get
-            {
-                if (s_Instance == null || s_Instance.UIDocument == null)
-                {
-                    s_Instance = null;
-                    Debug.LogError($"No instance of {nameof(MainUIPanel)} was found in the current scenes.");
-                }
-
-                return s_Instance;
-            }
-        }
-
-        public static MainUIPanel CreateInstance(PanelSettings panelSettings)
-        {
-            if (s_Instance != null && s_Instance.UIDocument != null)
-            {
-                Debug.Log($"An instance of {nameof(MainUIPanel)} already exists.");
-                return s_Instance;
-            }
-
-            return s_Instance = new MainUIPanel(panelSettings);
-        }
-
         internal UIDocument UIDocument { get; }
 
-        MainUIPanel(PanelSettings panelSettings)
+        public MainUIPanel(PanelSettings panelSettings)
         {
             var go = new GameObject("MainUIPanel (Dynamic)");
             Object.DontDestroyOnLoad(go);
@@ -56,7 +35,7 @@ namespace Unity.ReferenceProject.UIPanel
             {
                 name = k_PanelName,
                 style = { backgroundColor = new StyleColor(new Color(0.0f, 0.0f, 0.0f, 0.0f)) },
-                pickingMode = PickingMode.Position,
+                pickingMode = PickingMode.Position
             };
 
             UIDocument.rootVisualElement.Add(m_Panel);

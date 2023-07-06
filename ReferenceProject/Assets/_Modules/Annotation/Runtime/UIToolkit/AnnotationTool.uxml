@@ -1,0 +1,22 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <ui:VisualElement name="TopicList">
+        <ui:VisualElement name="TopicListHeader" class="topic-list-header">
+            <appui:Heading text="@Annotation:Topics" class="topic-list-title"/>
+            <ui:VisualElement name="TopicListHeaderButtons" class="topic-list-header-buttons">
+                <appui:ActionButton name="AddTopicButton" icon="plus" quiet="true" tooltip="@Annotation:Add"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:ScrollView name="TopicListContainer"/>
+    </ui:VisualElement>
+    <ui:VisualElement name="CommentList">
+        <ui:VisualElement name="CommentListHeader" class="comment-list-header">
+            <appui:Heading text="@Annotation:Comments" class="comment-list-title"/>
+            <ui:VisualElement name="CommentListHeaderButtons" class="comment-list-header-buttons">
+                <appui:ActionButton name="AddCommentButton" icon="plus" quiet="true" tooltip="@Annotation:Add"/>
+                <appui:ActionButton name="BackButton" icon="arrow-u-down-left" quiet="true" tooltip="@Annotation:Back"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="CommentTopicContainer" class="comment-list-topic-container"/>
+        <ui:ScrollView name="CommentListContainer"/>
+    </ui:VisualElement>
+</ui:UXML>

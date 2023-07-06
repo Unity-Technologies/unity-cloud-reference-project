@@ -16,16 +16,13 @@ namespace Unity.ReferenceProject.VR.VRControls
     ///     If the Teleport action has a negative value then the user will be moved backwards (relative to the camera) a fixed
     ///     distance.
     /// </summary>
-    public class Teleport : LocomotionProvider
+    public class Teleport : BaseLocomotionProvider
     {
-        [SerializeField, Tooltip("A prefab that will be shown when aiming that determines the target position and rotation.")]
-        TeleportVisuals m_TeleportVisualsPrefab;
-
-        [SerializeField]
-        InputActionReference m_TeleportInput;
-
         [SerializeField]
         InputActionReference m_TeleportDirectionInput;
+
+        [SerializeField, Tooltip("A prefab that will be shown when aiming that determines the target position and rotation.")]
+        TeleportVisuals m_TeleportVisualsPrefab;
 
         [SerializeField, Tooltip("The delay after releasing the teleport button to start the teleportation.")]
         float m_TeleportMoveDelay = 0.375f;
@@ -62,7 +59,7 @@ namespace Unity.ReferenceProject.VR.VRControls
         ///     The distance that the rig will be moved when the user does a step back action (Teleport action with negative
         ///     value).
         /// </summary>
-        public float stepBackDistance
+        public float StepBackDistance
         {
             get => m_StepBackDistance;
             set => m_StepBackDistance = value;
@@ -72,13 +69,11 @@ namespace Unity.ReferenceProject.VR.VRControls
 
         protected override void Awake()
         {
-            base.Awake();
-
-            m_TeleportAction = m_TeleportInput.action;
             m_TeleportDirectionAction = m_TeleportDirectionInput.action;
 
-            m_TeleportAction.performed += OnTeleportPerformed;
-            m_TeleportAction.canceled += OnTeleportCanceled;
+            base.Awake();
+
+            m_TeleportAction = m_InputAction;
         }
 
         void Start()
@@ -135,22 +130,16 @@ namespace Unity.ReferenceProject.VR.VRControls
             }
         }
 
-        void OnEnable()
+        protected override void InitializeInputs()
         {
-            m_TeleportAction.Enable();
+            base.InitializeInputs();
             m_TeleportDirectionAction.Enable();
         }
 
-        void OnDisable()
+        protected override void ResetInputs()
         {
-            m_TeleportAction.Disable();
+            base.ResetInputs();
             m_TeleportDirectionAction.Disable();
-        }
-
-        void OnDestroy()
-        {
-            m_TeleportAction.performed -= OnTeleportPerformed;
-            m_TeleportAction.canceled -= OnTeleportCanceled;
         }
 
         void SetSiblingLocomotionProviders(bool active)
@@ -164,7 +153,7 @@ namespace Unity.ReferenceProject.VR.VRControls
             }
         }
 
-        void OnTeleportPerformed(InputAction.CallbackContext callbackContext)
+        protected override void OnPerformed(InputAction.CallbackContext callbackContext)
         {
             if (!isActiveAndEnabled)
                 return;
@@ -185,7 +174,7 @@ namespace Unity.ReferenceProject.VR.VRControls
             }
         }
 
-        void OnTeleportCanceled(InputAction.CallbackContext callbackContext)
+        protected override void OnCanceled(InputAction.CallbackContext callbackContext)
         {
             m_SteppedBack = false;
         }

@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.UIElements;
 
 namespace Unity.ReferenceProject.VR

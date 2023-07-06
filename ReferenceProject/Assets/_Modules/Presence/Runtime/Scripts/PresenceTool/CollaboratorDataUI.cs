@@ -1,11 +1,15 @@
 using Unity.Cloud.Presence;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
+using Unity.ReferenceProject.Common;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Unity.ReferenceProject.Presence
 {
     public class CollaboratorDataUI
     {
+        public ColorPalette AvatarColorPalette { get; set; }
+
         static readonly string k_CollaboratorDataBadgeUssClassName = "collaborator-data-badge";
         static readonly string k_CollaboratorDataHeaderUssClassName = "collaborator-data-header";
         public readonly IParticipant Participant;
@@ -18,21 +22,22 @@ namespace Unity.ReferenceProject.Presence
         public VisualElement CreateVisualTree()
         {
             var element = new VisualElement();
-            
-            var avatar = new UnityEngine.Dt.App.UI.Avatar
+
+            var avatar = new AvatarBadge
             {
-                text = AvatarUtils.GetInitials(Participant.Name),
                 tooltip = Participant.Name,
-                backgroundColor = AvatarUtils.GetColor(Participant.ColorIndex), // This is temporary as the Presence Package will update its implementation
-                size = Size.M
+                backgroundColor = AvatarColorPalette.GetColor(Participant.ColorIndex),
+                size = Size.M,
+                outlineColor = Color.clear
             };
+            avatar.Initials.text = Utils.GetInitials(Participant.Name);
             avatar.AddToClassList(k_CollaboratorDataBadgeUssClassName);
             element.Add(avatar);
 
-            var header = new Header(Participant.Name);
-            header.size = HeaderSize.S;
+            var header = new Heading(Participant.Name);
+            header.size = HeadingSize.S;
             header.AddToClassList(k_CollaboratorDataHeaderUssClassName);
-            element.Add(header); 
+            element.Add(header);
 
             return element;
         }

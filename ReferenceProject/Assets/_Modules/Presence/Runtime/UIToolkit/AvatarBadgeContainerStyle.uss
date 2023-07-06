@@ -23,12 +23,12 @@
 
 .collaborator-data{
     justify-content: flex-start;
-    align-items: flex-end;
+    align-items: center;
     flex-direction: row;
 }
 
 .collaborator-data-badge{
-    align-items: center;
+    margin: 2px;
 }
 
 .collaborator-data-header{

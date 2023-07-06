@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using Unity.ReferenceProject.Tools;
 using Unity.ReferenceProject.VR.RigUI;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
+using Unity.ReferenceProject.DataStores;
 using Zenject;
 
 namespace Unity.ReferenceProject.VR
@@ -11,23 +12,27 @@ namespace Unity.ReferenceProject.VR
     public class ToolUIMenuVR : MonoBehaviour
     {
         [SerializeField]
+        MenuType m_MenuType;
+
+        [SerializeField]
         protected List<ToolData> m_ToolData;
 
-        public bool IsInitialized { get; private set; }
-        public event Action OnInitialized;
+        bool isActivated;
 
         readonly List<IToolUIModeHandler> m_Handlers = new();
         protected List<ActionButton> m_Buttons = new();
         IPanelManager m_PanelManager;
         protected IRigUIController m_RigUIController;
         protected IToolUIManager m_ToolUIManager;
+        PropertyValue<MenuType> m_ActiveMenuType;
 
         [Inject]
-        void Setup(IToolUIManager toolUIManager, IRigUIController rigUIController, IPanelManager panelManager)
+        void Setup(IToolUIManager toolUIManager, IRigUIController rigUIController, IPanelManager panelManager, PropertyValue<MenuType> menuType)
         {
             m_ToolUIManager = toolUIManager;
             m_RigUIController = rigUIController;
             m_PanelManager = panelManager;
+            m_ActiveMenuType = menuType;
         }
 
         void Start()
@@ -41,16 +46,18 @@ namespace Unity.ReferenceProject.VR
                 }
             }
 
-            IsInitialized = true;
-            OnInitialized?.Invoke();
+            m_ActiveMenuType.ValueChanged += OnMenuTypeChanged;
+            OnMenuTypeChanged(m_ActiveMenuType.GetValue());
         }
 
-        public virtual void Activate(bool activate, bool clearPanel = true)
+        public virtual void Activate(bool activate)
         {
             if (activate)
             {
+                isActivated = true;
+
                 // Only one ToolUIMenuVR at a time
-                m_RigUIController.ClearMainBar(clearPanel);
+                m_RigUIController.ClearMainBar();
                 m_RigUIController.InitMainBar(m_Buttons);
 
                 foreach (var handler in m_Handlers)
@@ -65,6 +72,18 @@ namespace Unity.ReferenceProject.VR
                 {
                     m_ToolUIManager.UnregisterHandler(handler);
                 }
+            }
+        }
+
+        void OnMenuTypeChanged(MenuType type)
+        {
+            if (m_MenuType == type)
+            {
+                Activate(true);
+            }
+            else if (isActivated && type == null)
+            {
+                Activate(false);
             }
         }
 

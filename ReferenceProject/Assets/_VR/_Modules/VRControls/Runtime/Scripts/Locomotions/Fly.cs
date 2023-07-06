@@ -2,46 +2,17 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.XR.Interaction.Toolkit;
 
 namespace Unity.ReferenceProject.VR.VRControls
 {
-    public class Fly : LocomotionProvider
+    public class Fly : BaseLocomotionProvider
     {
-        [SerializeField]
-        InputActionReference m_ForwardReverse;
-
         [SerializeField]
         SpeedControl m_SpeedControl;
 
-        InputAction m_ForwardReverseAction;
-
         Coroutine m_UpdateCoroutine;
 
-        protected override void Awake()
-        {
-            base.Awake();
-
-            m_ForwardReverseAction = m_ForwardReverse.action;
-            m_ForwardReverseAction.performed += OnForwardReverse;
-        }
-
-        void OnEnable()
-        {
-            m_ForwardReverseAction.Enable();
-        }
-
-        void OnDisable()
-        {
-            m_ForwardReverseAction.Disable();
-        }
-
-        void OnDestroy()
-        {
-            m_ForwardReverseAction.performed -= OnForwardReverse;
-        }
-
-        void OnForwardReverse(InputAction.CallbackContext callbackContext)
+        protected override void OnPerformed(InputAction.CallbackContext callbackContext)
         {
             if (m_UpdateCoroutine == null)
             {
@@ -53,7 +24,7 @@ namespace Unity.ReferenceProject.VR.VRControls
         {
             while (true)
             {
-                if (!m_ForwardReverseAction.IsInProgress())
+                if (!m_InputAction.IsInProgress())
                 {
                     m_UpdateCoroutine = null;
                     yield break;
@@ -61,7 +32,7 @@ namespace Unity.ReferenceProject.VR.VRControls
 
                 if (BeginLocomotion())
                 {
-                    var forwardReverseValue = m_ForwardReverseAction.ReadValue<float>();
+                    var forwardReverseValue = m_InputAction.ReadValue<float>();
                     var speed = m_SpeedControl.Speed;
                     var xrOrigin = system.xrOrigin;
                     var forwardSource = xrOrigin.Camera.transform.forward;

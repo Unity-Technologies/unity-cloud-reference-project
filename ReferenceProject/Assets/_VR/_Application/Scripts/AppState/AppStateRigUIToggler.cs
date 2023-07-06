@@ -1,32 +1,38 @@
 ﻿using System;
+using Unity.ReferenceProject.DataStores;
+using Unity.ReferenceProject.VR.RigUI;
 using UnityEngine;
+using Zenject;
 
 namespace Unity.ReferenceProject.VR
 {
     public class AppStateRigUIToggler : AppStateListener
     {
         [SerializeField]
-        ToolUIMenuVR m_Menu;
+        MenuType m_MenuType;
 
         [SerializeField]
         bool m_DesactivateOnExit = true;
 
-        [SerializeField]
-        bool m_ClearPanelOnEnter = true;
+        PropertyValue<MenuType> m_ActiveMenuType;
+
+        [Inject]
+        void Setup(PropertyValue<MenuType> menuType)
+        {
+            m_ActiveMenuType = menuType;
+        }
 
         protected override void StateEntered()
         {
-            if (m_Menu != null)
-            {
-                m_Menu.Activate(true, m_ClearPanelOnEnter);
-            }
+            m_ActiveMenuType.SetValue(m_MenuType);
         }
 
         protected override void StateExited()
         {
-            if (m_Menu != null && m_DesactivateOnExit)
+            if (m_DesactivateOnExit)
             {
-                m_Menu.Activate(false);
+                MenuType menuType = null;
+                m_ActiveMenuType.SetValue(menuType);
             }
         }
     }

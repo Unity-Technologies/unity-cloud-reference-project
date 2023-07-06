@@ -1,40 +1,41 @@
-using System.Linq;
-using Unity.Cloud.Presence;
 using Unity.Cloud.Presence.Runtime;
 using Unity.ReferenceProject.Presence;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.UIElements;
-using Avatar = UnityEngine.Dt.App.UI.Avatar;
-
 namespace Unity.ReferenceProject.VR
 {
     public class PresenceToolUIControllerVR : PresenceToolUIController
     {
-        Avatar m_AvatarsButton;
-        
-        public override VisualElement GetIcon()
+        Badge m_Badge;
+
+        public override VisualElement GetButtonContent()
         {
-            m_AvatarsButton = new Avatar();
-            m_AvatarsButton.backgroundImage = new StyleBackground(Icon);
-            m_AvatarsButton.backgroundColor = Color.clear;
-            m_AvatarsButton.size = Size.L;
-            return m_AvatarsButton;
+            var icon = GetIcon();
+
+            m_Badge = new Badge();
+            m_Badge.verticalAnchor = VerticalAnchor.Bottom;
+            m_Badge.horizontalAnchor = HorizontalAnchor.Right;
+            m_Badge.overlapType = BadgeOverlapType.Circular;
+
+            icon.Add(m_Badge);
+
+            return icon;
         }
 
         protected override void OnRoomJoined(Room room)
         {
             CurrentRoom = room;
-            
-            m_AvatarsButton.notificationBadge.text = CurrentRoom.ConnectedParticipants.ToString();
+
+            m_Badge.content = CurrentRoom.ConnectedParticipants.Count;
 
             foreach (var participant in room.ConnectedParticipants)
             {
                 CollaboratorsDataPanel.AddParticipant(participant);
             }
-            
+
             RefreshVisualTree();
-            
+
             CurrentRoom.ParticipantAdded += OnParticipantAdded;
             CurrentRoom.ParticipantRemoved += OnParticipantRemoved;
         }
@@ -42,7 +43,7 @@ namespace Unity.ReferenceProject.VR
         protected override void RefreshVisualTree()
         {
             RefreshAvatarNotificationBadge();
-            
+
             base.RefreshVisualTree();
         }
 
@@ -50,13 +51,13 @@ namespace Unity.ReferenceProject.VR
         {
             if (CurrentRoom != null && CurrentRoom.ConnectedParticipants.Count > (IsRemoveOwner ? 1 : 0))
             {
-                m_AvatarsButton.withNotification = true;
-                m_AvatarsButton.notificationBadge.text = CurrentRoom.ConnectedParticipants.Count.ToString();
+                m_Badge.visible = true;
+                m_Badge.content = CurrentRoom.ConnectedParticipants.Count;
             }
             else
             {
-                m_AvatarsButton.withNotification = false;
-                m_AvatarsButton.notificationBadge.text = null;
+                m_Badge.visible = false;
+                m_Badge.content = 0;
             }
         }
     }

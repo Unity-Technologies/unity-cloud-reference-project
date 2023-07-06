@@ -1,7 +1,7 @@
 ﻿using System;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.UIElements;
-using Button = UnityEngine.Dt.App.UI.Button;
+using Button = Unity.AppUI.UI.Button;
 
 namespace Unity.ReferenceProject.Tools
 {
@@ -9,7 +9,7 @@ namespace Unity.ReferenceProject.Tools
     {
         readonly Divider m_Divider;
         readonly VisualElement m_Header;
-        readonly Header m_Title;
+        readonly Heading m_Title;
 
         public event Action CloseClicked;
 
@@ -18,7 +18,7 @@ namespace Unity.ReferenceProject.Tools
             RootVisualElement = rootVisualElement;
             m_Header = rootVisualElement.Q<VisualElement>("header");
             Icon = rootVisualElement.Q<Image>("icon");
-            m_Title = rootVisualElement.Q<Header>("title");
+            m_Title = rootVisualElement.Q<Heading>("title");
             CloseButton = rootVisualElement.Q<Button>("close-button");
             m_Divider = rootVisualElement.Q<Divider>("divider");
 

@@ -61,7 +61,9 @@ namespace Unity.ReferenceProject.Presence
 
         async Task JoinRoom(SceneId sceneId)
         {
-            var isJoined = await m_RoomManager.JoinRoom(sceneId);
+            var isJoined = await m_RoomManager.JoinRoomAsync(sceneId);
+            
+            m_RoomManager.SubscribeForMonitoring(sceneId, GetInstanceID());
             
             if(!isJoined)
                 return;
@@ -71,7 +73,9 @@ namespace Unity.ReferenceProject.Presence
 
         async Task LeaveRoom()
         {
-            var currentRoomLeft = await m_RoomManager.LeaveRoom();
+            var currentRoomLeft = await m_RoomManager.LeaveRoomAsync();
+            
+            m_RoomManager.UnsubscribeFromMonitoring(m_RoomManager.CurrentRoom, GetInstanceID());
             
             if(currentRoomLeft)
                 RoomLeft?.Invoke();

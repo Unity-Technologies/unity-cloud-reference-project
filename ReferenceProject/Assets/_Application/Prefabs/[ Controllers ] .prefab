@@ -58,7 +58,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BackgroundName: panel-appUI
-  m_Camera: {fileID: 0}
 --- !u!1 &3812081694717271886
 GameObject:
   m_ObjectHideFlags: 0
@@ -190,6 +189,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 206d8adbc1f73cc40beb5862288a82df, type: 2}
   - {fileID: 11400000, guid: 37263e1c1cdefa548989e7498fd4aae0, type: 2}
   - {fileID: 11400000, guid: 8f958e3e92b44bb418ea7647767ac223, type: 2}
+  m_CameraViewData:
+  - {fileID: 11400000, guid: 1103cf4adff223f44a84d27583f330de, type: 2}
+  - {fileID: 11400000, guid: 865e77b10b13a544a97647a8007fa9ad, type: 2}
+  - {fileID: 11400000, guid: 41fa736d44735914283f110a3c89f8d1, type: 2}
+  - {fileID: 11400000, guid: 4caa4743ecc5dba438cd6217c7191e56, type: 2}
 --- !u!1 &3812081695776021151
 GameObject:
   m_ObjectHideFlags: 0
@@ -200,7 +204,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3812081695776021150}
   - component: {fileID: 3812081695776021149}
-  - component: {fileID: 3812081695776021148}
+  - component: {fileID: 5608566204687931580}
   m_Layer: 0
   m_Name: DataStreamControllerSetup
   m_TagString: Untagged
@@ -236,7 +240,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ScreenSpaceError: 4
---- !u!114 &3812081695776021148
+--- !u!114 &5608566204687931580
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -250,6 +254,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PitchAngle: 20
   m_BoundsFillRatio: 0.9
+  m_VolumeProcessingIterations: 5
+  m_VolumeProcessingDelay: 50
 --- !u!1 &3812081695963798552
 GameObject:
   m_ObjectHideFlags: 0

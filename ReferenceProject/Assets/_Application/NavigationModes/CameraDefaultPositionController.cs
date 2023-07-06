@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Unity.Cloud.Common;
 using Unity.Cloud.DataStreaming.Runtime;
+using Unity.Cloud.DeepLinking;
 using Unity.ReferenceProject.DataStreaming;
+using Unity.ReferenceProject.DeepLinking;
 using Unity.ReferenceProject.Navigation;
 using UnityEngine;
 using Zenject;
@@ -16,23 +19,23 @@ namespace Unity.ReferenceProject
 
         [SerializeField]
         float m_BoundsFillRatio = 0.9f;
-        
-        [SerializeField]
-        int m_VolumeProcessingIterations = 5;
-        
-        [SerializeField]
-        int m_VolumeProcessingDelay = 50;
 
         IDataStreamer m_DataStreamer;
         INavigationManager m_NavigationManager;
         Camera m_StreamingCamera;
 
         ISceneEvents m_SceneEvents;
+        IDataStreamBound m_DataStreamBound;
 
         bool m_IsProcessing;
 
+        IQueryArgumentsProcessor m_QueryArgumentsProcessor;
+        QueryArgumentHandler<string> m_QueryArgumentCameraTransformHandler;
+        DeepLinkCameraInfo m_SetDeepLinkCamera;
+
         [Inject]
-        void Setup(ISceneEvents sceneEvents, IDataStreamerProvider dataStreamerProvider, Camera streamingCamera, INavigationManager navigationManager)
+        void Setup(ISceneEvents sceneEvents, IDataStreamerProvider dataStreamerProvider, Camera streamingCamera, INavigationManager navigationManager, IDataStreamBound dataStreamBound,
+            IQueryArgumentsProcessor queryArgumentsProcessor, DeepLinkCameraInfo deepLinkCameraInfo)
         {
             m_SceneEvents = sceneEvents;
             m_SceneEvents.SceneOpened += OnSceneOpened;
@@ -42,12 +45,48 @@ namespace Unity.ReferenceProject
 
             m_StreamingCamera = streamingCamera;
             m_NavigationManager = navigationManager;
+            m_DataStreamBound = dataStreamBound;
+            
+            m_QueryArgumentsProcessor = queryArgumentsProcessor;
+            m_SetDeepLinkCamera = deepLinkCameraInfo;
+        }
+
+        void Awake()
+        {
+            m_QueryArgumentCameraTransformHandler = new QueryArgumentHandler<string>(
+                "Camera Position",
+                GetCameraPosition,
+                SetCameraPosition
+            );
+            
+            m_QueryArgumentsProcessor.Register(m_QueryArgumentCameraTransformHandler, DeepLinkResourceType.Scene);
         }
 
         void OnDestroy()
         {
             m_SceneEvents.SceneOpened -= OnSceneOpened;
             m_SceneEvents.SceneClosed -= OnSceneClosed;
+            m_QueryArgumentsProcessor.Unregister(m_QueryArgumentCameraTransformHandler, DeepLinkResourceType.Scene);
+        }
+        
+        static string Vector3UrlFormat(Vector3 v)
+        {
+            return $"{v.x},{v.y},{v.z}";
+        }
+        public string GetCameraPosition()
+        {
+            return $"{Vector3UrlFormat(m_StreamingCamera.transform.position)}, {Vector3UrlFormat(m_StreamingCamera.transform.rotation.eulerAngles)}";
+        }
+        
+        void SetCameraPosition(string cameraString)
+        {
+            var splitValue = cameraString.Split(',').Select(i => float.TryParse(i, out float result) ? result : 0.0f).ToList();
+            if (splitValue.Count > 5)
+            {
+                var newPosition = new Vector3(splitValue[0], splitValue[1], splitValue[2]);
+                var newEulerAngle = new Vector3(splitValue[3], splitValue[4], splitValue[5]);
+                m_NavigationManager.TryTeleport(newPosition, newEulerAngle);
+            }
         }
 
         void OnSceneOpened(IScene scene)
@@ -64,8 +103,16 @@ namespace Unity.ReferenceProject
         {
             if (m_IsProcessing)
                 return;
-            
+
             m_IsProcessing = true;
+            
+            if (m_SetDeepLinkCamera.SetDeepLinkCamera) 
+            {
+                m_SetDeepLinkCamera.SetCameraReady?.Invoke(); // Process Deeplink QueryArguments
+                m_DataStreamer.StreamingStateChanged -= OnStreamingStateChanged;
+                m_IsProcessing = false;
+                return; 
+            }
             
             if (await ProcessDefaultVolumeOfInterestAsync())
             {
@@ -77,77 +124,21 @@ namespace Unity.ReferenceProject
 
         async Task<bool> ProcessDefaultVolumeOfInterestAsync()
         {
-            var result = false;
-            VolumeOfInterest prevVolume = new();
+            var v = await m_DataStreamer.GetDefaultVolumeOfInterestAsync();
+            
+            if (m_StreamingCamera == null) // Camera might have been destroyed since last loop.
+                return false;
 
-            for (var i = 0; i < m_VolumeProcessingIterations; ++i)
-            {
-                var v = await m_DataStreamer.GetDefaultVolumeOfInterestAsync();
-                if (v != prevVolume)
-                {
-                    prevVolume = v;
+            SetView(v.Bounds, m_StreamingCamera);
 
-                    if (m_StreamingCamera == null) // Camera might have been destroyed since last loop.
-                        return false;
-
-                    SetView(v.Bounds, m_StreamingCamera);
-
-                    await Task.Delay(m_VolumeProcessingDelay);
-                }
-                else
-                {
-                    result = true;
-                }
-            }
-
-            return result;
+            return true;
         }
 
         void SetView(Bounds bounds, Camera cam)
         {
-            var (position, rotation) = CameraUtilities.CalculateViewFitPosition(bounds, m_PitchAngle, m_BoundsFillRatio,
-                cam.fieldOfView, cam.aspect);
-
+             var (position, rotation) = m_DataStreamBound.CalculateViewFitPosition(bounds, m_PitchAngle,
+                 m_BoundsFillRatio, cam);
             m_NavigationManager.TryTeleport(position, rotation);
-        }
-    }
-
-    public static class CameraUtilities
-    {
-        public static (Vector3 position, Vector3 eulerAngles) CalculateViewFitPosition(Bounds bounds, float pitch, float fillRatio, float fieldOfView, float aspectRatio)
-        {
-            var desiredEuler = new Vector3(pitch, 0, 0);
-            var distanceFromCenter = GetDistanceFromCenterToFit(bounds, fillRatio, fieldOfView, aspectRatio);
-            var position = bounds.center - distanceFromCenter * (Quaternion.Euler(desiredEuler) * Vector3.forward);
-
-            return (position, desiredEuler);
-        }
-
-        static float GetDistanceFromCenterToFit(Bounds bb, float fillRatio, float fovY, float aspectRatio)
-        {
-            var fovX = GetHorizontalFov(fovY, aspectRatio);
-            var distanceToFitXAxisInView = GetDistanceFromCenter(bb, bb.extents.x, fovX, fillRatio);
-            var distanceToFitYAxisInView = GetDistanceFromCenter(bb, bb.extents.y, fovY, fillRatio);
-
-            return Mathf.Max(distanceToFitXAxisInView, distanceToFitYAxisInView);
-        }
-
-        static float GetHorizontalFov(float fovY, float aspectRatio)
-        {
-            var ratio = Mathf.Tan(Mathf.Deg2Rad * (fovY / 2.0f));
-            return Mathf.Rad2Deg * Mathf.Atan(ratio * aspectRatio) * 2.0f;
-        }
-
-        static float GetDistanceFromCenter(Bounds bb, float opposite, float fov, float fillRatio)
-        {
-            var lookAt = bb.center;
-
-            var angle = fov / 2.0f;
-            var ratio = Mathf.Tan(Mathf.Deg2Rad * angle);
-            var adjacent = opposite / ratio;
-            var distanceFromLookAt = lookAt.z - bb.min.z + adjacent / fillRatio;
-
-            return distanceFromLookAt;
         }
     }
 }

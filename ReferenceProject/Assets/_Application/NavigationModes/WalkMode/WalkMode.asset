@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 195ac8c3bd192774c8da6729c383199d, type: 3}
   m_Name: WalkMode
   m_EditorClassIdentifier: 
-  m_Icon: {fileID: 21300000, guid: 8014586a8630c65469f17315b7a7891a, type: 3}
+  m_Icon: {fileID: 21300000, guid: 6e18862ab7cff6d41a782f8dc4afb59b, type: 3}
   m_ModeName: '@ReferenceProject:Navigation_Walk'
   m_Prefab: {fileID: 8095221487545575978, guid: 947748a27bee0c141bd8fa1309c30210,
     type: 3}

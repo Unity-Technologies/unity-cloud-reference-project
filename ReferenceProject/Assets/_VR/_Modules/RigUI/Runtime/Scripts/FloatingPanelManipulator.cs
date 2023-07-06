@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
+using Unity.ReferenceProject.WorldSpaceUIDocumentExtensions;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Unity.ReferenceProject.VR.RigUI
 {
@@ -11,10 +11,7 @@ namespace Unity.ReferenceProject.VR.RigUI
         Transform m_FloatingPanel;
 
         [SerializeField]
-        RectTransform m_ManipulatorRectTransform;
-
-        [SerializeField]
-        WorldSpaceUIToolkit.WorldSpaceUIToolkit m_TargetPanel;
+        WorldSpaceUIDocumentSize m_TargetPanel;
 
         [SerializeField]
         Handle m_Handle;
@@ -32,7 +29,6 @@ namespace Unity.ReferenceProject.VR.RigUI
         float m_Resistance = 0.85f;
 
         bool m_DragInProcess;
-        CanvasScaler m_ManipulatorCanvasScaler;
         Vector3 m_TargetPosition;
         Vector3 m_TargetRotation;
         Coroutine m_UpdateCoroutine;
@@ -82,8 +78,7 @@ namespace Unity.ReferenceProject.VR.RigUI
 
         public void UpdateSize()
         {
-            m_ManipulatorRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, m_TargetPanel.PanelWidth);
-            m_ManipulatorRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, m_TargetPanel.PanelHeight);
+            transform.localPosition = (-m_TargetPanel.Size / (2f * m_TargetPanel.PixelsPerUnit))*Vector3.up;
         }
 
         public void TurnToFace()

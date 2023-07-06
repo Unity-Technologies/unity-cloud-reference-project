@@ -1,0 +1,20 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <ui:VisualElement name="TopicEntry" class="topic-entry">
+        <ui:VisualElement name="TopicEntryContainer" class="topic-entry-container">
+            <ui:VisualElement name="TopicEntryHeader" class="topic-entry-header">
+                <appui:Avatar name="TopicEntryAvatar" class="topic-entry-avatar">
+                    <appui:Text name="TopicEntryAvatarInitials" class="topic-entry-avatar-initials" text="NA"/>
+                </appui:Avatar>
+                <ui:VisualElement name="TopicInfo" class="topic-entry-info">
+                    <appui:Text name="TopicEntryAuthor" size="M" class="topic-entry-author" text="Unknown"/>
+                    <appui:Text name="TopicEntryDate" size="XS" class="topic-entry-date" text="Not available"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <appui:Text name="TopicEntryTitle" size="L" class="topic-entry-title"/>
+            <appui:Text name="TopicEntryDescription" size="S" class="topic-entry-description"/>
+            <appui:Text name="TopicEntryReply" size="XS" text="@Annotation:Reply" class="topic-entry-reply"/>
+        </ui:VisualElement>
+        <appui:Divider name="TopicEntryDivider" class="annotation-divider"/>
+        <appui:ActionButton name="TopicEntryOptionButton" tooltip="@Annotation:Options" icon="ellipsis" quiet="true" class="topic-entry-option-button"/>
+    </ui:VisualElement>
+</ui:UXML>

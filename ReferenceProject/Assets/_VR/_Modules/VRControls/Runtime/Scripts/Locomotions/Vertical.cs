@@ -2,15 +2,11 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.XR.Interaction.Toolkit;
 
 namespace Unity.ReferenceProject.VR.VRControls
 {
-    public class Vertical : LocomotionProvider
+    public class Vertical : BaseLocomotionProvider
     {
-        [SerializeField]
-        InputActionReference m_Up;
-
         [SerializeField]
         InputActionReference m_Down;
 
@@ -30,33 +26,28 @@ namespace Unity.ReferenceProject.VR.VRControls
 
         protected override void Awake()
         {
-            base.Awake();
-
-            m_UpAction = m_Up.action;
             m_DownAction = m_Down.action;
-            m_UpAction.started += OnStarted;
+            base.Awake();
+            m_UpAction = m_InputAction;
+        }
+
+        protected override void InitializeInputs()
+        {
+            base.InitializeInputs();
+
+            m_DownAction.Enable();
             m_DownAction.started += OnStarted;
         }
 
-        void OnEnable()
+        protected override void ResetInputs()
         {
-            m_UpAction.Enable();
-            m_DownAction.Enable();
-        }
+            base.ResetInputs();
 
-        void OnDisable()
-        {
-            m_UpAction.Disable();
             m_DownAction.Disable();
-        }
-
-        void OnDestroy()
-        {
-            m_UpAction.started -= OnStarted;
             m_DownAction.started -= OnStarted;
         }
 
-        void OnStarted(InputAction.CallbackContext obj)
+        protected override void OnStarted(InputAction.CallbackContext callbackContext)
         {
             if (m_Coroutine == null)
             {
@@ -100,6 +91,7 @@ namespace Unity.ReferenceProject.VR.VRControls
 
                 yield return null;
             }
+
             m_Coroutine = null;
         }
     }

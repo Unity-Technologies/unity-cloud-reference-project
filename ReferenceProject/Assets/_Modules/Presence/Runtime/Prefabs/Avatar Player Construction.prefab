@@ -409,6 +409,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Model: {fileID: 6897221552046751}
   m_Tag: {fileID: 5750006982813594690}
+  m_AvatarColorPalette: {fileID: 11400000, guid: d738ddede4da5a24ca3103d68f0f7718,
+    type: 2}
+  m_LoadingString: '@Presence:Loading_Name'
 --- !u!1 &1156183410588532741
 GameObject:
   m_ObjectHideFlags: 0
@@ -902,6 +905,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 32
+  maxDistance: 1000
 --- !u!114 &5750006982813594690
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -920,6 +924,7 @@ MonoBehaviour:
   m_NameContainerElement: avatar-tag-name-container
   m_HeaderElement: avatar-tag-name
   m_AvatarBadgeElement: avatar-tag-badge
+  m_AvatarBadgeTextElement: avatar-tag-badge-text
 --- !u!1 &7347079854011156092
 GameObject:
   m_ObjectHideFlags: 0

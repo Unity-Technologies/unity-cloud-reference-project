@@ -14,12 +14,12 @@ The Unity Reference Project is a fully functional collaborative design review to
 
 To connect and find support, join the [Unity forum](https://forum.unity.com/forums/unity-cloud.868/).
 
-### Supported platforms and files
+### Supported platforms
 
-The Unity Reference Project is compatible with the [latest Unity Long Term Support](https://unity.com/releases/2021-lts) (LTS)  and tested on the following platforms:
+The Unity Reference Project is currently compatible with [Unity Editor 2021.3.15f1](https://unity.com/releases/editor/qa/lts-releases?version=2021.3) (LTS) and will occassionally be updated to support newer versions. Builds are tested on the following platforms:
 
 - Windows
-- MacOS
+- MacOS (Intel and Apple Silicon)
 - iOS
 - Android
 - WebGL
@@ -30,9 +30,10 @@ The Unity Reference Project is compatible with the [latest Unity Long Term Suppo
 - [Unity Reference Project](#unity-reference-project)
   - [A Unity project for building a collaborative 3D design review tool](#a-unity-project-for-building-a-collaborative-3d-design-review-tool)
   - [Get support](#get-support)
-    - [Supported platforms and files](#supported-platforms-and-files)
+    - [Supported platforms and files](#supported-platforms)
   - [Contents](#contents)
   - [Overview](#overview)
+  - [Prerequisites](#prerequisites)
   - [Get the project](#get-the-project)
   - [Configure Unity services](#configure-unity-services)
     - [Sign into your Unity account](#sign-into-your-unity-account)
@@ -67,8 +68,17 @@ It also leverages Unity services that make it easier to:
 - Authenticate with your Unity account.
 - List and select an asset from cloud storage.
 - Stream a large 3D asset from cloud storage (vast support for 3D formats).
-- Collaborate online with voice chat and user avatars.
+- Online multiplayer collaboration.
 - Share a deep-link to an asset for others to view.
+
+## Prerequisites
+
+### MacOS
+
+To open this Unity project on MacOS, you must have the Xcode commnand line tools installed. 
+
+1. Open the `Terminal` app on MacOS
+2. Enter the following command `xcode-select --install`
 
 ## Get the project
 
@@ -79,6 +89,8 @@ It also leverages Unity services that make it easier to:
 Configuring Unity services typically involves signing into your Unity account and registering your application.
 
 ### Sign into your Unity account
+
+> **Important**: The packages used in this project currently point to services hosted on GCP. When you sign in, ensure the toggle next to the `Sign In` button says `Using GCP`. This will change in an upcoming release that uses newer packages pointing to Azure.
 
 * To sign in, go to the [Asset Manager](https://dashboard.unity3d.com/digital-twins/).
 

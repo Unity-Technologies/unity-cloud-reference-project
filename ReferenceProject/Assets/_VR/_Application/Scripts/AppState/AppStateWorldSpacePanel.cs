@@ -27,9 +27,9 @@ namespace Unity.ReferenceProject.VR
         {
             var dockedPanel = m_PanelManager.CreatePanel<DockedPanelController>(PanelSize);
             dockedPanel.name = PanelName;
-            dockedPanel.WorldSpaceUIToolkit.OnPanelBuilt += OnPanelBuilt;
             dockedPanel.DockPoint = m_RigUIController.DockPoint;
             dockedPanel.transform.localPosition += (PanelSize.y / 2f) / 1000f * Vector3.up + 0.01f * Vector3.forward;
+            OnPanelBuilt(dockedPanel.UIDocument);
             m_Panel = dockedPanel;
         }
 

@@ -1,7 +1,7 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="UnityEngine.Dt.App.UI" xmlns:refui="Unity.ReferenceProject.UITableListView">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI" xmlns:refui="Unity.ReferenceProject.UITableListView">
     <ui:VisualElement class="appui scene-container">
         <ui:VisualElement class="ve-project-title flex-gap no-shrink">
-            <appui:Header text="@SceneList:Project" name="projectTitle-label" class="project-title-label" />
+            <appui:Heading text="@SceneList:Project" name="projectTitle-label" class="project-title-label" />
             <appui:SearchBar size="M" name="search-input" placeholder="Enter a text..." class="search-input" />
             <appui:ActionButton icon="funnel-simple" accent="true" name="button-filters" class="project-list-filter-button-margin" />
             <appui:Button name="refresh-button" leading-icon="arrows-clockwise" />

@@ -2,7 +2,7 @@
 using System.Linq;
 using Unity.ReferenceProject.Presence;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.UIElements;
 
 namespace Unity.ReferenceProject.AccessHistory
@@ -33,8 +33,8 @@ namespace Unity.ReferenceProject.AccessHistory
             {
                 var accessElementTemplate = AccessElementTemplate.Instantiate();
 
-                accessElementTemplate.Q<Header>("project-name").text = id.ToString();
-                accessElementTemplate.Q<Header>("workspace-name").text = id.ToString();
+                accessElementTemplate.Q<Heading>("project-name").text = id.ToString();
+                accessElementTemplate.Q<Heading>("workspace-name").text = id.ToString();
 
                 container.Add(accessElementTemplate);
             }

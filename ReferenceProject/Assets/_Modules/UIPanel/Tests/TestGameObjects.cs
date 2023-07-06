@@ -38,7 +38,7 @@ namespace Unity.ReferenceProject.UIPanel.Tests
                 m_Root = new GameObject("Test Root");
             }
 
-            var mainUIPanel = MainUIPanel.CreateInstance(panelSettings);
+            var mainUIPanel = new MainUIPanel(panelSettings);
             var uiDocument = mainUIPanel.UIDocument;
             uiDocument.transform.parent = m_Root.transform;
             return mainUIPanel;

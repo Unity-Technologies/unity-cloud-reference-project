@@ -1,3 +1,4 @@
+using System;
 using Unity.Cloud.Common;
 using Unity.ReferenceProject.Messaging;
 using Unity.ReferenceProject.StateMachine;
@@ -7,6 +8,12 @@ using Zenject;
 
 namespace Unity.ReferenceProject.DeepLinking
 {
+    public class DeepLinkCameraInfo
+    {
+        public bool SetDeepLinkCamera { get; set; }
+        public Action SetCameraReady { get; set; }
+    }
+    
     public class DeepLinkingConsumer : MonoBehaviour
     {
         [SerializeField] AppState m_NextState;
@@ -32,13 +39,13 @@ namespace Unity.ReferenceProject.DeepLinking
             m_AppMessaging = appMessaging;
         }
 
-        void OnDeepLinkConsumed(IScene scene)
+        void OnDeepLinkConsumed(IScene scene, bool hasNewSceneState)
         {
             var activeScene = m_ActiveScene.GetValue();
 
             var isOpeningNewScene = activeScene == null || !activeScene.Id.Equals(scene.Id);
-
-            if (isOpeningNewScene)
+            
+            if (isOpeningNewScene || hasNewSceneState)
             {
                 m_AppMessaging.ShowMessage(m_OpenLinkSuccessString, false, scene.Name);
                 m_AppStateController.PrepareTransition(m_NextState).OnBeforeEnter(() => m_ActiveScene.SetValue(scene)).Apply();

@@ -2,6 +2,11 @@
 
 namespace Unity.ReferenceProject.UIPanel
 {
+    public partial interface IMainUIPanel
+    {
+        string Theme { get; set; }
+    }
+
     public partial class MainUIPanel
     {
         public string Theme

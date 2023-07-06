@@ -10,7 +10,7 @@ namespace Unity.ReferenceProject.Settings
         bool IsDirty { get; }
         VisualElement CreateVisualTree();
         void RefreshSettingsEnableState();
-        void AddSetting(ISetting setting);
+        void AddSetting(ISetting setting, uint order = 0);
         void RemoveSetting(ISetting setting);
     }
 
@@ -30,13 +30,20 @@ namespace Unity.ReferenceProject.Settings
     [Serializable]
     public class GlobalSettings : IGlobalSettings
     {
+        [Serializable]
+        struct SettingEntry
+        {
+            public VisualElement Element;
+            public uint Order;
+        }
+
         VisualElement m_RootVisualElement;
-        Dictionary<ISetting, VisualElement> m_Settings = new();
+        Dictionary<ISetting, SettingEntry> m_Settings = new();
         public bool IsDirty { get; private set; }
 
-        public void AddSetting(ISetting setting)
+        public void AddSetting(ISetting setting, uint order = 0)
         {
-            m_Settings.Add(setting, null);
+            m_Settings.Add(setting, new SettingEntry{ Element = null, Order = order });
             IsDirty = true;
         }
 
@@ -64,13 +71,16 @@ namespace Unity.ReferenceProject.Settings
                 m_RootVisualElement.Clear();
             }
 
-            foreach (var setting in m_Settings.Keys.ToArray())
+            var settings = m_Settings.Keys.OrderByDescending(s => m_Settings[s].Order);
+            foreach (var setting in settings)
             {
                 var element = setting.CreateVisualTree();
                 element.AddToClassList(GlobalSettingsStyleClasses.EntryStyle);
                 m_RootVisualElement.Add(element);
 
-                m_Settings[setting] = element;
+                var settingEntryCopy = m_Settings[setting];
+                settingEntryCopy.Element = element;
+                m_Settings[setting] = settingEntryCopy;
             }
 
             return m_RootVisualElement;
@@ -80,7 +90,7 @@ namespace Unity.ReferenceProject.Settings
         {
             foreach (var setting in m_Settings)
             {
-                setting.Value?.SetEnabled(setting.Key.IsEnabled);
+                setting.Value.Element?.SetEnabled(setting.Key.IsEnabled);
             }
         }
     }

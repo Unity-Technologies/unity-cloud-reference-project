@@ -79,8 +79,8 @@ namespace Unity.ReferenceProject
 
             if (state == AuthenticationState.LoggedIn)
             {
-                var sceneStreamingInfo = FindObjectOfType<SwitchFlag>();
-                if (sceneStreamingInfo != null)
+                var switchFlag = FindObjectOfType<SwitchFlag>();
+                if (switchFlag != null)
                 {
                     AppStateController.PrepareTransition(m_SwitchFlagFoundState).Apply();
                 }

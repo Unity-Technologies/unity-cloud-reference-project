@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using Zenject;
@@ -14,10 +14,10 @@ namespace Unity.ReferenceProject.VR.RigUI
         public Transform DockPoint { get; }
         public Transform PermanentDockPoint { get; }
         public void InitMainBar(List<ActionButton> buttons);
-        public void ClearMainBar(bool clearPanel = true);
+        public void ClearMainBar();
         public void AddSecondaryBar(List<ActionButton> buttons);
         public void ClearSecondaryBar();
-        public PanelController DockButtonClicked(PanelController panelController, Transform dockPoint, Vector3 offset, WorldSpaceUIToolkit.WorldSpaceUIToolkit.InitializeDocument onPanelBuilt = null);
+        public PanelController DockButtonClicked(PanelController panelController, Transform dockPoint, Vector3 offset);
     }
 
     public class RigUIController : MonoBehaviour, IRigUIController
@@ -56,6 +56,7 @@ namespace Unity.ReferenceProject.VR.RigUI
         int m_MaxSecondaryBarButton;
         List<ActionButton> m_MainBarButtons;
         List<ActionButton> m_SecondaryBarButtons;
+        readonly List<FloatingPanelController> m_FloatingPanels = new();
 
         public Transform DockPoint => m_DockPoint;
         public Transform PermanentDockPoint => m_PermanentDockPoint;
@@ -115,12 +116,12 @@ namespace Unity.ReferenceProject.VR.RigUI
 
             // Create main bar panel
             m_RigUIBarPanel = m_PanelManager.CreatePanel<FloatingPanelController>(new Vector2(nbButton * m_ButtonSize, m_ButtonSize * 2));
-            m_RigUIBarPanel.WorldSpaceUIToolkit.OnPanelBuilt += OnPanelBuilt;
+            OnPanelBuilt(m_RigUIBarPanel.UIDocument);
 
             MoveAtPosition(m_LastResetPosition);
         }
 
-        public void ClearMainBar(bool clearPanel = true)
+        public void ClearMainBar()
         {
             if (m_RigUIBarPanel != null)
             {
@@ -132,16 +133,26 @@ namespace Unity.ReferenceProject.VR.RigUI
 
                 m_DockPoint.transform.SetParent(transform, true);
 
-                if (clearPanel)
+                foreach (Transform child in m_DockPoint)
                 {
-                    foreach (Transform child in m_DockPoint)
+                    var panelController = child.GetComponent<PanelController>();
+                    if (panelController != null)
+                    {
+                        m_PanelManager.DestroyPanel(panelController);
+                    }
+                    else
                     {
                         Destroy(child.gameObject);
                     }
                 }
 
+                foreach (var floatingPanel in m_FloatingPanels)
+                {
+                    m_PanelManager.DestroyPanel(floatingPanel);
+                }
+
                 m_PermanentDockPoint.transform.SetParent(transform, true);
-                Destroy(m_RigUIBarPanel.gameObject);
+                m_PanelManager.DestroyPanel(m_RigUIBarPanel);
             }
         }
 
@@ -156,7 +167,7 @@ namespace Unity.ReferenceProject.VR.RigUI
                     m_LastResetPosition = m_RigUIBarPanel.transform.localPosition;
                     m_DockPoint.transform.SetParent(transform, true);
                     m_PermanentDockPoint.transform.SetParent(transform, true);
-                    DestroyImmediate(m_RigUIBarPanel.gameObject);
+                    m_PanelManager.DestroyPanel(m_RigUIBarPanel);
                 }
 
                 if (m_MainBarButtons != null)
@@ -198,13 +209,14 @@ namespace Unity.ReferenceProject.VR.RigUI
             ResetDockPointPosition();
         }
 
-        public PanelController DockButtonClicked(PanelController panelController, Transform dockPoint, Vector3 offset, WorldSpaceUIToolkit.WorldSpaceUIToolkit.InitializeDocument onPanelBuilt = null)
+        public PanelController DockButtonClicked(PanelController panelController, Transform dockPoint, Vector3 offset)
         {
             PanelController newPanelController;
-            if (panelController is FloatingPanelController)
+            if (panelController is FloatingPanelController floatingPanel)
             {
+                m_FloatingPanels.Remove(floatingPanel);
+
                 var dockedPanel = m_PanelManager.SwapPanelType<DockedPanelController>(panelController);
-                dockedPanel.WorldSpaceUIToolkit.OnPanelBuilt += onPanelBuilt;
                 dockedPanel.DockPoint = dockPoint;
                 dockedPanel.transform.localPosition = offset;
 
@@ -212,14 +224,14 @@ namespace Unity.ReferenceProject.VR.RigUI
             }
             else
             {
-                var floatingPanel = m_PanelManager.SwapPanelType<FloatingPanelController>(panelController);
-                floatingPanel.WorldSpaceUIToolkit.OnPanelBuilt += onPanelBuilt;
+                floatingPanel = m_PanelManager.SwapPanelType<FloatingPanelController>(panelController);
                 floatingPanel.transform.position = dockPoint.position +
                     offset.x * dockPoint.right +
                     offset.y * dockPoint.up +
                     offset.z * dockPoint.forward;
 
                 newPanelController = floatingPanel;
+                m_FloatingPanels.Add(floatingPanel);
             }
 
             return newPanelController;

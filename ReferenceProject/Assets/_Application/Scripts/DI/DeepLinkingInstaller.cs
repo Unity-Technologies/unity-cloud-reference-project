@@ -9,6 +9,9 @@ namespace Unity.ReferenceProject
         public override void InstallBindings()
         {
             Container.Bind<IDeepLinkingController>().To<DeepLinkingController>().AsSingle();
+
+            var deepLinkCameraBool = new DeepLinkCameraInfo();
+            Container.Bind<DeepLinkCameraInfo>().FromInstance(deepLinkCameraBool).AsSingle();
         }
     }
 }

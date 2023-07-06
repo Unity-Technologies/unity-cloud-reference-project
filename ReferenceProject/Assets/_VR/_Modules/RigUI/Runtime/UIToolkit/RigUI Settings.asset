@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 19101, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: RigUI Settings
   m_EditorClassIdentifier: 
-  themeUss: {fileID: -4733365628477956816, guid: 142cdcf275c7d064f8b7e5d7a232a64a,
+  themeUss: {fileID: -4733365628477956816, guid: c349eabe70c35de459893224d0319aff,
     type: 3}
-  m_TargetTexture: {fileID: 0}
-  m_ScaleMode: 1
+  m_TargetTexture: {fileID: 8400000, guid: 21dd6aa5d43358f4cbb4e4a5488bedd8, type: 2}
+  m_ScaleMode: 0
   m_Scale: 1
   m_ReferenceDpi: 96
   m_FallbackDpi: 96
@@ -25,11 +25,11 @@ MonoBehaviour:
   m_SortingOrder: 0
   m_TargetDisplay: 0
   m_ClearDepthStencil: 1
-  m_ClearColor: 0
+  m_ClearColor: 1
   m_ColorClearValue: {r: 0, g: 0, b: 0, a: 0}
   m_DynamicAtlasSettings:
     m_MinAtlasSize: 64
-    m_MaxAtlasSize: 4096
+    m_MaxAtlasSize: 2048
     m_MaxSubTextureSize: 64
     m_ActiveFilters: 31
   m_AtlasBlitShader: {fileID: 9101, guid: 0000000000000000f000000000000000, type: 0}

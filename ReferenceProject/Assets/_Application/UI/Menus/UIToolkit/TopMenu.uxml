@@ -1,4 +1,4 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" appui="UnityEngine.Dt.App.UI" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" appui="Unity.AppUI.UI" editor-extension-mode="False">
     <Style src="project://database/Assets/_Application/UI/Tools/TopMenuStyle.uss?fileID=7433441132597879392&amp;guid=2622e5982d5820041b6c135bcf46f03a&amp;type=3#TopMenuStyle" />
     <ui:VisualElement name="top-menu" picking-mode="Ignore" class="top-menu">
         <ui:VisualElement name="top-menu-left" class="top-menu-left" />

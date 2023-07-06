@@ -1,4 +1,4 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" appui="UnityEngine.Dt.App.UI" xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui:UXML xmlns:ui="UnityEngine.UIElements" appui="Unity.AppUI.UI" xsi="http://www.w3.org/2001/XMLSchema-instance"
          editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd"
          editor-extension-mode="False">
     <Style src="project://database/Assets/_Application/UI/Background/UIToolkit/BackgroundStyle.uss?fileID=7433441132597879392&amp;guid=050cb29dde6f1b74b8e2d02524f7ca45&amp;type=3#BackgroundStyle" />

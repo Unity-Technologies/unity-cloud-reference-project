@@ -1,9 +1,9 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="UnityEngine.Dt.App.UI" >
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI" >
     <Style src="project://database/Assets/_Modules/Instructions/UIToolkit/InstructionsPanelStyle.uss?fileID=7433441132597879392&amp;guid=6596ca5ab1fe1cc4685289efc19d0658&amp;type=3#InstructionsPanelStyle" />
     <ui:VisualElement name="Container" class="panel-instruction">
         <appui:Button focusable="false" name="Button-close" size="S" leading-icon="x" preferred-tooltip-placement="Left" style="position: absolute; right: 5px; top: 5px;" />
         <appui:ActionButton name="Button-dock" size="S" icon="draghandle" preferred-tooltip-placement="Left" style="position: absolute; right: 32px; top: 5px;" />
-        <appui:Text text="Header" size="M" name="Text-header" picking-mode="Ignore" style="flex-grow: 1; flex-shrink: 1;" />
+        <appui:Text text="Heading" size="M" name="Text-header" picking-mode="Ignore" style="flex-grow: 1; flex-shrink: 1;" />
         <appui:Divider spacing="S" />
         <appui:Divider name="Divider_empty" spacing="S" class="divider--empty" style="display: flex;" />
         <ui:VisualElement name="Instructions-container" picking-mode="Ignore" />

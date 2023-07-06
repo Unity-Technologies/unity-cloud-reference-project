@@ -5,9 +5,9 @@ using UnityEngine;
 using Unity.ReferenceProject.DataStores;
 using UnityEngine.UIElements;
 using Unity.ReferenceProject.Tools;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using Zenject;
-using TextField = UnityEngine.Dt.App.UI.TextField;
+using TextField = Unity.AppUI.UI.TextField;
 
 namespace Unity.ReferenceProject.DeepLinking
 {
@@ -34,9 +34,16 @@ namespace Unity.ReferenceProject.DeepLinking
         public void Setup(IDeepLinkingController deepLinkingController, PropertyValue<IScene> sceneListStore, IAppMessaging appMessaging, IClipboard clipboard)
         {
             m_DeepLinkingController = deepLinkingController;
+            deepLinkingController.LinkConsumptionFailed += OnLinkConsumptionFailed;
             m_ActiveScene = sceneListStore;
             m_AppMessaging = appMessaging;
             m_Clipboard = clipboard;
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            m_DeepLinkingController?.Dispose();
         }
 
         protected override VisualElement CreateVisualTree(VisualTreeAsset template)
@@ -66,11 +73,6 @@ namespace Unity.ReferenceProject.DeepLinking
             return root;
         }
 
-        void OnDestroy()
-        {
-            m_DeepLinkingController?.Dispose();
-        }
-
         async void OnShareLinkClicked()
         {
             try
@@ -93,17 +95,15 @@ namespace Unity.ReferenceProject.DeepLinking
 
         async void OnOpenUrlClicked()
         {
-            try
+            if (!await m_DeepLinkingController.TryConsumeUri(m_UrlTextField.value))
             {
-                if (!await m_DeepLinkingController.TryConsumeUri(m_UrlTextField.value))
-                {
-                    m_AppMessaging.ShowError("@DeepLinking:OpenLinkFail", true);
-                }
+                m_AppMessaging.ShowError("@DeepLinking:OpenLinkFail", true);
             }
-            catch (Exception ex)
-            {
-                m_AppMessaging.ShowException(ex, "@DeepLinking:OpenLinkFail");
-            }
+        }
+        
+        void OnLinkConsumptionFailed(Exception ex)
+        {
+            m_AppMessaging.ShowException(ex, "@DeepLinking:OpenLinkFail");
         }
     }
 }

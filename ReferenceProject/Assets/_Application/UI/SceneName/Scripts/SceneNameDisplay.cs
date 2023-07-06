@@ -2,7 +2,7 @@
 using Unity.Cloud.Common;
 using Unity.ReferenceProject.DataStreaming;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.UIElements;
 using Zenject;
 
@@ -18,7 +18,7 @@ namespace Unity.ReferenceProject
         [SerializeField]
         string m_HeaderElement = "header";
 
-        Header m_Header;
+        Heading m_Header;
 
         ISceneEvents m_SceneEvents;
 
@@ -30,7 +30,7 @@ namespace Unity.ReferenceProject
 
         void Awake()
         {
-            m_Header = m_SourceUIDocument.rootVisualElement.Q<Header>(m_HeaderElement);
+            m_Header = m_SourceUIDocument.rootVisualElement.Q<Heading>(m_HeaderElement);
         }
 
         void OnEnable()

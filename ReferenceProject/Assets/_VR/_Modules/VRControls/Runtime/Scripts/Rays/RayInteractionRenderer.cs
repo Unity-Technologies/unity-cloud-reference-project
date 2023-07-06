@@ -1,6 +1,6 @@
 ﻿using System;
+using Unity.ReferenceProject.Common;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 
 namespace Unity.ReferenceProject.VR.VRControls
@@ -22,6 +22,15 @@ namespace Unity.ReferenceProject.VR.VRControls
         [SerializeField, Tooltip("The default length of the ray interaction line.")]
         protected float m_DefaultLineLength = 5f;
 
+        [SerializeField, Tooltip("If enabled, the ray interaction endpoint will attempt to snap to Ray Interaction Snapping Controller components on the collider is hit.")]
+        bool m_SnapEndpointIfAvailable;
+
+        [SerializeField, Tooltip("Whether visuals should be hidden while the target interactor is snapped to an interactable.")]
+        bool m_HideIfSnapping;
+
+        [SerializeField]
+        LayerMask m_LayerMask;
+
         /// <summary>
         ///     An event that is fired when the renderer changes visibility. The boolean value is true when shown, and false when
         ///     hidden.
@@ -30,12 +39,14 @@ namespace Unity.ReferenceProject.VR.VRControls
 
         Vector3 m_CurrentHitNormal;
         Vector3 m_CurrentHitOrSelectPoint;
-
         float m_CurrentRayLength;
         bool m_Hovering;
         Vector3[] m_LinePoints = new Vector3[2];
         Vector3 m_ObjectLocalSelectPoint;
         Transform m_SelectedObjectTransform;
+        bool m_Snapping;
+        Collider m_PreviousCollider;
+        RayInteractionSnappingController m_InteractionSnappingController;
 
         /// <summary>
         ///     The ray interactor that is used when updating visuals.
@@ -162,19 +173,16 @@ namespace Unity.ReferenceProject.VR.VRControls
 
         bool UpdateCurrentHitInfo(Transform rayOrigin)
         {
+            Collider hitCollider = null;
+            m_Snapping = false;
             var startPoint = rayOrigin.position;
+
             // Get Hit Info
-            if (RayInteractor.TryGetHitInfo(out m_CurrentHitOrSelectPoint, out m_CurrentHitNormal, out _, out var isValidTarget))
+            if (RayInteractor.TryGetHitInfo(out m_CurrentHitOrSelectPoint, out m_CurrentHitNormal, out _, out var isValidTarget) &&
+                m_CurrentHitNormal != Vector3.zero)
             {
                 CurrentRayLength = Vector3.Distance(m_CurrentHitOrSelectPoint, startPoint);
-                if (!isValidTarget
-                    && RayInteractor.TryGetCurrentRaycast(out var raycastHit, out var raycastHitIndex, out var uiRaycastHit, out var uiRaycastHitIndex, out var isUIHitClosest)
-                    && raycastHit.HasValue
-                    && raycastHit.Value.transform != null
-                    && raycastHit.Value.transform.gameObject.layer == LayerMask.NameToLayer("UI"))
-                {
-                    isValidTarget = true;
-                }
+                CheckUIHit(ref hitCollider, ref isValidTarget);
             }
             else
             {
@@ -185,7 +193,47 @@ namespace Unity.ReferenceProject.VR.VRControls
                 m_CurrentHitOrSelectPoint = startPoint + rayDirection * CurrentRayLength;
             }
 
+            if (hitCollider == null)
+            {
+                m_InteractionSnappingController = null;
+            }
+
+            m_PreviousCollider = hitCollider;
+
             return isValidTarget;
+        }
+
+        void CheckUIHit(ref Collider hitCollider, ref bool isValidTarget)
+        {
+            if (RayInteractor.TryGetCurrent3DRaycastHit(out var raycastHit)
+                && raycastHit.transform != null
+                && Utils.IsInLayerMask(m_LayerMask, raycastHit.transform.gameObject.layer))
+            {
+                if(!isValidTarget)
+                {
+                    isValidTarget = true;
+                }
+                else if (m_SnapEndpointIfAvailable)
+                {
+                    hitCollider = raycastHit.collider;
+                    CheckSnapPoint(hitCollider);
+                }
+            }
+        }
+
+        void CheckSnapPoint(Collider hitCollider)
+        {
+            if (hitCollider != m_PreviousCollider && hitCollider != null)
+            {
+                m_InteractionSnappingController = hitCollider.GetComponentInChildren<RayInteractionSnappingController>();
+            }
+
+            if (m_InteractionSnappingController != null)
+            {
+                var snappedEndpoint = m_InteractionSnappingController.ClosestPoint(m_CurrentHitOrSelectPoint, ref m_CurrentHitNormal);
+                m_CurrentHitOrSelectPoint = snappedEndpoint;
+                m_Snapping = true;
+            }
         }
 
         /// <summary>
@@ -216,6 +264,9 @@ namespace Unity.ReferenceProject.VR.VRControls
 
             if (m_HideIfNotHovering)
                 hide = !m_Hovering;
+
+            if (m_HideIfSnapping)
+                hide = hide || m_Snapping;
 
             Show(!hide);
         }

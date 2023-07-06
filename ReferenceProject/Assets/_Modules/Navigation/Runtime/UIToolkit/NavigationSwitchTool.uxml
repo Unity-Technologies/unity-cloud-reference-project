@@ -1,3 +1,4 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" appui="UnityEngine.Dt.App.UI" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" appui="Unity.AppUI.UI" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Modules/Navigation/Runtime/UIToolkit/NavigationSwitchToolStyle.uss?fileID=7433441132597879392&amp;guid=03f8d9bca30ca3b459dda98f3d08338b&amp;type=3#NavigationSwitchToolStyle" />
     <ui:VisualElement name="panel-content" />
 </ui:UXML>

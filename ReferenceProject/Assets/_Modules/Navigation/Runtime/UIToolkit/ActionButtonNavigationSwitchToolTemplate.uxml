@@ -1,0 +1,3 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.AppUI.UI" editor-extension-mode="False">
+    <appui:ActionButton name="ActionButton" icon="notnull" quiet="true" class="unity-action-button, navigation-switch-tool-button" />
+</ui:UXML>

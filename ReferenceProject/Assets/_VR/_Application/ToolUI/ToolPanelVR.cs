@@ -1,14 +1,14 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.UIElements;
-using Button = UnityEngine.Dt.App.UI.Button;
+using Button = Unity.AppUI.UI.Button;
 
 namespace Unity.ReferenceProject.VR
 {
     public class ToolPanelVR : VisualElement
     {
-        readonly Header m_Title;
+        readonly Heading m_Title;
         readonly Image m_Icon;
         readonly VisualElement m_Header;
         readonly Divider m_Divider;
@@ -28,7 +28,7 @@ namespace Unity.ReferenceProject.VR
             m_Icon.AddToClassList("tool-panel-icon");
             m_Header.Add(m_Icon);
 
-            m_Title = new Header { name = "title" };
+            m_Title = new Heading { name = "title" };
             m_Title.AddToClassList("tool-panel-title");
             m_Header.Add(m_Title);
 

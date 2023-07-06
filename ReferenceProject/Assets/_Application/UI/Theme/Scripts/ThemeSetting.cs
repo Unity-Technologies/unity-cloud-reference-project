@@ -13,17 +13,22 @@ namespace Unity.ReferenceProject
         [SerializeField]
         protected List<string> m_ThemeIds;
 
+        [SerializeField]
+        uint m_Order;
+
         readonly string k_ThemePrefKey = "ReferenceProject-Theme";
 
         protected string m_CurrentTheme;
 
         DropdownSettings m_DropdownSettings;
         IGlobalSettings m_GlobalSettings;
+        IMainUIPanel m_MainUIPanel;
 
         [Inject]
-        void Setup(IGlobalSettings settings)
+        void Setup(IGlobalSettings settings, IMainUIPanel mainUIPanel)
         {
             m_GlobalSettings = settings;
+            m_MainUIPanel = mainUIPanel;
         }
 
         void Awake()
@@ -41,7 +46,7 @@ namespace Unity.ReferenceProject
         {
             if (m_GlobalSettings != null)
             {
-                m_GlobalSettings.AddSetting(m_DropdownSettings);
+                m_GlobalSettings.AddSetting(m_DropdownSettings, m_Order);
             }
         }
 
@@ -53,7 +58,7 @@ namespace Unity.ReferenceProject
 
         protected virtual void UpdateTheme()
         {
-            MainUIPanel.Instance.Theme = m_CurrentTheme;
+            m_MainUIPanel.Theme = m_CurrentTheme;
         }
 
         void OnSettingChanged(int index)

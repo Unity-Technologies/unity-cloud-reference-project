@@ -1,10 +1,10 @@
 ﻿using System;
 using Unity.ReferenceProject.InputDisabling;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.UIElements;
 using Zenject;
-using Button = UnityEngine.Dt.App.UI.Button;
+using Button = Unity.AppUI.UI.Button;
 
 namespace Unity.ReferenceProject.Instructions
 {

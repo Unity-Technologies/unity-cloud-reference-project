@@ -16,17 +16,16 @@ namespace Unity.ReferenceProject.UIInputBlocker
         [SerializeField]
         string m_BackgroundName;
 
-        [SerializeField]
         Camera m_Camera;
-
         IUIInputBlockerEventsDispatcher m_Dispatcher;
 
         InputSystemUIInputModule m_InputSystemUIInputModule;
 
         [Inject]
-        public void Setup(IUIInputBlockerEventsDispatcher dispatcher)
+        public void Setup(IUIInputBlockerEventsDispatcher dispatcher, Camera camera)
         {
             m_Dispatcher = dispatcher;
+            m_Camera = camera;
         }
 
         void OnEnable()
@@ -95,7 +94,14 @@ namespace Unity.ReferenceProject.UIInputBlocker
 
         bool ShouldRayBeDispatched(List<RaycastResult> results, Vector2 screenPosition)
         {
-            var panelEventHandler = results.Select<RaycastResult, PanelEventHandler>(x => x.gameObject.GetComponent<PanelEventHandler>()) as PanelEventHandler;
+            PanelEventHandler panelEventHandler = null;
+            foreach (var result in results)
+            {
+                panelEventHandler = result.gameObject.GetComponent<PanelEventHandler>();
+                if (panelEventHandler != null)
+                    break;
+            }
+
             //Nothing was hit, we should pass
             if (panelEventHandler == null)
             {
@@ -115,9 +121,7 @@ namespace Unity.ReferenceProject.UIInputBlocker
             }
 
             // We hit someting, so block ray
-
             return true;
-
         }
 
 

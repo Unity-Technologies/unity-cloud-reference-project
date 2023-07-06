@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.UIElements;
 
 namespace Unity.ReferenceProject.Tools
@@ -17,21 +17,16 @@ namespace Unity.ReferenceProject.Tools
         VisualTreeAsset m_Template;
 
         public event Action ToolOpened;
-
         public event Action ToolClosed;
-
         public event Action ToolPointerEntered;
-
         public event Action ToolPointerExited;
-
         public event Action ToolFocusIn;
-
         public event Action ToolFocusOut;
 
         Action m_CloseAction;
-        
+
         static readonly string k_ActionButtonIconUssClassName = "appui-actionbutton__icon";
-        
+
         VisualElement m_RootVisualElement;
 
         public string DisplayName
@@ -55,7 +50,7 @@ namespace Unity.ReferenceProject.Tools
             get => m_Template;
             set => m_Template = value;
         }
-
+        
         public VisualElement RootVisualElement
         {
             get { return m_RootVisualElement ??= CreateVisualTree(m_Template); }
@@ -67,11 +62,19 @@ namespace Unity.ReferenceProject.Tools
             ToolClosed += OnToolClosed;
         }
 
+        protected virtual void OnDestroy()
+        {
+            if (m_RootVisualElement != null)
+            {
+                UnregisterCallbacks(m_RootVisualElement);
+            }
+        }
+
         public void InvokeToolOpened()
         {
             ToolOpened?.Invoke();
         }
-        
+
         public void InvokeToolClosed()
         {
             ToolClosed?.Invoke();
@@ -81,18 +84,10 @@ namespace Unity.ReferenceProject.Tools
         {
             m_CloseAction = action;
         }
-        
+
         protected void CloseSelf()
         {
             m_CloseAction?.Invoke();
-        }
-
-        void OnDestroy()
-        {
-            if (m_RootVisualElement != null)
-            {
-                UnregisterCallbacks(m_RootVisualElement);
-            }
         }
 
         public event Action<Sprite> IconChanged;
@@ -155,14 +150,19 @@ namespace Unity.ReferenceProject.Tools
             ToolFocusOut?.Invoke();
         }
 
-        public virtual VisualElement GetIcon()
+        public virtual VisualElement GetButtonContent()
+        {
+            return GetIcon();
+        }
+
+        protected Icon GetIcon()
         {
             var icon = new Icon
             {
                 sprite = m_Icon,
                 size = IconSize.L
             };
-            
+
             icon.AddToClassList(k_ActionButtonIconUssClassName);
             return icon;
         }

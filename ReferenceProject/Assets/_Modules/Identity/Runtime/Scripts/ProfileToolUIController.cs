@@ -3,10 +3,10 @@ using Unity.Cloud.Identity;
 using Unity.ReferenceProject.StateMachine;
 using Unity.ReferenceProject.Tools;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.UIElements;
 using Zenject;
-using Button = UnityEngine.Dt.App.UI.Button;
+using Button = Unity.AppUI.UI.Button;
 
 namespace Unity.ReferenceProject.Identity
 {
@@ -27,7 +27,7 @@ namespace Unity.ReferenceProject.Identity
         IUrlRedirectionAuthenticator m_Authenticator;
         IUserInfoProvider m_UserInfoProvider;
        
-        Header m_UserName;
+        Heading m_UserName;
         Button m_Button;
 
         [Inject]
@@ -53,7 +53,7 @@ namespace Unity.ReferenceProject.Identity
         {
             var root = base.CreateVisualTree(template);
 
-            m_UserName = root.Q<Header>(m_UserNameHeaderElement);
+            m_UserName = root.Q<Heading>(m_UserNameHeaderElement);
             m_Button = root.Q<Button>(m_LogoutButtonElement);
             
             m_Button.clickable.clicked += Logout;

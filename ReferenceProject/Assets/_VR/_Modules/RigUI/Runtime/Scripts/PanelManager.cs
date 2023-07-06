@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.AppUI.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Zenject;
 
 namespace Unity.ReferenceProject.VR.RigUI
 {
@@ -13,12 +15,13 @@ namespace Unity.ReferenceProject.VR.RigUI
         public List<PanelController> Panels { get; }
         public void DestroyPanel(PanelController panel);
         public Action<PanelController> OnPanelCreated { get; set; }
+        public void BlockPanels(bool block=true);
     }
 
     public class PanelManager : MonoBehaviour, IPanelManager
     {
         [SerializeField]
-        List<PanelController> m_PanelPrefabs = new List<PanelController>();
+        List<PanelController> m_PanelPrefabs = new ();
 
         [SerializeField]
         VisualTreeAsset m_AppUIVisualTreeAsset;
@@ -32,13 +35,7 @@ namespace Unity.ReferenceProject.VR.RigUI
         [SerializeField]
         ThemeStyleSheet m_ThemeStyleSheet;
 
-        [SerializeField]
-        Material m_MaterialOpaque;
-
-        [SerializeField]
-        Material m_MaterialTransparent;
-
-        readonly List<PanelController> m_PanelControllers = new List<PanelController>();
+        readonly List<PanelController> m_PanelControllers = new ();
         public List<PanelController> Panels => m_PanelControllers;
 
         public Transform Root
@@ -48,6 +45,14 @@ namespace Unity.ReferenceProject.VR.RigUI
         }
 
         public Action<PanelController> OnPanelCreated { get; set; }
+
+        DiContainer m_DiContainer;
+
+        [Inject]
+        void Setup(DiContainer diContainer)
+        {
+            m_DiContainer = diContainer;
+        }
 
         void Awake()
         {
@@ -72,19 +77,17 @@ namespace Unity.ReferenceProject.VR.RigUI
                 return null;
             }
 
-            var panel = Instantiate(prefab, m_Root);
+            var panel = m_DiContainer.InstantiatePrefabForComponent<T>(prefab, m_Root);
             if (size.x > 0 && size.y > 0)
             {
-                panel.WorldSpaceUIToolkit.OpaqueMaterial = m_MaterialOpaque;
-                panel.WorldSpaceUIToolkit.TransparentMaterial = m_MaterialTransparent;
-                panel.WorldSpaceUIToolkit.PanelSettingsPrefab.themeStyleSheet = m_ThemeStyleSheet;
+                panel.UIDocument.panelSettings.themeStyleSheet = m_ThemeStyleSheet;
                 panel.XRCamera = m_Camera;
                 panel.PanelSize = size;
                 panel.VisualTreeAsset = visualTree;
             }
             else
             {
-                panel.WorldSpaceUIToolkit.gameObject.SetActive(false);
+                panel.UIDocument.gameObject.SetActive(false);
             }
 
             Panels.Add(panel);
@@ -104,7 +107,32 @@ namespace Unity.ReferenceProject.VR.RigUI
         public void DestroyPanel(PanelController panel)
         {
             Panels.Remove(panel);
-            DestroyImmediate(panel.gameObject);
+            Destroy(panel.gameObject);
+        }
+
+        public void BlockPanels(bool block=true)
+        {
+            foreach (var panel in Panels)
+            {
+                var appUIPanel = panel.Root.Q<Panel>();
+                var blocker = appUIPanel.popupContainer.Q("blocker");
+                if (block)
+                {
+                    // Check if a blocker already exists to avoid creating multiple blockers
+                    if (blocker == null)
+                    {
+                        blocker = new VisualElement { name = "blocker" };
+                        blocker.style.position = Position.Absolute;
+                        blocker.style.left = blocker.style.right = blocker.style.top = blocker.style.bottom = 0;
+                        blocker.style.backgroundColor = Color.clear;
+                        appUIPanel.popupContainer.Add(blocker);
+                    }
+                }
+                else if(blocker != null)
+                {
+                    appUIPanel.popupContainer.Remove(blocker);
+                }
+            }
         }
     }
 }

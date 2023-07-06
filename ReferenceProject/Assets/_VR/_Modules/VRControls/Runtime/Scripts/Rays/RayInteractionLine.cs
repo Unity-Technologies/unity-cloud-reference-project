@@ -57,8 +57,6 @@ namespace Unity.ReferenceProject.VR.VRControls
             }
         }
 
-
-
         /// <summary>
         ///     If enabled, the line will be hidden
         /// </summary>

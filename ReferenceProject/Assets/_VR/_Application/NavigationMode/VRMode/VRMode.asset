@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e4b2fa3fbaabad4f873f3111e66c5e1, type: 3}
   m_Name: VRMode
   m_EditorClassIdentifier: 
-  m_Icon: {fileID: 21300000, guid: 84af62780733dea4c9a22802d3910a8b, type: 3}
+  m_Icon: {fileID: 21300000, guid: 292d2de8b95c1e443a70838b1e31a0db, type: 3}
   m_ModeName: '@ReferenceProject:Navigation_VR'
   m_Prefab: {fileID: 6214698043464576906, guid: 24f63605469987045a66b4e8b5dd6ccc,
     type: 3}

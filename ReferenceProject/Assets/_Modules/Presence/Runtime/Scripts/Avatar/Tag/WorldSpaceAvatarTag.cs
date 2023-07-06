@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
+using Unity.ReferenceProject.Common;
 using UnityEngine.UIElements;
 using Zenject;
 
@@ -27,9 +28,13 @@ namespace Unity.ReferenceProject.Presence
         [SerializeField]
         string m_AvatarBadgeElement = "avatar-tag-badge";
 
+        [SerializeField]
+        string m_AvatarBadgeTextElement = "avatar-tag-badge-text";
+
         VisualElement m_NameContainer;
-        Header m_Header;
-        UnityEngine.Dt.App.UI.Avatar m_AvatarBadge;
+        Heading m_Header;
+        Unity.AppUI.UI.Avatar m_AvatarBadge;
+        Unity.AppUI.UI.Text m_AvatarInitials;
 
         Camera m_Camera;
         RenderTexture m_RenderTexture;
@@ -48,8 +53,9 @@ namespace Unity.ReferenceProject.Presence
 
             var root = m_UIDocument.rootVisualElement;
             m_NameContainer = root.Q<VisualElement>(m_NameContainerElement);
-            m_Header = root.Q<Header>(m_HeaderElement);
-            m_AvatarBadge = root.Q<UnityEngine.Dt.App.UI.Avatar>(m_AvatarBadgeElement);
+            m_Header = root.Q<Heading>(m_HeaderElement);
+            m_AvatarBadge = root.Q<Unity.AppUI.UI.Avatar>(m_AvatarBadgeElement);
+            m_AvatarInitials = root.Q<Unity.AppUI.UI.Text>(m_AvatarBadgeTextElement);
         }
 
         void SetupRenderTexture()
@@ -92,7 +98,7 @@ namespace Unity.ReferenceProject.Presence
         public override void SetName(string tagName)
         {
             m_Header.text = tagName;
-            m_AvatarBadge.text = AvatarUtils.GetInitials(tagName);
+            m_AvatarInitials.text = Utils.GetInitials(tagName);
         }
 
         public override void SetColor(Color color)

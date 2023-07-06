@@ -1,5 +1,5 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" appui="UnityEngine.Dt.App.UI" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" appui="Unity.AppUI.UI" editor-extension-mode="False">
     <Style src="project://database/Assets/_Application/UI/Tools/LeftMenuStyle.uss?fileID=7433441132597879392&amp;guid=361154be1b4a6954695cb20984480c49&amp;type=3#LeftMenuStyle" />
     <Style src="project://database/Assets/_Application/NavigationModeManager/Runtime/UIToolkit/NavigationSwitchMenuStyle.uss?fileID=7433441132597879392&amp;guid=71b14722242b4814698768ed0576e2b8&amp;type=3#NavigationSwitchMenuStyle" />
-    <UnityEngine.Dt.App.UI.ActionGroup name="toolbar" vertical="true" compact="true" picking-mode="Ignore" class="left-toolbar left-bottom-toolbar" style="bottom: 75px;" />
+    <Unity.AppUI.UI.ActionGroup name="toolbar" vertical="true" compact="true" picking-mode="Ignore" class="left-toolbar left-bottom-toolbar" style="bottom: 75px;" />
 </ui:UXML>

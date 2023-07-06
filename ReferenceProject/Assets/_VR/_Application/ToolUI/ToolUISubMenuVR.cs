@@ -7,7 +7,7 @@ namespace Unity.ReferenceProject.VR
     {
         IToolUIModeHandler m_OpenedTool;
 
-        public override void Activate(bool activate, bool clearPanel = true)
+        public override void Activate(bool activate)
         {
             if (activate)
             {

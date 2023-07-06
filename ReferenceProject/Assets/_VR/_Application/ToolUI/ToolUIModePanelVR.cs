@@ -4,7 +4,7 @@ using Unity.ReferenceProject.Tools;
 using Unity.ReferenceProject.VR.RigUI;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Panel = UnityEngine.Dt.App.UI.Panel;
+using Panel = Unity.AppUI.UI.Panel;
 
 namespace Unity.ReferenceProject.VR
 {
@@ -114,13 +114,11 @@ namespace Unity.ReferenceProject.VR
             else
             {
                 var dockedPanel = PanelManager.CreatePanel<DockedPanelController>(m_PanelSize);
-                dockedPanel.WorldSpaceUIToolkit.OnPanelBuilt += OnPanelBuilt;
-
                 var barTransform = RigUIController.DockPoint;
                 dockedPanel.DockPoint = barTransform;
                 dockedPanel.transform.localPosition = m_PanelPosition;
-
                 m_PanelController = dockedPanel;
+                OnPanelBuilt(dockedPanel.UIDocument);
             }
         }
 
@@ -148,7 +146,8 @@ namespace Unity.ReferenceProject.VR
 
         void OnDockButtonClicked()
         {
-            m_PanelController = RigUIController.DockButtonClicked(m_PanelController, RigUIController.DockPoint, m_PanelPosition, OnPanelBuilt);
+            m_PanelController = RigUIController.DockButtonClicked(m_PanelController, RigUIController.DockPoint, m_PanelPosition);
+            OnPanelBuilt(m_PanelController.UIDocument);
         }
     }
 }

@@ -3,11 +3,13 @@
     "rootNamespace": "Unity.ReferenceProject.VR.RigUI",
     "references": [
         "GUID:fe685ec1767f73d42b749ea8045bfe43",
-        "GUID:1b16f25e1f7d2f94189aa4145ad1d5d9",
         "GUID:75469ad4d38634e559750d17036d5f7c",
         "GUID:2f101f87087d58f4ba92ca00188e763d",
         "GUID:0d8beb7f090555447a6cf5ce9e54dbb4",
-        "GUID:e40ba710768534012815d3193fa296cb"
+        "GUID:e40ba710768534012815d3193fa296cb",
+        "GUID:87ae9fc85f4959c45847c74b00857548",
+        "GUID:807be9350277eff4182cd3600de41d3a",
+        "GUID:7e0d14980460abd439d6db881ce553fb"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

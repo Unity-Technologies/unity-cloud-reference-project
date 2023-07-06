@@ -11,5 +11,8 @@
 @import url("/Assets/_Modules/Metadata/Runtime/UIToolkit/MetadataDisplayStyle.uss");
 @import url("/Assets/_Modules/Instructions/Runtime/UIToolkit/InstructionsPanelStyle.uss");
 @import url("/Assets/_Modules/Presence/Runtime/UIToolkit/AvatarBadgeContainerStyle.uss");
+@import url("/Assets/_Modules/Annotation/Runtime/UIToolkit/AnnotationStyle.uss");
+@import url("/Assets/_Modules/Navigation/Runtime/Sprites/CustomAppUIIcon.uss");
+
 
 VisualElement {}

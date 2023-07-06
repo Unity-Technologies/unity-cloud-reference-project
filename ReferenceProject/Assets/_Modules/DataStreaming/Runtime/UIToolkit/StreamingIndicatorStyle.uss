@@ -1,0 +1,22 @@
+VisualElement {
+}
+
+.streaming-indicator-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.streaming-indicator-progress {
+    margin-left: 10px;
+    width: 25px;
+    height: 25px;
+}
+
+.streaming-indicator {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-top: 8px;
+    margin-left: 60px;
+}

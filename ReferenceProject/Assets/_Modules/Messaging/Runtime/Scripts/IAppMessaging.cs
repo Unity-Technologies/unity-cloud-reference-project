@@ -1,5 +1,7 @@
 using System;
+using Unity.AppUI.UI;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Unity.ReferenceProject.Messaging
 {
@@ -15,5 +17,7 @@ namespace Unity.ReferenceProject.Messaging
             string cancelButtonLabel, Action cancelCallback = null,
             string primaryActionLabel = null, Action primaryActionCallback = null,
             params object[] args);
+
+        public Modal ShowCustomDialog(VisualElement content);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Unity.ReferenceProject.VR.RigUI;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.UIElements;
 using Zenject;
 
@@ -51,10 +51,10 @@ namespace Unity.ReferenceProject.VR
                 {
                     var dockedPanel = m_PanelManager.CreatePanel<DockedPanelController>(m_Size);
                     dockedPanel.name = "StatDisplayPanel";
-                    dockedPanel.WorldSpaceUIToolkit.OnPanelBuilt += OnPanelBuilt;
                     dockedPanel.DockPoint = m_RigUIController.PermanentDockPoint;
                     dockedPanel.transform.localPosition = m_Position;
                     m_Panel = dockedPanel;
+                    OnPanelBuilt(dockedPanel.UIDocument);
                 }
             }
             else if (m_Panel != null)
@@ -91,7 +91,8 @@ namespace Unity.ReferenceProject.VR
 
         void OnDockButtonClicked()
         {
-            m_Panel = m_RigUIController.DockButtonClicked(m_Panel, m_RigUIController.PermanentDockPoint, m_Position, OnPanelBuilt);
+            m_Panel = m_RigUIController.DockButtonClicked(m_Panel, m_RigUIController.PermanentDockPoint, m_Position);
+            OnPanelBuilt(m_Panel.UIDocument);
         }
     }
 }

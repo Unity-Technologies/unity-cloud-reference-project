@@ -1,0 +1,13 @@
+.camera-view-switch-tool-button{
+    border-width: 0;
+    border-radius: 0;
+}
+
+.camera-view-switch-tool-button.is-hovered{
+    border-radius: 4px;
+}
+
+.camera-view-switch-tool-button Icon{
+    margin-left: 6px;
+    margin-right: 6px;
+}

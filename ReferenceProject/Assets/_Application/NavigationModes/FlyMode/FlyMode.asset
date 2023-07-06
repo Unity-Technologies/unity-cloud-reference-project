@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 195ac8c3bd192774c8da6729c383199d, type: 3}
   m_Name: FlyMode
   m_EditorClassIdentifier: 
-  m_Icon: {fileID: 21300000, guid: d6df2b2649d2d3d4497f3d669718b805, type: 3}
+  m_Icon: {fileID: 21300000, guid: 8169d5728438fb346a4ed9fd3a80a7a2, type: 3}
   m_ModeName: '@ReferenceProject:Navigation_Fly'
   m_Prefab: {fileID: 6832047366511528885, guid: 32ea63756e6e61e4e9fdecab454a33a5,
     type: 3}

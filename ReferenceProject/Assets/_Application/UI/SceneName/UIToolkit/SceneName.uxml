@@ -1,3 +1,3 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="UnityEngine.Dt.App.UI">
-    <appui:Header name="header" text="Title" style="align-self: center; picking-mode:ignore; min-height: 48px; -unity-text-align: middle-left;"/>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <appui:Heading name="header" text="Title" style="align-self: center; picking-mode:ignore; min-height: 48px; -unity-text-align: middle-left;"/>
 </ui:UXML>

@@ -1,4 +1,4 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="UnityEngine.Dt.App.UI">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
     <Style src="project://database/Assets/_Modules/DeepLinking/Runtime/UIToolkit/LinkSharingStyle.uss?fileID=7433441132597879392&amp;guid=95ec8d1aa71ea8d43bcb4008e3f8b4eb&amp;type=3#LinkSharingStyle"/>
     <ui:VisualElement class="link-sharing-content">
         <appui:ActionButton name="generate-url-button" class="generate-url-button" label = "@DeepLinking:GenerateLink"/>

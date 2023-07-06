@@ -1,8 +1,8 @@
 using System;
 using Unity.Cloud.Presence;
-using Unity.Cloud.Presence.Runtime;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
+using Unity.ReferenceProject.Common;
 using UnityEngine.UIElements;
 
 namespace Unity.ReferenceProject.Presence
@@ -10,19 +10,17 @@ namespace Unity.ReferenceProject.Presence
     public class AvatarBadgesContainer : VisualElement
     {
         public static readonly string avatarsContainerUssClassName = "avatar-badge-container";
-        
+
         public static readonly string avatarBadgeUssClassName = "avatar-badge";
         
-        Room m_Room;
+        RoomCached m_Room;
+        public RoomCached Room => m_Room;
         
         bool m_RemoveOwner;
-        
-        public bool removeOwner
+
+        public bool RemoveOwner
         {
-            get
-            {
-                return m_RemoveOwner;
-            }
+            get { return m_RemoveOwner; }
             set
             {
                 m_RemoveOwner = value;
@@ -31,13 +29,10 @@ namespace Unity.ReferenceProject.Presence
         }
 
         int m_MaxAvatarsCount;
-        
-        public int maxParticipantsCount
+
+        public int MaxParticipantsCount
         {
-            get
-            {
-                return m_MaxAvatarsCount;
-            }
+            get { return m_MaxAvatarsCount; }
             set
             {
                 m_MaxAvatarsCount = value;
@@ -45,24 +40,25 @@ namespace Unity.ReferenceProject.Presence
             }
         }
 
+        public ColorPalette AvatarColorPalette { get; set; }
+
         public AvatarBadgesContainer()
         {
             name = "avatar-badges-container";
-            maxParticipantsCount = 2;
+            MaxParticipantsCount = 2;
             RegisterCallback<DetachFromPanelEvent>(_ => UnbindRoomWithoutNotify());
             AddToClassList(avatarsContainerUssClassName);
         }
 
-        public void BindRoom(Room room)
+        public void BindRoom(RoomCached room)
         {
             UnbindRoomWithoutNotify();
-            
+
             m_Room = room;
 
             if (m_Room != null)
             {
-                m_Room.ParticipantAdded += OnParticipantAdded;
-                m_Room.ParticipantRemoved += OnParticipantRemoved;
+                m_Room.ParticipantsChanged += OnParticipantsChanged;
             }
 
             RefreshContainer(m_Room);
@@ -72,25 +68,28 @@ namespace Unity.ReferenceProject.Presence
         {
             if (m_Room != null)
             {
-                m_Room.ParticipantAdded -= OnParticipantAdded;
-                m_Room.ParticipantRemoved -= OnParticipantRemoved;
+                m_Room.ParticipantsChanged -= OnParticipantsChanged;
             }
         }
 
-        void OnParticipantRemoved(IParticipant obj) => RefreshContainer(m_Room);
+        void OnParticipantsChanged() => RefreshContainer(m_Room);
+        
 
-        void OnParticipantAdded(IParticipant obj) => RefreshContainer(m_Room);
-
-        void RefreshContainer(Room room)
+        void RefreshContainer(RoomCached room)
         {
             Clear();
+            
+            if(room == null)
+                return;
 
-            if (room == null || room.ConnectedParticipants.Count == 0)
+            var participants = room.Participants;
+
+            if (participants.Count == 0)
                 return;
 
             var count = 0;
             bool isOwnerRemoved = false;
-            foreach (var participant in room.ConnectedParticipants)
+            foreach (var participant in participants)
             {
                 count++;
                 if (m_RemoveOwner && participant.IsSelf)
@@ -98,59 +97,56 @@ namespace Unity.ReferenceProject.Presence
                     isOwnerRemoved = true;
                     continue;
                 }
-                
+
                 if (count <= m_MaxAvatarsCount)
                     Add(CreateParticipantBadge(participant));
             }
-            
+
             var participantsOverflowCount = count - m_MaxAvatarsCount - (isOwnerRemoved ? 1 : 0);
-            
+
             if (participantsOverflowCount > 0)
             {
                 Add(CreatePlusBadge(participantsOverflowCount));
             }
         }
 
-        static VisualElement CreateParticipantBadge(IParticipant participant)
+        VisualElement CreateParticipantBadge(IParticipant participant)
         {
-            var avatar = new UnityEngine.Dt.App.UI.Avatar
-            {
-                text = AvatarUtils.GetInitials(participant.Name),
-                tooltip = participant.Name,
-                backgroundColor = AvatarUtils.GetColor(participant.ColorIndex), // This is temporary as the Presence Package will update its implementation
-                size = Size.M
-            };
+            var avatar = new AvatarBadge();
+            avatar.Initials.text = Utils.GetInitials(participant.Name);
+            avatar.tooltip = participant.Name;
+            avatar.backgroundColor = AvatarColorPalette.GetColor(participant.ColorIndex);
+            avatar.size = Size.M;
+            avatar.outlineColor = Color.clear;
             avatar.AddToClassList(avatarBadgeUssClassName);
             return avatar;
         }
-        
+
         static VisualElement CreatePlusBadge(int count)
         {
-            var plusSign = new UnityEngine.Dt.App.UI.Avatar();
-            plusSign.text = "+" + (count);
+            var plusSign = new AvatarBadge();
+            plusSign.Initials.text = "+" + (count);
             plusSign.backgroundColor = new Color(156, 156, 156, 255) / 255f;
             plusSign.size = Size.M;
+            plusSign.outlineColor = Color.clear;
             plusSign.AddToClassList(avatarBadgeUssClassName);
             return plusSign;
         }
 
-        public new class UxmlFactory : UxmlFactory<AvatarBadgesContainer, UxmlTraits>
-        {
-        }
+        public new class UxmlFactory : UxmlFactory<AvatarBadgesContainer, UxmlTraits> { }
 
         public new class UxmlTraits : VisualElement.UxmlTraits
         {
-            readonly UxmlBoolAttributeDescription m_RemoveOwner = new () { name = "remove-owner", defaultValue = false };
-            
+            readonly UxmlBoolAttributeDescription m_RemoveOwner = new() { name = "remove-owner", defaultValue = false };
+
             readonly UxmlIntAttributeDescription m_MaxParticipantsCount = new() { name = "max-participants-count", defaultValue = 2 };
 
             public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
             {
                 base.Init(ve, bag, cc);
                 var container = (AvatarBadgesContainer)ve;
-                container.removeOwner = m_RemoveOwner.GetValueFromBag(bag, cc);
-                container.maxParticipantsCount = m_MaxParticipantsCount.GetValueFromBag(bag, cc);
-                
+                container.RemoveOwner = m_RemoveOwner.GetValueFromBag(bag, cc);
+                container.MaxParticipantsCount = m_MaxParticipantsCount.GetValueFromBag(bag, cc);
             }
         }
     }

@@ -1,3 +1,3 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="UnityEngine.Dt.App.UI">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
     <appui:Panel name="appui-panel" class="panel-border-radius transparent-background" />
 </ui:UXML>

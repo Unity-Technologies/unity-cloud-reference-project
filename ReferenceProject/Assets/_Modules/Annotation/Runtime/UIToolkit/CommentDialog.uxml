@@ -1,0 +1,9 @@
+﻿<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <ui:VisualElement name="CommentDialogContainer" class="dialog-container">
+        <appui:TextField name="CommentDialogText" placeholder="@Annotation:AddComment" class="comment-dialog-text"/>
+        <ui:VisualElement name="CommentDialogButtons" class="dialog-buttons">
+            <appui:ActionButton name="CommentDialogCancel" label="@Annotation:Cancel" class="dialog-cancel-button"/>
+            <appui:ActionButton name="CommentDialogSubmit" label="@Annotation:Submit" class="dialog-submit-button"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

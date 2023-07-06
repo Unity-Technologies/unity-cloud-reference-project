@@ -1,4 +1,4 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="UnityEngine.Dt.App.UI" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements"
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements"
          noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd">
     <Style src="project://database/Assets/_Application/NavigationModeManager/NavigationModes/WalkMode/UIToolkit/InstructionsStyle.uss?fileID=7433441132597879392&amp;guid=a150b698576572b4abce03740c4e235d&amp;type=3#InstructionsStyle" />
     <ui:VisualElement name="Container" style="flex-direction: row;">

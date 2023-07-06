@@ -12,8 +12,6 @@ GameObject:
   - component: {fileID: 3808150992588205085}
   - component: {fileID: 1136358376634274183}
   - component: {fileID: 7803969827800967959}
-  - component: {fileID: 3082775283362978997}
-  - component: {fileID: 8536768874621177588}
   m_Layer: 0
   m_Name: XR Origin
   m_TagString: Untagged
@@ -80,43 +78,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Timeout: 10
   m_XROrigin: {fileID: 0}
---- !u!114 &3082775283362978997
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 939161804486800139}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 0
-  m_DragThreshold: 10
---- !u!114 &8536768874621177588
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 939161804486800139}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34dd95a65973ef0439dac645a8853d21, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SendPointerHoverToParent: 0
-  m_ClickSpeed: 0.3
-  m_MoveDeadzone: 0.6
-  m_RepeatDelay: 0.5
-  m_RepeatRate: 0.1
-  m_TrackedDeviceDragThresholdMultiplier: 2
-  m_EnableXRInput: 1
-  m_EnableMouseInput: 0
-  m_EnableTouchInput: 0
-  UsePenPointerIdBase: 0
 --- !u!1 &1292561882309425595
 GameObject:
   m_ObjectHideFlags: 0
@@ -345,8 +306,7 @@ GameObject:
   - component: {fileID: 7987555996108439228}
   - component: {fileID: 7738112341036103467}
   - component: {fileID: 4673006497837609260}
-  - component: {fileID: 2471460365585580151}
-  - component: {fileID: 6560836190396170347}
+  - component: {fileID: 1219807810697334602}
   m_Layer: 0
   m_Name: LeftHand Controller
   m_TagString: Untagged
@@ -676,7 +636,7 @@ MonoBehaviour:
     type: 3}
   m_InputActionMaps:
   - XRControllerLeft
---- !u!114 &2471460365585580151
+--- !u!114 &1219807810697334602
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -685,21 +645,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 3631017964788418312}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7dc64a51ddd487f44b0ec382a35167b8, type: 3}
+  m_Script: {fileID: 11500000, guid: 72e537f1f89267b408b54a32982072e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &6560836190396170347
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3631017964788418312}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82b4ef2bff035a140b0cb9839b965ee1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_SelectInputAction:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Select Input
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: b9eaf42a-cbd8-4f34-b303-5104500695b7
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: -4304090364642009254, guid: 1c2e5a67ad02c2841ad4816e22503a9b,
+      type: 3}
 --- !u!1 &4078460834937351857
 GameObject:
   m_ObjectHideFlags: 0
@@ -874,17 +835,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_PanelPrefabs:
-  - {fileID: 4443722319184847781, guid: d00db6b453b6cf04394901c0e79f94d6, type: 3}
-  - {fileID: 3062406010038395034, guid: cde35bcae4282d543b102c66e78f153e, type: 3}
+  - {fileID: -5617917643692622726, guid: 34efd9dcf6faade4bb8c358604489c02, type: 3}
+  - {fileID: 3475237156164789721, guid: feae743188247ef4d9335188fb05c750, type: 3}
   m_AppUIVisualTreeAsset: {fileID: 9197481963319205126, guid: ee0e489deeb12be4db9ea65248614b45,
     type: 3}
   m_Camera: {fileID: 4204674085526457512}
   m_Root: {fileID: 6857473400776753711}
   m_ThemeStyleSheet: {fileID: -4733365628477956816, guid: c349eabe70c35de459893224d0319aff,
     type: 3}
-  m_MaterialOpaque: {fileID: 2100000, guid: 910a17f544cedb44e875b6471ae5d184, type: 2}
-  m_MaterialTransparent: {fileID: 2100000, guid: 560a46aedd3d95d41988a2436c76a588,
-    type: 2}
 --- !u!1 &5570281031373864822
 GameObject:
   m_ObjectHideFlags: 0
@@ -897,8 +855,7 @@ GameObject:
   - component: {fileID: 1465658512500068032}
   - component: {fileID: 2113076896021415366}
   - component: {fileID: 7125537481794018097}
-  - component: {fileID: 4151803936373219387}
-  - component: {fileID: 1461035150576996908}
+  - component: {fileID: 2403165675392906707}
   m_Layer: 0
   m_Name: RightHand Controller
   m_TagString: Untagged
@@ -1234,7 +1191,7 @@ MonoBehaviour:
     type: 3}
   m_InputActionMaps:
   - XRControllerRight
---- !u!114 &4151803936373219387
+--- !u!114 &2403165675392906707
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1243,21 +1200,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 5570281031373864822}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7dc64a51ddd487f44b0ec382a35167b8, type: 3}
+  m_Script: {fileID: 11500000, guid: 72e537f1f89267b408b54a32982072e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1461035150576996908
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5570281031373864822}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82b4ef2bff035a140b0cb9839b965ee1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_SelectInputAction:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Select Input
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 4e67644d-d600-4102-ac95-7ddd11b27bad
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 6758689874670958393, guid: 1c2e5a67ad02c2841ad4816e22503a9b,
+      type: 3}
 --- !u!1 &5746111055341419325
 GameObject:
   m_ObjectHideFlags: 0

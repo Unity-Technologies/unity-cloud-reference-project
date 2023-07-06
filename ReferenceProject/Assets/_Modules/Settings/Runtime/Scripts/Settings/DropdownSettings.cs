@@ -1,5 +1,5 @@
 ﻿using System;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.UIElements;
 
 namespace Unity.ReferenceProject.Settings
@@ -30,9 +30,9 @@ namespace Unity.ReferenceProject.Settings
                 }
             };
 
-            var label = new Header(m_Label)
+            var label = new Heading(m_Label)
             {
-                size = HeaderSize.XS,
+                size = HeadingSize.XS,
             };
             visualElement.Add(label);
 

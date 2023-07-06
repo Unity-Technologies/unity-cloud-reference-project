@@ -1,6 +1,6 @@
 ﻿using System;
 using Unity.ReferenceProject.VR.RigUI;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.UIElements;
 using Zenject;
 
@@ -40,7 +40,7 @@ namespace Unity.ReferenceProject.VR
 
         void OnPanelCreated(PanelController panel)
         {
-            panel.WorldSpaceUIToolkit.OnPanelBuilt += _ => SetPanelTheme(panel);
+           SetPanelTheme(panel);
         }
     }
 }

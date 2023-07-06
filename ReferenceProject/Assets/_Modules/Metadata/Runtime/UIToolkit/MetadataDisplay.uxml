@@ -1,12 +1,10 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" appui="UnityEngine.Dt.App.UI" xsi="http://www.w3.org/2001/XMLSchema-instance"
-         engine="UnityEngine.UIElements" editor="UnityEditor.UIElements"
-         noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
     <ui:VisualElement name="panel-content">
-        <UnityEngine.Dt.App.UI.Dropdown focusable="true" name="group-dropdown" />
-        <UnityEngine.Dt.App.UI.Divider size="S" spacing="M" />
-        <UnityEngine.Dt.App.UI.SearchBar focusable="true" name="search-input" placeholder="@MetadataDisplay:Search" />
+        <appui:Dropdown focusable="true" name="group-dropdown" />
+        <appui:Divider size="S" spacing="M" />
+        <appui:SearchBar focusable="true" name="search-input" placeholder="@MetadataDisplay:Search" />
         <ui:VisualElement name="Content" class="metadata-display-container__parameters">
-            <UnityEngine.Dt.App.UI.Text text="@MetadataDisplay:SelectObjectToSeeMetadata" name="EmptySelection" class="metadata-display-text__noselection" />
+            <appui:Text text="@MetadataDisplay:SelectObjectToSeeMetadata" name="EmptySelection" class="metadata-display-text__noselection" />
             <ui:ListView focusable="true" name="ParameterList" selection-type="None" virtualization-method="DynamicHeight" show-bound-collection-size="false" />
         </ui:VisualElement>
     </ui:VisualElement>

@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6424289569904729262}
   - component: {fileID: 491420615842140778}
-  - component: {fileID: 3617488587034282565}
   m_Layer: 0
   m_Name: SceneListToolVR
   m_TagString: Untagged
@@ -50,38 +49,7 @@ MonoBehaviour:
   m_Icon: {fileID: 21300000, guid: 3d46b8938510a5b4c8ef2ab43879ddfe, type: 3}
   m_Template: {fileID: 9197481963319205126, guid: 0b9ea6d624ab80541a9f8b1a86819295,
     type: 3}
-  ToolOpened:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolClosed:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolPointerEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolPointerExited:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolFocusIn:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolFocusOut:
-    m_PersistentCalls:
-      m_Calls: []
   m_SceneListUIController: {fileID: 5499270282772634999}
-  m_SingleUnifiedPointer: {fileID: 3617488587034282565}
---- !u!114 &3617488587034282565
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8385667916990587005}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a3b3f51bef91a4eb26af83e6fe0d55, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1870190267414189627
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,7 +1,7 @@
 ﻿using System;
 using Unity.ReferenceProject.Settings;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
 using Zenject;
@@ -39,11 +39,11 @@ namespace Unity.ReferenceProject
         public event Action<bool> OnShowPanel;
         public bool IsEnabled => m_IsEnabled;
 
-        Header m_FrameRateHeader;
+        Heading m_FrameRateHeader;
         IGlobalSettings m_GlobalSettings;
         bool m_IsEnabled;
-        Header m_MaxFrameRateHeader;
-        Header m_MinFrameRateHeader;
+        Heading m_MaxFrameRateHeader;
+        Heading m_MinFrameRateHeader;
 
         VisualElement m_RootVisualElement;
         ToggleSetting m_ToggleSetting;
@@ -91,9 +91,9 @@ namespace Unity.ReferenceProject
         {
             var root = m_RootVisualElement = uiDocument.rootVisualElement;
 
-            m_FrameRateHeader = root.Q<Header>(m_FrameRateElement);
-            m_MinFrameRateHeader = root.Q<Header>(m_MinFrameRateElement);
-            m_MaxFrameRateHeader = root.Q<Header>(m_MaxFrameRateElement);
+            m_FrameRateHeader = root.Q<Heading>(m_FrameRateElement);
+            m_MinFrameRateHeader = root.Q<Heading>(m_MinFrameRateElement);
+            m_MaxFrameRateHeader = root.Q<Heading>(m_MaxFrameRateElement);
 
             m_FrameRateCalculator.FrameRateRefreshed += OnFrameRateRefreshed;
         }
@@ -103,6 +103,11 @@ namespace Unity.ReferenceProject
             m_ToggleSetting.SetValueWithoutNotify(false);
             m_IsEnabled = false;
             ShowPanel(false);
+        }
+
+        public bool ToggledValue()
+        {
+            return m_IsEnabled;
         }
 
         void OnSettingChanged(bool value)
@@ -115,11 +120,6 @@ namespace Unity.ReferenceProject
         {
             SetVisible(m_RootVisualElement, value);
             OnShowPanel?.Invoke(value);
-        }
-
-        bool ToggledValue()
-        {
-            return m_IsEnabled;
         }
 
         void OnFrameRateRefreshed(int fps, int minFps, int maxFps)
@@ -137,7 +137,7 @@ namespace Unity.ReferenceProject
             }
         }
 
-        void UpdateHeader(Header header, int fps)
+        void UpdateHeader(Heading header, int fps)
         {
             header.text = fps.ToString();
             header.style.color = m_ColorGradient.Evaluate(fps / m_TargetFrameRate);

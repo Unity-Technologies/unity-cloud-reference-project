@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI" >
+    <Style src="project://database/Assets/_Application/UI/Menus/UIToolkit/LeftMenuStyle.uss?fileID=7433441132597879392&amp;guid=361154be1b4a6954695cb20984480c49&amp;type=3#LeftMenuStyle" />
+    <appui:ActionGroup name="toolbar" vertical="true" compact="true" picking-mode="Ignore" class="left-toolbar" style="top: 60px; bottom: auto; left: 12px;" />
+</ui:UXML>

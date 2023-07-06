@@ -1,7 +1,7 @@
 ﻿using System;
+using Unity.ReferenceProject.WorldSpaceUIDocumentExtensions;
 using UnityEngine;
 using UnityEngine.UIElements;
-using UnityEngine.XR.Interaction.Toolkit.UI;
 
 namespace Unity.ReferenceProject.VR.RigUI
 {
@@ -14,13 +14,18 @@ namespace Unity.ReferenceProject.VR.RigUI
         Camera m_Camera;
 
         [SerializeField]
-        TrackedDevicePhysicsRaycaster m_DeviceRaycaster;
+        UIDocument m_UIDocument;
 
         [SerializeField]
-        WorldSpaceUIToolkit.WorldSpaceUIToolkit m_WorldSpaceUIToolkit;
+        WorldSpaceUIDocumentSize m_WorldSpaceUIDocumentSize;
+
+        [SerializeField]
+        WorldSpaceUIDocumentCustomFunction m_WorldSpaceUIDocumentCustomFunction;
 
         [SerializeField]
         Collider m_Collider;
+
+        public UIDocument UIDocument => m_UIDocument;
 
         public VisualTreeAsset VisualTreeAsset
         {
@@ -28,7 +33,7 @@ namespace Unity.ReferenceProject.VR.RigUI
             set
             {
                 m_VisualTreeAsset = value;
-                m_WorldSpaceUIToolkit.VisualTreeAsset = m_VisualTreeAsset;
+                m_VisualTreeAsset.CloneTree(m_UIDocument.rootVisualElement);
             }
         }
 
@@ -38,19 +43,16 @@ namespace Unity.ReferenceProject.VR.RigUI
             set
             {
                 m_Camera = value;
-                m_DeviceRaycaster.SetEventCamera(m_Camera);
             }
         }
 
         public virtual Vector2 PanelSize
         {
-            get => m_WorldSpaceUIToolkit.PanelSize;
-            set => m_WorldSpaceUIToolkit.PanelSize = value;
+            get => m_WorldSpaceUIDocumentSize.Size;
+            set => m_WorldSpaceUIDocumentSize.Size = value;
         }
 
-        public VisualElement Root { get; private set; }
-
-        public WorldSpaceUIToolkit.WorldSpaceUIToolkit WorldSpaceUIToolkit => m_WorldSpaceUIToolkit;
+        public VisualElement Root => m_UIDocument.rootVisualElement;
 
         void Awake()
         {
@@ -61,21 +63,17 @@ namespace Unity.ReferenceProject.VR.RigUI
 
             if (m_VisualTreeAsset != null)
             {
-                m_WorldSpaceUIToolkit.VisualTreeAsset = m_VisualTreeAsset;
+                VisualTreeAsset = m_VisualTreeAsset;
             }
 
-            m_WorldSpaceUIToolkit.OnPanelBuilt += OnPanelBuilt;
+            m_WorldSpaceUIDocumentSize = m_UIDocument.gameObject.GetComponent<WorldSpaceUIDocumentSize>();
         }
 
         public virtual void SetVisible(bool isVisible)
         {
             Root.style.display = isVisible ? DisplayStyle.Flex : DisplayStyle.None;
             m_Collider.enabled = isVisible;
-        }
-
-        void OnPanelBuilt(UIDocument document)
-        {
-            Root = document.rootVisualElement;
+            m_WorldSpaceUIDocumentSize.enabled = isVisible;
         }
     }
 }

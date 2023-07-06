@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using Unity.ReferenceProject.SearchSortFilter;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.UIElements;
+using Clickable = Unity.AppUI.UI.Clickable;
 using TextOverflow = UnityEngine.UIElements.TextOverflow;
 
 namespace Unity.ReferenceProject.UITableListView
@@ -17,13 +18,13 @@ namespace Unity.ReferenceProject.UITableListView
 
         readonly FilterModule<T> m_FilterModule;
         readonly Action m_OnFilterChanged;
-        
-        readonly Dictionary<Checkbox, (string, int)> m_CheckboxMap = new ();
-        readonly Dictionary<string, Checkbox> m_HeaderCheckBoxMap = new ();
-        
-        readonly Dictionary<string, List<string>> m_AllOptions = new ();
 
-        readonly List<int> m_PrimaryKey = new ();
+        readonly Dictionary<Checkbox, (string, int)> m_CheckboxMap = new();
+        readonly Dictionary<string, Checkbox> m_HeaderCheckBoxMap = new();
+
+        readonly Dictionary<string, List<string>> m_AllOptions = new();
+
+        readonly List<int> m_PrimaryKey = new();
 
         readonly string[] m_ColumnStyles;
 
@@ -42,10 +43,10 @@ namespace Unity.ReferenceProject.UITableListView
             }
 
             m_ColumnStyles = columnStyles;
-            
+
             m_Button.clickable.clicked += OnShowFilterPopover;
         }
-        
+
         void OnReset()
         {
             m_HeaderCheckBoxMap.Clear();
@@ -60,7 +61,7 @@ namespace Unity.ReferenceProject.UITableListView
                 m_Button.clickable.clicked -= OnShowFilterPopover;
             }
         }
-        
+
         void CreateTable()
         {
             m_ContentContainer = new VisualElement();
@@ -75,17 +76,17 @@ namespace Unity.ReferenceProject.UITableListView
             var popover = Popover.Build(m_Button, m_ContentContainer).SetPlacement(PopoverPlacement.LeftTop);
             RefreshHeadersState();
             m_Table.RefreshItems();
-            
+
             m_Button.selected = true;
             popover.dismissed += (_, _) => m_Button.selected = false;
             popover.Show();
         }
-        
+
         public void UpdateColumns(List<T> dataList, int inlineWidth = 0)
         {
-            if(dataList == null || dataList.Count == 0)
+            if (dataList == null || dataList.Count == 0)
                 return;
-            
+
             CreatePossibleOptions(dataList);
             var columns = new TableListColumnData[m_AllOptions.Count];
             var i = 0;
@@ -109,7 +110,7 @@ namespace Unity.ReferenceProject.UITableListView
         public void SetOptionsState(bool isAllOptionsTrue)
         {
             m_FilterModule.ClearAllOptions();
-            
+
             if (isAllOptionsTrue)
             {
                 foreach (var optionSet in m_AllOptions)
@@ -123,14 +124,14 @@ namespace Unity.ReferenceProject.UITableListView
 
             m_OnFilterChanged();
         }
-        
+
         void CreatePossibleOptions(List<T> dataList)
         {
             var maxOptionsCount = 0;
             var hashSet = new HashSet<string>();
 
             m_AllOptions.Clear();
-            
+
             foreach (var item in m_FilterModule.AllFilterNodes)
             {
                 var nodeName = item.Key;
@@ -159,7 +160,7 @@ namespace Unity.ReferenceProject.UITableListView
 
         void OnBindCell(VisualElement e, IColumnData column, object data)
         {
-            if(data is not int id)
+            if (data is not int id)
                 return;
 
             var checkbox = e.Q<Checkbox>(GetCheckBoxName(column.Name));
@@ -172,9 +173,10 @@ namespace Unity.ReferenceProject.UITableListView
                     checkbox.tooltip = optionList[id];
                     checkbox.style.display = DisplayStyle.Flex;
                     m_CheckboxMap[checkbox] = (column.Name, id);
-                    
-                    checkbox.SetValueWithoutNotify(m_FilterModule.ContainsOption(column.Name, optionList[id]) 
-                        ? CheckboxState.Checked : CheckboxState.Unchecked);
+
+                    checkbox.SetValueWithoutNotify(m_FilterModule.ContainsOption(column.Name, optionList[id])
+                        ? CheckboxState.Checked
+                        : CheckboxState.Unchecked);
                 }
                 else
                 {
@@ -191,14 +193,14 @@ namespace Unity.ReferenceProject.UITableListView
                 name = GetCheckBoxName(column.Name)
             };
             checkbox.style.flexShrink = 1;
-            
-            checkbox.clickable.clicked += () => OnCheckBoxClicked(checkbox);
+
+            checkbox.AddManipulator(new Clickable((_) => OnCheckBoxClicked(checkbox)));
 
             EllipsisText(checkbox);
 
             e.Add(checkbox);
         }
-        
+
         void OnCreateHeader(VisualElement e, IColumnData column)
         {
             var name = column.Name;
@@ -212,13 +214,13 @@ namespace Unity.ReferenceProject.UITableListView
                     flexShrink = 1,
                 },
             };
-                
+
             EllipsisText(checkbox);
             checkbox.clickable.clicked += () => OnCheckBoxClicked(checkbox);
             m_CheckboxMap[checkbox] = (name, -1);
 
             e.Add(checkbox);
-            
+
             m_HeaderCheckBoxMap.Add(column.Name, checkbox);
         }
 
@@ -231,14 +233,14 @@ namespace Unity.ReferenceProject.UITableListView
 
         void OnCheckBoxClicked(Checkbox checkBox)
         {
-            if (!m_CheckboxMap.TryGetValue(checkBox, out var value)) 
+            if (!m_CheckboxMap.TryGetValue(checkBox, out var value))
                 return;
-            
+
             var columnName = value.Item1;
 
-            if (!m_AllOptions.TryGetValue(columnName, out var list)) 
+            if (!m_AllOptions.TryGetValue(columnName, out var list))
                 return;
-            
+
             var id = value.Item2;
             if (id >= 0 && id < list.Count)
             {
@@ -246,14 +248,14 @@ namespace Unity.ReferenceProject.UITableListView
                     m_FilterModule.AddSelectedOption(columnName, list[id]);
                 else
                     m_FilterModule.RemoveSelectedOption(columnName, list[id]);
-                
+
                 RefreshHeadersState();
             }
-            else if(id == -1) // Clicked on header
+            else if (id == -1) // Clicked on header
             {
                 SelectAllOptions(list, columnName, checkBox.value == CheckboxState.Checked);
             }
-            
+
             m_OnFilterChanged?.Invoke();
         }
 
@@ -275,6 +277,7 @@ namespace Unity.ReferenceProject.UITableListView
                     m_FilterModule.RemoveSelectedOption(columnName, option);
                 }
             }
+
             m_Table.RefreshItems();
         }
 
@@ -285,41 +288,42 @@ namespace Unity.ReferenceProject.UITableListView
         {
             foreach (var checkboxSet in m_HeaderCheckBoxMap)
             {
-                if(m_AllOptions.TryGetValue(checkboxSet.Key, out var list))
+                if (m_AllOptions.TryGetValue(checkboxSet.Key, out var list))
                 {
                     checkboxSet.Value?.SetValueWithoutNotify(m_FilterModule.CountSelectedOptions(checkboxSet.Key) == list.Count
-                        ? CheckboxState.Checked : CheckboxState.Unchecked); 
+                        ? CheckboxState.Checked
+                        : CheckboxState.Unchecked);
                 }
             }
         }
-        
+
         public void SetStylesToPopover(params string[] popoverStyles)
         {
             foreach (var headerStyle in popoverStyles)
             {
-                if(string.IsNullOrEmpty(headerStyle))
+                if (string.IsNullOrEmpty(headerStyle))
                     continue;
-                m_ContentContainer?.AddToClassList(headerStyle); 
+                m_ContentContainer?.AddToClassList(headerStyle);
             }
         }
-        
+
         public void SetStylesToHeader(params string[] headerStyles)
         {
             foreach (var headerStyle in headerStyles)
             {
-                if(string.IsNullOrEmpty(headerStyle))
+                if (string.IsNullOrEmpty(headerStyle))
                     continue;
-                m_Table.AddStyleToHeader(headerStyle); 
+                m_Table.AddStyleToHeader(headerStyle);
             }
         }
-        
+
         public void SetStylesToRow(params string[] rowStyles)
         {
             foreach (var rowStyle in rowStyles)
             {
-                if(string.IsNullOrEmpty(rowStyle))
+                if (string.IsNullOrEmpty(rowStyle))
                     continue;
-                m_Table.AddStyleToRow(rowStyle); 
+                m_Table.AddStyleToRow(rowStyle);
             }
         }
 

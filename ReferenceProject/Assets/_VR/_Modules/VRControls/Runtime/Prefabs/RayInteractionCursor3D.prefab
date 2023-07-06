@@ -63,11 +63,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RayInteractor: {fileID: 0}
+  m_XRController: {fileID: 0}
   m_HideIfNotHovering: 1
   m_DefaultLineLength: 2
-  OnShow:
-    m_PersistentCalls:
-      m_Calls: []
+  m_SnapEndpointIfAvailable: 1
+  m_HideIfSnapping: 1
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 160
   m_ScaleWithDistanceFromCamera: 1
   m_AlignToHitNormal: 1
   m_AlignToRayOriginUp: 0

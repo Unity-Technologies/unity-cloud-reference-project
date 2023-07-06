@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Unity.AppUI.Core;
 using Unity.ReferenceProject.Messaging;
 using Unity.ReferenceProject.VR.RigUI;
 using UnityEngine;
-using UnityEngine.Dt.App.Core;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
+using Unity.ReferenceProject.InputDisabling;
 using UnityEngine.UIElements;
 using Zenject;
 using Object = UnityEngine.Object;
@@ -69,6 +70,7 @@ namespace Unity.ReferenceProject.VR
 
         IPanelManager m_PanelManager;
         IRigUIController m_RigUIController;
+        IInputDisablingManager m_InputDisablingManager;
 
         DockedPanelController m_ToastDockedPanel;
         readonly Dictionary<Toast, DockedPanelController> m_ToastToPanel = new();
@@ -80,10 +82,11 @@ namespace Unity.ReferenceProject.VR
         static readonly Vector2 k_ModalSize = new(640, 480);
 
         [Inject]
-        void Setup(IPanelManager panelManager, IRigUIController rigUIController)
+        void Setup(IPanelManager panelManager, IRigUIController rigUIController, IInputDisablingManager inputDisablingManager)
         {
             m_PanelManager = panelManager;
             m_RigUIController = rigUIController;
+            m_InputDisablingManager = inputDisablingManager;
         }
 
         public override void ShowMessage(string message, bool dismissable = false, params object[] args)
@@ -125,41 +128,44 @@ namespace Unity.ReferenceProject.VR
         public void ShowModalMessage(string title, string message, string cancelButtonLabel, Action cancelCallback, string primaryActionLabel = null,
             Action primaryActionCallback = null, params object[] args)
         {
+            m_PanelManager.BlockPanels();
             m_ModalDockedPanel = m_PanelManager.CreatePanel<DockedPanelController>(k_ModalSize);
             m_ModalDockedPanel.name = "ModalMessagePanel";
-            m_ModalDockedPanel.WorldSpaceUIToolkit.OnPanelBuilt += document =>
-            {
-                OnModalPanelBuilt(document, new ModalMessage(title, message, cancelButtonLabel, cancelCallback, primaryActionLabel, primaryActionCallback, args));
-            };
             m_ModalDockedPanel.DockPoint = m_RigUIController.PermanentDockPoint;
             m_ModalDockedPanel.transform.localPosition += (k_ModalSize.y / 2f) / 1000f * Vector3.up - 0.01f * Vector3.forward;
+            DisplayModalPanel(m_ModalDockedPanel.UIDocument, new ModalMessage(title, message, cancelButtonLabel, cancelCallback, primaryActionLabel, primaryActionCallback, args));
+        }
+
+        public override Modal ShowCustomDialog(VisualElement content)
+        {
+            m_PanelManager.BlockPanels();
+            m_ModalDockedPanel = m_PanelManager.CreatePanel<DockedPanelController>(k_ModalSize);
+            m_ModalDockedPanel.name = "ModalCustomPanel";
+            m_ModalDockedPanel.DockPoint = m_RigUIController.PermanentDockPoint;
+            m_ModalDockedPanel.transform.localPosition += (k_ModalSize.y / 2f) / 1000f * Vector3.up - 0.01f * Vector3.forward;
+            return DisplayCustomModalPanel(m_ModalDockedPanel.UIDocument, content);
         }
 
         void ShowModalException(Exception exception, string message, params object[] args)
         {
+            m_PanelManager.BlockPanels();
             m_ModalDockedPanel = m_PanelManager.CreatePanel<DockedPanelController>(k_ModalSize);
             m_ModalDockedPanel.name = "ModalMessagePanel";
-            m_ModalDockedPanel.WorldSpaceUIToolkit.OnPanelBuilt += document =>
-            {
-                OnModalExceptionPanelBuilt(document, new ModalException(exception, message, args));
-            };
             m_ModalDockedPanel.DockPoint = m_RigUIController.PermanentDockPoint;
             m_ModalDockedPanel.transform.localPosition += (k_ModalSize.y / 2f) / 1000f * Vector3.up - 0.01f * Vector3.forward;
+            DisplayModalExceptionPanel(m_ModalDockedPanel.UIDocument, new ModalException(exception, message, args));
         }
 
         void ShowToastMessage(string message, NotificationStyle style, NotificationDuration duration, bool dismissable = false, params object[] args)
         {
             m_ToastDockedPanel = m_PanelManager.CreatePanel<DockedPanelController>(k_ToastSize);
             m_ToastDockedPanel.name = "ToastMessagePanel";
-            m_ToastDockedPanel.WorldSpaceUIToolkit.OnPanelBuilt += document =>
-            {
-                OnToastPanelBuilt(document, new ToastMessage(message, style, duration, dismissable, args));
-            };
             m_ToastDockedPanel.DockPoint = m_RigUIController.PermanentDockPoint;
             m_ToastDockedPanel.transform.localPosition += (-1 * k_ToastSize.y) / 1000f * Vector3.up - 0.01f * Vector3.forward;
+            DisplayToastPanel(m_ToastDockedPanel.UIDocument, new ToastMessage(message, style, duration, dismissable, args));
         }
 
-        void OnToastPanelBuilt(UIDocument document, ToastMessage toastMessage)
+        void DisplayToastPanel(UIDocument document, ToastMessage toastMessage)
         {
             var panel = document.rootVisualElement.Q<Panel>();
 
@@ -188,7 +194,7 @@ namespace Unity.ReferenceProject.VR
 
                 if (m_ToastToPanel.TryGetValue(t, out var panel))
                 {
-                    Object.Destroy(panel.gameObject);
+                    m_PanelManager.DestroyPanel(panel);
                     m_ToastToPanel.Remove(t);
                 }
             };
@@ -196,7 +202,7 @@ namespace Unity.ReferenceProject.VR
             toast.Show();
         }
 
-        void OnModalPanelBuilt(UIDocument document, ModalMessage modalMessage)
+        void DisplayModalPanel(UIDocument document, ModalMessage modalMessage)
         {
             var panel = document.rootVisualElement.Q<Panel>();
 
@@ -213,8 +219,13 @@ namespace Unity.ReferenceProject.VR
 
             m_ModalToPanel.Add(modal, m_ModalDockedPanel);
 
+            m_InputDisablingManager.AddOverride(this);
+
             modal.dismissed += (m, type) =>
             {
+                m_InputDisablingManager.RemoveOverride(this);
+                m_PanelManager.BlockPanels(block:false);
+
                 if (type == DismissType.PanelDestroyed)
                 {
                     // Show message again (this happens when the panel is re parented)
@@ -227,7 +238,7 @@ namespace Unity.ReferenceProject.VR
 
                 if (m_ModalToPanel.TryGetValue(m, out var panel))
                 {
-                    Object.Destroy(panel.gameObject);
+                    m_PanelManager.DestroyPanel(panel);
                     m_ModalToPanel.Remove(m);
                 }
             };
@@ -235,7 +246,7 @@ namespace Unity.ReferenceProject.VR
             modal.Show();
         }
 
-        void OnModalExceptionPanelBuilt(UIDocument document, ModalException modalException)
+        void DisplayModalExceptionPanel(UIDocument document, ModalException modalException)
         {
             var panel = document.rootVisualElement.Q<Panel>();
 
@@ -250,6 +261,7 @@ namespace Unity.ReferenceProject.VR
 
             modal.dismissed += (m, type) =>
             {
+                m_PanelManager.BlockPanels(block:false);
                 if (type == DismissType.PanelDestroyed)
                 {
                     // Show message again (this happens when the panel is re parented)
@@ -258,12 +270,40 @@ namespace Unity.ReferenceProject.VR
 
                 if (m_ModalToPanel.TryGetValue(m, out var panel))
                 {
-                    Object.Destroy(panel.gameObject);
+                    m_PanelManager.DestroyPanel(panel);
                     m_ModalToPanel.Remove(m);
                 }
             };
 
             modal.Show();
+        }
+
+        Modal DisplayCustomModalPanel(UIDocument uiDocument, VisualElement content)
+        {
+            m_InputDisablingManager.AddOverride(this);
+            var panel = uiDocument.rootVisualElement.Q<Panel>();
+            var modal = BuildCustomDialog(panel, content);
+            modal.view.style.backgroundColor = Color.clear;
+
+            m_ModalToPanel.Add(modal, m_ModalDockedPanel);
+
+            modal.dismissed += (m, type) =>
+            {
+                m_PanelManager.BlockPanels(block:false);
+                if (type == DismissType.PanelDestroyed)
+                {
+                    // Show message again (this happens when the panel is re parented)
+                    ShowCustomDialog(content);
+                }
+
+                if (m_ModalToPanel.TryGetValue(m, out var panel))
+                {
+                    m_PanelManager.DestroyPanel(panel);
+                    m_ModalToPanel.Remove(m);
+                }
+            };
+            modal.Show();
+            return modal;
         }
     }
 }

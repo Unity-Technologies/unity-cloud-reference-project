@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.UIElements;
 
 namespace Unity.ReferenceProject.UITableListView
@@ -45,7 +45,9 @@ namespace Unity.ReferenceProject.UITableListView
         public event Action<object> SelectionChanged;
         
         /// <summary>
-        /// Calls to reset cached data before column adds to a new table
+        /// Calls to reset cached data before column adds to a new table,
+        /// when table has been detached from hierarchy,
+        /// when table has been disabled
         /// </summary>
         public event Action Reset;
         

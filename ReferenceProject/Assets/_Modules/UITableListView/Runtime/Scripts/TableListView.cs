@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
 using UnityEngine.UIElements;
+using Clickable = Unity.AppUI.UI.Clickable;
 
 namespace Unity.ReferenceProject.UITableListView
 {
@@ -77,15 +77,26 @@ namespace Unity.ReferenceProject.UITableListView
         public ListView ListView => m_ListView;
 
         readonly HashSet<IColumnEventData> m_Columns = new HashSet<IColumnEventData>();
+        readonly List<VisualElement> m_Rows = new List<VisualElement>();
 
         readonly HashSet<string> m_HeaderStyles = new HashSet<string>();
         readonly HashSet<string> m_RowStyles = new HashSet<string>();
 
         public event Action<PointerEnterEvent> PointerEnterListElementEvent;
         public event Action<PointerLeaveEvent> PointerLeaveListElementEvent;
-        public event Action<VisualElement> ItemClicked;
+        
+        public event Action<object> itemClicked;
+        public event Action<int> itemClickedId;
+        
+        /// <summary>
+        /// Callback for binding a data item to the VisualElement.
+        /// </summary>
+        public event Action<VisualElement, int> bindItem;
 
-        readonly List<VisualElement> m_Rows = new List<VisualElement>();
+        /// <summary>
+        /// Callback for unbinding a data item from the VisualElement.
+        /// </summary>
+        public event Action<VisualElement, int> unbindItem;
         
         static readonly string k_ListContentViewportName = "unity-content-viewport";
         
@@ -137,10 +148,35 @@ namespace Unity.ReferenceProject.UITableListView
                 }
             });
 
-            m_ListView.bindItem = BindItem;
-            m_ListView.unbindItem = UnbindItem;
-            m_ListView.makeItem = MakeItem;
+            m_ListView.bindItem = OnBindItem;
+            m_ListView.unbindItem = OnUnbindItem;
+            m_ListView.makeItem = OnMakeItem;
             m_ListView.onSelectionChange += OnSelectionChange;
+
+            RegisterCallback<DetachFromPanelEvent>(OnDetachFromHierarchy);
+            RegisterCallback<GeometryChangedEvent>(OnGeometryChange);
+        }
+
+        void OnDetachFromHierarchy(DetachFromPanelEvent evt)
+        {
+            ResetColumns();
+        }
+        
+        void OnGeometryChange(GeometryChangedEvent geometryChangedEvent)
+        {
+            // Check if element has been disabled. When visualElement.style.display = DisplayStyle.None - newRect become Rect.zero
+            if (geometryChangedEvent.newRect == Rect.zero)
+            {
+                ResetColumns();
+            }
+        }
+
+        void ResetColumns()
+        {
+            foreach (var column in m_Columns)
+            {
+                column?.InvokeReset();
+            }
         }
 
         void OnSelectionChange(IEnumerable<object> selected)
@@ -159,10 +195,7 @@ namespace Unity.ReferenceProject.UITableListView
 
         public void SetColumns(params IColumnEventData[] columnArray)
         {
-            foreach (var column in m_Columns)
-            {
-                column?.InvokeReset();
-            }
+            ResetColumns();
 
             m_Columns.Clear();
 
@@ -228,7 +261,7 @@ namespace Unity.ReferenceProject.UITableListView
             column.InvokeCreateHeader(headerContainer, column);
         }
 
-        VisualElement MakeItem()
+        VisualElement OnMakeItem()
         {
             var rowContainer = new VisualElement
             {
@@ -239,7 +272,7 @@ namespace Unity.ReferenceProject.UITableListView
             rowContainer.RegisterCallback<PointerEnterEvent>(x => PointerEnterListElementEvent?.Invoke(x));
             rowContainer.RegisterCallback<PointerLeaveEvent>(x => PointerLeaveListElementEvent?.Invoke(x));
             
-            rowContainer.AddManipulator(new Pressable(() => ItemClicked?.Invoke(rowContainer)));
+            rowContainer.AddManipulator(new Clickable(() => OnItemClicked(rowContainer)));
 
             foreach (var style in m_RowStyles)
             {
@@ -289,7 +322,7 @@ namespace Unity.ReferenceProject.UITableListView
             m_ListView.RefreshItems();
         }
 
-        void BindItem(VisualElement e, int id)
+        void OnBindItem(VisualElement e, int id)
         {
             if (id < 0 || id >= m_ListView.itemsSource.Count)
                 return;
@@ -300,9 +333,12 @@ namespace Unity.ReferenceProject.UITableListView
             {
                 column.InvokeBindCell(e, column, data);
             }
+            
+            e.userData = id;
+            bindItem?.Invoke(e, id);
         }
 
-        void UnbindItem(VisualElement e, int id)
+        void OnUnbindItem(VisualElement e, int id)
         {
             if (id < 0 || id >= m_ListView.itemsSource.Count)
                 return;
@@ -312,6 +348,19 @@ namespace Unity.ReferenceProject.UITableListView
             foreach (var column in m_Columns)
             {
                 column.InvokeUnbindCell(e, column, data);
+            }
+            
+            e.userData = -1;
+            unbindItem?.Invoke(e, id);
+        }
+
+        void OnItemClicked(VisualElement rowContainer)
+        {
+            if (rowContainer.userData is int index and >= 0)
+            {
+                var item = ListView.itemsSource[index];
+                itemClicked?.Invoke(item);
+                itemClickedId?.Invoke(index);
             }
         }
 

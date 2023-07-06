@@ -3,7 +3,7 @@ using Unity.Cloud.Common;
 using Unity.ReferenceProject.UITableListView;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Button = UnityEngine.Dt.App.UI.Button;
+using Button = Unity.AppUI.UI.Button;
 
 namespace Unity.ReferenceProject.ScenesList
 {

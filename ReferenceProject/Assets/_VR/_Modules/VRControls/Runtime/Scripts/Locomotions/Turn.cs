@@ -2,15 +2,11 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.XR.Interaction.Toolkit;
 
 namespace Unity.ReferenceProject.VR.VRControls
 {
-    public class Turn : LocomotionProvider
+    public class Turn : BaseLocomotionProvider
     {
-        [SerializeField]
-        InputActionReference m_LeftRight;
-
         [SerializeField]
         float m_TurnSpeed = 2f;
 
@@ -22,34 +18,7 @@ namespace Unity.ReferenceProject.VR.VRControls
 
         Coroutine m_Coroutine;
 
-        InputAction m_LeftRightAction;
-
-        protected override void Awake()
-        {
-            base.Awake();
-
-            m_LeftRightAction = m_LeftRight.action;
-            m_LeftRightAction.started += OnStarted;
-            m_LeftRightAction.canceled += OnCancel;
-        }
-
-        void OnEnable()
-        {
-            m_LeftRightAction.Enable();
-        }
-
-        void OnDisable()
-        {
-            m_LeftRightAction.Disable();
-        }
-
-        void OnDestroy()
-        {
-            m_LeftRightAction.started -= OnStarted;
-            m_LeftRightAction.canceled -= OnCancel;
-        }
-
-        void OnStarted(InputAction.CallbackContext obj)
+        protected override void OnStarted(InputAction.CallbackContext callbackContext)
         {
             if (m_Coroutine == null)
             {
@@ -57,7 +26,7 @@ namespace Unity.ReferenceProject.VR.VRControls
             }
         }
 
-        void OnCancel(InputAction.CallbackContext obj)
+        protected override void OnCanceled(InputAction.CallbackContext callbackContext)
         {
             if (m_Coroutine != null)
             {
@@ -70,9 +39,9 @@ namespace Unity.ReferenceProject.VR.VRControls
         {
             while (true)
             {
-                if (m_LeftRightAction.IsPressed() && BeginLocomotion())
+                if (m_InputAction.IsPressed() && BeginLocomotion())
                 {
-                    var leftRightValue = m_LeftRightAction.ReadValue<float>();
+                    var leftRightValue = m_InputAction.ReadValue<float>();
                     var xrOrigin = system.xrOrigin;
 
                     float rotation;

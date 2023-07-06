@@ -1,7 +1,7 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="UnityEngine.Dt.App.UI">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
     <Style src="project://database/Assets/_Modules/Identity/Runtime/UIToolkit/ProfileStyle.uss?fileID=7433441132597879392&amp;guid=81ea79cdb6e537347b5454d2928de771&amp;type=3#ProfileStyle" />
     <ui:VisualElement class="profile-tool-content">
-        <appui:Header name="profile-tool-username" class="profile-tool-username" size="S" />
+        <appui:Heading name="profile-tool-username" class="profile-tool-username" size="S" />
         <appui:Button name="profile-tool-button" title="@ReferenceProject:Profile_Logout" primary="true" class="profile-tool-button" />
     </ui:VisualElement>
 </ui:UXML>

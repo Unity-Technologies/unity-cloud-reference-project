@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Dt.App.UI;
+using Unity.AppUI.UI;
 using UnityEngine.UIElements;
 using Zenject;
 
@@ -42,6 +42,7 @@ namespace Unity.ReferenceProject.Tools
         List<ToolData> m_ToolData;
 
         IToolUIManager m_ToolUIManager;
+        readonly List<IToolUIModeHandler> m_Handlers = new();
 
         [Inject]
         void Setup(IToolUIManager toolUIManager)
@@ -74,7 +75,16 @@ namespace Unity.ReferenceProject.Tools
             {
                 var buttonContainer = string.IsNullOrEmpty(toolData.ToolbarElementName) ? null : root.Q<VisualElement>(toolData.ToolbarElementName);
                 var handler = AddTool(panelContainer, buttonContainer, toolData);
+                m_Handlers.Add(handler);
                 m_ToolUIManager.RegisterHandler(handler);
+            }
+        }
+
+        void OnDestroy()
+        {
+            foreach (var handler in m_Handlers)
+            {
+                m_ToolUIManager.UnregisterHandler(handler);
             }
         }
 
@@ -98,7 +108,7 @@ namespace Unity.ReferenceProject.Tools
 
         public static ActionButton CreateActionButton(ToolUIController toolUIController, string buttonStyleClass)
         {
-            var iconElement = toolUIController.GetIcon();
+            var iconElement = toolUIController.GetButtonContent();
             var button = new ActionButton();
             button.accent = true;
             button.focusable = false;

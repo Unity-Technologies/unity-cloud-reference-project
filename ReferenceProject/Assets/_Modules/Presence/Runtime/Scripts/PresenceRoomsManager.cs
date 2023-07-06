@@ -13,14 +13,11 @@ using Zenject;
 
 namespace Unity.ReferenceProject.Presence
 {
-    public sealed class PresenceRoomsManager : MonoBehaviour, IDisposable
+    public sealed class PresenceRoomsManager : MonoBehaviour
     {
         readonly Dictionary<SceneId, Room> m_Rooms = new();
         IRoomProvider<Room> m_RoomProvider;
         IAuthenticationStateProvider m_AuthenticationStateProvider;
-
-        CancellationTokenSource m_CancellationTokenSource;
-        CancellationToken CancellationToken => m_CancellationTokenSource.Token;
 
         ISceneProvider m_SceneProvider;
         
@@ -29,6 +26,21 @@ namespace Unity.ReferenceProject.Presence
         
         Task m_LeaveRoomTask;
         Task m_JoinRoomTask;
+        
+        readonly Dictionary<Room, HashSet<int>> m_Subscribers = new ();
+        readonly HashSet<Room> m_MonitorRooms = new ();
+        readonly HashSet<Room> m_QueuedHashSet = new ();
+
+        Task m_TrackMonitoringTask;
+        Task m_MonitoringQueueTask;
+
+        // For cancel Room.StartMonitoring or Room.StopMonitoring task 
+        CancellationTokenSource m_MonitoringCancellationTokenSource; 
+
+        // Cancels only tasks in this script. It will not cancel Room.StartMonitoring or Room.StopMonitoring task 
+        readonly CancellationTokenSource m_LocalCancellationTokenSource = new CancellationTokenSource(); 
+        
+        bool isDestroyed;
 
         [Inject]
         public void Setup(IRoomProvider<Room> roomProvider, IAuthenticationStateProvider authenticationStateProvider, ISceneProvider sceneProvider)
@@ -38,45 +50,49 @@ namespace Unity.ReferenceProject.Presence
             m_AuthenticationStateProvider = authenticationStateProvider;
         }
 
-        async void OnEnable()
+        void OnEnable()
         {
             m_AuthenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
 
             // Update rooms
-            await ApplyAuthenticationStateAsync(m_AuthenticationStateProvider.AuthenticationState);
+            OnAuthenticationStateChanged(m_AuthenticationStateProvider.AuthenticationState);
         }
 
         async void OnDisable()
         {
-            await ResetRoom();
-
+            isDestroyed = true;
             m_AuthenticationStateProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
+            
+            CancelToken(m_LocalCancellationTokenSource); // It will stop TrackMonitoringAsync
+            
+            if (m_MonitoringQueueTask != null && !m_MonitoringQueueTask.IsCompleted)
+            {
+                await m_MonitoringQueueTask;
+            }
 
-            if (m_CancellationTokenSource != null && CancellationToken.CanBeCanceled)
-                m_CancellationTokenSource.Cancel();
+            await ResetRoomsAsync();
+
+            CancelToken(m_MonitoringCancellationTokenSource);
+        }
+        
+        void OnDestroy()
+        {
+            isDestroyed = true;
+            m_MonitoringCancellationTokenSource?.Dispose();
+            m_LocalCancellationTokenSource?.Dispose();
         }
 
         void OnAuthenticationStateChanged(AuthenticationState newAuthenticationState)
         {
-           _ = ApplyAuthenticationStateAsync(newAuthenticationState).ConfigureAwait(false);
-        }
-
-        async Task ApplyAuthenticationStateAsync(AuthenticationState state)
-        {
-            switch (state)
+            if (newAuthenticationState == AuthenticationState.LoggedIn)
             {
-                case AuthenticationState.LoggedIn:
-                    await StartMonitoringAllRoomsAsync();
-                    break;
-                case AuthenticationState.LoggedOut:
-                    await ResetRoom();
-                    break;
+                _ = GetAllRoomsAsync().ConfigureAwait(false);
             }
         }
 
-        async Task StartMonitoringAllRoomsAsync()
+        async Task GetAllRoomsAsync()
         {
-            await ResetRoom();
+            m_Rooms.Clear();
             
             var sceneList = await m_SceneProvider.ListScenesAsync();
             
@@ -89,80 +105,124 @@ namespace Unity.ReferenceProject.Presence
                 
                 m_Rooms[sceneId] = room;
             }
-
-            foreach (var room in m_Rooms)
-            {
-                await StartMonitoringRoomAsync(room.Value);
-            }
         }
-
-        async Task ResetRoom()
+        
+        Task MonitorRoom(Room room, int instanceId, bool isSubscribe, CancellationToken cancellationToken)
         {
-            foreach (var room in m_Rooms)
+            if(room == null)
+                return Task.CompletedTask;
+
+            if (!m_Subscribers.ContainsKey(room))
             {
-                await StopMonitoringRoomAsync(room.Value);
+                m_Subscribers.Add(room, new HashSet<int>()); 
             }
 
-            m_Rooms.Clear();
+            if (isSubscribe)
+            {
+                m_Subscribers[room].Add(instanceId);
+            }
+            else
+            {
+                m_Subscribers[room].Remove(instanceId);
+            }
+            
+            m_QueuedHashSet.Add(room);
+            
+            if (m_TrackMonitoringTask == null || m_TrackMonitoringTask.IsCompleted)
+            {
+                m_TrackMonitoringTask = TrackMonitoringAsync(cancellationToken);
+            }
+            
+            return Task.CompletedTask;
         }
+        
+        async Task TrackMonitoringAsync(CancellationToken cancellationToken)
+        {
+            while (m_QueuedHashSet.Count > 0)
+            {
+                var room = m_QueuedHashSet.FirstOrDefault();
 
+                if (room == null)
+                    break;
+                
+                m_QueuedHashSet.Remove(room);
+
+                if(!m_Subscribers.TryGetValue(room, out var subscribers) || cancellationToken.IsCancellationRequested)
+                    break;
+
+                if (subscribers.Count != 0 && !m_MonitorRooms.Contains(room))
+                {
+                    // Start monitoring
+                    m_MonitoringQueueTask = StartMonitoringRoomAsync(room);
+                }
+                else if(subscribers.Count == 0 && m_MonitorRooms.Contains(room))
+                {
+                    // Stop monitoring
+                    m_MonitoringQueueTask = StopMonitoringRoomAsync(room, true);
+                }
+                await m_MonitoringQueueTask;
+            }
+            
+            m_TrackMonitoringTask = null;
+        }
+        
         async Task StartMonitoringRoomAsync(Room room)
         {
-            if (room != null)
+            if (room == null)
+                return;
+            
+            var result = await HandleRetryQueuedAndExecuteActionAsync(() => room.StartMonitoringAsync(new NoRetryPolicy(), GetCancellationToken(ref m_MonitoringCancellationTokenSource))); 
+
+            if (result)
             {
-                ManageCancellation();
-                IRetryPolicy retryPolicy = new ExponentialBackoffRetryPolicy();
-                await HandleRetryQueuedAndExecuteAction(() => room.StartMonitoringAsync(retryPolicy, CancellationToken));
+                m_MonitorRooms.Add(room);
             }
         }
 
-        async Task StopMonitoringRoomAsync(Room room)
+        async Task StopMonitoringRoomAsync(Room room, bool isRemoveRoom)
         {
-            if (room != null)
+            if (room == null)
+                return;
+
+            var result = await HandleRetryQueuedAndExecuteActionAsync(() => room.StopMonitoringAsync(new NoRetryPolicy(), GetCancellationToken(ref m_MonitoringCancellationTokenSource)));
+            
+            if (result && isRemoveRoom)
             {
-                ManageCancellation();
-                IRetryPolicy retryPolicy = new ExponentialBackoffRetryPolicy();
-                await HandleRetryQueuedAndExecuteAction(() => room.StopMonitoringAsync(retryPolicy, CancellationToken));
+                m_MonitorRooms.Remove(room);
             }
         }
         
-
-        void ManageCancellation()
+        async Task ResetRoomsAsync()
         {
-            if (m_CancellationTokenSource != null && CancellationToken.CanBeCanceled)
-                m_CancellationTokenSource.Cancel();
-
-            m_CancellationTokenSource = new CancellationTokenSource();
-        }
-
-        async Task HandleRetryQueuedAndExecuteAction(Func<Task> action)
-        {
-            try
+            await LeaveRoomAsync();
+            
+            foreach (var room in m_MonitorRooms)
             {
-                await action();
+                await StopMonitoringRoomAsync(room, false);
             }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
-            }
-            finally
-            {
-                m_CancellationTokenSource?.Dispose();
-                m_CancellationTokenSource = null;
-            }
-        }
 
-        public Room GetRoomForScene(SceneId sceneId)
+            m_Subscribers.Clear();
+            m_MonitorRooms.Clear();
+            m_QueuedHashSet.Clear();
+        }
+        
+        public void SubscribeForMonitoring(SceneId sceneId, int instanceId) => SubscribeForMonitoring(GetRoomForScene(sceneId), instanceId);
+        public void SubscribeForMonitoring(Room room, int instanceId)
         {
-            return m_Rooms.ContainsKey(sceneId) ? m_Rooms[sceneId] : null;
+            if (isDestroyed) // Stops execution if this gameObject already destroyed
+                return;
+            _ = MonitorRoom(room, instanceId, true, m_LocalCancellationTokenSource.Token);
         }
 
-        public void Dispose()
+        public void UnsubscribeFromMonitoring(SceneId sceneId, int instanceId) => UnsubscribeFromMonitoring(GetRoomForScene(sceneId), instanceId);
+        public void UnsubscribeFromMonitoring(Room room, int instanceId)
         {
-            m_CancellationTokenSource?.Dispose();
+            if (isDestroyed) // Stops execution if this gameObject already destroyed
+                return;
+            _ = MonitorRoom(room, instanceId, false, m_LocalCancellationTokenSource.Token);
         }
 
-        public async Task<bool> JoinRoom(SceneId sceneId)
+        public async Task<bool> JoinRoomAsync(SceneId sceneId)
         {
             if (m_CurrentRoom != null)
             {
@@ -182,25 +242,28 @@ namespace Unity.ReferenceProject.Presence
                 return false;
             }
 
-            if (!m_Rooms.TryGetValue(sceneId, out m_CurrentRoom))
+            if (!m_Rooms.ContainsKey(sceneId))
             {
-                m_CurrentRoom = await m_RoomProvider.GetRoomAsync(sceneId);
+                var room = await m_RoomProvider.GetRoomAsync(sceneId);
+                m_Rooms.Add(sceneId, room);
             }
-            
+
+            m_CurrentRoom = m_Rooms[sceneId];
+
             m_JoinRoomTask = m_CurrentRoom.JoinAsync(new NoRetryPolicy(), CancellationToken.None);
             await m_JoinRoomTask;
             
             return true;
         }
-
-        public async Task<bool> LeaveRoom()
+        
+        public async Task<bool> LeaveRoomAsync()
         {
             if (m_CurrentRoom == null)
                 return false;
 
+            // Already attempting to disconnect from Joined room
             if (m_LeaveRoomTask != null && !m_LeaveRoomTask.IsCompleted)
             {
-                Debug.LogWarning($"Already attempting to disconnect from Joined room");
                 await m_LeaveRoomTask;
                 return true;
             }
@@ -210,6 +273,43 @@ namespace Unity.ReferenceProject.Presence
 
             m_CurrentRoom = null;
             return true;
+        }
+        
+        public Room GetRoomForScene(SceneId sceneId) => m_Rooms.ContainsKey(sceneId) ? m_Rooms[sceneId] : null;
+
+        async Task<bool> HandleRetryQueuedAndExecuteActionAsync(Func<Task> action)
+        {
+            try
+            {
+                await action();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning(e);
+                return false;
+            }
+            finally
+            {
+                m_MonitoringCancellationTokenSource?.Dispose();
+                m_MonitoringCancellationTokenSource = null;
+            }
+        }
+        
+        static CancellationToken GetCancellationToken(ref CancellationTokenSource cancellationToken)
+        {
+            CancelToken(cancellationToken);
+            cancellationToken = new CancellationTokenSource();
+            return cancellationToken.Token;
+        }
+
+        static void CancelToken(CancellationTokenSource cancellationToken)
+        {
+            if (cancellationToken != null && cancellationToken.Token.CanBeCanceled)
+            {
+                cancellationToken.Cancel();
+                cancellationToken.Dispose();
+            }
         }
     }
 }

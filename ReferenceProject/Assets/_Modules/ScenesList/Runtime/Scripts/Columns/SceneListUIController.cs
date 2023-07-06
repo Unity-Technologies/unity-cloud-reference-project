@@ -7,7 +7,7 @@ using Unity.ReferenceProject.UITableListView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Zenject;
-using Button = UnityEngine.Dt.App.UI.Button;
+using Button = Unity.AppUI.UI.Button;
 
 namespace Unity.ReferenceProject.ScenesList
 {
@@ -74,13 +74,7 @@ namespace Unity.ReferenceProject.ScenesList
 
             if (m_Table != null)
             {
-                m_Table.ItemClicked -= OnItemClicked;
-            }
-
-            if (m_Table?.ListView != null)
-            {
-                m_Table.ListView.bindItem -= OnBindItem;
-                m_Table.ListView.unbindItem -= OnUnbindItem;
+                m_Table.itemClicked -= OnItemClicked;
             }
         }
 
@@ -116,10 +110,7 @@ namespace Unity.ReferenceProject.ScenesList
 
             m_RefreshButton.clicked += Refresh;
 
-            m_Table.ItemClicked += OnItemClicked;
-
-            m_Table.ListView.bindItem += OnBindItem;
-            m_Table.ListView.unbindItem += OnUnbindItem;
+            m_Table.itemClicked += OnItemClicked;
 
             var scrollView = m_Table.Q<ScrollView>();
             m_Table.ListView.RegisterCallback<WheelEvent>((evt) =>
@@ -144,23 +135,12 @@ namespace Unity.ReferenceProject.ScenesList
             }
         }
 
-        void OnItemClicked(VisualElement element)
+        void OnItemClicked(object clickedItem)
         {
-            if (element.userData is int index and >= 0)
-            {
-                var scene = (IScene) m_Table.ListView.itemsSource[index];
-                ProjectSelected?.Invoke(scene);
-            }
-        }
-
-        static void OnBindItem(VisualElement element, int index)
-        {
-            element.userData = index;
-        }
-
-        static void OnUnbindItem(VisualElement element, int index)
-        {
-            element.userData = -1;
+            if(clickedItem is not IScene scene)
+                return;
+            
+            ProjectSelected?.Invoke(scene);
         }
 
         IColumnEventData[] AllColumns
@@ -182,6 +162,11 @@ namespace Unity.ReferenceProject.ScenesList
         {
             StartCoroutine(UpdateData());
         }
+
+        public void RefreshOnlyTable()
+        {
+            OnPrimaryKeyUpdate();
+        }
         
         public void SetVisibility(bool isVisible)
         {
@@ -194,11 +179,11 @@ namespace Unity.ReferenceProject.ScenesList
             {
                 yield break;
             }
-
-            SetVisibility(m_LoadingIndicator, true); // Show loading indicator
-            SetVisibility(m_Table, false); // Hide list
-
-            m_Task = RefreshServicesAsync();
+            
+            SetVisibility(m_LoadingIndicator, true);  // Show loading indicator
+            SetVisibility(m_Table, false);  // Hide list
+            
+            m_Task = RefreshScenesAndWorkspacesAsync();
             yield return new WaitWhile(() => !m_Task.IsCompleted);
 
             // Hide loading indicator
@@ -208,7 +193,7 @@ namespace Unity.ReferenceProject.ScenesList
             OnPrimaryKeyUpdate();
         }
 
-        async Task RefreshServicesAsync()
+        async Task RefreshScenesAndWorkspacesAsync()
         {
             try
             {

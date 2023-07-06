@@ -1,6 +1,5 @@
 ﻿using System;
 using Unity.Cloud.Common;
-using Unity.ReferenceProject.AccessHistory;
 using Unity.ReferenceProject.DataStreaming;
 using Unity.ReferenceProject.ScenesList;
 using Unity.ReferenceProject.DataStores;
@@ -12,9 +11,6 @@ namespace Unity.ReferenceProject.VR
 {
     public class SceneListToolUIControllerVR : SceneListToolUIController
     {
-        [SerializeField]
-        InputSingleUnifiedPointer m_SingleUnifiedPointer;
-
         IDataStreamController m_DataStreamController;
 
         PropertyValue<IScene> m_ScenePropertyValue;
@@ -37,17 +33,6 @@ namespace Unity.ReferenceProject.VR
             var visualElement = base.CreateVisualTree(template);
             SceneListUIController.InitUIToolkit(visualElement);
             return visualElement;
-        }
-
-        public override void OnToolOpened()
-        {
-            SceneListUIController.Refresh();
-            m_SingleUnifiedPointer.Enable();
-        }
-
-        public override void OnToolClosed()
-        {
-            m_SingleUnifiedPointer.Disable();
         }
 
         void OnSceneSelected(IScene scene)

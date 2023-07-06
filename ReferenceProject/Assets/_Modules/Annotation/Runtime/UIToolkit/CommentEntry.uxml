@@ -1,0 +1,18 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <ui:VisualElement name="CommentEntry" class="comment-entry">
+        <ui:VisualElement name="CommentEntryContainer" class="comment-entry-container">
+            <ui:VisualElement name="CommentEntryHeader" class="comment-entry-header">
+                <appui:Avatar name="CommentEntryAvatar" class="comment-entry-avatar">
+                    <appui:Text name="CommentEntryAvatarInitials" class="comment-entry-avatar-initials"/>
+                </appui:Avatar>
+                <ui:VisualElement name="CommentInfo" class="comment-entry-info">
+                    <appui:Text name="CommentEntryAuthor" size="M" class="comment-entry-author"/>
+                    <appui:Text name="CommentEntryDate" size="XS" class="comment-entry-date"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <appui:Text name="CommentEntryText" size="S" class="comment-entry-text"/>
+        </ui:VisualElement>
+        <appui:Divider name="CommentEntryDivider" class="annotation-divider"/>
+        <appui:ActionButton name="CommentEntryOptionButton" icon="ellipsis" quiet="true" tooltip="@Annotation:Options" class="comment-entry-option-button"/>
+    </ui:VisualElement>
+</ui:UXML>

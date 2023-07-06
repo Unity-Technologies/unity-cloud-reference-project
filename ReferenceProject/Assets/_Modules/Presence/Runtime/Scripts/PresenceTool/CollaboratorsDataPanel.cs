@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Cloud.Presence;
+using Unity.ReferenceProject.Common;
 using UnityEngine.UIElements;
 
 namespace Unity.ReferenceProject.Presence
@@ -10,7 +11,8 @@ namespace Unity.ReferenceProject.Presence
         static readonly string k_CollaboratorDataUssClassName = "collaborator-data";
 
         public bool IsDirty { get; private set; }
-        
+        public ColorPalette AvatarColorPalette { get; set; }
+
         VisualElement m_RootVisualElement;
         readonly Dictionary<CollaboratorDataUI, VisualElement> m_Collaborators = new();
 
@@ -19,8 +21,8 @@ namespace Unity.ReferenceProject.Presence
             var data = m_Collaborators.FirstOrDefault(p => p.Key.Participant.Id == participant.Id);
             if(data.Key != null)
                 return;
-            
-            m_Collaborators.Add(new CollaboratorDataUI(participant), null);
+
+            m_Collaborators.Add(new CollaboratorDataUI(participant){ AvatarColorPalette = this.AvatarColorPalette }, null);
             IsDirty = true;
         }
 
@@ -29,7 +31,7 @@ namespace Unity.ReferenceProject.Presence
             var data = m_Collaborators.FirstOrDefault(p => p.Key.Participant.Id == participant.Id);
             if(data.Key == null)
                 return;
-            
+
             m_Collaborators.Remove(data.Key);
             IsDirty = true;
         }

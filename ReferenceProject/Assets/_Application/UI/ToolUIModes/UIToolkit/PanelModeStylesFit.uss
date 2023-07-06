@@ -1,0 +1,13 @@
+.panel-right-container {
+    background-color: var(--appui-backgrounds-50);
+    margin: 12px;
+    top: 58px;
+    left: 80px;
+    display: flex;
+    position: absolute;
+}
+
+.panel-horizontal-display {
+    display: flex;
+    flex-direction: row;
+}
