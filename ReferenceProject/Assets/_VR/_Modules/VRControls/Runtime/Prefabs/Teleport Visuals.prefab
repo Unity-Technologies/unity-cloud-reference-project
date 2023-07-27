@@ -134,7 +134,6 @@ MonoBehaviour:
   m_MaxProjectileSteps: 256
   m_TransitionTime: 0.03
   m_TargetRigPoseVisual: {fileID: 6276380296124636261}
-  m_TrackingSpaceForwardIndicator: {fileID: 0}
   m_TargetCameraForwardVisual: {fileID: 556198443774958164}
   m_Gradient:
     serializedVersion: 2
@@ -195,9 +194,6 @@ MonoBehaviour:
     m_NumColorKeys: 2
     m_NumAlphaKeys: 3
   m_LineDampening: 10
-  m_LayerMask:
-    serializedVersion: 2
-    m_Bits: 0
   m_LineWidth: 0.05
   m_WidthCurve:
     serializedVersion: 2

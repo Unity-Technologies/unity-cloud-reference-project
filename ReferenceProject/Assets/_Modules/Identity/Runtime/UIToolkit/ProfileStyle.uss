@@ -9,5 +9,5 @@
 }
 
 .profile-tool-button {
-
+    align-items: center;
 }

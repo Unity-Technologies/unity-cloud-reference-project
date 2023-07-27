@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ServicePriority: 2
-  m_DefaultSortColumnName: Last access
+  m_DefaultSortColumn: {fileID: 5770999630819768376}
 --- !u!114 &6171362006321056443
 MonoBehaviour:
   m_ObjectHideFlags: 0

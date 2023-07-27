@@ -7,7 +7,7 @@ namespace Unity.ReferenceProject.VR.VRControls
     ///     Set of properties for the visual appearance of a interaction line including width, color, and bendiness
     /// </summary>
     [Serializable]
-    [CreateAssetMenu(fileName = "NewLineSettings.asset", menuName = "ReferenceProject/VRManager/Interaction Line Settings")]
+    [CreateAssetMenu(fileName = "NewLineSettings.asset", menuName = "ReferenceProject/VR/Interaction Line Settings")]
     public class InteractionLineSettings : ScriptableObject
     {
         [SerializeField, Tooltip("The width of the line (in centimeters).")]

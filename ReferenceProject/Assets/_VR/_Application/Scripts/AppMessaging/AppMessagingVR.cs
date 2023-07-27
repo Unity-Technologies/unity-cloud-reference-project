@@ -8,7 +8,6 @@ using Unity.AppUI.UI;
 using Unity.ReferenceProject.InputDisabling;
 using UnityEngine.UIElements;
 using Zenject;
-using Object = UnityEngine.Object;
 
 namespace Unity.ReferenceProject.VR
 {
@@ -78,7 +77,9 @@ namespace Unity.ReferenceProject.VR
         DockedPanelController m_ModalDockedPanel;
         readonly Dictionary<Modal, DockedPanelController> m_ModalToPanel = new();
 
-        static readonly Vector2 k_ToastSize = new(700, 60);
+        static readonly float k_CharacterWidth = 13f;
+        static readonly float k_DismissWidth = 110f;
+        static readonly Vector2 k_ToastSize = new(24, 60);
         static readonly Vector2 k_ModalSize = new(640, 480);
 
         [Inject]
@@ -158,7 +159,9 @@ namespace Unity.ReferenceProject.VR
 
         void ShowToastMessage(string message, NotificationStyle style, NotificationDuration duration, bool dismissable = false, params object[] args)
         {
-            m_ToastDockedPanel = m_PanelManager.CreatePanel<DockedPanelController>(k_ToastSize);
+            var size = k_ToastSize;
+            size.x += message.Length*k_CharacterWidth + (dismissable ? k_DismissWidth : 0);
+            m_ToastDockedPanel = m_PanelManager.CreatePanel<DockedPanelController>(size);
             m_ToastDockedPanel.name = "ToastMessagePanel";
             m_ToastDockedPanel.DockPoint = m_RigUIController.PermanentDockPoint;
             m_ToastDockedPanel.transform.localPosition += (-1 * k_ToastSize.y) / 1000f * Vector3.up - 0.01f * Vector3.forward;

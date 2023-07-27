@@ -95,8 +95,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2674122ad2030a54ba778fc18433e0a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TemplateUI: {fileID: 9197481963319205126, guid: fa81b3fda1bdf7240af1ee96162e41d7,
-    type: 3}
   m_Template: {fileID: 9197481963319205126, guid: fa81b3fda1bdf7240af1ee96162e41d7,
     type: 3}
 --- !u!114 &2722847688883197227
@@ -111,8 +109,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78578ce158585cc49af03219d67c867d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TemplateUI: {fileID: 9197481963319205126, guid: eda5233a84b0a7140ad27514e56f8d1f,
-    type: 3}
   m_Template: {fileID: 9197481963319205126, guid: eda5233a84b0a7140ad27514e56f8d1f,
     type: 3}
 --- !u!114 &3516525833158533450
@@ -178,6 +174,33 @@ MonoBehaviour:
   m_CameraController: {fileID: 6832047366511528887}
   m_InputActionAsset: {fileID: -944628639613478452, guid: 135a259ff3a4c49f3a952bd62f798a93,
     type: 3}
+  m_ArrivalOffsetRelative: 1
+  m_ArrivalOffsetFixed: {x: 0, y: 0, z: 0}
+  m_LerpTime: 1
+  m_SmoothCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &6832047366511528887
 MonoBehaviour:
   m_ObjectHideFlags: 0

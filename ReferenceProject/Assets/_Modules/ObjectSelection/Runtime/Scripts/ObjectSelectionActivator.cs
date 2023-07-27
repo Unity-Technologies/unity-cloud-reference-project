@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Unity.ReferenceProject.ObjectSelection
 {
-    public class ObjectSelectionActivator
+    public abstract class EventActivator
     {
         readonly HashSet<MonoBehaviour> m_Listeners = new();
 
@@ -46,5 +46,15 @@ namespace Unity.ReferenceProject.ObjectSelection
         {
             OnActivate?.Invoke(m_Listeners.Count > 0);
         }
+    }
+    
+    public class ObjectSelectionActivator : EventActivator
+    {
+        
+    }
+    
+    public class ObjectSelectionHighlightActivator : EventActivator
+    {
+        
     }
 }

@@ -9,9 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d79b9296419496428c842fa4542b137, type: 3}
+  m_Script: {fileID: 11500000, guid: d21aaa53bddd26244aba6aa4a0681dfb, type: 3}
   m_Name: ViewLeft
   m_EditorClassIdentifier: 
   m_Icon: {fileID: 21300000, guid: cf18ced61457b8040b14bdbb75206e77, type: 3}
   m_ViewName: Left
+  m_UseDefaultView: 0
   m_AngleRotation: {x: 0, y: 90, z: 0}
+  afficherNom: 0
+  nom: 

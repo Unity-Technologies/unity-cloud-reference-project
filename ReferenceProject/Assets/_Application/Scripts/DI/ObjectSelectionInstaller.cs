@@ -19,6 +19,7 @@ namespace Unity.ReferenceProject
                 .FromInstance(property);
 
             Container.Bind<ObjectSelectionActivator>().AsSingle();
+            Container.Bind<ObjectSelectionHighlightActivator>().AsSingle();
         }
     }
 }

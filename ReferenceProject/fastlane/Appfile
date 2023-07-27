@@ -1,0 +1,8 @@
+
+app_identifier("com.unity.cloud.reference-project") # The bundle identifier of your app
+apple_id("fastlane@unity3d.com") # Your Apple email address
+team_id("BVPN9UFA9B")
+
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile

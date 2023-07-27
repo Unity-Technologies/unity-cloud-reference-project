@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 using Unity.AppUI.UI;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Unity.ReferenceProject.SearchSortFilter
@@ -18,19 +18,16 @@ namespace Unity.ReferenceProject.SearchSortFilter
 
         readonly Dictionary<string, string> m_BindPathNames = new();
 
-        readonly string m_DefaultSortName;
-
         readonly ISortModule m_SortModule;
 
         VisualElement m_LastClickedElement;
 
-        public SortModuleUI(ISortModule sortModule, VisualElement root, Action onSortChanged, string defaultSort = "",
+        public SortModuleUI(ISortModule sortModule, VisualElement root, Action onSortChanged,
             params (string bindPathName, string uiElementName)[]
                 keys)
         {
             OnSortChanged += onSortChanged;
             m_SortModule = sortModule;
-            m_DefaultSortName = defaultSort;
 
             if(keys != null)
             {
@@ -51,17 +48,17 @@ namespace Unity.ReferenceProject.SearchSortFilter
                 Debug.LogError($"Can't find {nameof(VisualElement)} by name: {uiElementName}");
                 return;
             }
-                
+
             m_ButtonList.Add(button);
             m_ButtonDictionary.Add(uiElementName, button);
 
             button.RegisterCallback<ClickEvent>(OnClick);
             button.AddToClassList(k_ArrowDisableStyle);
             m_BindPathNames.Add(uiElementName, bindPathName);
-            
+
             CreateArrow(button);
-            
-            if (!string.IsNullOrEmpty(m_DefaultSortName) && m_DefaultSortName == bindPathName)
+
+            if (!string.IsNullOrEmpty(m_SortModule.CurrentSortPathName) && m_SortModule.CurrentSortPathName == bindPathName)
             {
                 PerformSort(bindPathName);
             }
@@ -75,7 +72,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
             icon.AddToClassList(k_ArrowStyle);
             button.Add(icon);
         }
-        
+
         public void UnregisterCallbacks()
         {
             if (m_ButtonList.Count > 0)
@@ -103,35 +100,44 @@ namespace Unity.ReferenceProject.SearchSortFilter
 
         public void PerformSort(string uiElementName)
         {
-            if(m_ButtonDictionary.TryGetValue(uiElementName, out var targetBlock))
+            if (m_ButtonDictionary.TryGetValue(uiElementName, out var targetBlock))
             {
-                if (targetBlock != m_LastClickedElement)
-                    m_SortModule.SortOrder = SortOrder.Ascending; // picked new element
-                else
-                    m_SortModule.SortOrder = m_SortModule.SortOrder != SortOrder.Ascending
-                        ? SortOrder.Ascending
-                        : SortOrder.Descending; // picked same element
-                
-                if (m_BindPathNames.TryGetValue(uiElementName, out var bindPathName))
-                    m_SortModule.CurrentSortPathName = bindPathName;
-
-                // Change visual arrow
-                if (m_LastClickedElement != null)
-                {
-                    m_LastClickedElement.RemoveFromClassList(k_ArrowDecreaseStyle);
-                    m_LastClickedElement.RemoveFromClassList(k_ArrowIncreaseStyle);
-                    m_LastClickedElement.AddToClassList(k_ArrowDisableStyle);
-                }
-                
-                targetBlock.RemoveFromClassList(k_ArrowDisableStyle);
-                targetBlock.AddToClassList(m_SortModule.SortOrder == SortOrder.Ascending
-                    ? k_ArrowIncreaseStyle
-                    : k_ArrowDecreaseStyle);
-
-                m_LastClickedElement = targetBlock;
-
-                OnSortChanged?.Invoke();
+                PerformSort(targetBlock);
             }
+            else
+            {
+                Debug.LogError($"Argument: uiElementName {uiElementName} does not exist, in the SortModuleUI");
+            }
+        }
+
+        public void PerformSort(VisualElement targetBlock)
+        {
+            if (targetBlock != m_LastClickedElement)
+                m_SortModule.SortOrder = SortOrder.Ascending; // picked new element
+            else
+                m_SortModule.SortOrder = m_SortModule.SortOrder != SortOrder.Ascending
+                    ? SortOrder.Ascending
+                    : SortOrder.Descending; // picked same element
+
+            if (m_BindPathNames.TryGetValue(targetBlock.name, out var bindPathName))
+                m_SortModule.CurrentSortPathName = bindPathName;
+
+            // Change visual arrow
+            if (m_LastClickedElement != null)
+            {
+                m_LastClickedElement.RemoveFromClassList(k_ArrowDecreaseStyle);
+                m_LastClickedElement.RemoveFromClassList(k_ArrowIncreaseStyle);
+                m_LastClickedElement.AddToClassList(k_ArrowDisableStyle);
+            }
+
+            targetBlock.RemoveFromClassList(k_ArrowDisableStyle);
+            targetBlock.AddToClassList(m_SortModule.SortOrder == SortOrder.Ascending
+                ? k_ArrowIncreaseStyle
+                : k_ArrowDecreaseStyle);
+
+            m_LastClickedElement = targetBlock;
+
+            OnSortChanged?.Invoke();
         }
     }
 }

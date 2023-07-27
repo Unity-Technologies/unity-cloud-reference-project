@@ -50,6 +50,8 @@ MonoBehaviour:
     type: 3}
   m_UseHover: 0
   m_StringAllInformation: '@MetadataDisplay:AllInformation'
+  m_IndicatorPrefab: {fileID: 661146096168363895, guid: bbeed0801be40f04690fb6873f12dccf,
+    type: 3}
 --- !u!114 &8597118929043626976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,24 +68,7 @@ MonoBehaviour:
   m_Icon: {fileID: 21300000, guid: b1fdff1a969b2a0488b9b660e8b366dd, type: 3}
   m_Template: {fileID: 9197481963319205126, guid: e270a72ea79602945ad34a87b4231df0,
     type: 3}
-  ToolOpened:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolClosed:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolPointerEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolPointerExited:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolFocusIn:
-    m_PersistentCalls:
-      m_Calls: []
-  ToolFocusOut:
-    m_PersistentCalls:
-      m_Calls: []
+  m_HideButtonAtStart: 0
   m_Controller: {fileID: 3608959133627127108}
 --- !u!114 &8942787002623175417
 MonoBehaviour:

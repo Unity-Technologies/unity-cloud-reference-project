@@ -33,6 +33,7 @@ namespace Unity.ReferenceProject.ScenesList
                 m_SceneListUIController.gameObject.SetActive(true);
             }
 
+            m_SceneListUIController.SetBackground(true);
             m_SceneListUIController.SetVisibility(true);
             m_SceneListUIController.Refresh();
 
@@ -41,6 +42,7 @@ namespace Unity.ReferenceProject.ScenesList
 
         public override void OnToolClosed()
         {
+            m_SceneListUIController.SetBackground(false);
             m_SceneListUIController.SetVisibility(false);
             
             m_SceneListUIController.ProjectSelected -= CloseAction;

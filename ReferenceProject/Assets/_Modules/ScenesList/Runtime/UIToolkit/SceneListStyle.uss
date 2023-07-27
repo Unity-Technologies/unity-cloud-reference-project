@@ -37,7 +37,7 @@
 .loading-container {
     display: none;
     align-items: center;
-    margin-top: 64px;
+    margin: 10px;
 }
 
 .scene-container{
@@ -46,6 +46,20 @@
     padding-right: 54px;
     justify-content: flex-start;
     -unity-text-align: middle-left;
+}
+
+.scene-list-container{
+    background-color : var(--appui-backgrounds-50);
+    border-radius: 20px;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    padding-top: 20px;
+    margin-left: 72px;
+    margin-right: 72px;
+}
+
+.scene-list-background{
+    background-color: rgba(50, 50, 50, 0.9);
 }
 
 .project-list-column-full-width {
@@ -86,6 +100,10 @@
 
 .no-shrink {
     flex-shrink: 0;
+}
+
+.row {
+   flex-direction: row;
 }
 
 .ellipsis-text {

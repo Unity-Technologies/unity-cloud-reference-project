@@ -75,7 +75,7 @@ It also leverages Unity services that make it easier to:
 
 ### MacOS
 
-To open this Unity project on MacOS, you must have the Xcode commnand line tools installed. 
+To open this Unity project on MacOS, you must have the Xcode command line tools installed. 
 
 1. Open the `Terminal` app on MacOS
 2. Enter the following command `xcode-select --install`
@@ -90,9 +90,9 @@ Configuring Unity services typically involves signing into your Unity account an
 
 ### Sign into your Unity account
 
-> **Important**: The packages used in this project currently point to services hosted on GCP. When you sign in, ensure the toggle next to the `Sign In` button says `Using GCP`. This will change in an upcoming release that uses newer packages pointing to Azure.
+> **Important**: The packages used in this project recently switched to services hosted on Azure. When you sign in, ensure the toggle next to the `Sign In` button says `Using Azure`. If you were using a release prior to version `0.2.0` then you will need to register a new App Id and upload your assets to be processed again.
 
-* To sign in, go to the [Asset Manager](https://dashboard.unity3d.com/digital-twins/).
+* To sign in, go to the [Digital Twin dashboard](https://dashboard.unity3d.com/digital-twins/).
 
 ### Create an ID for your application
 
@@ -102,7 +102,7 @@ For your application to function effectively with Unity streaming services and d
 
 To create an `App Id`, follow these steps:
 
-1. Log into the [Asset Manager](https://dashboard.unity3d.com/digital-twins/).
+1. Log into the [Digital Twin dashboard](https://dashboard.unity3d.com/digital-twins/) and ensure you have selected "Using Azure".
 2. Select **Developer Hub** > **Registered Applications**.
 3. Select the **+ Register an application**.
 4. Enter the application name in the **App Name** field.
@@ -127,7 +127,7 @@ To access assets in a different organization, change organizations in the upper-
 
 To upload an asset:
 
-1. In the [Asset Manager](https://dashboard.unity3d.com/digital-twins/), select **+ New**.
+1. In the [Digital Twin dashboard](https://dashboard.unity3d.com/digital-twins/), select **+ New**.
 2. Name the asset.
 3. Drag your 3D asset and its dependent files into the upload area.
 4. Select **Create**.

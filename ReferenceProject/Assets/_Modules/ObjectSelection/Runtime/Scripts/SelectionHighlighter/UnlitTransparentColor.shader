@@ -1,4 +1,4 @@
-Shader "Unlit/TransparentColor"
+Shader "Custom/Unlit/TransparentColor/Breath"
 {
     Properties
     {

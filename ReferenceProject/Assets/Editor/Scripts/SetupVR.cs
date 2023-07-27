@@ -23,63 +23,116 @@ namespace Unity.ReferenceProject.Editor
         static AddRequest s_AddRequest;
         static Queue<string> s_PkgNameQueue;
 
+        public enum DeviceTarget
+        {
+            Standalone,
+            Quest,
+            Focus3
+        }
+
         public static void SetVRBuildScenes()
         {
             EditorBuildSettings.scenes = Array.Empty<EditorBuildSettingsScene>();
             AddBuildScenes(new[] { k_MainVRPath, k_StreamingVRPath });
         }
 
-        public static void SetupOpenXR()
+        public static void SetupOpenXR(DeviceTarget deviceTarget = 0)
         {
-            EnablePlugin(BuildTargetGroup.Standalone, k_OpenXRLoader);
+            BuildTargetGroup buildTargetGroup = BuildTargetGroup.Standalone;
+            switch (deviceTarget)
+            {
+                case DeviceTarget.Standalone:
+                    buildTargetGroup = BuildTargetGroup.Standalone;
+                    break;
+                case DeviceTarget.Quest:
+                case DeviceTarget.Focus3:
+                    buildTargetGroup = BuildTargetGroup.Android;
+                    break;
+            }
+
+            EnablePlugin(buildTargetGroup, k_OpenXRLoader);
             XRGeneralSettings.Instance.InitManagerOnStart = false;
-
-            var settings = GetOrCreateOpenXRSettings();
-
+            var settings = GetOrCreateOpenXRSettings(buildTargetGroup);
             var features = settings.GetFeatures();
             foreach (var feature in features)
             {
-                switch (feature.name)
+                switch (deviceTarget)
                 {
-                    case "MockRuntime Standalone":
-                        feature.enabled = false;
+                    case DeviceTarget.Standalone:
+                        switch (feature.name)
+                        {
+                            case "MockRuntime Standalone":
+                                feature.enabled = false;
+                                break;
+                            case "HTCViveControllerProfile Standalone":
+                                feature.enabled = true;
+                                break;
+                            case "OculusTouchControllerProfile Standalone":
+                                feature.enabled = true;
+                                break;
+                            case "ValveIndexControllerProfile Standalone":
+                                feature.enabled = true;
+                                break;
+                            case "MicrosoftMotionControllerProfile Standalone":
+                                feature.enabled = true;
+                                break;
+                            case "KHRSimpleControllerProfile Standalone":
+                                feature.enabled = true;
+                                break;
+                        }
                         break;
-                    case "HTCViveControllerProfile Standalone":
-                        feature.enabled = true;
+                    case DeviceTarget.Quest:
+                        switch (feature.name)
+                        {
+                            case "MockRuntime Standalone":
+                                feature.enabled = false;
+                                break;
+                            case "OculusTouchControllerProfile Android":
+                                feature.enabled = true;
+                                break;
+                            case "MetaQuestFeature Android":
+                                feature.enabled = true;
+                                break;
+                        }
                         break;
-                    case "OculusTouchControllerProfile Standalone":
-                        feature.enabled = true;
-                        break;
-                    case "ValveIndexControllerProfile Standalone":
-                        feature.enabled = true;
-                        break;
-                    case "MicrosoftMotionControllerProfile Standalone":
-                        feature.enabled = true;
-                        break;
-                    case "KHRSimpleControllerProfile Standalone":
-                        feature.enabled = true;
+                    case DeviceTarget.Focus3:
+                        switch (feature.name)
+                        {
+                            case "MockRuntime Standalone":
+                                feature.enabled = false;
+                                break;
+                            case "HTCViveControllerProfile Android":
+                                feature.enabled = true;
+                                break;
+                            case "ValveIndexControllerProfile Android":
+                                feature.enabled = true;
+                                break;
+                            case "VIVEFocus3ControllerInteraction Android":  // This one needs to be checked
+                                feature.enabled = true;
+                                break;
+                        }
                         break;
                 }
             }
         }
 
-        static OpenXRSettings GetOrCreateOpenXRSettings()
+        static OpenXRSettings GetOrCreateOpenXRSettings(BuildTargetGroup buildTargetGroup)
         {
             var settings = OpenXRSettings.Instance;
-            if (settings != null)
-                return settings;
+            if (settings == null)
+            {
+                var objectType = (from asm in AppDomain.CurrentDomain.GetAssemblies()
+                    from type in asm.GetTypes()
+                    where type.IsClass && type.Name == "FeatureHelpers"
+                    select type).Single();
 
-            var objectType = (from asm in AppDomain.CurrentDomain.GetAssemblies()
-                from type in asm.GetTypes()
-                where type.IsClass && type.Name == "FeatureHelpers"
-                select type).Single();
+                var method = objectType?.GetMethod("RefreshFeatures",
+                    BindingFlags.Static | BindingFlags.Public);
 
-            var method = objectType?.GetMethod("RefreshFeatures",
-                BindingFlags.Static | BindingFlags.Public);
+                method?.Invoke(null, new object[] { buildTargetGroup });
+            }
 
-            method?.Invoke(null, new object[] { BuildTargetGroup.Standalone });
-
-            return OpenXRSettings.GetSettingsForBuildTargetGroup(BuildTargetGroup.Standalone);
+            return OpenXRSettings.GetSettingsForBuildTargetGroup(buildTargetGroup);
         }
 
         static void EnablePlugin(BuildTargetGroup buildTargetGroup, string plugin)

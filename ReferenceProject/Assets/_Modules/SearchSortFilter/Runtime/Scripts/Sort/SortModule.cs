@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -12,6 +11,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
         string CurrentSortPathName { get; set; }
         SortOrder SortOrder { get; set; }
     }
+
 
     public class SortModule<T> : ISortModule
     {
@@ -32,16 +32,32 @@ namespace Unity.ReferenceProject.SearchSortFilter
                 m_SortNodes.Add(item.key, item.module);
         }
 
-        public async Task PerformSort(List<T> list) => await PerformSort(list, CurrentSortPathName, SortOrder);
+        public async Task PerformSort(List<T> list, CancellationToken cancellationToken = default) => await PerformSort(list, CurrentSortPathName, SortOrder, cancellationToken);
 
-        Task PerformSort(List<T> list, string pathName, SortOrder sortOrder)
+        Task PerformSort(List<T> list, string pathName, SortOrder sortOrder, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            
             if (string.IsNullOrEmpty(pathName))
                 return Task.CompletedTask;
 
-            if (m_SortNodes.TryGetValue(pathName, out var node))
-                node.PerformSort(list, sortOrder);
-
+            try
+            {
+                if (m_SortNodes.TryGetValue(pathName, out var node))
+                {
+                    node.PerformSort(list, sortOrder, cancellationToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                cancellationToken.ThrowIfCancellationRequested(); // Throw cancellation exception type
+                throw;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"exception: {e}");
+            }
+            
             return Task.CompletedTask;
         }
     }
@@ -55,7 +71,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
 
     public interface ISortBindNode<T>
     {
-        void PerformSort(List<T> list, SortOrder sortOrder);
+        void PerformSort(List<T> list, SortOrder sortOrder, CancellationToken cancellationToken);
     }
 
     public abstract class SortBindNodeBase<T, K>
@@ -77,13 +93,15 @@ namespace Unity.ReferenceProject.SearchSortFilter
             m_Comparison = comparison;
         }
 
-        public void PerformSort(List<T> list, SortOrder sortOrder)
+        public void PerformSort(List<T> list, SortOrder sortOrder, CancellationToken cancellationToken)
         {
             if (list == null || list.Count == 0)
                 return;
 
             list.Sort((x, y) =>
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 var xString = m_BindPath(x);
 
                 if (string.IsNullOrEmpty(xString))
@@ -107,13 +125,15 @@ namespace Unity.ReferenceProject.SearchSortFilter
     {
         public SortBindNodeInt(Func<T, int> bindPath) : base(bindPath) { }
 
-        public void PerformSort(List<T> list, SortOrder sortOrder)
+        public void PerformSort(List<T> list, SortOrder sortOrder, CancellationToken cancellationToken)
         {
             if (list == null || list.Count == 0)
                 return;
 
             list.Sort((x, y) =>
             {
+                cancellationToken.ThrowIfCancellationRequested();
+                
                 var xValue = m_BindPath(x);
 
                 if (xValue == int.MaxValue)
@@ -140,13 +160,15 @@ namespace Unity.ReferenceProject.SearchSortFilter
     {
         public SortBindNodeLong(Func<T, long> bindPath) : base(bindPath) { }
 
-        public void PerformSort(List<T> list, SortOrder sortOrder)
+        public void PerformSort(List<T> list, SortOrder sortOrder, CancellationToken cancellationToken)
         {
             if (list == null || list.Count == 0)
                 return;
 
             list.Sort((x, y) =>
             {
+                cancellationToken.ThrowIfCancellationRequested();
+                
                 var xValue = m_BindPath(x);
 
                 if (xValue == long.MaxValue)

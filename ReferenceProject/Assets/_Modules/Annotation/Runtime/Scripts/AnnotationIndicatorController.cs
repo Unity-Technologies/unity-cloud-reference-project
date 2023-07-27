@@ -64,14 +64,8 @@ namespace Unity.ReferenceProject.Annotation
 
         public ITopic Topic
         {
-            get
-            {
-                return m_Topic;
-            }
-            set
-            {
-                OnTopicChanged(value);
-            }
+            get => m_Topic;
+            set => OnTopicChanged(value);
         }
 
         public bool Initialized => m_Topic != null;

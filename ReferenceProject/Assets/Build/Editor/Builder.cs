@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
+using Unity.Cloud.ReferenceProject.Utils.Git;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
@@ -12,6 +13,9 @@ namespace Unity.ReferenceProject.Editor
         // CI Entry point
         static void PerformBuild()
         {
+#if USE_GIT_INFO
+            GitVersionControlEditor.UpdateGitHashShort();
+#endif
             var buildSettings = new BuildSettingsParser();
             buildSettings.StartParsing();
 

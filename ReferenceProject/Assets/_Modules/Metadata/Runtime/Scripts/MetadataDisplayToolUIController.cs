@@ -1,9 +1,7 @@
 ﻿using System;
-using Unity.ReferenceProject.Messaging;
 using Unity.ReferenceProject.Tools;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Zenject;
 
 namespace Unity.ReferenceProject.Metadata
 {
@@ -11,14 +9,6 @@ namespace Unity.ReferenceProject.Metadata
     {
         [SerializeField]
         MetadataDisplayController m_Controller;
-
-        IAppMessaging m_AppMessaging;
-
-        [Inject]
-        void Setup(IAppMessaging appMessaging)
-        {
-            m_AppMessaging = appMessaging;
-        }
 
         protected override VisualElement CreateVisualTree(VisualTreeAsset template)
         {
@@ -54,8 +44,6 @@ namespace Unity.ReferenceProject.Metadata
         {
             if (m_Controller)
             {
-                m_AppMessaging.ShowDialog("Incomplete Feature", "Metadata Tool relies on com.unity.cloud.data-streaming's Object Picker, which is not implemented yet in current version. " +
-                    "Selecting object will not work.", "Ok");
                 m_Controller.OpenTool();
             }
         }

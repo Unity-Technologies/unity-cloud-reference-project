@@ -5,17 +5,17 @@ using UnityEngine.UIElements;
 
 namespace Unity.ReferenceProject.UITableListView
 {
-    public abstract class TableListColumn : MonoBehaviour, IExtraColumn
+    public abstract class TableListColumn : MonoBehaviour
     {
         [SerializeField]
         string m_ColumnName;
-        
+
         [SerializeField]
         bool m_IsVisible;
-        
+
         [SerializeField]
         bool m_UseInlineWidth;
-        
+
         [SerializeField]
         int m_Width;
 
@@ -41,7 +41,7 @@ namespace Unity.ReferenceProject.UITableListView
                     m_Column.PointerLeaveListElementEvent += OnPointerLeaveListElementEvent;
                     m_Column.SelectionChanged += OnSelectionChanged;
                     m_Column.Reset += OnReset;
-                    
+
                     if (m_Column is IServiceData serviceData)
                     {
                         AddServices(serviceData.ServiceData);
@@ -51,7 +51,7 @@ namespace Unity.ReferenceProject.UITableListView
                 return m_Column;
             }
         }
-        
+
         protected abstract void OnCreateHeader(VisualElement e, IColumnData columnData);
 
         protected abstract void OnMakeCell(VisualElement e, IColumnData columnData);
@@ -82,7 +82,7 @@ namespace Unity.ReferenceProject.UITableListView
         {
             // Implemented by inheritance
         }
-        
+
         protected virtual void AddServices(List<object> services)
         {
             // Implemented by inheritance

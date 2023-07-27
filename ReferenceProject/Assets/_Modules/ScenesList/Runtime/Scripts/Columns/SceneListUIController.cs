@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Unity.Cloud.Common;
 using Unity.ReferenceProject.UITableListView;
@@ -13,24 +14,12 @@ namespace Unity.ReferenceProject.ScenesList
 {
     public class SceneListUIController : MonoBehaviour
     {
+        static readonly string k_RefreshButton = "refresh-button";
+        static readonly string k_LoadingIndicator = "loading";
+        static readonly string k_Table = "table-scene-list";
+
         [SerializeField]
         UIDocument m_UIDocument;
-
-        // TODO: remove this because in VR we do not have uiDocument reference
-        public UIDocument UIDocument => m_UIDocument;
-
-        Button m_RefreshButton;
-
-        VisualElement m_RootVisualElement;
-
-        readonly List<object> m_PrimaryKeyData = new();
-
-        IMGUIContainer m_CurrentDisplayArrow;
-
-        VisualElement m_LoadingIndicator;
-        TableListView m_Table;
-
-        ListTableServiceController m_ListTableServiceController;
 
         [SerializeField]
         float m_ScrollFactor = 100;
@@ -41,13 +30,25 @@ namespace Unity.ReferenceProject.ScenesList
         [SerializeField]
         string[] m_RowStyles;
 
+        // TODO: remove this because in VR we do not have uiDocument reference
+        public UIDocument UIDocument => m_UIDocument;
+
+        Button m_RefreshButton;
+
+        VisualElement m_RootVisualElement;
+
+        readonly List<IScene> m_PrimaryKeyData = new();
+
+        IMGUIContainer m_CurrentDisplayArrow;
+
+        VisualElement m_LoadingIndicator;
+        TableListView m_Table;
+
+        ListTableServiceController m_ListTableServiceController;
+
         SceneWorkspaceProvider m_SceneWorkspaceProvider;
 
         Task m_Task;
-
-        static readonly string k_RefreshButton = "refresh-button";
-        static readonly string k_LoadingIndicator = "loading";
-        static readonly string k_Table = "table-scene-list";
 
         public event Action<IScene> ProjectSelected;
 
@@ -84,6 +85,8 @@ namespace Unity.ReferenceProject.ScenesList
                 return;
 
             m_RootVisualElement = rootVisualElement;
+            var container = m_RootVisualElement.Q<VisualElement>("Container");
+            container.AddToClassList("scene-list-container");
 
             // UIToolkit
             m_RefreshButton = m_RootVisualElement.Q<Button>(k_RefreshButton);
@@ -122,7 +125,7 @@ namespace Unity.ReferenceProject.ScenesList
 
             m_ListTableServiceController = new ListTableServiceController(this, GetComponents<IService>());
             m_ListTableServiceController.Initialize(m_RootVisualElement, m_Table, m_LoadingIndicator, AllColumns);
-            m_ListTableServiceController.itemsSource = m_PrimaryKeyData;
+            m_ListTableServiceController.itemsSource = default;
 
             foreach (var headerStyle in m_HeaderStyles)
             {
@@ -139,7 +142,7 @@ namespace Unity.ReferenceProject.ScenesList
         {
             if(clickedItem is not IScene scene)
                 return;
-            
+
             ProjectSelected?.Invoke(scene);
         }
 
@@ -148,7 +151,7 @@ namespace Unity.ReferenceProject.ScenesList
             get
             {
                 var columns = new List<IColumnEventData>();
-                var extraColumns = GetComponents<IExtraColumn>();
+                var extraColumns = GetComponents<TableListColumn>();
                 foreach (var extraColumn in extraColumns)
                 {
                     columns.Add(extraColumn.Column);
@@ -165,9 +168,12 @@ namespace Unity.ReferenceProject.ScenesList
 
         public void RefreshOnlyTable()
         {
-            OnPrimaryKeyUpdate();
+            if (ChangesAtSource())
+            {
+                ClearAndUpdateUI();
+            }
         }
-        
+
         public void SetVisibility(bool isVisible)
         {
             SetVisibility(m_RootVisualElement, isVisible);
@@ -175,29 +181,35 @@ namespace Unity.ReferenceProject.ScenesList
 
         IEnumerator UpdateData()
         {
-            if (m_Task != null && !m_Task.IsCompleted)
+            if (m_Task is { IsCompleted: false })
             {
                 yield break;
             }
-            
-            SetVisibility(m_LoadingIndicator, true);  // Show loading indicator
-            SetVisibility(m_Table, false);  // Hide list
-            
+
+            SetVisibility(m_LoadingIndicator, true);
+
             m_Task = RefreshScenesAndWorkspacesAsync();
             yield return new WaitWhile(() => !m_Task.IsCompleted);
 
-            // Hide loading indicator
+            if (ChangesAtSource())
+            {
+                ClearAndUpdateUI();
+            }
             SetVisibility(m_LoadingIndicator, false);
-            SetVisibility(m_Table, true); // Hide list
+        }
 
-            OnPrimaryKeyUpdate();
+        bool ChangesAtSource()
+        {
+            if (!Enumerable.SequenceEqual(m_SceneWorkspaceProvider.GetAllScenes(), m_PrimaryKeyData, new SceneComparer()))
+                return true;
+            return false;
         }
 
         async Task RefreshScenesAndWorkspacesAsync()
         {
             try
             {
-                await m_SceneWorkspaceProvider.RefreshAsync();
+                await m_SceneWorkspaceProvider?.RefreshAsync();
             }
             catch (System.Threading.ThreadAbortException e)
             {
@@ -209,11 +221,11 @@ namespace Unity.ReferenceProject.ScenesList
             }
         }
 
-        void OnPrimaryKeyUpdate() //string workspace
+        void ClearAndUpdateUI()
         {
             m_PrimaryKeyData.Clear();
             m_PrimaryKeyData.AddRange(m_SceneWorkspaceProvider.GetAllScenes());
-            m_ListTableServiceController.itemsSource = m_PrimaryKeyData;
+            m_ListTableServiceController.itemsSource = m_PrimaryKeyData.Select(x => (object)x).ToList();
 
             m_ListTableServiceController.RefreshServices();
         }
@@ -223,6 +235,18 @@ namespace Unity.ReferenceProject.ScenesList
             if (visualElement != null)
             {
                 visualElement.style.display = isVisible ? DisplayStyle.Flex : DisplayStyle.None;
+            }
+        }
+        
+        public void SetBackground(bool toolIsOpen)
+        {
+            if (toolIsOpen)
+            {
+                m_RootVisualElement.AddToClassList("scene-list-background");
+            }
+            else
+            {
+                m_RootVisualElement.RemoveFromClassList("scene-list-background");
             }
         }
     }

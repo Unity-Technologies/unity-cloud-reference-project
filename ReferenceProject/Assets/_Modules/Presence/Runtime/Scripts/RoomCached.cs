@@ -30,6 +30,8 @@ namespace Unity.ReferenceProject.Presence
                     value.ParticipantAdded += OnRefresh;
                     value.ParticipantRemoved += OnRefresh;
                 }
+                
+                RefeshCachedParticipants();
             }
         }
 
@@ -39,11 +41,21 @@ namespace Unity.ReferenceProject.Presence
 
         public RoomCached(Room room) => Room = room;
 
-        void OnRefresh(IParticipant obj)
+        void RefeshCachedParticipants()
         {
             m_CachedParticipants.Clear();
-            m_CachedParticipants.AddRange(m_Room.ConnectedParticipants);
+            
+            if (m_Room != null)
+            {
+                m_CachedParticipants.AddRange(m_Room.ConnectedParticipants);
+            }
+
             ParticipantsChanged?.Invoke();
+        }
+
+        void OnRefresh(IParticipant obj)
+        {
+            RefeshCachedParticipants();
         }
     }
 }

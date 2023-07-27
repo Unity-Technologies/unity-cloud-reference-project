@@ -301,5 +301,10 @@ namespace Unity.ReferenceProject.AppCamera
         {
             m_PanGestureInProgress = false;
         }
+
+        public void ForceStop()
+        {
+            m_Camera.ForceStop();
+        }
     }
 }

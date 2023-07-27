@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 
 namespace Unity.ReferenceProject.UITableListView
 {
@@ -16,7 +18,7 @@ namespace Unity.ReferenceProject.UITableListView
         void InitializeService(VisualElement root);
         void InitializeUIForData(VisualElement e, IServiceData data);
         void OnPrimaryKeysCreated(List<object> list);
-        Task PerformService(List<object> list);
+        Task PerformService(List<object> list, CancellationToken cancellationToken = default);
     }
     
     public class ListTableServiceController
@@ -29,7 +31,7 @@ namespace Unity.ReferenceProject.UITableListView
         readonly SortedList<int, IService> m_Services = new ();
         readonly MonoBehaviour m_MonoBehaviour;
         
-        Task m_Task;
+        CancellationTokenSource m_CancellationTokenSource;
 
         public List<object> itemsSource
         {
@@ -110,48 +112,58 @@ namespace Unity.ReferenceProject.UITableListView
 
         IEnumerator RefreshServicesCoroutine()
         {
-            if (m_Task != null && !m_Task.IsCompleted)
-            {
-                Debug.Log($"Service Task is still running");
-                yield break;
-            }
-            
             // Show loading indicator
             SetVisible(m_LoadingIndicator, true);  
+            
             // Hide list
             SetVisible(m_Table, false);  
+            
+            // Make cancellation token
+            var cancellationTokenSource = new CancellationTokenSource();
+            
+            // If there is an old cancellation token source then cancel it
+            m_CancellationTokenSource?.Cancel();
+            m_CancellationTokenSource = cancellationTokenSource;
 
             CreateCachedItemsSource(m_ItemsSource);
             
-            m_Task = RefreshServicesAsync();
+            var m_Task = RefreshServicesAsync(cancellationTokenSource.Token);
             yield return new WaitWhile(() => !m_Task.IsCompleted);
+            
+            // Manage token
+            if (m_CancellationTokenSource == cancellationTokenSource)
+            {
+                m_CancellationTokenSource = null;
+            }
+            
+            cancellationTokenSource.Dispose();
+            
+            // Show Exception if it exists
+            if (m_Task.Exception != null)
+            {
+                Debug.LogError($"Exception: {m_Task.Exception.Message}");
+            }
+            
+            // Show cancellation if it exists
+            if (m_Task.IsCanceled)
+            {
+                Debug.LogWarning($"Operation has been canceled");
+                yield break;
+            }
 
             // Hide loading indicator
             SetVisible(m_LoadingIndicator, false);
+            
             // Show list
-            if (m_Table != null)
-            {
-                m_Table.RefreshItems();
-                SetVisible(m_Table, true);
-            }
+            m_Table.RefreshItems();
+            SetVisible(m_Table, true);
         }
-
-        async Task RefreshServicesAsync()
+        
+        async Task RefreshServicesAsync(CancellationToken cancellationToken)
         {
-            try
+            foreach (var service in m_Services)
             {
-                foreach (var service in m_Services)
-                {
-                    await service.Value.PerformService(m_ItemsSourceCache);
-                }
-            }
-            catch (System.Threading.ThreadAbortException e)
-            {
-                Debug.LogWarning($"ThreadAbortException: {e}");
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
+                await service.Value.PerformService(m_ItemsSourceCache, cancellationToken);
             }
         }
         
@@ -160,7 +172,7 @@ namespace Unity.ReferenceProject.UITableListView
             if(e == null)
                 return;
             
-            e.style.display = isVisible ? DisplayStyle.Flex : DisplayStyle.None;
+            e.style.visibility = isVisible ? Visibility.Visible : Visibility.Hidden;
         }
     }
 }

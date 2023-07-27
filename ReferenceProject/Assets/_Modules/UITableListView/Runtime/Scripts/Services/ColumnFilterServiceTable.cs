@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Unity.ReferenceProject.SearchSortFilter;
 using UnityEngine;
@@ -63,10 +64,10 @@ namespace Unity.ReferenceProject.UITableListView
                 if (serviceData is not IFilterBindNode<object> bindNode)
                     continue;
 
-                m_FilterModule.AddBindings((data.Name, bindNode));
-                
-                m_FilterTableUI.UpdateColumns(m_ListKeys);
+                m_FilterModule?.AddBindings((data.Name, bindNode));
             }
+            
+            m_FilterTableUI?.UpdateColumns(m_ListKeys);
         }
 
         public void OnPrimaryKeysCreated(List<object> list)
@@ -76,6 +77,6 @@ namespace Unity.ReferenceProject.UITableListView
             m_FilterTableUI?.SetOptionsState(true);
         }
 
-        public Task PerformService(List<object> list) => m_FilterModule?.PerformFiltering(list);
+        public Task PerformService(List<object> list, CancellationToken cancellationToken = default) => m_FilterModule?.PerformFiltering(list, cancellationToken);
     }
 }

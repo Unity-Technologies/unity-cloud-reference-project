@@ -19,6 +19,10 @@ MonoBehaviour:
     m_Key: dropdownSelectMessage
     m_Metadata:
       m_Items: []
+  - m_Id: 44322063894343680
+    m_Key: searchBarPlaceholder
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

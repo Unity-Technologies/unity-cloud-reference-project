@@ -1,5 +1,50 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &882015552331503902
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6405254097845807126}
+  - component: {fileID: 2703265166208031290}
+  m_Layer: 0
+  m_Name: UIRayInputBlocker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6405254097845807126
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 882015552331503902}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3812081694717271885}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2703265166208031290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 882015552331503902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cbdbf937d7992947b3eecb5b7342608, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BackgroundName: panel-appUI
 --- !u!1 &3812081694112804137
 GameObject:
   m_ObjectHideFlags: 0
@@ -10,7 +55,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3812081694112804136}
   - component: {fileID: 3812081694112804143}
-  - component: {fileID: 3812081694112804142}
   m_Layer: 0
   m_Name: ObjectSelectionController
   m_TagString: Untagged
@@ -45,19 +89,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20f4b4df0a0aeb9439df99d87b66af72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &3812081694112804142
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3812081694112804137}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0cbdbf937d7992947b3eecb5b7342608, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_BackgroundName: panel-appUI
 --- !u!1 &3812081694717271886
 GameObject:
   m_ObjectHideFlags: 0
@@ -91,6 +122,7 @@ Transform:
   - {fileID: 3812081695963798559}
   - {fileID: 3812081695776021150}
   - {fileID: 3812081695298632292}
+  - {fileID: 6405254097845807126}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -190,10 +222,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 37263e1c1cdefa548989e7498fd4aae0, type: 2}
   - {fileID: 11400000, guid: 8f958e3e92b44bb418ea7647767ac223, type: 2}
   m_CameraViewData:
-  - {fileID: 11400000, guid: 1103cf4adff223f44a84d27583f330de, type: 2}
-  - {fileID: 11400000, guid: 865e77b10b13a544a97647a8007fa9ad, type: 2}
-  - {fileID: 11400000, guid: 41fa736d44735914283f110a3c89f8d1, type: 2}
-  - {fileID: 11400000, guid: 4caa4743ecc5dba438cd6217c7191e56, type: 2}
+  - {fileID: 11400000, guid: 373815b3c74414f43a4f3fd20d3f8dcc, type: 2}
+  - {fileID: 11400000, guid: 0e4401404b5c5de498ffc0c58c58ef0e, type: 2}
+  - {fileID: 11400000, guid: 7a1b91c7c17052343b5ad07ccccf1941, type: 2}
+  - {fileID: 11400000, guid: 2a7b929cb11e7c046a45b1f32f39577d, type: 2}
 --- !u!1 &3812081695776021151
 GameObject:
   m_ObjectHideFlags: 0
@@ -254,8 +286,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PitchAngle: 20
   m_BoundsFillRatio: 0.9
-  m_VolumeProcessingIterations: 5
-  m_VolumeProcessingDelay: 50
 --- !u!1 &3812081695963798552
 GameObject:
   m_ObjectHideFlags: 0
@@ -266,6 +296,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3812081695963798559}
   - component: {fileID: 3812081695963798558}
+  - component: {fileID: 1791725428533101549}
   m_Layer: 0
   m_Name: ObjectSelectionHighlighter
   m_TagString: Untagged
@@ -302,3 +333,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_IsRemoveSubMeshes: 1
   m_Material: {fileID: 2100000, guid: aacf8a9e285c0eb47946f87f1db13059, type: 2}
+--- !u!114 &1791725428533101549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3812081695963798552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3decbe53be26c0b46b59c6ffc396ee40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IndicatorScale: 0.025
+  m_Material: {fileID: 2100000, guid: 6ba03ff068fd4774a8f71036e8e37bb1, type: 2}

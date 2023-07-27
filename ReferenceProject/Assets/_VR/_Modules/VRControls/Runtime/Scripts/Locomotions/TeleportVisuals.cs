@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Unity.ReferenceProject.ObjectSelection;
 using UnityEngine;
@@ -15,7 +14,39 @@ namespace Unity.ReferenceProject.VR.VRControls
     /// </summary>
     public class TeleportVisuals : MonoBehaviour
     {
-        const float k_Epsilon = 0.01f;
+        [SerializeField, Tooltip("The max teleport lateral distance.")]
+        float m_TeleportDistance = 15f;
+
+        [SerializeField, Tooltip("The distance between each segment of the arc ray.")]
+        float m_TimeStep = 0.75f;
+
+        [SerializeField, Tooltip("The maximum number of segments in the arc ray.")]
+        int m_MaxProjectileSteps = 150;
+
+        [SerializeField, Tooltip("The time it takes for the ray to reach its normal teleport distance when aiming begins.")]
+        float m_TransitionTime = 0.03f;
+
+        [SerializeField, Tooltip("The GameObject that will be positioned at the target position.")]
+        GameObject m_TargetRigPoseVisual;
+
+        [SerializeField, Tooltip("The GameObject that will be rotated to indicate the center of the cameras field of view.")]
+        GameObject m_TargetCameraForwardVisual;
+
+        [SerializeField, Tooltip("The color gradient to use for the teleport ray.")]
+        Gradient m_Gradient;
+
+        [SerializeField, Tooltip("The color gradient to use for the teleport ray when there is no valid target position.")]
+        Gradient m_InvalidGradient;
+
+        [SerializeField, Tooltip("The amount of dampening applied to the forward direction of the teleport ray. Lower values will cause it to lag behind more.")]
+        float m_LineDampening = 10f;
+
+        [SerializeField, Tooltip("The teleport aim line width")]
+        float m_LineWidth = 0.075f;
+
+        [SerializeField, Tooltip("The teleport aim line width curve from the origin to the hit point. A curve value of 1 will correspond to full width as determined by the Line Width value.")]
+        AnimationCurve m_WidthCurve;
+
         bool m_AnimPlaying;
         Vector3 m_EasedForward = Vector3.forward;
         Vector3[] m_EasedLineVertexPositions;
@@ -28,12 +59,15 @@ namespace Unity.ReferenceProject.VR.VRControls
         bool m_Picking;
         Vector3[] m_Positions;
         bool m_ResetAimEasing;
+        bool m_FinishedComputeFirstRayHit;
 
         IObjectPicker m_TeleportPicker;
         float m_TransitionAmount;
         Coroutine m_VisibilityCoroutine;
 
         bool m_Visible;
+
+        int k_UILayerMask;
 
         [Inject]
         public void Setup(IObjectPicker picker)
@@ -116,6 +150,8 @@ namespace Unity.ReferenceProject.VR.VRControls
             m_LineRenderer.positionCount = m_MaxProjectileSteps;
             m_LineRenderer.SetPositions(m_LineVertexPositions);
             m_LineRenderer.widthCurve = m_WidthCurve;
+
+            k_UILayerMask = LayerMask.NameToLayer("UI");
         }
 
         void Update()
@@ -152,7 +188,7 @@ namespace Unity.ReferenceProject.VR.VRControls
             CalculateTrajectory(lastPosition, velocity, gravity, ref m_Positions);
             CalculateTrajectory(m_EasedStartPosition, easedVelocity, gravity, ref m_EasedLineVertexPositions);
 
-            FindTargetPosition(m_EasedLineVertexPositions).Wait();
+            FindTargetPosition(m_EasedLineVertexPositions).ConfigureAwait(false);
         }
 
         void OnEnable()
@@ -164,6 +200,8 @@ namespace Unity.ReferenceProject.VR.VRControls
                 m_EasedLineVertexPositions[i] = pos;
                 m_LineVertexPositions[i] = pos;
             }
+
+            m_FinishedComputeFirstRayHit = false;
 
             m_LineRenderer.SetPositions(m_LineVertexPositions);
         }
@@ -268,16 +306,20 @@ namespace Unity.ReferenceProject.VR.VRControls
 
         async Task FindTargetPosition(IReadOnlyList<Vector3> linePoints)
         {
-            if (m_TeleportPicker != null)
+            bool hasHitUI = false;
+            var size = linePoints.Count;
+            if (m_TeleportPicker == null || size == 0 || linePoints[0] == linePoints[size- 1])
             {
                 return;
             }
 
             if (m_Picking)
             {
-
-                // Reuse the last target value for in between frame before callback
-                SetTargetPosition(targetPosition, m_LastHitIndex);
+                if (m_FinishedComputeFirstRayHit)
+                {
+                    // Reuse the last target value for in between frame before callback
+                    SetTargetPosition(targetPosition, m_LastHitIndex);
+                }
                 return;
             }
 
@@ -285,55 +327,49 @@ namespace Unity.ReferenceProject.VR.VRControls
             m_Picking = true;
 
             // pick
-            var results = await m_TeleportPicker.PickFromPathAsync(linePoints.ToList());
-
-            m_Picking = false;
-            Vector3? hitPosition = null;
             var hitIndex = linePoints.Count - 1;
-
-            // Find a valid hit result
-            foreach (var result in results)
+            Vector3? hitPosition = null;
+            var step = 32; // Remove this when the picker will be able to handle raycast by bunch
+            for (int i = 0; i < size - 2; i+=step)
             {
-                if (!ignoredGameObjects.Contains(result.gameObject))
+                if (i + step > size - 1)
                 {
-                    var hit = result.raycastHit;
-                    hitPosition = hit.point;
-                    m_HitNormal = hit.normal;
+                    step = size - i - 1;
+                }
+
+                var ray = new Ray(linePoints[i], linePoints[i + step] - linePoints[i]);
+                var distance = Vector3.Distance(linePoints[i], linePoints[i + step]);
+
+                // Detect if the ray hit a UI element
+                if(Physics.Raycast(ray, out RaycastHit hitInfo, distance, 1 << k_UILayerMask))
+                {
+                    hitIndex = i;
+                    hitPosition = hitInfo.point;
+                    hasHitUI = true;
+                    break;
+                }
+
+                var result = await m_TeleportPicker.RaycastAsync(ray, distance);
+                if(result.HasIntersected)
+                {
+                    hitIndex = i;
+                    hitPosition = result.Point;
+                    m_HitNormal = Vector3.up; // Until we have a way to get the normal from the picker
                     break;
                 }
             }
 
-            // Find on which line segment this happen
-            if (hitPosition.HasValue)
-            {
-                for (var i = 0; i < linePoints.Count - 1; i++)
-                {
-                    if (DistanceLineSegmentPoint(linePoints[i], linePoints[i + 1], hitPosition.Value) < k_Epsilon)
-                    {
-                        hitIndex = i;
-                        break;
-                    }
-                }
-            }
+            m_FinishedComputeFirstRayHit = true;
+            m_Picking = false;
 
-            SetTargetPosition(hitPosition, hitIndex);
+            SetTargetPosition(hitPosition, hitIndex, hasHitUI);
         }
 
-        static float DistanceLineSegmentPoint(Vector3 a, Vector3 b, Vector3 p)
+        void SetTargetPosition(Vector3? position, int easedHitIndex, bool hasHitUI = false)
         {
-            // If a == b line segment is degenerate and will cause a divide by zero in the line segment test.
-            // Instead return distance from a
-            if (a == b)
-                return Vector3.Distance(a, p);
+            bool isValid;
+            bool isVerticalSurface = false;
 
-            // Line segment to point distance equation
-            var ba = b - a;
-            var pa = a - p;
-            return (pa - ba * (Vector3.Dot(pa, ba) / Vector3.Dot(ba, ba))).magnitude;
-        }
-
-        void SetTargetPosition(Vector3? position, int easedHitIndex)
-        {
             targetPosition = position;
             m_LastHitIndex = targetPosition.HasValue && easedHitIndex == m_MaxProjectileSteps - 1 ? m_LastHitIndex : easedHitIndex;
             if (m_AnimPlaying)
@@ -341,9 +377,16 @@ namespace Unity.ReferenceProject.VR.VRControls
                 targetPosition = null;
             }
 
-            // Check if destination is too much vertical
-            var isVerticalSurface = Vector3.Dot(m_HitNormal, Vector3.up) < 0.3f;
-            var isValid = targetPosition.HasValue && !isVerticalSurface;
+            if(hasHitUI)
+            {
+                isValid = false;
+            }
+            else
+            {
+                // Check if destination is too much vertical
+                isVerticalSurface = Vector3.Dot(m_HitNormal, Vector3.up) < 0.3f;
+                isValid = targetPosition.HasValue && !isVerticalSurface;
+            }
             m_TargetRigPoseVisual.SetActive(isValid);
 
             if (isValid)
@@ -369,55 +412,15 @@ namespace Unity.ReferenceProject.VR.VRControls
 
             // The final point of the visible vertices is directly set to the target point, because the line vertex positions will end at the start of the segment that resulted in a hit.
             m_LineVertexPositions[m_LastHitIndex + 1] = targetPosition.HasValue ? Vector3.Lerp(m_LineVertexPositions[m_LastHitIndex], targetPosition.Value, 0.8f) : m_LineVertexPositions[m_LastHitIndex];
-            m_LineRenderer.widthMultiplier = m_LineWidth;
+            m_LineRenderer.widthMultiplier = hasHitUI ? 0.01f : m_LineWidth;
             m_LineRenderer.colorGradient = color;
             m_LineRenderer.positionCount = m_LastHitIndex + 2;
             m_LineRenderer.SetPositions(m_LineVertexPositions);
 
-            if (isVerticalSurface)
+            if (hasHitUI || isVerticalSurface)
             {
                 targetPosition = null;
             }
         }
-
-#pragma warning disable 649
-
-        [SerializeField, Tooltip("The max teleport lateral distance.")]
-        float m_TeleportDistance = 15f;
-
-        [SerializeField, Tooltip("The distance between each segment of the arc ray.")]
-        float m_TimeStep = 0.75f;
-
-        [SerializeField, Tooltip("The maximum number of segments in the arc ray.")]
-        int m_MaxProjectileSteps = 150;
-
-        [SerializeField, Tooltip("The time it takes for the ray to reach its normal teleport distance when aiming begins.")]
-        float m_TransitionTime = 0.03f;
-
-        [SerializeField, Tooltip("The GameObject that will be positioned at the target position.")]
-        GameObject m_TargetRigPoseVisual;
-
-        [SerializeField, Tooltip("The GameObject that will be rotated to indicate the center of the cameras field of view.")]
-        GameObject m_TargetCameraForwardVisual;
-
-        [SerializeField, Tooltip("The color gradient to use for the teleport ray.")]
-        Gradient m_Gradient;
-
-        [SerializeField, Tooltip("The color gradient to use for the teleport ray when there is no valid target position.")]
-        Gradient m_InvalidGradient;
-
-        [SerializeField, Tooltip("The amount of dampening applied to the forward direction of the teleport ray. Lower values will cause it to lag behind more.")]
-        float m_LineDampening = 10f;
-
-        [SerializeField, Tooltip("The layer mask of collision that the teleport ray will check.")]
-        LayerMask m_LayerMask;
-
-        [SerializeField, Tooltip("The teleport aim line width")]
-        float m_LineWidth = 0.075f;
-
-        [SerializeField, Tooltip("The teleport aim line width curve from the origin to the hit point. A curve value of 1 will correspond to full width as determined by the Line Width value.")]
-        AnimationCurve m_WidthCurve;
-
-#pragma warning restore 649
     }
 }

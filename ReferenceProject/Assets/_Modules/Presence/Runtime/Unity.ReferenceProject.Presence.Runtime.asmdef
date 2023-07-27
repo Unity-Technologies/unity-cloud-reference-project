@@ -2,8 +2,9 @@
     "name": "Unity.ReferenceProject.Presence.Runtime",
     "rootNamespace": "Unity.ReferenceProject.Presence",
     "references": [
-        "GUID:d8d9ea33f67ce9540a08cf063069808c",
         "GUID:2a4c379945cabb84b9fb0b1fb404b8d9",
+        "GUID:d8d9ea33f67ce9540a08cf063069808c",
+        "GUID:adb57dd1b717bf344a9abfa5f35aa7ca",
         "GUID:498d02e03062b2649b108f31a9668c56",
         "GUID:f2f9fbb8654eff343bf4a94f2a688687",
         "GUID:276bf4fd0c825cf4b94eb157d3b3675f",

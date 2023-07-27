@@ -1,0 +1,141 @@
+default_platform(:ios)
+
+app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+app_name = "#{app_identifier}"
+
+MY_DEV_PROFILE = "match Development #{app_identifier}"
+RELEASE_PROFILE = "Unity Cloud Reference App"
+RELEASE_TYPE = "development"
+GYM_RELEASE_TYPE = "development"
+# Unity
+MY_TEAM = "BVPN9UFA9B"        
+platform :ios do
+    lane :test do        
+        buildNum = latest_testflight_build_number(            
+            live: false,
+            app_identifier: app_name,            
+        )        
+        message = "Test Message " + "#{buildNum}"
+        UI.message(message)
+    end    
+    
+    desc "Test Match"
+    lane :match_test do
+        match(
+            force_for_new_devices: true,
+            type: "appstore",
+            app_identifier: "#{app_identifier}",
+            git_branch: "#{app_identifier}",
+            readonly: true,
+            generate_apple_certs: false,
+            git_url: "git@github.com:Unity-Technologies/fastlane_certificates.git",            
+            keychain_password: "bokken",
+            verbose: true,
+            output_path: "./certs",
+            platform: "ios"
+        )
+    end
+
+    desc "Build a development APK"
+    lane :development_build do
+        run_build()        
+    end
+
+    desc "Builds a distribution APK"
+    lane :distribution_build do        
+        run_build(
+            :RELEASE_TYPE => "appstore",
+            :GYM_RELEASE_TYPE => "app-store"
+            )        
+    end
+
+    desc "Makes the build!"
+    lane :run_build do |options|
+        begin
+        XCODE_PROJ = "./Builds/iOS/Unity-iPhone.xcodeproj"
+        #if any of these options aren't set, assume we're running a local build
+        if !options[:RELEASE_TYPE] || !options[:GYM_RELEASE_TYPE]
+            options[:RELEASE_TYPE] = "development"
+            options[:GYM_RELEASE_TYPE] = "development"
+        end
+
+        match(
+            force_for_new_devices: true,
+            type: "#{options[:RELEASE_TYPE]}",
+            app_identifier: "#{app_identifier}",
+            git_branch: "#{app_identifier}",
+            readonly: true,
+            generate_apple_certs: false,
+            git_url: "git@github.com:Unity-Technologies/fastlane_certificates.git",            
+            keychain_password: "bokken",            
+            verbose: true,
+        )
+        
+        update_code_signing_settings(        
+            team_id: "#{MY_TEAM}",
+            use_automatic_signing: false,
+            profile_name: "#{RELEASE_PROFILE}",
+            path: "#{XCODE_PROJ}",
+            code_sign_identity: "Apple Distribution: Unity Technologies ApS (BVPN9UFA9B)",
+            targets: "Unity-iPhone",
+        )        
+        update_code_signing_settings(
+            # team_id: "#{MY_TEAM}",          
+            use_automatic_signing: true,
+            profile_name: "",              
+            path: "#{XCODE_PROJ}",                        
+            targets: "UnityFramework",
+        )
+
+        settings_to_override = {
+            :BUNDLE_IDENTIFIER => "#{app_identifier}",
+            :DEVELOPMENT_TEAM => MY_TEAM,
+           # :PROVISIONING_PROFILE_SPECIFIER => RELEASE_PROFILE,             
+        }
+        gym(            
+            include_symbols: true,            
+            scheme: "Unity-iPhone",
+            skip_profile_detection: true,
+            silent: false,
+            configuration: "Release",
+            project: "#{XCODE_PROJ}",
+            clean: true,
+            xcargs: settings_to_override,
+            output_directory: "Builds/",
+            export_method: "#{options[:GYM_RELEASE_TYPE]}",            
+            export_options: {                
+                method: "#{options[:GYM_RELEASE_TYPE]}",
+                # provisionProfiles: {
+                 #   "#{app_identifier}" => RELEASE_PROFILE,
+                # },
+            },
+        )        
+        rescue => ex
+            UI.message(ex)
+        end
+    end    
+
+    desc "Update Build Number"
+    lane :increment do
+        ver = get_version_number(
+            xcodeproj: "Unity-iPhone.xcodeproj",
+            target: "Unity-iPhone",
+        )
+        x = app_store_build_number(
+            initial_build_number: 0,
+            live: false,
+            app_identifier: "com.unity.cloud.reference-project",
+            version: ver,
+        )
+        increment_build_number(
+            xcodeproj: "Unity-iPhone.xcodeproj",
+            build_number: x + 1,
+        )
+        buildNum = get_build_number(
+            xcodeproj: "Unity-iPhone.xcodeproj", 
+        )
+        message = "Finished Unity Build, Beginning XCode Build"
+        UI.message(message)    
+
+    end
+end

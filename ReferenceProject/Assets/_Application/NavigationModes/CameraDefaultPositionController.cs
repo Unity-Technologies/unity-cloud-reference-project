@@ -138,7 +138,8 @@ namespace Unity.ReferenceProject
         {
              var (position, rotation) = m_DataStreamBound.CalculateViewFitPosition(bounds, m_PitchAngle,
                  m_BoundsFillRatio, cam);
-            m_NavigationManager.TryTeleport(position, rotation);
+             m_NavigationManager.SetDefaultPosition(position, rotation);
+             m_NavigationManager.TryTeleport(position, rotation);
         }
     }
 }

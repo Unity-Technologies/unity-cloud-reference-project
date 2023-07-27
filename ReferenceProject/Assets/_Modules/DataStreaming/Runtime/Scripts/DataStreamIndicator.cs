@@ -58,6 +58,9 @@ namespace Unity.ReferenceProject.DataStreaming
 
         void SetIndicatorVisibility(bool visible)
         {
+            if (m_UIDocument == null || m_UIDocument.rootVisualElement == null)
+                return;
+            
             Utils.SetVisible(m_UIDocument.rootVisualElement, visible);
         }
     }

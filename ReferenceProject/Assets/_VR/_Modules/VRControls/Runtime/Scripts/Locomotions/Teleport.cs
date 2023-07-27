@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
+using Zenject;
 
 // TODO: UI Blocking?
 // TODO: "Blink" while moving.
@@ -24,18 +25,23 @@ namespace Unity.ReferenceProject.VR.VRControls
         [SerializeField, Tooltip("A prefab that will be shown when aiming that determines the target position and rotation.")]
         TeleportVisuals m_TeleportVisualsPrefab;
 
+        [SerializeField]
+        GameObject m_Cursor;
+
         [SerializeField, Tooltip("The delay after releasing the teleport button to start the teleportation.")]
         float m_TeleportMoveDelay = 0.375f;
 
         [SerializeField, Tooltip("The distance that the rig will be moved when the user does a step back action (Teleport action with negative value).")]
         float m_StepBackDistance = 0.25f;
-        bool m_Aiming;
 
+        bool m_Aiming;
         bool m_Moving;
         bool m_SteppedBack;
         InputAction m_TeleportAction;
         InputAction m_TeleportDirectionAction;
         TeleportVisuals m_TeleportVisuals;
+
+        DiContainer m_DiContainer;
 
         /// <summary>
         ///     A prefab that will be shown when aiming that determines the target position and rotation.
@@ -67,6 +73,12 @@ namespace Unity.ReferenceProject.VR.VRControls
 
         public bool IsTeleporting => m_Aiming || m_Moving;
 
+        [Inject]
+        void Setup(DiContainer diContainer)
+        {
+            m_DiContainer = diContainer;
+        }
+
         protected override void Awake()
         {
             m_TeleportDirectionAction = m_TeleportDirectionInput.action;
@@ -78,16 +90,11 @@ namespace Unity.ReferenceProject.VR.VRControls
 
         void Start()
         {
-            var teleportGameObject = Instantiate(m_TeleportVisualsPrefab.gameObject, system.xrOrigin.transform);
-            teleportGameObject.SetActive(false);
-            m_TeleportVisuals = teleportGameObject.GetComponentInChildren<TeleportVisuals>();
-
-            var ignoreColliders = new List<Collider>();
-            system.xrOrigin.gameObject.GetComponentsInChildren(true, ignoreColliders);
-
-            m_TeleportVisuals.ignoredGameObjects = new HashSet<GameObject>(ignoreColliders.ConvertAll(rigCollider => rigCollider.gameObject));
-            teleportGameObject.transform.localPosition = Vector3.zero;
-            teleportGameObject.transform.localRotation = Quaternion.identity;
+            m_TeleportVisuals = m_DiContainer.InstantiatePrefabForComponent<TeleportVisuals>(m_TeleportVisualsPrefab, system.xrOrigin.transform);
+            var go = m_TeleportVisuals.gameObject;
+            go.SetActive(false);
+            go.transform.localPosition = Vector3.zero;
+            go.transform.localRotation = Quaternion.identity;
 
             var rayInteractor = transform.parent.GetComponent<XRRayInteractor>();
             m_TeleportVisuals.xrRayInteractor = rayInteractor;
@@ -171,12 +178,22 @@ namespace Unity.ReferenceProject.VR.VRControls
             {
                 SetSiblingLocomotionProviders(false);
                 m_Aiming = true;
+
+                if (m_Cursor != null)
+                {
+                    m_Cursor.SetActive(false);
+                }
             }
         }
 
         protected override void OnCanceled(InputAction.CallbackContext callbackContext)
         {
             m_SteppedBack = false;
+
+            if (m_Cursor != null)
+            {
+                m_Cursor.SetActive(true);
+            }
         }
 
         void TakeAStepBack()

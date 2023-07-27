@@ -35,15 +35,15 @@ namespace Unity.ReferenceProject.DataStreaming
         public event Action SceneClosed;
         public bool IsSceneOpened { get; private set; }
 
-        readonly ServiceHostConfiguration m_CloudConfiguration;
+        readonly IServiceHostResolver m_ServiceHostResolver;
         readonly IServiceHttpClient m_ServiceHttpClient;
 
         ICameraObserver m_CameraObserver;
 
-        public DataStreamerController(IServiceHttpClient serviceHttpClient, ServiceHostConfiguration cloudConfiguration)
+        public DataStreamerController(IServiceHttpClient serviceHttpClient, IServiceHostResolver serviceHostResolver)
         {
             m_ServiceHttpClient = serviceHttpClient;
-            m_CloudConfiguration = cloudConfiguration;
+            m_ServiceHostResolver = serviceHostResolver;
         }
 
         public void Open(IScene scene)
@@ -61,7 +61,7 @@ namespace Unity.ReferenceProject.DataStreaming
 
             var builder = DataStreamerSettingsBuilder
                 .CreateDefaultBuilder()
-                .SetScene(scene, m_ServiceHttpClient, m_CloudConfiguration);
+                .SetScene(scene, m_ServiceHttpClient, m_ServiceHostResolver);
 
             DataStreamer.AddObserver(m_CameraObserver);
             DataStreamer.Open(builder.Build());

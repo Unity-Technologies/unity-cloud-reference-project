@@ -1,8 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using Unity.AppUI.UI;
-using UnityEngine.UIElements;
-using Zenject;
 
 namespace Unity.ReferenceProject.Presence
 {
@@ -13,5 +10,7 @@ namespace Unity.ReferenceProject.Presence
         public abstract void SetName(string tagName);
 
         public abstract void SetColor(Color color);
+        
+        public abstract void SetVoiceStatus(VoiceStatus status);
     }
 }

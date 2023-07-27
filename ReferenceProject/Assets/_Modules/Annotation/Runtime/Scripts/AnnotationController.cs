@@ -11,14 +11,23 @@ using Zenject;
 
 namespace Unity.ReferenceProject.Annotation
 {
+    public struct AnnotationData
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public Vector3 CameraPosition { get; set; }
+        public Quaternion CameraRotation { get; set; }
+        public Vector3 IndicatorPosition { get; set; }
+    }
+
     public interface IAnnotationController
     {
         public void Initialize();
         public void Shutdown();
 
         public void GetTopic(Guid guid, Action<ITopic> callback);
-        public void CreateTopic(string title, string description, Vector3 cameraPosition, Quaternion cameraRotation);
-        public void UpdateTopic(ITopic topic, string newTitle, string newDescription);
+        public void CreateTopic(AnnotationData data);
+        public void UpdateTopic(ITopic topic, AnnotationData data);
         public void DeleteTopic(ITopic topic);
         public void CreateComment(ITopic topic, string comment);
         public void UpdateComment(ITopic topic, IComment comment, string newContent);
@@ -34,7 +43,7 @@ namespace Unity.ReferenceProject.Annotation
         AnnotationRepository m_AnnotationRepository;
 
         IServiceHttpClient m_ServiceHttpClient;
-        ServiceHostConfiguration m_CloudConfiguration;
+        IServiceHostResolver m_ServiceHostResolver;
         PropertyValue<IScene> m_SelectedScene;
         IAppMessaging m_AppMessaging;
 
@@ -43,10 +52,10 @@ namespace Unity.ReferenceProject.Annotation
         public event Action<Guid> TopicRemoved;
 
         [Inject]
-        public void Setup(IServiceHttpClient serviceHttpClient, ServiceHostConfiguration cloudConfiguration, PropertyValue<IScene> selectedScene, IAppMessaging appMessaging)
+        public void Setup(IServiceHttpClient serviceHttpClient, IServiceHostResolver cloudConfiguration, PropertyValue<IScene> selectedScene, IAppMessaging appMessaging)
         {
             m_ServiceHttpClient = serviceHttpClient;
-            m_CloudConfiguration = cloudConfiguration;
+            m_ServiceHostResolver = cloudConfiguration;
             m_SelectedScene = selectedScene;
             m_AppMessaging = appMessaging;
         }
@@ -77,20 +86,23 @@ namespace Unity.ReferenceProject.Annotation
             m_AnnotationRepository = null;
         }
 
-        public void CreateTopic(string title, string description, Vector3 cameraPosition, Quaternion cameraRotation)
+        public void CreateTopic(AnnotationData data)
         {
             var topicCreation = new TopicCreationBuilder();
-            topicCreation.SetTitle(title ?? string.Empty);
-            topicCreation.SetDescription(description ?? string.Empty);
+            topicCreation.SetTitle(data.Title ?? string.Empty);
+            topicCreation.SetDescription(data.Description ?? string.Empty);
             topicCreation.SetWorldCameraTransform(new AnnotationTransform(
                 new AnnotationPosition(
-                    cameraPosition.x,
-                    cameraPosition.y,
-                    cameraPosition.z),
-                new AnnotationQuaternion(cameraRotation.x,
-                    cameraRotation.y,
-                    cameraRotation.z,
-                    cameraRotation.w)));
+                    data.CameraPosition.x,
+                    data.CameraPosition.y,
+                    data.CameraPosition.z),
+                new AnnotationQuaternion(data.CameraRotation.x,
+                    data.CameraRotation.y,
+                    data.CameraRotation.z,
+                    data.CameraRotation.w)));
+            topicCreation.SetWorldTransform(new AnnotationTransform(
+                new AnnotationPosition(data.IndicatorPosition.x, data.IndicatorPosition.y, data.IndicatorPosition.z),
+                new AnnotationQuaternion()));
 
             CreateTopicAsync(topicCreation.GetTopicCreation()).ConfigureAwait(false);
         }
@@ -108,11 +120,23 @@ namespace Unity.ReferenceProject.Annotation
             }
         }
 
-        public void UpdateTopic(ITopic topic, string newTitle, string newDescription)
+        public void UpdateTopic(ITopic topic, AnnotationData data)
         {
             var topicUpdateBuilder = new TopicUpdateBuilder(topic);
-            topicUpdateBuilder.SetTitle(newTitle);
-            topicUpdateBuilder.SetDescription(newDescription);
+            topicUpdateBuilder.SetTitle(data.Title);
+            topicUpdateBuilder.SetDescription(data.Description);
+            topicUpdateBuilder.SetWorldCameraTransform(new AnnotationTransform(
+                new AnnotationPosition(
+                    data.CameraPosition.x,
+                    data.CameraPosition.y,
+                    data.CameraPosition.z),
+                new AnnotationQuaternion(data.CameraRotation.x,
+                    data.CameraRotation.y,
+                    data.CameraRotation.z,
+                    data.CameraRotation.w)));
+            topicUpdateBuilder.SetWorldTransform(new AnnotationTransform(
+                new AnnotationPosition(data.IndicatorPosition.x, data.IndicatorPosition.y, data.IndicatorPosition.z),
+                new AnnotationQuaternion()));
             UpdateTopicAsync(topicUpdateBuilder.GetTopicUpdate()).ConfigureAwait(false);
         }
 
@@ -213,7 +237,7 @@ namespace Unity.ReferenceProject.Annotation
 
         async Task InitializeAsync(IScene scene)
         {
-            m_AnnotationRepository = new AnnotationRepository(scene, m_ServiceHttpClient, m_CloudConfiguration);
+            m_AnnotationRepository = new AnnotationRepository(scene, m_ServiceHttpClient, m_ServiceHostResolver);
 
             try
             {

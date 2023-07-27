@@ -8,6 +8,23 @@ using UnityEngine;
 
 namespace Unity.ReferenceProject.ScenesList
 {
+    class SceneComparer : IEqualityComparer<IScene>
+    {
+        public bool Equals(IScene x, IScene y)
+        {
+            if (ReferenceEquals(x, y)) return true;
+            if (ReferenceEquals(x, null)) return false;
+            if (ReferenceEquals(y, null)) return false;
+            if (x.GetType() != y.GetType()) return false;
+            return x.Name == y.Name && x.Id.Equals(y.Id) && x.WorkspaceId.Equals(y.WorkspaceId) && Equals(x.Permissions, y.Permissions) && x.LatestVersion.Equals(y.LatestVersion);
+        }
+
+        public int GetHashCode(IScene obj)
+        {
+            return HashCode.Combine(obj.Name, obj.Id, obj.WorkspaceId, obj.Permissions, obj.LatestVersion);
+        }
+    }
+
     public class SceneWorkspaceProvider
     {
         readonly Dictionary<SceneId, IScene> m_IdToScenesLookUp = new ();
@@ -21,7 +38,7 @@ namespace Unity.ReferenceProject.ScenesList
         {
             m_WorkspaceProvider = workspaceProvider;
         }
-        
+
         public List<IScene> GetAllScenes() => m_IdToScenesLookUp.Values.ToList();
 
         public Task RefreshAsync()
@@ -45,7 +62,9 @@ namespace Unity.ReferenceProject.ScenesList
 
         async Task GetAllScenesFromWorkspacesAsync(IAsyncEnumerable<IWorkspace> workspaces)
         {
-            
+            m_IdToScenesLookUp.Clear();
+            m_IdToWorkspaces.Clear();
+
             await foreach (var workspace in workspaces)
             {
                 var selectedScenes = await GetScenesFromWorkspaceAsync(workspace);
@@ -53,7 +72,6 @@ namespace Unity.ReferenceProject.ScenesList
                 {
                     m_IdToScenesLookUp.TryAdd(scene.Id, scene);
                 }
-
                 m_IdToWorkspaces.TryAdd(workspace.Id, workspace.Name);
             }
         }

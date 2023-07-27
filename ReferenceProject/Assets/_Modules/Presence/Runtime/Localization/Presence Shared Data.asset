@@ -27,6 +27,10 @@ MonoBehaviour:
     m_Key: Loading_Name
     m_Metadata:
       m_Items: []
+  - m_Id: 38440573147799552
+    m_Key: Vivox_Unsupported
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

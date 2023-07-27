@@ -17,6 +17,7 @@ namespace Unity.ReferenceProject.InputDisabling
             m_InputDisablingManager = inputDisablingManager;
 
             visualElement.RegisterCallback<PointerDownEvent>(OnPointerDown);
+            visualElement.RegisterCallback<PointerUpEvent>(OnPointerUp, TrickleDown.TrickleDown);
             visualElement.RegisterCallback<PointerCaptureOutEvent>(OnPointerCaptureOut, TrickleDown.TrickleDown);
         }
 
@@ -26,6 +27,15 @@ namespace Unity.ReferenceProject.InputDisabling
             {
                 m_IsInputBlocked = true;
                 m_InputDisablingManager.AddOverride(this);
+            }
+        }
+
+        void OnPointerUp(PointerUpEvent evt)
+        {
+            if (m_IsInputBlocked)
+            {
+                m_IsInputBlocked = false;
+                m_InputDisablingManager.RemoveOverride(this);
             }
         }
 

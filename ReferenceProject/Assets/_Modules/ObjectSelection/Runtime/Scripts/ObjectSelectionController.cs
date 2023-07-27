@@ -3,7 +3,9 @@ using System.Threading.Tasks;
 using Unity.ReferenceProject.UIInputBlocker;
 using Unity.ReferenceProject.DataStores;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Zenject;
+using RaycastResult = Unity.Cloud.DataStreaming.Runtime.RaycastResult;
 
 namespace Unity.ReferenceProject.ObjectSelection
 {
@@ -45,7 +47,7 @@ namespace Unity.ReferenceProject.ObjectSelection
             m_IsActive = isEnable;
 
             if (!isEnable)
-                DispatchSelection(null);
+                DispatchSelection(RaycastResult.Invalid);
         }
 
         void PerformPick(Ray ray)
@@ -61,22 +63,13 @@ namespace Unity.ReferenceProject.ObjectSelection
         {
             try
             {
-                var selected = await m_Picker.PickFromRayAsync(ray);
+                var raycastResult = await m_Picker.RaycastAsync(ray);
 
-                // if at the middle of the DataStreamingPicking process user exit Select Mode then stop
-                // or selection is empty
-                if (!m_IsActive || selected == null || selected.Count == 0)
-                {
-                    DispatchSelection(null);
-                }
-                else
-                {
-                    var target = selected[0].Item1;
+                // Check if we hit something closer than the raycast result
+                if (Physics.Raycast(ray, out RaycastHit hit) && hit.distance < raycastResult.Distance)
+                    return;
 
-                    // TODO: add HLOD detection and empty metadata check
-
-                    DispatchSelection(target);
-                }
+                DispatchSelection(raycastResult);
             }
             catch (Exception e)
             {
@@ -84,10 +77,11 @@ namespace Unity.ReferenceProject.ObjectSelection
             }
         }
 
-        void DispatchSelection(GameObject selectedGameObject)
+        void DispatchSelection(RaycastResult raycastResult)
         {
             var data = m_SelectedGameObjectInfo.GetValue();
-            data.SelectedGameObject = selectedGameObject;
+            data.SelectedInstanceId = raycastResult.InstanceId;
+            data.SelectedPosition = raycastResult.Point;
             m_SelectedGameObjectInfo.SetValue(data);
         }
     }

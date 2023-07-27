@@ -31,6 +31,9 @@ namespace Unity.ReferenceProject.VR
 
             foreach (var participant in room.ConnectedParticipants)
             {
+                if (participant.IsSelf)
+                    continue;
+
                 CollaboratorsDataPanel.AddParticipant(participant);
             }
 
@@ -45,14 +48,20 @@ namespace Unity.ReferenceProject.VR
             RefreshAvatarNotificationBadge();
 
             base.RefreshVisualTree();
+
+            // Keep the button always visible in VR
+            SetButtonDisplayStyle(DisplayStyle.Flex);
         }
 
         void RefreshAvatarNotificationBadge()
         {
-            if (CurrentRoom != null && CurrentRoom.ConnectedParticipants.Count > (IsRemoveOwner ? 1 : 0))
+            if (m_Badge == null)
+                return;
+
+            if (CurrentRoom != null && CurrentRoom.ConnectedParticipants.Count > 1)
             {
                 m_Badge.visible = true;
-                m_Badge.content = CurrentRoom.ConnectedParticipants.Count;
+                m_Badge.content = CurrentRoom.ConnectedParticipants.Count-1;
             }
             else
             {

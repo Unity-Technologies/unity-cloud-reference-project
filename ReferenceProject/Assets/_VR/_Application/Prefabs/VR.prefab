@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3808150992588205085}
   - component: {fileID: 1136358376634274183}
   - component: {fileID: 7803969827800967959}
+  - component: {fileID: 2320314680705132764}
   m_Layer: 0
   m_Name: XR Origin
   m_TagString: Untagged
@@ -78,6 +79,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Timeout: 10
   m_XROrigin: {fileID: 0}
+--- !u!114 &2320314680705132764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 939161804486800139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 543e630ded3432a49bcfabbb22a35bc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SendNavigationEvents: 0
 --- !u!1 &1292561882309425595
 GameObject:
   m_ObjectHideFlags: 0
@@ -177,8 +191,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_System: {fileID: 0}
-  m_LeftRight: {fileID: -3298980015663730887, guid: 1c2e5a67ad02c2841ad4816e22503a9b,
-    type: 3}
+  m_InputActionReference: {fileID: 0}
   m_SpeedControl: {fileID: 1521814409951060191}
 --- !u!1 &2004350571762029315
 GameObject:
@@ -226,8 +239,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_InputActionReference: {fileID: 7235453776018207098, guid: 1c2e5a67ad02c2841ad4816e22503a9b,
     type: 3}
-  m_MinimumSpeed: 2
-  m_MaximumSpeed: 4
+  m_MinimumSpeed: 4
+  m_MaximumSpeed: 12
 --- !u!1 &2512946784799357967
 GameObject:
   m_ObjectHideFlags: 0
@@ -636,6 +649,9 @@ MonoBehaviour:
     type: 3}
   m_InputActionMaps:
   - XRControllerLeft
+  - ActionButton
+  - Joystick
+  - Trigger
 --- !u!114 &1219807810697334602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -737,8 +753,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_System: {fileID: 0}
-  m_ForwardReverse: {fileID: -8880734827175089758, guid: 1c2e5a67ad02c2841ad4816e22503a9b,
-    type: 3}
+  m_InputActionReference: {fileID: 0}
   m_SpeedControl: {fileID: 1521814409951060191}
 --- !u!1 &5163173251352371877
 GameObject:
@@ -785,8 +800,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_System: {fileID: 0}
-  m_LeftRight: {fileID: -8663970194070874666, guid: 1c2e5a67ad02c2841ad4816e22503a9b,
-    type: 3}
+  m_InputActionReference: {fileID: 0}
   m_TurnSpeed: 45
   m_Snap: 1
   m_SnapValue: 45
@@ -1191,6 +1205,9 @@ MonoBehaviour:
     type: 3}
   m_InputActionMaps:
   - XRControllerRight
+  - ActionButton
+  - Joystick
+  - Trigger
 --- !u!114 &2403165675392906707
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1599,7 +1616,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_System: {fileID: 0}
-  m_Up: {fileID: -8288724968554197345, guid: 1c2e5a67ad02c2841ad4816e22503a9b, type: 3}
+  m_InputActionReference: {fileID: 0}
   m_Down: {fileID: -3893360000377208362, guid: 1c2e5a67ad02c2841ad4816e22503a9b, type: 3}
   m_SpeedControl: {fileID: 1521814409951060191}
   m_Snap: 1
@@ -2000,6 +2017,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ebfe185e9c263ed40b3597d33cd20f4a, type: 3}
+--- !u!1 &559580695964753165 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4883013761883297250, guid: ebfe185e9c263ed40b3597d33cd20f4a,
+    type: 3}
+  m_PrefabInstance: {fileID: 4902155587460057327}
+  m_PrefabAsset: {fileID: 0}
 --- !u!137 &4824311908873251394 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 501186632936022701, guid: ebfe185e9c263ed40b3597d33cd20f4a,
@@ -2019,6 +2042,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7025664770421873337}
     m_Modifications:
+    - target: {fileID: 4771481986402855460, guid: 08f8d7d1c5c869740ae0565443eeb024,
+        type: 3}
+      propertyPath: m_Cursor
+      value: 
+      objectReference: {fileID: 559580695964753165}
     - target: {fileID: 4771481986402855461, guid: 08f8d7d1c5c869740ae0565443eeb024,
         type: 3}
       propertyPath: m_RootOrder

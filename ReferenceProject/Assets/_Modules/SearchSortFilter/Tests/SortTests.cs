@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace Unity.ReferenceProject.SearchSortFilter.Tests
 {
     public class SortTests
     {
         [Test]
-        public void SortString_Correctness_Ascending()
+        public void Correctness_Ascending()
         {
             var list = new List<CustomClass>
             {
@@ -36,17 +39,9 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
         }
 
         [Test]
-        public void SortString_Correctness_Descending()
+        public void Correctness_Descending()
         {
-            var list = new List<CustomClass>
-            {
-                // 1, 2, 3, 4, 5
-                new() { key = "1" },
-                new() { key = "0" },
-                new() { key = "3" },
-                new() { key = "4" },
-                new() { key = "2" }
-            };
+            var list = CreateUnsortedList();
 
             var module = new SortModule<CustomClass>((nameof(CustomClass.key),
                 new SortBindNodeString<CustomClass>(x => x.key)));
@@ -65,7 +60,7 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
         }
 
         [Test]
-        public void SortStringList_NullOrZeroCount()
+        public void List_NullOrZeroCount()
         {
             List<CustomClass> list = null;
 
@@ -85,7 +80,7 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
         }
 
         [Test]
-        public void SortStringList_OneCount()
+        public void List_OneCount()
         {
             var list = new List<CustomClass> { new() { key = "1" } };
 
@@ -98,6 +93,55 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
 
             module.PerformSort(list);
             Assert.AreEqual("1", list[0].key);
+        }
+        
+        [Test]
+        public async Task AsyncCancellation()
+        {
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+            var list = CreateUnsortedList();
+
+            var module = new SortModule<CustomClass>((nameof(CustomClass.key),
+                new SortBindNodeString<CustomClass>(x => x.key)))
+            {
+                SortOrder = SortOrder.Ascending,
+                CurrentSortPathName = nameof(CustomClass.key)
+            };
+            
+            tokenSource.Cancel();
+            
+            try
+            {
+                await module.PerformSort(list, tokenSource.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                // We are expecting to catch this
+                Debug.LogWarning($"Operation has been canceled");
+            }
+            
+            tokenSource.Dispose();
+
+            Assert.AreEqual("1", list[0].key);
+            
+            tokenSource = new CancellationTokenSource();
+            await module.PerformSort(list, tokenSource.Token);
+            tokenSource.Dispose();
+           
+            Assert.AreEqual("0", list[0].key);
+        }
+
+        List<CustomClass> CreateUnsortedList()
+        {
+            return new List<CustomClass>
+            {
+                // 1, 2, 3, 4, 5
+                new() { key = "1" },
+                new() { key = "0" },
+                new() { key = "3" },
+                new() { key = "4" },
+                new() { key = "2" }
+            };
         }
 
         class CustomClass

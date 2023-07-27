@@ -1,22 +1,28 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
-    <ui:VisualElement name="TopicList">
+    <ui:VisualElement name="TopicList" class="topic-list">
         <ui:VisualElement name="TopicListHeader" class="topic-list-header">
             <appui:Heading text="@Annotation:Topics" class="topic-list-title"/>
-            <ui:VisualElement name="TopicListHeaderButtons" class="topic-list-header-buttons">
-                <appui:ActionButton name="AddTopicButton" icon="plus" quiet="true" tooltip="@Annotation:Add"/>
-            </ui:VisualElement>
         </ui:VisualElement>
-        <ui:ScrollView name="TopicListContainer"/>
+        <ui:ScrollView name="TopicListContainer" class="topic-list-container"/>
     </ui:VisualElement>
-    <ui:VisualElement name="CommentList">
+    <ui:VisualElement name="CommentList" class="comment-list">
         <ui:VisualElement name="CommentListHeader" class="comment-list-header">
             <appui:Heading text="@Annotation:Comments" class="comment-list-title"/>
             <ui:VisualElement name="CommentListHeaderButtons" class="comment-list-header-buttons">
-                <appui:ActionButton name="AddCommentButton" icon="plus" quiet="true" tooltip="@Annotation:Add"/>
-                <appui:ActionButton name="BackButton" icon="arrow-u-down-left" quiet="true" tooltip="@Annotation:Back"/>
+                <appui:ActionButton name="AddCommentButton" icon="plus" quiet="true" tooltip="@Annotation:Add" class="comment-header-add"/>
+                <appui:ActionButton name="GotoButton" icon="focus-object" quiet="true" tooltip="@Annotation:Goto" class="comment-header-goto"/>
+                <appui:ActionButton name="BackButton" icon="arrow-u-down-left" quiet="true" tooltip="@Annotation:Back" class="comment-header-back"/>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="CommentTopicContainer" class="comment-list-topic-container"/>
-        <ui:ScrollView name="CommentListContainer"/>
+        <ui:ScrollView name="CommentListContainer" class="comment-list-container"/>
+    </ui:VisualElement>
+    <ui:VisualElement name="TextInputContainer" class="text-input-container">
+        <appui:TextField name="TextInputTitle" placeholder="@Annotation:AddTitle" class="text-input-title"/>
+        <appui:TextArea name="TextInputMessage" class="text-input-message"/>
+        <ui:VisualElement name="TextInputButtons" class="text-input-buttons">
+            <appui:ActionButton name="TextInputCancel" label="@Annotation:Cancel" class="text-input-cancel-button"/>
+            <appui:ActionButton name="TextInputSubmit" label="@Annotation:Submit" class="text-input-submit-button"/>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

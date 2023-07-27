@@ -20,7 +20,10 @@ namespace Unity.ReferenceProject.Tests.Editor
             "With test categories:",
             "With test settings file:",
             "Executing tests with settings:",
-            "[Code Coverage]"
+            "[Code Coverage]",
+            "Assets/", // Log regression coming from com.unity.cloud.common@0.13.1
+            "Library/", // Log regression coming from com.unity.cloud.common@0.13.1
+            "Packages/" // Log regression coming from com.unity.cloud.common@0.13.1
         };
         LogEntriesWrapper m_LogEntriesWrapper;
 

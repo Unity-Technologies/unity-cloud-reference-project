@@ -16,14 +16,14 @@ namespace Unity.ReferenceProject
         AppState m_NextState;
 
         IAppInfoProvider m_AppInfoProvider;
-        ServiceHostConfiguration m_CloudConfiguration;
+        IServiceHostResolver m_ServiceHostResolver;
         IAppMessaging m_AppMessaging;
 
         [Inject]
-        public void Setup(IServiceHttpClient serviceHttpClient, ServiceHostConfiguration cloudConfiguration, IAppMessaging appMessaging)
+        public void Setup(IServiceHttpClient serviceHttpClient, IServiceHostResolver cloudConfiguration, IAppMessaging appMessaging)
         {
             m_AppInfoProvider = new AppInfoProvider(serviceHttpClient, cloudConfiguration);
-            m_CloudConfiguration = cloudConfiguration;
+            m_ServiceHostResolver = cloudConfiguration;
             m_AppMessaging = appMessaging;
         }
 
@@ -36,7 +36,7 @@ namespace Unity.ReferenceProject
         {
             var appId = UnityCloudPlayerSettings.Instance.AppId;
 
-            var prefix = $"[{m_CloudConfiguration?.ResolveEnvironment().environment}]";
+            var prefix = $"[{m_ServiceHostResolver?.GetResolvedEnvironment()}]";
 
             if (string.IsNullOrEmpty(appId))
             {

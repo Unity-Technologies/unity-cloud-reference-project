@@ -66,7 +66,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Size: 1
-  m_Smooth: 0.2
+  m_Smooth: 0
   m_Clamp: 0
   m_ClampValues: {x: 1, y: 10}
 --- !u!114 &5216628653240635274

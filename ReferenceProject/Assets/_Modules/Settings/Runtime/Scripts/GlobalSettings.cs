@@ -43,12 +43,18 @@ namespace Unity.ReferenceProject.Settings
 
         public void AddSetting(ISetting setting, uint order = 0)
         {
+            if(setting == null)
+                return;
+            
             m_Settings.Add(setting, new SettingEntry{ Element = null, Order = order });
             IsDirty = true;
         }
 
         public void RemoveSetting(ISetting setting)
         {
+            if(setting == null)
+                return;
+            
             m_Settings.Remove(setting);
             IsDirty = true;
         }

@@ -22,6 +22,10 @@ MonoBehaviour:
     m_Localized: "S\xE9lectionner"
     m_Metadata:
       m_Items: []
+  - m_Id: 44322063894343680
+    m_Localized: Entrez un texte...
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

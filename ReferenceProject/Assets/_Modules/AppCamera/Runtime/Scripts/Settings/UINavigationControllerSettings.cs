@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Unity.ReferenceProject.AppCamera
 {
-    [CreateAssetMenu(fileName = nameof(UINavigationControllerSettings), menuName = "ScriptableObjects/" + nameof(UINavigationControllerSettings))]
+    [CreateAssetMenu(fileName = nameof(UINavigationControllerSettings), menuName = "ReferenceProject/Camera/" + nameof(UINavigationControllerSettings))]
     public class UINavigationControllerSettings : ScriptableObject
     {
         [Header("Input Lag Skip Threshold")]

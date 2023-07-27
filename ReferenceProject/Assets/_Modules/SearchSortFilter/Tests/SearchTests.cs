@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using UnityEngine;
 using NUnit.Framework;
 
 namespace Unity.ReferenceProject.SearchSortFilter.Tests
@@ -18,7 +21,7 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
         }
 
         [Test]
-        public void Search_Correctness()
+        public void Correctness()
         {
             PerformSearch(m_SearchModule, "1", m_CashedList, m_TestList);
             Assert.AreEqual(2, m_CashedList.Count);
@@ -28,7 +31,7 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
         }
 
         [Test]
-        public void SearchList_NullOrZeroCount()
+        public void List_NullOrZeroCount()
         {
             List<CustomClass> list = null;
 
@@ -42,7 +45,7 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
         }
 
         [Test]
-        public void SearchString_NullOrEmptyOrSpace()
+        public void String_NullOrEmptyOrSpace()
         {
             PerformSearch(m_SearchModule, null, m_CashedList, m_TestList);
             Assert.AreEqual(8, m_CashedList.Count);
@@ -55,17 +58,48 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
         }
 
         [Test]
-        public void Search_AllContainSearchString()
+        public void AllContainSearchString()
         {
             PerformSearch(m_SearchModule, "test", m_CashedList, m_TestList);
             Assert.AreEqual(8, m_CashedList.Count);
         }
 
         [Test]
-        public void Search_EmptyResult()
+        public void EmptyResult()
         {
             PerformSearch(m_SearchModule, "emptyResult", m_CashedList, m_TestList);
             Assert.AreEqual(0, m_CashedList.Count);
+        }
+        
+        [Test]
+        public async Task AsyncCancellation()
+        {
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+            m_SearchModule.searchString = "test 4";
+            m_CashedList.Clear();
+            m_CashedList.AddRange(CreateHugeTestList());
+            
+            tokenSource.Cancel();
+            
+            try
+            {
+                await m_SearchModule.PerformSearch(m_CashedList, tokenSource.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                // We are expecting to catch this
+                Debug.LogWarning($"Operation has been canceled");
+            }
+            
+            tokenSource.Dispose();
+
+            Assert.AreNotEqual(0, m_CashedList.Count);
+            
+            tokenSource = new CancellationTokenSource();
+            await m_SearchModule.PerformSearch(m_CashedList, tokenSource.Token);
+            tokenSource.Dispose();
+            
+            Assert.AreNotEqual(2, m_CashedList.Count);
         }
 
         List<CustomClass> CreateTestList()
@@ -81,6 +115,20 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
             list.Add(new CustomClass { key = "test 3" });
             list.Add(new CustomClass { key = "test 4" });
 
+            return list;
+        }
+        
+        List<CustomClass> CreateHugeTestList()
+        {
+            var list = new List<CustomClass>();
+
+            for (int i = 0; i < 1000000; i++)
+            {
+                list.Add(new CustomClass { key = "test 1" });
+                list.Add(new CustomClass { key = "test 2" });
+                list.Add(new CustomClass { key = "test 3" });
+                list.Add(new CustomClass { key = "test 4" });
+            }
             return list;
         }
 

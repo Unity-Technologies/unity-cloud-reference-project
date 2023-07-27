@@ -56,7 +56,6 @@ namespace Unity.ReferenceProject.AppCamera
         public void Setup(Camera targetCamera, INavigationManager navigationManager)
         {
             m_Camera = targetCamera;
-            navigationManager.NavigationTeleported += OnTeleport;
         }
 
         public CameraProxySettings settings
@@ -331,11 +330,6 @@ namespace Unity.ReferenceProject.AppCamera
             m_DesiredLookAt = newForward;
             m_DesiredPosition = newPosition;
             m_IsSphericalMovement = false;
-        }
-        
-        void OnTeleport()
-        {
-            m_DesiredLookAt = m_DesiredRotation * new Vector3(0.0f, 0.0f, (m_DesiredLookAt - m_DesiredPosition).magnitude) + m_DesiredPosition;
         }
     }
 }

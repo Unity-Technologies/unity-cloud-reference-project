@@ -20,6 +20,9 @@ namespace Unity.ReferenceProject
         
         [SerializeField]
         NetcodeParticipantManager m_NetcodeParticipantManager;
+        
+        [SerializeField]
+        VoiceManager m_VoiceManager;
 
         void OnDestroy()
         {
@@ -36,6 +39,7 @@ namespace Unity.ReferenceProject
             Container.Bind<NetworkManager>().FromInstance(m_NetworkManager).AsSingle();
             Container.Bind<NetcodeParticipantManager>().FromInstance(m_NetcodeParticipantManager).AsSingle();
             Container.Bind<INetcodeService>().To<NetcodeService>().AsSingle();
+            Container.Bind<VoiceManager>().FromInstance(m_VoiceManager).AsSingle();
         }
     }
 }

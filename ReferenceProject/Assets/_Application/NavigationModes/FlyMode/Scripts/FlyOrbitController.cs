@@ -1,36 +1,82 @@
 ﻿using System;
+using System.Collections;
+using System.Threading.Tasks;
 using Unity.ReferenceProject.AppCamera;
 using Unity.ReferenceProject.Navigation;
+using Unity.ReferenceProject.ObjectSelection;
+using Unity.ReferenceProject.UIInputBlocker;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Zenject;
 
 namespace Unity.ReferenceProject.Application
 {
     public class FlyOrbitController : NavigationMode
     {
-        const string k_MovingAction = "Moving Action";
-        const string k_OrbitAction = "Orbit Action";
-        const string k_WorldOrbitAction = "WorldOrbit Action";
-        const string k_PanStart = "Pan Start";
-        const string k_PanAction = "Pan Action";
-        const string k_ZoomAction = "Zoom Action";
-        const string k_PanGestureAction = "Pan Gesture Action";
-        const string k_ZoomGestureAction = "Zoom Gesture Action";
-
         [SerializeField]
         CameraController m_CameraController;
 
         [SerializeField]
         InputActionAsset m_InputActionAsset;
-        readonly Vector3 m_ResetCameraEuler = new(25, 0, 0);
 
+        [Tooltip("Offset from the contact point back towards the start position")]
+        [SerializeField]
+        float m_ArrivalOffsetRelative = 1f;
+
+        [Tooltip("Offset along the surface normal of the selected object")]
+        [SerializeField]
+        float m_ArrivalOffsetNormal = 1f;
+
+        [Tooltip("Fixed offset in world space")]
+        [SerializeField]
+        Vector3 m_ArrivalOffsetFixed = Vector3.zero;
+
+        [Tooltip("Fixed time for the teleport animation")]
+        [SerializeField]
+        float m_LerpTime = 1f;
+
+        [Tooltip("Teleport animation smooth curve")]
+        [SerializeField]
+        AnimationCurve m_SmoothCurve;
+
+        readonly Vector3 m_ResetCameraEuler = new(25, 0, 0);
         readonly Vector3 m_ResetCameraPosition = new(0, 5, -10);
 
         bool m_IsInputsEnabled;
+        bool m_IsTeleporting;
+        float m_LastClickTime;
+
+        static readonly string k_MovingAction = "Moving Action";
+        static readonly string k_OrbitAction = "Orbit Action";
+        static readonly string k_WorldOrbitAction = "WorldOrbit Action";
+        static readonly string k_PanStart = "Pan Start";
+        static readonly string k_PanAction = "Pan Action";
+        static readonly string k_ZoomAction = "Zoom Action";
+        static readonly string k_PanGestureAction = "Pan Gesture Action";
+        static readonly string k_ZoomGestureAction = "Zoom Gesture Action";
+        static readonly float k_DoubleClickTime = 0.3f;
+
+        Task m_PickTask;
+        IObjectPicker m_ObjectPicker;
+        IUIInputBlockerEvents m_ClickEventDispatcher;
+        Camera m_StreamingCamera;
+
+        [Inject]
+        void Setup(IObjectPicker objectPicker, IUIInputBlockerEvents clickEventDispatcher, Camera streamingCamera)
+        {
+            m_ObjectPicker = objectPicker;
+            m_ClickEventDispatcher = clickEventDispatcher;
+            m_StreamingCamera = streamingCamera;
+        }
 
         void Awake()
         {
             InitializeInputs();
+        }
+
+        void OnDestroy()
+        {
+            ResetInputs();
         }
 
         void Reset()
@@ -42,11 +88,6 @@ namespace Unity.ReferenceProject.Application
         void Update()
         {
             UpdateMovement();
-        }
-
-        void OnDestroy()
-        {
-            ResetInputs();
         }
 
         void InitializeInputs()
@@ -63,6 +104,10 @@ namespace Unity.ReferenceProject.Application
             m_InputActionAsset[k_PanStart].performed += m_CameraController.OnPanStart;
             m_InputActionAsset[k_PanAction].performed += m_CameraController.OnPan;
             m_InputActionAsset[k_ZoomAction].performed += m_CameraController.OnZoom;
+            if (m_ClickEventDispatcher != null)
+            {
+                m_ClickEventDispatcher.OnDispatchRay += PerformPick;
+            }
 
             m_InputActionAsset[k_OrbitAction].Enable();
             m_InputActionAsset[k_WorldOrbitAction].Enable();
@@ -83,6 +128,7 @@ namespace Unity.ReferenceProject.Application
         void ResetInputs()
         {
             m_IsInputsEnabled = false;
+            m_CameraController.ForceStop();
 
             m_InputActionAsset[k_OrbitAction].Disable();
             m_InputActionAsset[k_WorldOrbitAction].Disable();
@@ -91,6 +137,10 @@ namespace Unity.ReferenceProject.Application
             m_InputActionAsset[k_ZoomAction].Disable();
             m_InputActionAsset[k_ZoomGestureAction].Disable();
             m_InputActionAsset[k_PanGestureAction].Disable();
+            if (m_ClickEventDispatcher != null)
+            {
+                m_ClickEventDispatcher.OnDispatchRay -= PerformPick;
+            }
 
             m_CameraController.MovingAction = null;
             m_InputActionAsset[k_OrbitAction].performed -= m_CameraController.OnOrbit;
@@ -114,7 +164,7 @@ namespace Unity.ReferenceProject.Application
         void UpdateMovement()
         {
             // Ignore movement if asset is disabled
-            if (!m_InputActionAsset.enabled)
+            if (!m_IsInputsEnabled)
                 return;
 
             m_CameraController.UpdateMovingAction();
@@ -132,7 +182,70 @@ namespace Unity.ReferenceProject.Application
 
         public override void Teleport(Vector3 position, Vector3 eulerAngles)
         {
-            m_CameraController.ResetTo(position, eulerAngles, Vector3.forward);
+            var rotation = Quaternion.Euler(eulerAngles);
+            var lookAt = rotation * new Vector3(0.0f, 0.0f, (Vector3.zero - position).magnitude) + position;
+            m_CameraController.ResetTo(position, eulerAngles, lookAt);
+        }
+
+        void PerformPick(Ray ray)
+        {
+            if (m_IsTeleporting)
+                return;
+
+            if (Time.time - m_LastClickTime < k_DoubleClickTime)
+            {
+                if (m_PickTask?.IsCompleted ?? true)
+                {
+                    m_PickTask = PickFromRayAsync(ray);
+                }
+            }
+            else
+            {
+                m_LastClickTime = Time.time;
+            }
+        }
+
+        async Task PickFromRayAsync(Ray ray)
+        {
+            try
+            {
+                var raycastResult = await m_ObjectPicker.RaycastAsync(ray);
+                if (raycastResult.HasIntersected)
+                {
+                    m_IsTeleporting = true;
+
+                    var normal = Vector3.up; // Default to up until we have a hit normal
+                    var source = m_StreamingCamera.transform.position;
+                    var target = raycastResult.Point +
+                        m_ArrivalOffsetFixed +
+                        m_ArrivalOffsetNormal * normal +
+                        m_ArrivalOffsetRelative * (source - raycastResult.Point).normalized;
+
+                   StartCoroutine(TeleportCoroutine(source, target));
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
+        }
+
+        IEnumerator TeleportCoroutine(Vector3 source, Vector3 target)
+        {
+            var cameraTransform = m_StreamingCamera.transform;
+            cameraTransform.rotation = Quaternion.LookRotation(target - source);
+
+            var t = 0f;
+            while(t < m_LerpTime)
+            {
+                cameraTransform.position = Vector3.Lerp(source, target, m_SmoothCurve.Evaluate(t / m_LerpTime));
+                t += Time.deltaTime;
+                yield return null;
+            }
+
+            m_CameraController.ResetTo(target, cameraTransform.rotation.eulerAngles, target + (target - source).normalized);
+
+            m_IsTeleporting = false;
         }
     }
 }

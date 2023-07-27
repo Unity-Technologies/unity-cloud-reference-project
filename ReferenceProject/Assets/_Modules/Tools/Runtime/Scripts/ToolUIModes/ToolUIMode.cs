@@ -31,6 +31,7 @@ namespace Unity.ReferenceProject.Tools
             Button = button;
             ToolUIController = toolUIController;
             ToolUIController.SetCloseAction(CloseTool);
+            ToolUIController.SetButtonDisplayStyleAction(SetButtonDisplayStyle);
 
             return CreateVisualTreeInternal();
         }
@@ -49,6 +50,15 @@ namespace Unity.ReferenceProject.Tools
             Button.selected = false;
             OnToolClosedInternal();
             ToolUIController.InvokeToolClosed();
+        }
+
+        void SetButtonDisplayStyle(DisplayStyle style)
+        {
+            Button.style.display = style;
+            if (style == DisplayStyle.None)
+            {
+                CloseTool();
+            }
         }
 
         protected abstract VisualElement CreateVisualTreeInternal();

@@ -5,14 +5,15 @@ using UnityEngine.Serialization;
 
 namespace Unity.ReferenceProject.Navigation
 {
+    [CreateAssetMenu(menuName = "ReferenceProject/Navigation Manager/Camera View Data")]
     public class CameraViewData : ScriptableObject
     {
         [SerializeField]
         Sprite m_Icon;
-
+        
         [SerializeField]
         string m_ViewName;
-
+        
         [SerializeField]
         Vector3 m_AngleRotation;
         

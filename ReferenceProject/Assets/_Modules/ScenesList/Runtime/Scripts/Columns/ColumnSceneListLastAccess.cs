@@ -15,12 +15,12 @@ namespace Unity.ReferenceProject.ScenesList
     {
         [SerializeField]
         bool m_IsUseEllipsisText;
-        
+
         [SerializeField]
         string m_EllipsisTextStyle;
-        
+
         IAccessHistoryController m_AccessHistoryController;
-        
+
         [Inject]
         void Setup(IAccessHistoryController accessHistoryController)
         {
@@ -32,7 +32,7 @@ namespace Unity.ReferenceProject.ScenesList
             base.AddServices(services);
             services.Add(new SortBindNodeLong<object>(x =>
                 x is IScene scene && m_AccessHistoryController.Accessed(scene.Id, out var accessDate)
-                    ? accessDate.Ticks
+                    ? -1 * accessDate.Ticks
                     : long.MaxValue));
         }
 
@@ -40,7 +40,7 @@ namespace Unity.ReferenceProject.ScenesList
         {
             TableListColumnData.BuildTextHeader(e, columnData);
         }
-        
+
         protected override void OnMakeCell(VisualElement e, IColumnData columnData)
         {
             var text = new Text();
@@ -49,7 +49,7 @@ namespace Unity.ReferenceProject.ScenesList
             {
                 text.AddToClassList(m_EllipsisTextStyle);
             }
-            
+
             e.Add(text);
         }
 
@@ -71,7 +71,7 @@ namespace Unity.ReferenceProject.ScenesList
                     : null;
             }
         }
-        
+
         string GetTextName(IColumnData columnData) => $"text-{columnData.Name}";
 
         static string LastAccessStringBuilder(DateTime accessDate)

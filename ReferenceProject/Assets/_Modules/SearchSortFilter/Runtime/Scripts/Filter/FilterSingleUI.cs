@@ -14,16 +14,23 @@ namespace Unity.ReferenceProject.SearchSortFilter
 
         readonly string m_DefaultValue;
 
-        readonly IFilterBindNode<T> m_FilterBindNode;
+        readonly FilterModule<T> m_FilterModule;
         readonly Dropdown m_Dropdown;
 
         List<string> m_Options;
 
-        public FilterSingleUI(IFilterBindNode<T> filterBindNode, VisualElement root, Action onFilterChanged,
-            List<T> dataList, string defaultValue = null, string dropDownKey = "FilterDropdown")
+        readonly string m_FilterColumnName;
+        
+        string GetFilterColumnKey(Dictionary<string, IFilterBindNode<T>> filterNodes) => 
+            !string.IsNullOrEmpty(m_FilterColumnName) && filterNodes.ContainsKey(m_FilterColumnName) ? m_FilterColumnName : filterNodes.First().Key;
+
+        public FilterSingleUI(FilterModule<T> filterModule, VisualElement root, Action onFilterChanged,
+            List<T> dataList, string defaultValue = null, string dropDownKey = "FilterDropdown", string filterColumnName = null)
         {
-            m_FilterBindNode = filterBindNode;
+            m_FilterModule = filterModule;
             OnDropDownChanged += onFilterChanged;
+
+            m_FilterColumnName = filterColumnName;
 
             m_Dropdown = root.Q<Dropdown>(dropDownKey);
 
@@ -71,15 +78,19 @@ namespace Unity.ReferenceProject.SearchSortFilter
         {
             if (m_Options == null || evt.newValue >= m_Options.Count)
                 return;
-
-            m_FilterBindNode.SelectedOption =
-                m_Options[evt.newValue].Equals(m_DefaultValue) ? null : m_Options[evt.newValue];
+            
+            var filterNodes = m_FilterModule.AllFilterNodes;
+            if(filterNodes.Count == 0)
+                return;
+            
+            m_FilterModule.ClearAllOptions();
+            m_FilterModule.AddSelectedOption(GetFilterColumnKey(filterNodes), m_Options[evt.newValue].Equals(m_DefaultValue) ? null : m_Options[evt.newValue]);
             OnDropDownChanged?.Invoke();
         }
 
         public void SetDefaultValueWithoutNotify()
         {
-            m_FilterBindNode.SelectedOption = null;
+            m_FilterModule.ClearAllOptions();
             m_Dropdown.SetValueWithoutNotify(0);
         }
 
@@ -90,8 +101,12 @@ namespace Unity.ReferenceProject.SearchSortFilter
                 SetDropdownOptions(null);
                 return;
             }
+            
+            var filterNodes = m_FilterModule.AllFilterNodes;
+            if(filterNodes.Count == 0)
+                return;
 
-            var bindPath = m_FilterBindNode.bindPath;
+            var bindPath = filterNodes[GetFilterColumnKey(filterNodes)].bindPath;
 
             var filterOptions = new HashSet<string>();
 

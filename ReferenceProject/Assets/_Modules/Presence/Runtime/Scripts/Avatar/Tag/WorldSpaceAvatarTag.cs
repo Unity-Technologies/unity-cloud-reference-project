@@ -105,5 +105,24 @@ namespace Unity.ReferenceProject.Presence
         {
             m_AvatarBadge.backgroundColor = color;
         }
+        
+        public override void SetVoiceStatus(VoiceStatus status)
+        {
+            switch (status)
+            {
+                case VoiceStatus.Unsupported:
+                    
+                    break;
+                
+                case VoiceStatus.NotConnected:
+                case VoiceStatus.NoRoom:
+
+                    break;
+
+                case VoiceStatus.Connected:
+
+                    break;
+            }
+        }
     }
 }

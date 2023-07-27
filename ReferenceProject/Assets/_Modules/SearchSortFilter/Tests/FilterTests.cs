@@ -1,39 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace Unity.ReferenceProject.SearchSortFilter.Tests
 {
     public class FilterTests
     {
         [Test]
-        public void Filter_Correctness_Equals()
+        public void Correctness_Equals()
         {
-            var list = new List<CustomClass>();
-
-            list.Add(new CustomClass { key = "test1" });
-            list.Add(new CustomClass { key = "test0" });
-            list.Add(new CustomClass { key = "test1" });
-            list.Add(new CustomClass { key = "test0" });
-            list.Add(new CustomClass { key = "test1" });
-            list.Add(new CustomClass { key = "test0" });
-            list.Add(new CustomClass { key = "test0" });
-            list.Add(new CustomClass { key = "test0" });
-            list.Add(new CustomClass { key = "test1" });
-            list.Add(new CustomClass { key = "test0" });
+            var list = CreateList();
 
             // Test0 = 6
             // Test1 = 4
-            var module = new FilterBindNode<CustomClass>(c => c.key, FilterCompareType.Equals);
+            var module = new FilterModule<CustomClass>((nameof(CustomClass.key), new FilterBindNode<CustomClass>(c => c.key, FilterCompareType.Equals)));
 
             var listCached = new List<CustomClass>();
 
-            module.SelectedOption = "test0";
+            module.AddSelectedOption(nameof(CustomClass.key), "test0");
             listCached.AddRange(list);
             module.PerformFiltering(listCached);
             Assert.AreEqual(6, listCached.Count);
 
-            module.SelectedOption = "test1";
+            module.ClearAllOptions();
+            module.AddSelectedOption(nameof(CustomClass.key), "test1");
             listCached.Clear();
             listCached.AddRange(list);
             module.PerformFiltering(listCached);
@@ -41,47 +34,13 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
         }
 
         [Test]
-        public void Filter_Correctness_NonEquals()
-        {
-            var list = new List<CustomClass>();
-
-            list.Add(new CustomClass { key = "test1" });
-            list.Add(new CustomClass { key = "test0" });
-            list.Add(new CustomClass { key = "test1" });
-            list.Add(new CustomClass { key = "test0" });
-            list.Add(new CustomClass { key = "test1" });
-            list.Add(new CustomClass { key = "test0" });
-            list.Add(new CustomClass { key = "test0" });
-            list.Add(new CustomClass { key = "test0" });
-            list.Add(new CustomClass { key = "test1" });
-            list.Add(new CustomClass { key = "test0" });
-
-            // Test0 = 6
-            // Test1 = 4
-            var module = new FilterBindNode<CustomClass>(c => c.key, FilterCompareType.NotEquals);
-
-            var listCached = new List<CustomClass>();
-
-            module.SelectedOption = "test0";
-            listCached.AddRange(list);
-            module.PerformFiltering(listCached);
-            Assert.AreEqual(4, listCached.Count);
-
-            module.SelectedOption = "test1";
-            listCached.Clear();
-            listCached.AddRange(list);
-            module.PerformFiltering(listCached);
-            Assert.AreEqual(6, listCached.Count);
-        }
-
-        [Test]
-        public void FilterList_NullOrZeroCount()
+        public void List_NullOrZeroCount()
         {
             List<CustomClass> list = null;
 
-            var module = new FilterBindNode<CustomClass>(c => c.key, FilterCompareType.Equals);
+            var module = new FilterModule<CustomClass>((nameof(CustomClass.key), new FilterBindNode<CustomClass>(c => c.key, FilterCompareType.Equals)));
 
-            module.SelectedOption = "0";
+            module.AddSelectedOption(nameof(CustomClass.key), "0");
             module.PerformFiltering(list);
             Assert.AreEqual(null, list);
 
@@ -91,29 +50,31 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
         }
 
         [Test]
-        public void SearchString_NullOrEmptyOrSpace()
+        public void String_NullOrEmptyOrSpace()
         {
             var list = new List<CustomClass>();
 
             list.Add(new CustomClass { key = "test 1" });
             list.Add(new CustomClass { key = "test 2" });
 
-            var module = new FilterBindNode<CustomClass>(c => c.key, FilterCompareType.Equals);
+            var module = new FilterModule<CustomClass>((nameof(CustomClass.key), new FilterBindNode<CustomClass>(c => c.key, FilterCompareType.Equals)));
 
             var listCached = new List<CustomClass>();
 
-            module.SelectedOption = null;
+            module.AddSelectedOption(nameof(CustomClass.key), null);
             listCached.AddRange(list);
             module.PerformFiltering(listCached);
             Assert.AreEqual(2, listCached.Count);
 
-            module.SelectedOption = "";
+            module.ClearAllOptions();
+            module.AddSelectedOption(nameof(CustomClass.key), "");
             listCached.Clear();
             listCached.AddRange(list);
             module.PerformFiltering(listCached);
             Assert.AreEqual(2, listCached.Count);
 
-            module.SelectedOption = " ";
+            module.ClearAllOptions();
+            module.AddSelectedOption(nameof(CustomClass.key), " ");
             listCached.Clear();
             listCached.AddRange(list);
             module.PerformFiltering(listCached);
@@ -121,7 +82,7 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
         }
 
         [Test]
-        public void Filter_EmptyResult()
+        public void EmptyResult()
         {
             var list = new List<CustomClass>();
 
@@ -130,14 +91,68 @@ namespace Unity.ReferenceProject.SearchSortFilter.Tests
             list.Add(new CustomClass { key = "test 3" });
             list.Add(new CustomClass { key = "test 4" });
 
-            var module = new FilterBindNode<CustomClass>(c => c.key, FilterCompareType.Equals);
+            var module = new FilterModule<CustomClass>((nameof(CustomClass.key), new FilterBindNode<CustomClass>(c => c.key, FilterCompareType.Equals)));
 
             var listCached = new List<CustomClass>();
 
-            module.SelectedOption = "emptyResult";
+            module.AddSelectedOption(nameof(CustomClass.key), "emptyResult");
             listCached.AddRange(list);
             module.PerformFiltering(listCached);
             Assert.AreEqual(0, listCached.Count);
+        }
+        
+        [Test]
+        public async Task AsyncCancellation()
+        {
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+            var list = CreateList();
+
+            var module = new FilterModule<CustomClass>(("filterKey", new FilterBindNode<CustomClass>(c => c.key, FilterCompareType.Equals)));
+            module.AddSelectedOption("filterKey", "test1");
+
+            int listInitialCount = list.Count;
+            
+            tokenSource.Cancel();
+            
+            try
+            {
+                await module.PerformFiltering(list, tokenSource.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                // We are expecting to catch this
+                Debug.LogWarning($"Operation has been canceled");
+            }
+            
+            tokenSource.Dispose();
+
+            Assert.AreEqual(listInitialCount, list.Count);
+
+            tokenSource = new CancellationTokenSource();
+            await module.PerformFiltering(list, tokenSource.Token);
+            tokenSource.Dispose();
+            Assert.AreEqual(4, list.Count);
+            
+        }
+        
+        // test1 - 4
+        // test0 - 6
+        List<CustomClass> CreateList()
+        {
+            var list = new List<CustomClass>();
+            
+            list.Add(new CustomClass { key = "test1" });
+            list.Add(new CustomClass { key = "test0" });
+            list.Add(new CustomClass { key = "test1" });
+            list.Add(new CustomClass { key = "test0" });
+            list.Add(new CustomClass { key = "test1" });
+            list.Add(new CustomClass { key = "test0" });
+            list.Add(new CustomClass { key = "test0" });
+            list.Add(new CustomClass { key = "test0" });
+            list.Add(new CustomClass { key = "test1" });
+            list.Add(new CustomClass { key = "test0" });
+
+            return list;
         }
 
         class CustomClass

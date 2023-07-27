@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -33,8 +34,10 @@ namespace Unity.ReferenceProject.SearchSortFilter
             }
         }
         
-        public Task PerformSearch(List<T> list)
+        public Task PerformSearch(List<T> list, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            
             if (string.IsNullOrEmpty(searchString) || list == null || list.Count == 0)
                 return Task.CompletedTask;
 
@@ -49,6 +52,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
             // Prepare bindPaths
             foreach (var searchNode in m_AllSearchNodes)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 keys.Add(searchNode.Value);
             }
 
@@ -60,6 +64,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
                 var isVisible = false;
                 for (var k = 0; k < keys.Count; k++)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     isVisible |= keys[k].PerformSearch(list[i], searchString);
                 }
                 
@@ -73,6 +78,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
             // Clean Up everything that right after r
             for (var i = list.Count - 1; i > r; i--)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 list.RemoveAt(i);
             }
             

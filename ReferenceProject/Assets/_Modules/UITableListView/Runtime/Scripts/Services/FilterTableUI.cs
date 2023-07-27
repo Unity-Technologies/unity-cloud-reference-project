@@ -28,10 +28,10 @@ namespace Unity.ReferenceProject.UITableListView
 
         readonly string[] m_ColumnStyles;
 
-        public FilterTableUI(FilterModule<T> filterBindNode, VisualElement root, Action onFilterChanged,
+        public FilterTableUI(FilterModule<T> filterModule, VisualElement root, Action onFilterChanged,
             string buttonName = "", string[] columnStyles = null)
         {
-            m_FilterModule = filterBindNode;
+            m_FilterModule = filterModule;
             m_OnFilterChanged = onFilterChanged;
             CreateTable();
 

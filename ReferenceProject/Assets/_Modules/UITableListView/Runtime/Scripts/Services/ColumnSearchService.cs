@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Unity.ReferenceProject.SearchSortFilter;
 using UnityEngine;
@@ -62,11 +63,11 @@ namespace Unity.ReferenceProject.UITableListView
             // Empty
         }
 
-        public async Task PerformService(List<object> list)
+        public async Task PerformService(List<object> list, CancellationToken cancellationToken = default)
         {
             if (m_SearchModule != null)
             {
-                await m_SearchModule.PerformSearch(list);
+                await m_SearchModule.PerformSearch(list, cancellationToken);
             }
         }
     }

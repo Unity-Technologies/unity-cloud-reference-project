@@ -13,24 +13,24 @@ namespace Unity.ReferenceProject.Tools
 
         [SerializeField]
         string m_PanelStyleClass;
-        
+
         [SerializeField]
         bool m_DisplayTitle;
-        
+
         [SerializeField]
         bool m_DisplayIcon;
-        
+
         [SerializeField]
         bool m_DisplayCloseButton;
-        
+
         public List<StyleSheet> AdditionalStyles => m_AdditionalStyles;
 
         public string PanelStyleClass => m_PanelStyleClass;
 
         public bool DisplayTitle => m_DisplayTitle;
-        
+
         public bool DisplayIcon => m_DisplayIcon;
-        
+
         public bool DisplayCloseButton => m_DisplayCloseButton;
 
         public override IToolUIModeHandler CreateHandler()
@@ -45,7 +45,6 @@ namespace Unity.ReferenceProject.Tools
         readonly bool m_DisplayCloseButton;
         readonly bool m_DisplayIcon;
         readonly bool m_DisplayTitle;
-
         readonly string m_StyleClass;
 
         public ToolUIModePanelHandler(ToolUIModePanel toolUIModePanel)
@@ -85,11 +84,17 @@ namespace Unity.ReferenceProject.Tools
 
         protected override void OnToolOpenedInternal()
         {
+            if (Panel == null)
+                return;
+
             Panel.SetVisible(true);
         }
 
         protected override void OnToolClosedInternal()
         {
+            if (Panel == null)
+                return;
+
             Panel.SetVisible(false);
         }
     }

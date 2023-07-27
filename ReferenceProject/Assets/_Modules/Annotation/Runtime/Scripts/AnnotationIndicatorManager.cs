@@ -15,6 +15,8 @@ namespace Unity.ReferenceProject.Annotation
         void AddIndicator(ITopic topic);
         void RemoveIndicator(Guid topicId);
         AnnotationIndicatorController GetIndicator(Guid topicId);
+        AnnotationIndicatorController GetEmptyIndicator();
+        void ReleaseAnnotationIndicator(AnnotationIndicatorController indicator);
     }
 
     public class AnnotationIndicatorManager : IAnnotationIndicatorManager
@@ -90,6 +92,20 @@ namespace Unity.ReferenceProject.Annotation
                 return indicator;
             }
             return null;
+        }
+
+        public AnnotationIndicatorController GetEmptyIndicator()
+        {
+            return m_Pool.Get();
+        }
+
+        public void ReleaseAnnotationIndicator(AnnotationIndicatorController indicator)
+        {
+            m_Pool.Release(indicator);
+            if (m_ActiveIndicators.ContainsValue(indicator))
+            {
+                m_ActiveIndicators.Remove(indicator.Topic.Id);
+            }
         }
 
         AnnotationIndicatorController CreateIndicator()

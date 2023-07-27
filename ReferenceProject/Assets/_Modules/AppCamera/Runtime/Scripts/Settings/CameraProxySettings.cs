@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Unity.ReferenceProject.AppCamera
 {
-    [CreateAssetMenu(fileName = nameof(CameraProxySettings), menuName = "ScriptableObjects/" + nameof(CameraProxySettings))]
+    [CreateAssetMenu(fileName = nameof(CameraProxySettings), menuName = "ReferenceProject/Camera/" + nameof(CameraProxySettings))]
     public class CameraProxySettings : ScriptableObject
     {
         [Header("Constraints")]

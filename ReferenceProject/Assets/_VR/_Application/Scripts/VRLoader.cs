@@ -14,7 +14,7 @@ namespace Unity.ReferenceProject.VR
         Camera m_ScreenModeCamera;
         float m_ScreenModeFieldOfView;
 
-        void Awake()
+        void Start()
         {
             Load();
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.Cloud.Common;
 using Unity.ReferenceProject.DataStores;
 using UnityEngine;
 using Zenject;
@@ -8,23 +9,27 @@ namespace Unity.ReferenceProject.ObjectSelection
 {
     public class ObjectSelectionHighlighter : MonoBehaviour
     {
+        public static readonly string Layer = "ObjectSelection";
+        
         [SerializeField]
         bool m_IsRemoveSubMeshes = true;
 
         [SerializeField]
         Material m_Material;
 
+        ObjectSelectionHighlightActivator m_ObjectSelectionHighlightActivator;
         PropertyValue<IObjectSelectionInfo> m_ObjectSelectionProperty;
 
         MeshFilter m_OutlineMeshFilter;
         MeshRenderer m_OutlineMeshRenderer;
 
         [Inject]
-        void Setup(PropertyValue<IObjectSelectionInfo> objectSelectionProperty)
+        void Setup(ObjectSelectionHighlightActivator objectSelectionHighlightActivator, PropertyValue<IObjectSelectionInfo> objectSelectionProperty)
         {
             m_ObjectSelectionProperty = objectSelectionProperty;
-            m_ObjectSelectionProperty.ValueChanged -= OnObjectSelectionChanged;
-            m_ObjectSelectionProperty.ValueChanged += OnObjectSelectionChanged;
+
+            m_ObjectSelectionHighlightActivator = objectSelectionHighlightActivator;
+            objectSelectionHighlightActivator.OnActivate += OnActivate;
         }
 
         void Start()
@@ -36,42 +41,34 @@ namespace Unity.ReferenceProject.ObjectSelection
         {
             if (m_ObjectSelectionProperty != null)
                 m_ObjectSelectionProperty.ValueChanged -= OnObjectSelectionChanged;
+            
+            if(m_ObjectSelectionHighlightActivator != null)
+                m_ObjectSelectionHighlightActivator.OnActivate -= OnActivate;
         }
-
-        void OnObjectSelectionChanged(IObjectSelectionInfo obj) => SetTargetGameObject(obj.SelectedGameObject);
-
-        void SetTargetGameObject(GameObject target)
+        
+        void OnActivate(bool isActive)
         {
-            if (!target)
+            if (isActive)
             {
-                if (m_OutlineMeshFilter)
-                {
-                    m_OutlineMeshFilter.gameObject.SetActive(false);
-                }
-
-                return;
-            }
-
-            var targetMeshFilter = target.GetComponent<MeshFilter>();
-            var targetMeshRenderer = target.GetComponent<MeshRenderer>();
-
-            if (!targetMeshFilter || !targetMeshRenderer)
-            {
-                if (m_OutlineMeshFilter != null)
-                {
-                    m_OutlineMeshFilter.gameObject.SetActive(false);
-                }
+                m_ObjectSelectionProperty.ValueChanged -= OnObjectSelectionChanged;
+                m_ObjectSelectionProperty.ValueChanged += OnObjectSelectionChanged;
+                
+                // Refresh state
+                OnObjectSelectionChanged(m_ObjectSelectionProperty.GetValue());
             }
             else
             {
-                if (m_OutlineMeshFilter == null)
-                {
-                    CreateDummy();
-                }
+                m_ObjectSelectionProperty.ValueChanged -= OnObjectSelectionChanged;
+            }
+        }
 
-                ReplaceMaterials(target, targetMeshRenderer, targetMeshFilter);
+        void OnObjectSelectionChanged(IObjectSelectionInfo obj) => SetTargetInstanceId(obj.SelectedInstanceId);
 
-                m_OutlineMeshFilter.gameObject.SetActive(true);
+        void SetTargetInstanceId(InstanceId target)
+        {
+            if (target == InstanceId.None && m_OutlineMeshFilter != null)
+            {
+                m_OutlineMeshFilter.gameObject.SetActive(false);
             }
         }
 
@@ -106,7 +103,7 @@ namespace Unity.ReferenceProject.ObjectSelection
         /// <summary>
         ///     Make mesh with many materials to mesh with one material
         /// </summary>
-        Mesh RemoveSubMeshes(Mesh mesh)
+        static Mesh RemoveSubMeshes(Mesh mesh)
         {
             var triIndices = new List<int>();
             for (var i = 0; i < mesh.subMeshCount; i++)
@@ -140,7 +137,7 @@ namespace Unity.ReferenceProject.ObjectSelection
         void CreateDummy()
         {
             var go = new GameObject("Outline");
-            go.layer = 6;
+            go.layer = LayerMask.NameToLayer(Layer);
             go.transform.SetParent(transform);
             m_OutlineMeshFilter = go.AddComponent<MeshFilter>();
             m_OutlineMeshRenderer = go.AddComponent<MeshRenderer>();

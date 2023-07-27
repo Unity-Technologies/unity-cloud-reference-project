@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -20,6 +19,9 @@ namespace Unity.ReferenceProject.UIInputBlocker
         IUIInputBlockerEventsDispatcher m_Dispatcher;
 
         InputSystemUIInputModule m_InputSystemUIInputModule;
+
+        readonly float m_ClickThresholdDistance = 10;
+        Vector2 m_StartClickPosition;
 
         [Inject]
         public void Setup(IUIInputBlockerEventsDispatcher dispatcher, Camera camera)
@@ -51,9 +53,19 @@ namespace Unity.ReferenceProject.UIInputBlocker
 
         void OnClickPerformed(InputAction.CallbackContext obj)
         {
+            var currentPosition = m_InputSystemUIInputModule.point.action.ReadValue<Vector2>();
+            
             // We perform check only when mouse button has been released
             if (obj.action.IsPressed())
+            {
+                m_StartClickPosition = currentPosition;
+                return; 
+            }
+            
+            if (Vector2.Distance(m_StartClickPosition, currentPosition) > m_ClickThresholdDistance)
+            {
                 return;
+            }
 
             // We move execution to NextFrame because of next warning:
             // Calling IsPointerOverGameObject() from within event processing (such as from InputAction callbacks)
@@ -86,7 +98,7 @@ namespace Unity.ReferenceProject.UIInputBlocker
                 new PointerEventData(EventSystem.current)
                     { position = screenPosition, pointerCurrentRaycast = new RaycastResult() }, results);
 
-            if (!ShouldRayBeDispatched(results, screenPosition))
+            if (ShouldRayBeDispatched(results, screenPosition))
             {
                 DispatchRay(screenPosition, camera);
             }
@@ -105,7 +117,7 @@ namespace Unity.ReferenceProject.UIInputBlocker
             //Nothing was hit, we should pass
             if (panelEventHandler == null)
             {
-                return false;
+                return true;
             }
 
             // Check if we hit background, then we should pass
@@ -117,13 +129,12 @@ namespace Unity.ReferenceProject.UIInputBlocker
             if (pickResult != null && !string.IsNullOrEmpty(m_BackgroundName) &&
                 pickResult.name.Equals(m_BackgroundName))
             {
-                return false;
+                return true;
             }
 
             // We hit someting, so block ray
-            return true;
+            return false;
         }
-
 
         /// <summary>
         ///     Remaps screen position to rect position proportionally

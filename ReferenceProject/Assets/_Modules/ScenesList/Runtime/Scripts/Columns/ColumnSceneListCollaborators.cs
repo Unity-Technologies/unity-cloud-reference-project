@@ -16,9 +16,6 @@ namespace Unity.ReferenceProject.ScenesList
     public class ColumnSceneListCollaborators : TableListColumn
     {
         [SerializeField]
-        bool m_IsRemoveOwner;
-
-        [SerializeField]
         string m_AvatarsContainerName;
 
         [SerializeField]
@@ -116,7 +113,6 @@ namespace Unity.ReferenceProject.ScenesList
             {
                 name = m_AvatarsContainerName,
                 MaxParticipantsCount = 2,
-                RemoveOwner = m_IsRemoveOwner,
                 AvatarColorPalette = m_AvatarColorPalette
             };
 

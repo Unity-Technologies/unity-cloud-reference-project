@@ -9,6 +9,10 @@
     margin-left: -15px;
 }
 
+.avatar-divider {
+    margin-right: 15px;
+}
+
 .top-menu-button-avatar-badge-container{
     justify-content: flex-start;
     align-items: center;
@@ -29,13 +33,21 @@
 
 .collaborator-data-badge{
     margin: 2px;
+    flex-grow: 0;
+    flex-shrink: 0;
 }
 
 .collaborator-data-header{
+    flex-grow: 1;
+    flex-shrink: 1;
     padding-left: 15px;
     justify-content: flex-start;
     align-items: center;
     flex-direction: row;
-    min-width: 200px;
-    max-width: 500px;
+}
+
+.collaborator-data-microphone{
+    flex-grow: 0;
+    flex-shrink: 0;
+    align-items: center;
 }

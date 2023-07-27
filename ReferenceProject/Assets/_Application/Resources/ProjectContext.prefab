@@ -27,6 +27,7 @@ GameObject:
   - component: {fileID: -5972897801935705638}
   - component: {fileID: -1327950342944418625}
   - component: {fileID: -8573083458650990063}
+  - component: {fileID: -1023700729312598486}
   - component: {fileID: -3502577879625042702}
   m_Layer: 0
   m_Name: ProjectContext
@@ -228,6 +229,7 @@ MonoBehaviour:
   m_PresenceRoomsManager: {fileID: 8834243876587749415}
   m_NetworkManager: {fileID: -4513921402319135003}
   m_NetcodeParticipantManager: {fileID: -1327950342944418625}
+  m_VoiceManager: {fileID: -1023700729312598486}
 --- !u!114 &8834243876587749415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -324,6 +326,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6fde23643995883428c39e327b327ffd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-1023700729312598486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6734772720244512027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5e44ef5d8b745e69c6d20039c1888d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &-3502577879625042702

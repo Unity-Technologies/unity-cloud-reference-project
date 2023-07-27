@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3369306365793481798}
   - component: {fileID: 3369306365793481793}
   - component: {fileID: 6721872474388768866}
+  - component: {fileID: 356613553515981098}
   m_Layer: 0
   m_Name: '[ Streaming Scene Context ]'
   m_TagString: Untagged
@@ -54,6 +55,7 @@ MonoBehaviour:
   - {fileID: 3369306365793481798}
   - {fileID: 3369306365793481793}
   - {fileID: 6721872474388768866}
+  - {fileID: 356613553515981098}
   _installerPrefabs: []
   _autoRun: 1
   OnPreInstall:
@@ -123,3 +125,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AnnotationIndicatorPrefab: {fileID: 5216628653240635274, guid: 21a655f43e2c1af419a35ffa328de07b,
     type: 3}
+--- !u!114 &356613553515981098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3369306365793481850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46384562332f038489af04372698f5d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

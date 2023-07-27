@@ -15,13 +15,11 @@ namespace Unity.ReferenceProject.Navigation
         void ChangeNavigationMode(int idMode);
         void TryTeleport(Vector3 position, Vector3 eulerAngles);
         void ChangeCameraView(CameraViewData cameraViewData);
-        public event Action NavigationTeleported;
+        void SetDefaultPosition(Vector3 position, Vector3 rotation);
     }
 
     public class NavigationManager : MonoBehaviour, INavigationManager
     {
-        public event Action NavigationTeleported;
-        
         [SerializeField]
         NavigationModeData[] m_NavigationModes;
 
@@ -34,6 +32,8 @@ namespace Unity.ReferenceProject.Navigation
         DiContainer m_DiContainer;
         Camera m_StreamingCamera;
         IDataStreamBound m_DataStreamBound;
+        Vector3 m_DefaultCameraPosition;
+        Vector3 m_DefaultCameraRotation;
 
         [Inject]
         void Setup(DiContainer diContainer, Camera streamingCamera, IDataStreamBound dataStreamBound)
@@ -51,6 +51,12 @@ namespace Unity.ReferenceProject.Navigation
         
         public CameraViewData[] CameraViewModeData => m_CameraViewData;
 
+        public void SetDefaultPosition(Vector3 position, Vector3 rotation)
+        {
+            m_DefaultCameraPosition = position;
+            m_DefaultCameraRotation = rotation;
+        }
+        
         public void ChangeNavigationMode(int idMode)
         {
             if (m_NavigationModes != null && idMode >= 0 && idMode < m_NavigationModes.Length)
@@ -62,7 +68,6 @@ namespace Unity.ReferenceProject.Navigation
             if (m_CurrentMode != null)
             {
                 m_CurrentMode.Teleport(position, eulerAngles);
-                NavigationTeleported?.Invoke();
             }
         }
 
@@ -91,14 +96,21 @@ namespace Unity.ReferenceProject.Navigation
             m_CurrentNavigationModeData = targetNavigationMode;
             NavigationModeChanged?.Invoke();
         }
-        
+
         public void ChangeCameraView(CameraViewData cameraViewData)
         {
             Bounds bound = m_DataStreamBound.GetBound();
-            float distance = m_DataStreamBound.GetDistanceVisibleFromCenter(m_StreamingCamera);
-            Quaternion desiredRotation = Quaternion.Euler(cameraViewData.Rotation);
-            Vector3 backwardMovement = -(desiredRotation * Vector3.forward) * distance;
-            TryTeleport(bound.center + backwardMovement,  cameraViewData.Rotation);
+            if(cameraViewData is CameraViewDataDefault  && ((CameraViewDataDefault)cameraViewData).UseDefaultView)
+            { 
+                TryTeleport(m_DefaultCameraPosition, m_DefaultCameraRotation);
+            }
+            else
+            { 
+                float distance = m_DataStreamBound.GetDistanceVisibleFromCenter(m_StreamingCamera);
+                Quaternion desiredRotation = Quaternion.Euler(cameraViewData.Rotation);
+                Vector3 backwardMovement = -(desiredRotation * Vector3.forward) * distance;
+                TryTeleport(bound.center + backwardMovement,  cameraViewData.Rotation);
+            }
         }
     }
 }

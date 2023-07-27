@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -24,6 +25,9 @@ namespace Unity.ReferenceProject.SearchSortFilter
 
         public void AddSelectedOption(string key, string value)
         {
+            if(string.IsNullOrEmpty(value))
+                return;
+            
             if(!SelectedOptions.ContainsKey(key))
                 SelectedOptions.Add(key, new HashSet<string>());
             SelectedOptions[key].Add(value);
@@ -46,8 +50,10 @@ namespace Unity.ReferenceProject.SearchSortFilter
             }
         }
 
-        public Task PerformFiltering(List<T> list)
+        public Task PerformFiltering(List<T> list, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            
             if (SelectedOptions.Count == 0 || list == null || list.Count == 0)
                 return Task.CompletedTask;
 
@@ -61,6 +67,8 @@ namespace Unity.ReferenceProject.SearchSortFilter
 
             for (int i = list.Count - 1; i >= 0; i--)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+                
                 foreach (var filterNode in m_AllFilterNodes)
                 {
                     if (SelectedOptions.TryGetValue(filterNode.Key, out var filterSet) && !filterNode.Value.PerformFiltering(list[i], filterSet))
@@ -75,6 +83,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
             // Clean Up everything that right after r
             for (int i = list.Count - 1; i > r; i--)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 list.RemoveAt(i);
             }
 
@@ -84,9 +93,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
 
     public interface IFilterBindNode<T>
     {
-        string SelectedOption { get; set; }
         Func<T, string> bindPath { get; }
-        Task PerformFiltering(List<T> list);
         bool PerformFiltering(T element, HashSet<string> filterStringSet);
     }
 
@@ -96,59 +103,16 @@ namespace Unity.ReferenceProject.SearchSortFilter
         Equals = 0,
         NotEquals = 1,
     }
-
+    
     public class FilterBindNode<T> : IFilterBindNode<T>
     {
-        Predicate<(string, string)> m_CompareFormula;
-
         readonly FilterCompareType m_CompareType;
+        public Func<T, string> bindPath { get; }
 
         public FilterBindNode(Func<T, string> bindPath, FilterCompareType compareType)
         {
             this.bindPath = bindPath;
-            SetCompareType(compareType);
             m_CompareType = compareType;
-        }
-
-        public string SelectedOption { get; set; } // if null then no filtering
-        public Func<T, string> bindPath { get; }
-
-        public void SetCompareType(FilterCompareType compareType)
-        {
-            switch (compareType)
-            {
-                case FilterCompareType.Equals:
-                    m_CompareFormula = x => x.Item2.Equals(x.Item1);
-                    break;
-                case FilterCompareType.NotEquals:
-                    m_CompareFormula = x => !x.Item2.Equals(x.Item1);
-                    break;
-            }
-        }
-
-        public Task PerformFiltering(List<T> list)
-        {
-            if (string.IsNullOrEmpty(SelectedOption) || list == null || list.Count == 0)
-                return Task.CompletedTask;
-
-            var r = list.Count - 1; // Right pointer (Everything right after this - should be removed)
-
-            for (var i = list.Count - 1; i >= 0; i--)
-            {
-                if (!m_CompareFormula((bindPath(list[i]), SelectedOption)))
-                {
-                    (list[r], list[i]) = (list[i], list[r]); // Swap not visible to the end of list
-                    r--;
-                }
-            }
-
-            // Clean Up everything that right after r
-            for (var i = list.Count - 1; i > r; i--)
-            {
-                list.RemoveAt(i);
-            }
-
-            return Task.CompletedTask;
         }
 
         public bool PerformFiltering(T element, HashSet<string> filterStringSet)

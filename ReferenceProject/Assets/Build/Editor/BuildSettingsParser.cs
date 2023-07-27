@@ -4,6 +4,9 @@ using System.IO;
 using Unity.Cloud.Common.Runtime;
 using UnityEditor;
 using UnityEditor.Build;
+#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+using UnityEditor.OSXStandalone;
+#endif
 using UnityEngine;
 
 namespace Unity.ReferenceProject.Editor
@@ -106,6 +109,9 @@ namespace Unity.ReferenceProject.Editor
 
                 case BuilderConstants.OSX_BUILD_TARGET:
                     ActiveBuildTarget = BuildTarget.StandaloneOSX;
+#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+                    UserBuildSettings.architecture = MacOSArchitecture.x64;
+#endif
                     break;
 
                 case BuilderConstants.WIN_BUILD_TARGET:

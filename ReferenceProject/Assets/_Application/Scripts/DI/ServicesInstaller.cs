@@ -37,28 +37,28 @@ namespace Unity.ReferenceProject
 
             var playerSettings = UnityCloudPlayerSettings.Instance;
             var httpClient = new UnityHttpClient().WithApiSourceHeadersFromAssembly(assembly);
-
-            var compositeAuthenticatorSettings = new CompositeAuthenticatorSettingsBuilder(httpClient, PlatformSupportFactory.GetAuthenticationPlatformSupport())
+            var serviceHostResolver = UnityRuntimeServiceHostResolverFactory.Create();
+            
+            var compositeAuthenticatorSettings = new CompositeAuthenticatorSettingsBuilder(httpClient, PlatformSupportFactory.GetAuthenticationPlatformSupport(), serviceHostResolver)
                 .AddDefaultPersonalAccessTokenProvider()
-                .AddDefaultPkceAuthenticator(playerSettings, playerSettings)
+                .AddDefaultPkceAuthenticator(playerSettings)
                 .Build();
 
             m_CompositeAuthenticator = new CompositeAuthenticator(compositeAuthenticatorSettings);
-            var cloudConfiguration = UnityRuntimeServiceHostConfigurationFactory.Create();
+            
             var serviceHttpClient = new ServiceHttpClient(httpClient, m_CompositeAuthenticator, playerSettings);
-
-            var cloudWorkspaceRepository = new CloudWorkspaceRepository(serviceHttpClient, cloudConfiguration);
+            var cloudWorkspaceRepository = new CloudWorkspaceRepository(serviceHttpClient, serviceHostResolver);
             
             Container.Bind(typeof(IAuthenticator), typeof(IUrlRedirectionAuthenticator), typeof(IAuthenticationStateProvider), typeof(IAccessTokenProvider))
                 .FromInstance(m_CompositeAuthenticator).AsSingle();
-            Container.Bind<ServiceHostConfiguration>().FromInstance(cloudConfiguration).AsSingle();
+            Container.Bind<IServiceHostResolver>().FromInstance(serviceHostResolver).AsSingle();
             Container.Bind<IAppIdProvider>().FromInstance(playerSettings).AsSingle();
             Container.Bind<IServiceHttpClient>().FromInstance(serviceHttpClient).AsSingle();
             Container.Bind<IUserInfoProvider>().To<UserInfoProvider>().AsSingle();
             Container.Bind<IWorkspaceRepository>().FromInstance(cloudWorkspaceRepository).AsSingle();
             
             var queryArguments = new QueryArgumentsProcessor();
-            var deepLinkProvider = new DeepLinkProvider(serviceHttpClient, queryArguments, cloudConfiguration,
+            var deepLinkProvider = new DeepLinkProvider(serviceHttpClient, queryArguments, serviceHostResolver,
                 new UriActivationPlatformSupport());
             Container.Bind<IQueryArgumentsProcessor>().FromInstance(queryArguments).AsSingle();
             Container.Bind<IDeepLinkProvider>().FromInstance(deepLinkProvider).AsSingle();
@@ -69,11 +69,15 @@ namespace Unity.ReferenceProject
 
             m_MonitoringClient = new ServiceMessagingClient(WebSocketClientFactory.Create(), m_CompositeAuthenticator, playerSettings);
             m_JoinerClient = new ServiceMessagingClient(WebSocketClientFactory.Create(), m_CompositeAuthenticator, playerSettings);
-            var presenceManager = new PresenceManager(m_MonitoringClient, m_JoinerClient, new Uri(cloudConfiguration.GetServiceAddress(ServiceProtocol.WebSocketSecure, "presence")));
+            var presenceManager = new PresenceManager(m_MonitoringClient, m_JoinerClient, serviceHostResolver);
             Container.Bind(typeof(IRoomProvider<Room>), typeof(ISessionProvider)).FromInstance(presenceManager).AsSingle();
 
             var sceneWorkspaceProvider = new SceneWorkspaceProvider(cloudWorkspaceRepository);
             Container.Bind<SceneWorkspaceProvider>().FromInstance(sceneWorkspaceProvider).AsSingle();
+#if USE_VIVOX        
+            var vivoxService = new VivoxService(serviceHttpClient, presenceManager, serviceHostResolver);
+            Container.Bind<IVoiceService>().FromInstance(vivoxService).AsSingle();
+#endif
         }
         
         void OnDestroy()

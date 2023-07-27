@@ -40,8 +40,8 @@ namespace Unity.ReferenceProject.VR.UIInputBlockerVR
 
         void OnClickPerformed(XRRayInteractor xrRayInteractor)
         {
-            if (xrRayInteractor.TryGetCurrent3DRaycastHit(out var raycastHit)
-                && !Utils.IsInLayerMask(m_LayerMask, raycastHit.collider.gameObject.layer))
+            if (!xrRayInteractor.TryGetCurrent3DRaycastHit(out var raycastHit)
+                || !Utils.IsInLayerMask(m_LayerMask, raycastHit.collider.gameObject.layer))
             {
                 var controllerTransform = xrRayInteractor.gameObject.transform;
                 var ray = new Ray(controllerTransform.position, controllerTransform.forward);

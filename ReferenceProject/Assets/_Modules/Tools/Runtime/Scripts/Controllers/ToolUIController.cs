@@ -15,6 +15,9 @@ namespace Unity.ReferenceProject.Tools
 
         [SerializeField]
         VisualTreeAsset m_Template;
+        
+        [SerializeField]
+        bool m_HideButtonAtStart;
 
         public event Action ToolOpened;
         public event Action ToolClosed;
@@ -24,6 +27,7 @@ namespace Unity.ReferenceProject.Tools
         public event Action ToolFocusOut;
 
         Action m_CloseAction;
+        Action<DisplayStyle> m_SetButtonDisplayStyleAction;
 
         static readonly string k_ActionButtonIconUssClassName = "appui-actionbutton__icon";
 
@@ -84,10 +88,25 @@ namespace Unity.ReferenceProject.Tools
         {
             m_CloseAction = action;
         }
-
+        
         protected void CloseSelf()
         {
             m_CloseAction?.Invoke();
+        }
+        
+        public void SetButtonDisplayStyleAction(Action<DisplayStyle> action)
+        {
+            m_SetButtonDisplayStyleAction = action;
+
+            if (m_HideButtonAtStart)
+            {
+                m_SetButtonDisplayStyleAction?.Invoke(DisplayStyle.None);
+            }
+        }
+
+        protected void SetButtonDisplayStyle(DisplayStyle style)
+        {
+            m_SetButtonDisplayStyleAction?.Invoke(style);
         }
 
         public event Action<Sprite> IconChanged;
@@ -96,6 +115,7 @@ namespace Unity.ReferenceProject.Tools
         {
             var visualElement = template != null ? template.Instantiate() : new VisualElement();
             RegisterCallbacks(visualElement);
+            visualElement.style.flexGrow = 1;
             return visualElement;
         }
 
