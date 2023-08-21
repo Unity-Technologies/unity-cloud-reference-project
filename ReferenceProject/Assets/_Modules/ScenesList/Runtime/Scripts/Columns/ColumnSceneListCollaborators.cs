@@ -109,11 +109,10 @@ namespace Unity.ReferenceProject.ScenesList
 
         protected override void OnMakeCell(VisualElement e, IColumnData columnData)
         {
-            var avatarsContainer = new AvatarBadgesContainer
+            var avatarsContainer = new AvatarBadgesContainer(m_AvatarColorPalette)
             {
                 name = m_AvatarsContainerName,
                 MaxParticipantsCount = 2,
-                AvatarColorPalette = m_AvatarColorPalette
             };
 
             foreach (var style in m_AvatarsStyles)

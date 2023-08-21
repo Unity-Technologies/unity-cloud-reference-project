@@ -96,16 +96,12 @@ namespace Unity.ReferenceProject.Annotation
         protected override void RegisterCallbacks(VisualElement visualElement)
         {
             var topicContainer = visualElement.Q("TopicListContainer");
-            topicContainer.RegisterCallback<FocusInEvent>(OnFocusIn);
-            topicContainer.RegisterCallback<FocusOutEvent>(OnFocusOut);
-            topicContainer.RegisterCallback<PointerEnterEvent>(OnPointerEntered);
-            topicContainer.RegisterCallback<PointerLeaveEvent>(OnPointerExited);
+            topicContainer.RegisterCallback<PointerCaptureEvent>(OnPointerCaptureEvent);
+            topicContainer.RegisterCallback<PointerCaptureOutEvent>(OnPointerCaptureOutEvent);
 
             var commentContainer = visualElement.Q("CommentListContainer");
-            commentContainer.RegisterCallback<FocusInEvent>(OnFocusIn);
-            commentContainer.RegisterCallback<FocusOutEvent>(OnFocusOut);
-            commentContainer.RegisterCallback<PointerEnterEvent>(OnPointerEntered);
-            commentContainer.RegisterCallback<PointerLeaveEvent>(OnPointerExited);
+            commentContainer.RegisterCallback<PointerCaptureEvent>(OnPointerCaptureEvent);
+            commentContainer.RegisterCallback<PointerCaptureOutEvent>(OnPointerCaptureOutEvent);
 
             var title = visualElement.Q("TextInputTitle");
             title.RegisterCallback<FocusInEvent>(OnFocusIn);
@@ -114,21 +110,19 @@ namespace Unity.ReferenceProject.Annotation
             var message = visualElement.Q("TextInputMessage");
             message.RegisterCallback<FocusInEvent>(OnFocusIn);
             message.RegisterCallback<FocusOutEvent>(OnFocusOut);
+            message.RegisterCallback<PointerCaptureEvent>(OnPointerCaptureEvent);
+            message.RegisterCallback<PointerCaptureOutEvent>(OnPointerCaptureOutEvent);
         }
 
         protected override void UnregisterCallbacks(VisualElement visualElement)
         {
             var topicContainer = visualElement.Q("TopicListContainer");
-            topicContainer.UnregisterCallback<FocusInEvent>(OnFocusIn);
-            topicContainer.UnregisterCallback<FocusOutEvent>(OnFocusOut);
-            topicContainer.UnregisterCallback<PointerEnterEvent>(OnPointerEntered);
-            topicContainer.UnregisterCallback<PointerLeaveEvent>(OnPointerExited);
+            topicContainer.UnregisterCallback<PointerCaptureEvent>(OnPointerCaptureEvent);
+            topicContainer.UnregisterCallback<PointerCaptureOutEvent>(OnPointerCaptureOutEvent);
 
             var commentContainer = visualElement.Q("CommentListContainer");
-            commentContainer.UnregisterCallback<FocusInEvent>(OnFocusIn);
-            commentContainer.UnregisterCallback<FocusOutEvent>(OnFocusOut);
-            commentContainer.UnregisterCallback<PointerEnterEvent>(OnPointerEntered);
-            commentContainer.UnregisterCallback<PointerLeaveEvent>(OnPointerExited);
+            commentContainer.UnregisterCallback<PointerCaptureEvent>(OnPointerCaptureEvent);
+            commentContainer.UnregisterCallback<PointerCaptureOutEvent>(OnPointerCaptureOutEvent);
 
             var title = visualElement.Q("TextInputTitle");
             title.UnregisterCallback<FocusInEvent>(OnFocusIn);
@@ -137,6 +131,8 @@ namespace Unity.ReferenceProject.Annotation
             var message = visualElement.Q("TextInputMessage");
             message.UnregisterCallback<FocusInEvent>(OnFocusIn);
             message.UnregisterCallback<FocusOutEvent>(OnFocusOut);
+            message.UnregisterCallback<PointerCaptureEvent>(OnPointerCaptureEvent);
+            message.UnregisterCallback<PointerCaptureOutEvent>(OnPointerCaptureOutEvent);
         }
 
         public override void OnToolOpened()
@@ -168,7 +164,7 @@ namespace Unity.ReferenceProject.Annotation
 
         public override void OnToolClosed()
         {
-            m_TextInput.Clear();
+            CancelInput();
             m_IndicatorManager.SetIndicatorsVisible(visible: false);
             m_InputBlockerEvents.OnDispatchRay -= OnDispatchRay;
             DisableObjectSelection();
@@ -185,6 +181,9 @@ namespace Unity.ReferenceProject.Annotation
 
             m_TextInput.CancelClicked -= OnCancelClicked;
             m_TextInput.AddTopicSubmitClicked -= OnSubmitAddTopic;
+            m_TextInput.EditTopicSubmitClicked -= OnSubmitEditTopic;
+            m_TextInput.AddCommentSubmitClicked -= OnSubmitAddComment;
+            m_TextInput.EditCommentSubmitClicked -= OnSubmitEditComment;
         }
 
         void EnableObjectSelection()
@@ -503,7 +502,7 @@ namespace Unity.ReferenceProject.Annotation
 
         void OnObjectSelectionChanged(IObjectSelectionInfo objectSelectionInfo)
         {
-            if (objectSelectionInfo.SelectedInstanceId == InstanceId.None)
+            if (!objectSelectionInfo.HasIntersected)
                 return;
 
             m_WorkingIndicator.gameObject.SetActive(true);

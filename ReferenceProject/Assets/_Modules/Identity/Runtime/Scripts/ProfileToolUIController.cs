@@ -6,6 +6,7 @@ using Unity.ReferenceProject.StateMachine;
 using Unity.ReferenceProject.Tools;
 using UnityEngine;
 using Unity.AppUI.UI;
+using Unity.Cloud.Presence;
 using Unity.Cloud.Presence.Runtime;
 using Unity.ReferenceProject.Common;
 using Unity.ReferenceProject.Presence;
@@ -53,6 +54,7 @@ namespace Unity.ReferenceProject.Identity
         {
             m_Authenticator.AuthenticationStateChanged += OnAuthenticationStateChanged;
             m_PresenceStreamingRoom.RoomJoined += OnRoomJoined;
+            m_PresenceStreamingRoom.RoomLeft += OnRoomLeft;
             OnAuthenticationStateChanged(m_Authenticator.AuthenticationState);
         }
 
@@ -153,14 +155,28 @@ namespace Unity.ReferenceProject.Identity
 
         void OnRoomJoined(Room room)
         {
+            room.ParticipantAdded += OnParticipantAdded;
+            
             var owner = room.ConnectedParticipants.FirstOrDefault(p => p.IsSelf);
             if (owner == null)
             {
-                Debug.LogWarning("Presence Room not able to find owner data");
                 return;
             }
 
             UpdateButtonColor(m_AvatarColorPalette.GetColor(owner.ColorIndex));
+        }
+
+        void OnParticipantAdded(IParticipant participant)
+        {
+            if (participant.IsSelf)
+            {
+                UpdateButtonColor(m_AvatarColorPalette.GetColor(participant.ColorIndex));
+            }
+        }
+
+        void OnRoomLeft()
+        {
+            UpdateButtonColor(Color.gray);
         }
     }
 }

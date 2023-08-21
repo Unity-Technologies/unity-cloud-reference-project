@@ -27,11 +27,11 @@ namespace Unity.ReferenceProject.DeepLinking
 
         Uri m_ForwardedDeepLink;
 
-        DeepLinkCameraInfo m_SetDeepLinkCamera;
+        readonly DeepLinkData m_DeepLinkData;
         DeepLinkInfo m_CurrentDeepLinkInfo;
 
         public DeepLinkingController(IQueryArgumentsProcessor argumentsProcessor, IUrlRedirectionInterceptor interceptor,
-            IDeepLinkProvider linkProvider, ISceneProvider sceneProvider, IAuthenticationStateProvider authenticator, DeepLinkCameraInfo deepLinkCameraInfo)
+            IDeepLinkProvider linkProvider, ISceneProvider sceneProvider, IAuthenticationStateProvider authenticator, DeepLinkData deepLinkData)
         {
             m_QueryArgumentsProcessor = argumentsProcessor;
             m_UrlRedirectionInterceptor = interceptor;
@@ -42,8 +42,8 @@ namespace Unity.ReferenceProject.DeepLinking
             m_Authenticator.AuthenticationStateChanged += OnAuthenticationStateChanged;
             m_UrlRedirectionInterceptor.DeepLinkForwarded += OnDeepLinkForwarded;
 
-            m_SetDeepLinkCamera = deepLinkCameraInfo;
-            m_SetDeepLinkCamera.SetCameraReady += OnSetCameraReady;
+            m_DeepLinkData = deepLinkData;
+            m_DeepLinkData.SetCameraReady += OnSetCameraReady;
         }
 
         public event Action<IScene, bool> DeepLinkConsumed;
@@ -83,17 +83,19 @@ namespace Unity.ReferenceProject.DeepLinking
         {
             if (uri == null)
                 return false;
-
+            
+            m_DeepLinkData.DeepLinkIsProcessing = true; 
             var deepLinkInfo = await m_DeepLinkProvider.GetDeepLinkInfoAsync(uri);
             if (deepLinkInfo is { ResourceType: DeepLinkResourceType.Scene })
             {
                 var scene = await m_SceneProvider.GetSceneAsync(new SceneId(deepLinkInfo.ResourceId));
-                m_SetDeepLinkCamera.SetDeepLinkCamera = true;
+                m_DeepLinkData.SetDeepLinkCamera = true;
+                
                 // check if Query Arguments hold a different scene state. For now, just a null check instead of a full comparison of states
                 var hasNewSceneState = !string.IsNullOrEmpty(deepLinkInfo.QueryArguments);
                 DeepLinkConsumed?.Invoke(scene, hasNewSceneState);
             }
-            
+            m_QueryArgumentsProcessor.Process(deepLinkInfo);
             m_CurrentDeepLinkInfo = deepLinkInfo;
             return true;
         }

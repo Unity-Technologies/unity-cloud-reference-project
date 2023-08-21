@@ -25,3 +25,18 @@
     margin-bottom: 10px;
     -unity-text-align: middle-center;
 }
+
+.metadata-display__no-metadata-container{
+    flex-direction: column;
+    align-items: center;
+}
+
+.metadata-display-text__nometadata {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    -unity-text-align: middle-center;
+}
+
+metadata-display-image__nometadata {
+
+}

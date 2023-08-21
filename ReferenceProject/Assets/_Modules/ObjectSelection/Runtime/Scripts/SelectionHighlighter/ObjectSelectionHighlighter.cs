@@ -62,11 +62,11 @@ namespace Unity.ReferenceProject.ObjectSelection
             }
         }
 
-        void OnObjectSelectionChanged(IObjectSelectionInfo obj) => SetTargetInstanceId(obj.SelectedInstanceId);
+        void OnObjectSelectionChanged(IObjectSelectionInfo obj) => SetHasTarget(obj.HasIntersected);
 
-        void SetTargetInstanceId(InstanceId target)
+        void SetHasTarget(bool hasTarget)
         {
-            if (target == InstanceId.None && m_OutlineMeshFilter != null)
+            if (!hasTarget && m_OutlineMeshFilter != null)
             {
                 m_OutlineMeshFilter.gameObject.SetActive(false);
             }

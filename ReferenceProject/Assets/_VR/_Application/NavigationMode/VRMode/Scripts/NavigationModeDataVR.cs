@@ -74,6 +74,12 @@ namespace Unity.ReferenceProject.VR
             // Wait a frame to be sure XRGeneralSettings.Instance.Manager is created
             yield return null;
 
+            if (XRGeneralSettings.Instance == null)
+            {
+                Debug.LogWarning($"{nameof(XRGeneralSettings)} has not been initialized.");
+                yield break;
+            }
+
             if (XRGeneralSettings.Instance.Manager.activeLoader != null)
             {
                 m_IsVRDeviceConnected = true;

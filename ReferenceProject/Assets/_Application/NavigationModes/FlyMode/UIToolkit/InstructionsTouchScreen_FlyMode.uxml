@@ -13,5 +13,11 @@
             </ui:VisualElement>
             <appui:Text text="@Instructions:Zoom" name="KeysDescription" size="XS" class="text__instruction-description" />
         </ui:VisualElement>
+        <ui:VisualElement name="Pan" class="container__instruction_block" style="flex-shrink: 0;">
+            <ui:VisualElement name="Keys" class="container__instruction-keys">
+                <ui:Image style="background-image: url(&apos;project://database/Assets/_Application/NavigationModes/Sprites/NavigationMobile@1_5x.png?fileID=1356565982&amp;guid=0d3be75dd7710ec46b787771bb4dcd99&amp;type=3#NavigationMobile@1_5x_1&apos;); height: 56px; width: 56px;" />
+            </ui:VisualElement>
+            <appui:Text text="@Instructions:Pan" name="KeysDescription" size="XS" class="text__instruction-description" />
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

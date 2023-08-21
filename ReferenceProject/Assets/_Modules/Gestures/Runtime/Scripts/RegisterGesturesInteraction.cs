@@ -13,6 +13,9 @@ namespace Unity.ReferenceProject.Gestures
         bool m_RegisterMouseDragInteraction = true;
         
         [SerializeField]
+        bool m_RegisterSingleTouchDragInteraction = true;
+        
+        [SerializeField]
         bool m_RegisterTwoFingerDragInteraction = true;
         
         [SerializeField]
@@ -36,6 +39,11 @@ namespace Unity.ReferenceProject.Gestures
             {
                 InputSystem.RegisterBindingComposite<TwoFingerDistanceComposite>(k_TwoFingerDistance);
                 InputSystem.RegisterInteraction<PinchGestureInteraction>();
+            }
+
+            if (m_RegisterSingleTouchDragInteraction)
+            {
+                InputSystem.RegisterInteraction<SingleTouchDragInteraction>();
             }
         }
     }

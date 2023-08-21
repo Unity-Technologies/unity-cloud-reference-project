@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
 
 namespace Unity.ReferenceProject.Editor
 {
@@ -12,10 +10,10 @@ namespace Unity.ReferenceProject.Editor
         static string s_PipeLineName = "URP-Performant";
         static readonly AndroidSdkVersions s_MinAndroidVersion = AndroidSdkVersions.AndroidApiLevel29;
 
-        [MenuItem("ReferenceProject/VR/Switch to Quest project", false, 10)]
+        [MenuItem("ReferenceProject/VR/Switch/To Quest project", false, 10)]
         public static void Switch2Quest()
         {
-            EnsureAndroidBuildTarget();
+            SetupVR.EnsureAndroidBuildTarget();
 
             SetupVR.SetupOpenXR(SetupVR.DeviceTarget.Standalone); // Added to be able to test in Editor
             SetupVR.SetupOpenXR(SetupVR.DeviceTarget.Quest);
@@ -26,7 +24,7 @@ namespace Unity.ReferenceProject.Editor
                 EditorApplication.LockReloadAssemblies();
                 try
                 {
-                    PrepareRendererPipelineAsset();
+                    SetupVR.PrepareRendererPipelineAsset(s_PipeLineName);
                     SetAndroidSettings();
                 }
                 finally
@@ -40,29 +38,6 @@ namespace Unity.ReferenceProject.Editor
             catch (Exception e)
             {
                 Debug.LogError($"Quest 2 settings could not be set: {e.GetType().Name}; {e.Message}; {e.StackTrace}");
-            }
-        }
-
-        static void EnsureAndroidBuildTarget()
-        {
-            if (EditorUserBuildSettings.activeBuildTarget != BuildTarget.Android || EditorUserBuildSettings.selectedBuildTargetGroup != BuildTargetGroup.Android)
-            {
-                EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android, BuildTarget.Android);
-                AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
-            }
-        }
-
-        static void PrepareRendererPipelineAsset()
-        {
-            foreach (var pipeline in GraphicsSettings.allConfiguredRenderPipelines.OfType<UniversalRenderPipelineAsset>())
-            {
-                if (pipeline.name == s_PipeLineName)
-                {
-                    GraphicsSettings.defaultRenderPipeline = pipeline;
-                    EditorUtility.SetDirty(pipeline);
-                    AssetDatabase.SaveAssetIfDirty(pipeline);
-                    return;
-                }
             }
         }
 

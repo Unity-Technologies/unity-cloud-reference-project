@@ -34,15 +34,19 @@ namespace Unity.ReferenceProject.DeepLinking
         public void Setup(IDeepLinkingController deepLinkingController, PropertyValue<IScene> sceneListStore, IAppMessaging appMessaging, IClipboard clipboard)
         {
             m_DeepLinkingController = deepLinkingController;
-            deepLinkingController.LinkConsumptionFailed += OnLinkConsumptionFailed;
             m_ActiveScene = sceneListStore;
             m_AppMessaging = appMessaging;
             m_Clipboard = clipboard;
         }
 
+        new void Awake()
+        {
+            m_DeepLinkingController.LinkConsumptionFailed += OnLinkConsumptionFailed;
+        }
         protected override void OnDestroy()
         {
             base.OnDestroy();
+            m_DeepLinkingController.LinkConsumptionFailed -= OnLinkConsumptionFailed;
             m_DeepLinkingController?.Dispose();
         }
 

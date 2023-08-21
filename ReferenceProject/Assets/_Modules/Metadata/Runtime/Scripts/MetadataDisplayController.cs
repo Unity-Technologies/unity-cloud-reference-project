@@ -12,8 +12,10 @@ using Unity.Cloud.Common;
 using Unity.Cloud.Metadata;
 using Unity.ReferenceProject.DataStreaming;
 using Unity.ReferenceProject.Messaging;
+using UnityEngine.Diagnostics;
 using UnityEngine.UIElements;
 using Zenject;
+using Utils = Unity.ReferenceProject.Common.Utils;
 
 namespace Unity.ReferenceProject.Metadata
 {
@@ -23,8 +25,10 @@ namespace Unity.ReferenceProject.Metadata
         static readonly string k_TextListElementKey = "ParameterLabel";
         static readonly string k_TextListElementValue = "ParameterValue";
         static readonly string k_TextEmptySelection = "EmptySelection";
+        static readonly string k_NoMetadataContainer = "NoMetadataContainer";
         static readonly string k_SearchBar = "search-input";
         static readonly string k_DropdownGroups = "group-dropdown";
+
         [SerializeField]
         VisualTreeAsset m_ListElementTemplate;
 
@@ -42,15 +46,17 @@ namespace Unity.ReferenceProject.Metadata
         Dropdown m_GroupsDropdown;
         HighlightModule m_HighlightModule;
         Text m_LabelEmptySelection;
+        VisualElement m_NoMetadataContainer;
         ListView m_ParameterListView;
         SearchBar m_SearchBar;
         SearchModule<MetadataList> m_SearchModule;
         SearchUI m_SearchUI;
-        
+        bool m_HasSelected;
+
         CancellationTokenSource m_CancellationTokenSource;
-        
+
         MetadataProvider m_MetadataProvider;
-        
+
         ISceneEvents m_SceneEvents;
         IServiceHttpClient m_ServiceHttpClient;
         IServiceHostResolver m_ServiceHostResolver;
@@ -91,7 +97,7 @@ namespace Unity.ReferenceProject.Metadata
             // Activate Selection tool
             if (m_ObjectSelectionActivator != null)
                 m_ObjectSelectionActivator.Subscribe(this);
-            
+
             // Activate selection highlighting
             if (m_ObjectSelectionHighlightActivator != null)
                 m_ObjectSelectionHighlightActivator.Subscribe(this);
@@ -110,12 +116,14 @@ namespace Unity.ReferenceProject.Metadata
 
         public void CloseTool()
         {
+            m_HasSelected = false;
+
             if (m_ObjectSelectionProperty != null)
                 m_ObjectSelectionProperty.ValueChanged -= OnSelectionChanged;
 
             // Disable selection tool
             m_ObjectSelectionActivator?.Unsubscribe(this);
-            
+
             // Disable selection highlighting
             m_ObjectSelectionHighlightActivator?.Unsubscribe(this);
         }
@@ -126,13 +134,22 @@ namespace Unity.ReferenceProject.Metadata
             m_LabelEmptySelection = rootVisualElement.Q<Text>(k_TextEmptySelection);
 
             if (m_LabelEmptySelection == null)
+            {
                 Debug.LogError($"Can't find Text with name {k_TextEmptySelection}");
+            }
+
+            m_NoMetadataContainer = rootVisualElement.Q(k_NoMetadataContainer);
+            if (m_NoMetadataContainer == null)
+            {
+                Debug.LogError($"Can't find element with name {k_NoMetadataContainer}");
+            }
 
             SetupList(m_ParameterListView, m_CacheMetadataList);
 
             // Search setup
             m_SearchModule = new SearchModule<MetadataList>(
-                (nameof(MetadataList.Key), new SearchBindNode<MetadataList>((x) => x.Key))
+                (nameof(MetadataList.Key), new SearchBindNode<MetadataList>((x) => x.Key)),
+                (nameof(MetadataList.Value), new SearchBindNode<MetadataList>((x) => x.Value))
             );
 
             // Search UI setup
@@ -170,14 +187,19 @@ namespace Unity.ReferenceProject.Metadata
             m_MetadataProvider = new MetadataProvider(m_ServiceHttpClient, m_ServiceHostResolver, scene.Id.ToString(), scene.LatestVersion.ToString());
             return Task.CompletedTask;
         }
-        
-        void OnSelectionChanged(IObjectSelectionInfo gameObjectSelectionInfo) => SetInstanceId(gameObjectSelectionInfo?.SelectedInstanceId ?? InstanceId.None);
+
+        void OnSelectionChanged(IObjectSelectionInfo gameObjectSelectionInfo)
+        {
+            var instanceId = gameObjectSelectionInfo?.SelectedInstanceId ?? InstanceId.None;
+            m_HasSelected = gameObjectSelectionInfo?.HasIntersected ?? false;
+            SetInstanceId(instanceId);
+        }
 
         void OnRefresh()
         {
             StartCoroutine(RefreshCoroutine());
         }
-        
+
         IEnumerator RefreshCoroutine()
         {
             m_CacheMetadataList.Clear();
@@ -185,28 +207,28 @@ namespace Unity.ReferenceProject.Metadata
 
             // Make cancellation token
             var cancellationTokenSource = new CancellationTokenSource();
-            
+
             // If there is an old cancellation token source then cancel it
             m_CancellationTokenSource?.Cancel();
             m_CancellationTokenSource = cancellationTokenSource;
 
             var m_Task = RefreshAsync(cancellationTokenSource.Token);
             yield return new WaitWhile(() => !m_Task.IsCompleted);
-            
+
             // Manage token
             if (m_CancellationTokenSource == cancellationTokenSource)
             {
                 m_CancellationTokenSource = null;
             }
-            
+
             cancellationTokenSource.Dispose();
-            
+
             // Show Exception if it exists
             if (m_Task.Exception != null)
             {
                 Debug.LogError($"Exception: {m_Task.Exception.Message}");
             }
-            
+
             // Show cancellation if it exists
             if (m_Task.IsCanceled)
             {
@@ -215,9 +237,17 @@ namespace Unity.ReferenceProject.Metadata
             }
 
             m_ParameterListView.RefreshItems();
+            bool hasMetadata = m_MetadataList != null && m_MetadataList.Count != 0;
+            Utils.SetVisible(m_ParameterListView, m_CacheMetadataList.Count != 0);
+            if (m_LabelEmptySelection != null)
+            {
+                Utils.SetVisible(m_LabelEmptySelection, !m_HasSelected);
+            }
 
-            m_ParameterListView.style.display = new StyleEnum<DisplayStyle>(m_CacheMetadataList.Count != 0 ? DisplayStyle.Flex : DisplayStyle.None);
-            m_LabelEmptySelection.style.display = new StyleEnum<DisplayStyle>(m_MetadataList != null && m_MetadataList.Count != 0 ? DisplayStyle.None : DisplayStyle.Flex);
+            if (m_NoMetadataContainer != null)
+            {
+                Utils.SetVisible(m_NoMetadataContainer, m_HasSelected && !hasMetadata);
+            }
         }
 
         async Task RefreshAsync(CancellationToken cancellationToken)
@@ -248,14 +278,14 @@ namespace Unity.ReferenceProject.Metadata
                     var metadataObjectList = result[id];
                     foreach (var key in metadataObjectList.Keys)
                     {
-                        if(metadataObjectList.TryGetValue(key, out var metadataContainer))
+                        if (metadataObjectList.TryGetValue(key, out var metadataContainer))
                         {
                             switch (metadataContainer)
                             {
                                 case MetadataObject metadataObject:
                                     string group = metadataObject["group"].ToString();
                                     string value = metadataObject["value"].ToString();
-                                    m_MetadataList.Add(new MetadataList{Key = key, Group = group, Value = value});
+                                    m_MetadataList.Add(new MetadataList { Key = key, Group = group, Value = value });
                                     break;
                                 default:
                                     Debug.LogError($"Unexpected type {metadataContainer.GetType()} for key {key}");
@@ -275,7 +305,7 @@ namespace Unity.ReferenceProject.Metadata
                     m_AppMessaging.ShowWarning("The selected object doesn't have metadata information.");
                 }
             }
-  
+
             // Execute UI changes on the main thread
             mainThreadContext.Post(_ =>
             {
@@ -307,7 +337,7 @@ namespace Unity.ReferenceProject.Metadata
                     var parameterValue = element.Q<Text>(k_TextListElementValue);
 
                     parameterLabel.text = m_HighlightModule.IsHighlighted(nameof(MetadataList.Key), data.Key).Item2;
-                    parameterValue.text = data.Value;
+                    parameterValue.text = m_HighlightModule.IsHighlighted(nameof(MetadataList.Value), data.Value).Item2;
                 }
             };
 

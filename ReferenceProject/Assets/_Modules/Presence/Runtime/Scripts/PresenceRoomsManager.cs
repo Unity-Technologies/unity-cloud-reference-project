@@ -21,9 +21,6 @@ namespace Unity.ReferenceProject.Presence
 
         ISceneProvider m_SceneProvider;
         
-        Room m_CurrentRoom;
-        public Room CurrentRoom => m_CurrentRoom;
-        
         Task m_LeaveRoomTask;
         Task m_JoinRoomTask;
         
@@ -40,7 +37,7 @@ namespace Unity.ReferenceProject.Presence
         // Cancels only tasks in this script. It will not cancel Room.StartMonitoring or Room.StopMonitoring task 
         readonly CancellationTokenSource m_LocalCancellationTokenSource = new CancellationTokenSource(); 
         
-        bool isDestroyed;
+        bool m_Destroyed;
 
         [Inject]
         public void Setup(IRoomProvider<Room> roomProvider, IAuthenticationStateProvider authenticationStateProvider, ISceneProvider sceneProvider)
@@ -60,7 +57,7 @@ namespace Unity.ReferenceProject.Presence
 
         async void OnDisable()
         {
-            isDestroyed = true;
+            m_Destroyed = true;
             m_AuthenticationStateProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
             
             CancelToken(m_LocalCancellationTokenSource); // It will stop TrackMonitoringAsync
@@ -77,7 +74,7 @@ namespace Unity.ReferenceProject.Presence
         
         void OnDestroy()
         {
-            isDestroyed = true;
+            m_Destroyed = true;
             m_MonitoringCancellationTokenSource?.Dispose();
             m_LocalCancellationTokenSource?.Dispose();
         }
@@ -107,10 +104,10 @@ namespace Unity.ReferenceProject.Presence
             }
         }
         
-        Task MonitorRoom(Room room, int instanceId, bool isSubscribe, CancellationToken cancellationToken)
+        async Task MonitorRoom(Room room, int instanceId, bool isSubscribe, CancellationToken cancellationToken)
         {
             if(room == null)
-                return Task.CompletedTask;
+                return;
 
             if (!m_Subscribers.ContainsKey(room))
             {
@@ -131,9 +128,8 @@ namespace Unity.ReferenceProject.Presence
             if (m_TrackMonitoringTask == null || m_TrackMonitoringTask.IsCompleted)
             {
                 m_TrackMonitoringTask = TrackMonitoringAsync(cancellationToken);
+                await m_TrackMonitoringTask;
             }
-            
-            return Task.CompletedTask;
         }
         
         async Task TrackMonitoringAsync(CancellationToken cancellationToken)
@@ -194,8 +190,6 @@ namespace Unity.ReferenceProject.Presence
         
         async Task ResetRoomsAsync()
         {
-            await LeaveRoomAsync();
-            
             foreach (var room in m_MonitorRooms)
             {
                 await StopMonitoringRoomAsync(room, false);
@@ -205,31 +199,22 @@ namespace Unity.ReferenceProject.Presence
             m_MonitorRooms.Clear();
             m_QueuedHashSet.Clear();
         }
-        
-        public void SubscribeForMonitoring(SceneId sceneId, int instanceId) => SubscribeForMonitoring(GetRoomForScene(sceneId), instanceId);
-        public void SubscribeForMonitoring(Room room, int instanceId)
+        public async Task SubscribeForMonitoring(Room room, int instanceId)
         {
-            if (isDestroyed) // Stops execution if this gameObject already destroyed
+            if (m_Destroyed) // Stops execution if this gameObject already destroyed
                 return;
-            _ = MonitorRoom(room, instanceId, true, m_LocalCancellationTokenSource.Token);
-        }
-
-        public void UnsubscribeFromMonitoring(SceneId sceneId, int instanceId) => UnsubscribeFromMonitoring(GetRoomForScene(sceneId), instanceId);
-        public void UnsubscribeFromMonitoring(Room room, int instanceId)
-        {
-            if (isDestroyed) // Stops execution if this gameObject already destroyed
-                return;
-            _ = MonitorRoom(room, instanceId, false, m_LocalCancellationTokenSource.Token);
-        }
-
-        public async Task<bool> JoinRoomAsync(SceneId sceneId)
-        {
-            if (m_CurrentRoom != null)
-            {
-                Debug.LogError("Previous Room needs to be leaved before entering a new one.");
-                return false;
-            }
             
+            await MonitorRoom(room, instanceId, true, m_LocalCancellationTokenSource.Token);
+        }
+        public async Task UnsubscribeFromMonitoring(Room room, int instanceId)
+        {
+            if (m_Destroyed) // Stops execution if this gameObject already destroyed
+                return;
+            await MonitorRoom(room, instanceId, false, m_LocalCancellationTokenSource.Token);
+        }
+        
+        public async Task<bool> JoinRoomAsync(SceneId sceneId, int instanceId)
+        {
             if (sceneId == SceneId.None)
             {
                 Debug.LogError("No SceneId Provided.");
@@ -241,24 +226,37 @@ namespace Unity.ReferenceProject.Presence
                 Debug.LogError($"Can't join room {sceneId} because previous join process still in progress.");
                 return false;
             }
-
+            
             if (!m_Rooms.ContainsKey(sceneId))
             {
                 var room = await m_RoomProvider.GetRoomAsync(sceneId);
                 m_Rooms.Add(sceneId, room);
             }
+            
+            // You need first to monitor the room events
+            if (!m_Subscribers.ContainsKey(m_Rooms[sceneId]))
+            {
+                m_Subscribers.Add(m_Rooms[sceneId], new HashSet<int>()); 
+            }
+            else
+            {
+                m_Subscribers[m_Rooms[sceneId]].Add(instanceId);
+            }
+            
+            if (!m_MonitorRooms.Contains(m_Rooms[sceneId]))
+            {
+                await StartMonitoringRoomAsync(m_Rooms[sceneId]);
+            }
 
-            m_CurrentRoom = m_Rooms[sceneId];
-
-            m_JoinRoomTask = m_CurrentRoom.JoinAsync(new NoRetryPolicy(), CancellationToken.None);
+            m_JoinRoomTask = m_Rooms[sceneId].JoinAsync(new NoRetryPolicy(), CancellationToken.None);
             await m_JoinRoomTask;
             
             return true;
         }
         
-        public async Task<bool> LeaveRoomAsync()
+        public async Task<bool> LeaveRoomAsync(Room room)
         {
-            if (m_CurrentRoom == null)
+            if (room == null)
                 return false;
 
             // Already attempting to disconnect from Joined room
@@ -268,10 +266,9 @@ namespace Unity.ReferenceProject.Presence
                 return true;
             }
 
-            m_LeaveRoomTask = m_CurrentRoom.LeaveAsync();
+            m_LeaveRoomTask = room.LeaveAsync();
             await m_LeaveRoomTask;
 
-            m_CurrentRoom = null;
             return true;
         }
         

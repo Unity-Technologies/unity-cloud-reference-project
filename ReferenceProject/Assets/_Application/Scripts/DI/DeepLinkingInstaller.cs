@@ -10,8 +10,8 @@ namespace Unity.ReferenceProject
         {
             Container.Bind<IDeepLinkingController>().To<DeepLinkingController>().AsSingle();
 
-            var deepLinkCameraBool = new DeepLinkCameraInfo();
-            Container.Bind<DeepLinkCameraInfo>().FromInstance(deepLinkCameraBool).AsSingle();
+            var deepLinkData = new DeepLinkData();
+            Container.Bind<DeepLinkData>().FromInstance(deepLinkData).AsSingle();
         }
     }
 }

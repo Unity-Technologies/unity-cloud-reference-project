@@ -66,7 +66,7 @@ namespace Unity.ReferenceProject.AppCamera
 
         void Start()
         {
-            m_DesiredLookAt = m_Camera.transform.position + m_Camera.transform.forward * 10;
+            m_DesiredLookAt = m_Camera.transform.position + m_Camera.transform.forward * 100;
             m_DesiredPosition = m_Camera.transform.position;
             m_DesiredRotation = m_Camera.transform.rotation;
             m_DesiredRotationEuler = m_DesiredRotation.eulerAngles;

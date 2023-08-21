@@ -9,13 +9,13 @@ namespace Unity.ReferenceProject.ObjectSelection
     public class ObjectSelectionReticule : MonoBehaviour
     {
         public static readonly string Layer = "ObjectSelection";
-        
+
         [SerializeField]
         float m_IndicatorScale = 0.025f;
-        
+
         [SerializeField]
         Material m_Material;
-        
+
         GameObject m_Indicator;
 
         ObjectSelectionHighlightActivator m_ObjectSelectionHighlightActivator;
@@ -25,20 +25,20 @@ namespace Unity.ReferenceProject.ObjectSelection
         void Setup(ObjectSelectionHighlightActivator objectSelectionHighlightActivator, PropertyValue<IObjectSelectionInfo> objectSelectionProperty)
         {
             m_ObjectSelectionProperty = objectSelectionProperty;
-            
+
             m_ObjectSelectionHighlightActivator = objectSelectionHighlightActivator;
             objectSelectionHighlightActivator.OnActivate += OnActivate;
         }
 
         void OnDestroy()
         {
-            if(m_ObjectSelectionProperty != null)
+            if (m_ObjectSelectionProperty != null)
                 m_ObjectSelectionProperty.ValueChanged -= OnObjectSelectionChanged;
-            
-            if(m_ObjectSelectionHighlightActivator != null)
+
+            if (m_ObjectSelectionHighlightActivator != null)
                 m_ObjectSelectionHighlightActivator.OnActivate -= OnActivate;
         }
-        
+
         void Start()
         {
             m_Indicator = CreateDummy();
@@ -51,7 +51,7 @@ namespace Unity.ReferenceProject.ObjectSelection
             {
                 m_ObjectSelectionProperty.ValueChanged -= OnObjectSelectionChanged;
                 m_ObjectSelectionProperty.ValueChanged += OnObjectSelectionChanged;
-                
+
                 // Refresh state
                 OnObjectSelectionChanged(m_ObjectSelectionProperty.GetValue());
             }
@@ -62,11 +62,11 @@ namespace Unity.ReferenceProject.ObjectSelection
         }
 
         void OnObjectSelectionChanged(IObjectSelectionInfo info)
-        { 
-            if(m_Indicator == null)
+        {
+            if (m_Indicator == null)
                 return;
-        
-            if(info.SelectedInstanceId != InstanceId.None)
+
+            if (info.HasIntersected)
             {
                 m_Indicator.SetActive(true);
                 m_Indicator.transform.position = info.SelectedPosition;
@@ -76,7 +76,7 @@ namespace Unity.ReferenceProject.ObjectSelection
                 m_Indicator.SetActive(false);
             }
         }
-        
+
         GameObject CreateDummy()
         {
             var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -84,7 +84,7 @@ namespace Unity.ReferenceProject.ObjectSelection
             go.transform.localScale = Vector3.one * m_IndicatorScale;
             go.layer = LayerMask.NameToLayer(Layer);
             go.transform.SetParent(transform);
-            
+
             if (go.GetComponent<Collider>() is { } colliderComponent)
             {
                 colliderComponent.enabled = false;

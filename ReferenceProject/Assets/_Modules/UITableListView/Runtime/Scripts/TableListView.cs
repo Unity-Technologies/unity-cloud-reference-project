@@ -144,7 +144,12 @@ namespace Unity.ReferenceProject.UITableListView
                 // When only width has been changed
                 if (Mathf.FloorToInt(eventData.newRect.width) != Mathf.FloorToInt(eventData.oldRect.width))
                 {
-                    m_Header.style.width = eventData.newRect.width;
+                    // Schedule change for later to avoid - Layout update is struggling to process the current layout
+                    float newWidth = eventData.newRect.width; // Caching width value because later eventData.newRect.width will be different
+                    schedule.Execute((t) =>
+                    {
+                        m_Header.style.width = newWidth;
+                    }).ExecuteLater(0);
                 }
             });
 

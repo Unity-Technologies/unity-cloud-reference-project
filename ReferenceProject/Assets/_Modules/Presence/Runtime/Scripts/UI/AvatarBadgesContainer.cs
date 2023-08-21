@@ -13,6 +13,7 @@ namespace Unity.ReferenceProject.Presence
     {
         static readonly string m_AvatarsContainerUssClassName = "avatar-badge-container";
         static readonly string k_AvatarBadgeUssClassName = "avatar-badge";
+        internal static readonly string PlusSignName = "plus-sign";
 
         RoomCached m_Room;
         public RoomCached Room => m_Room;
@@ -27,13 +28,14 @@ namespace Unity.ReferenceProject.Presence
                 RefreshContainer(m_Room);
             }
         }
+        
+        readonly ColorPalette m_AvatarColorPalette;
 
-        public ColorPalette AvatarColorPalette { get; set; }
-
-        public AvatarBadgesContainer()
+        public AvatarBadgesContainer(ColorPalette avatarColorPalette)
         {
             name = "avatar-badges-container";
             MaxParticipantsCount = 2;
+            m_AvatarColorPalette = avatarColorPalette;
             RegisterCallback<DetachFromPanelEvent>(_ => UnbindRoomWithoutNotify());
             AddToClassList(m_AvatarsContainerUssClassName);
         }
@@ -81,7 +83,12 @@ namespace Unity.ReferenceProject.Presence
 
         protected virtual void RefreshParticipantsBadges(RoomCached room)
         {
-            var participants = room.Participants;
+            if (room == null)
+            {
+                return;
+            }
+            
+            var participants = room.Participants.ToList();
             participants.Remove(participants.FirstOrDefault(p => p.IsSelf));
             var minCount = Math.Min(m_MaxAvatarsCount, participants.Count);
 
@@ -89,8 +96,8 @@ namespace Unity.ReferenceProject.Presence
             {
                 Add(CreateParticipantBadge(participant));
             }
-
-            var participantsOverflowCount = minCount - m_MaxAvatarsCount;
+            
+            var participantsOverflowCount = participants.Count - m_MaxAvatarsCount;
             if (participantsOverflowCount > 0)
             {
                 Add(CreatePlusBadge(participantsOverflowCount));
@@ -102,7 +109,7 @@ namespace Unity.ReferenceProject.Presence
             var avatar = new AvatarBadge();
             avatar.Initials.text = Utils.GetInitials(participant.Name);
             avatar.tooltip = participant.Name;
-            avatar.backgroundColor = AvatarColorPalette.GetColor(participant.ColorIndex);
+            avatar.backgroundColor = m_AvatarColorPalette.GetColor(participant.ColorIndex);
             avatar.size = Size.M;
             avatar.outlineColor = Color.clear;
             avatar.AddToClassList(k_AvatarBadgeUssClassName);
@@ -112,26 +119,13 @@ namespace Unity.ReferenceProject.Presence
         static VisualElement CreatePlusBadge(int count)
         {
             var plusSign = new AvatarBadge();
+            plusSign.name = PlusSignName;
             plusSign.Initials.text = "+" + (count);
             plusSign.backgroundColor = new Color(156, 156, 156, 255) / 255f;
             plusSign.size = Size.M;
             plusSign.outlineColor = Color.clear;
             plusSign.AddToClassList(k_AvatarBadgeUssClassName);
             return plusSign;
-        }
-
-        public new class UxmlFactory : UxmlFactory<AvatarBadgesContainer, UxmlTraits> { }
-
-        public new class UxmlTraits : VisualElement.UxmlTraits
-        {
-            readonly UxmlIntAttributeDescription m_MaxParticipantsCount = new() { name = "max-participants-count", defaultValue = 2 };
-
-            public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
-            {
-                base.Init(ve, bag, cc);
-                var container = (AvatarBadgesContainer)ve;
-                container.MaxParticipantsCount = m_MaxParticipantsCount.GetValueFromBag(bag, cc);
-            }
         }
     }
 }

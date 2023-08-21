@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Unity.Cloud.Identity;
+using Unity.ReferenceProject.DeepLinking;
 using Unity.ReferenceProject.StateMachine;
 using UnityEngine;
 using Zenject;
@@ -20,17 +21,17 @@ namespace Unity.ReferenceProject
         [SerializeField]
         AppState m_LoggedOutState;
 
-        [SerializeField]
-        AppState m_SwitchFlagFoundState;
-
         IAuthenticator m_Authenticator;
 
         bool m_TimerFinished;
+        
+        DeepLinkData m_DeepLinkData;
 
         [Inject]
-        public void Setup(IAuthenticator authenticator)
+        public void Setup(IAuthenticator authenticator, DeepLinkData deepLinkData)
         {
             m_Authenticator = authenticator;
+            m_DeepLinkData = deepLinkData;
         }
 
         void Awake()
@@ -57,7 +58,6 @@ namespace Unity.ReferenceProject
         protected override void EnterStateInternal()
         {
             m_Authenticator.AuthenticationStateChanged += OnAuthenticationStateChanged;
-
             // Force update
             CheckForStateChange();
         }
@@ -79,10 +79,9 @@ namespace Unity.ReferenceProject
 
             if (state == AuthenticationState.LoggedIn)
             {
-                var switchFlag = FindObjectOfType<SwitchFlag>();
-                if (switchFlag != null)
+                if (m_DeepLinkData.DeepLinkIsProcessing)
                 {
-                    AppStateController.PrepareTransition(m_SwitchFlagFoundState).Apply();
+                    m_DeepLinkData.DeepLinkIsProcessing = false;
                 }
                 else
                 {

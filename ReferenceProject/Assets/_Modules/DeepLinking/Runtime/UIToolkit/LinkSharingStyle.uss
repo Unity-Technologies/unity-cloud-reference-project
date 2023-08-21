@@ -1,5 +1,5 @@
 .link-sharing-content {
-    width: 250px;
+    min-width: 250px;
 }
 
 .generate-url-button {

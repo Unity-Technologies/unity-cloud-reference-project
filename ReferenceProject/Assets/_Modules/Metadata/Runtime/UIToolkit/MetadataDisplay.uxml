@@ -5,6 +5,10 @@
         <appui:SearchBar focusable="true" name="search-input" placeholder="@MetadataDisplay:Search" />
         <ui:VisualElement name="Content" class="metadata-display-container__parameters">
             <appui:Text text="@MetadataDisplay:SelectObjectToSeeMetadata" name="EmptySelection" class="metadata-display-text__noselection" />
+            <ui:VisualElement name="NoMetadataContainer" class="metadata-display__no-metadata-container">
+                <appui:Text text="@MetadataDisplay:NoMetadata" name="NoMetadataText" class="metadata-display-text__nometadata" />
+                <appui:Icon name="NoMetadataImage" icon-name="warning" size="L" class="metadata-display-image__nometadata" />
+            </ui:VisualElement>
             <ui:ListView focusable="true" name="ParameterList" selection-type="None" virtualization-method="DynamicHeight" show-bound-collection-size="false" />
         </ui:VisualElement>
     </ui:VisualElement>

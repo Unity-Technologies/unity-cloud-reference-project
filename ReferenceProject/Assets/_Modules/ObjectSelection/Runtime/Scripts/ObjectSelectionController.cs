@@ -80,6 +80,7 @@ namespace Unity.ReferenceProject.ObjectSelection
         void DispatchSelection(RaycastResult raycastResult)
         {
             var data = m_SelectedGameObjectInfo.GetValue();
+            data.HasIntersected = raycastResult.HasIntersected;
             data.SelectedInstanceId = raycastResult.InstanceId;
             data.SelectedPosition = raycastResult.Point;
             m_SelectedGameObjectInfo.SetValue(data);

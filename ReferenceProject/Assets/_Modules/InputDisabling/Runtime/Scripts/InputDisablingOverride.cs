@@ -46,36 +46,68 @@ namespace Unity.ReferenceProject.InputDisabling
                 m_ToolUIController.ToolFocusIn += OnToolFocusIn;
                 m_ToolUIController.ToolFocusOut += OnToolFocusOut;
             }
+
+            if ((m_OverrideTypes & OverrideTypes.PointerDown) != 0)
+            {
+                m_ToolUIController.ToolPointerDown += OnToolPointerDown;
+                m_ToolUIController.ToolPointerUp += OnToolPointerUp;
+            }
+
+            if ((m_OverrideTypes & OverrideTypes.PointerCapture) != 0)
+            {
+                m_ToolUIController.ToolPointerCapture += OnToolPointerCapture;
+                m_ToolUIController.ToolPointerCaptureOut += OnToolPointerCaptureOut;
+            }
         }
-        
-        void OnToolOpened() 
+
+        void OnToolOpened()
         {
             RegisterSelf(OverrideTypes.Opened);
         }
-        
-        void OnToolClosed() 
+
+        void OnToolClosed()
         {
             UnregisterSelf(OverrideTypes.Opened);
         }
-        
-        void OnToolPointerEntered() 
+
+        void OnToolPointerEntered()
         {
             RegisterSelf(OverrideTypes.PointerEntered);
         }
-        
-        void OnToolPointerExited() 
+
+        void OnToolPointerExited()
         {
             UnregisterSelf(OverrideTypes.PointerEntered);
         }
-        
-        void OnToolFocusIn() 
+
+        void OnToolFocusIn()
         {
             RegisterSelf(OverrideTypes.Focused);
         }
-        
-        void OnToolFocusOut() 
+
+        void OnToolFocusOut()
         {
             UnregisterSelf(OverrideTypes.Focused);
+        }
+
+        void OnToolPointerDown()
+        {
+            RegisterSelf(OverrideTypes.PointerDown);
+        }
+
+        void OnToolPointerUp()
+        {
+            UnregisterSelf(OverrideTypes.PointerDown);
+        }
+
+        void OnToolPointerCapture()
+        {
+            RegisterSelf(OverrideTypes.PointerCapture);
+        }
+
+        void OnToolPointerCaptureOut()
+        {
+            UnregisterSelf(OverrideTypes.PointerCapture);
         }
 
         void OnDestroy()
@@ -86,6 +118,10 @@ namespace Unity.ReferenceProject.InputDisabling
             m_ToolUIController.ToolPointerExited -= OnToolPointerExited;
             m_ToolUIController.ToolFocusIn -= OnToolFocusIn;
             m_ToolUIController.ToolFocusOut -= OnToolFocusOut;
+            m_ToolUIController.ToolPointerDown -= OnToolPointerDown;
+            m_ToolUIController.ToolPointerUp -= OnToolPointerUp;
+            m_ToolUIController.ToolPointerDown -= OnToolPointerCapture;
+            m_ToolUIController.ToolPointerUp -= OnToolPointerCaptureOut;
         }
 
         public GameObject GameObject => gameObject;
@@ -112,7 +148,9 @@ namespace Unity.ReferenceProject.InputDisabling
             None = 0,
             Opened = 1,
             PointerEntered = 2,
-            Focused = 4
+            Focused = 4,
+            PointerDown = 8,
+            PointerCapture = 16
         }
     }
 }

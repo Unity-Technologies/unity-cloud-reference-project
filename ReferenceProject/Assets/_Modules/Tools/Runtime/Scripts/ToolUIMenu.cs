@@ -32,7 +32,6 @@ namespace Unity.ReferenceProject.Tools
         public ToolUIController ToolUIController => m_ToolUIController;
     }
 
-    [RequireComponent(typeof(UIDocument))]
     public class ToolUIMenu : MonoBehaviour
     {
         [SerializeField]
@@ -40,10 +39,20 @@ namespace Unity.ReferenceProject.Tools
 
         [SerializeField]
         List<ToolData> m_ToolData;
+        
+        VisualElement m_Root;
+        List<ActionButton> m_ButtonsToolbar;
+        VisualElement m_PanelContainer;
+        
+        const string k_PanelContainer = "panel-container";
+        public VisualElement Root => m_Root;
+        public List<ActionButton> ButtonsToolbar => m_ButtonsToolbar;
+        public VisualElement PanelContainer => m_PanelContainer;
+        public event Action UICreated;
 
         IToolUIManager m_ToolUIManager;
         readonly List<IToolUIModeHandler> m_Handlers = new();
-
+        
         [Inject]
         void Setup(IToolUIManager toolUIManager)
         {
@@ -52,16 +61,17 @@ namespace Unity.ReferenceProject.Tools
 
         void Awake()
         {
-            var root = GetComponent<UIDocument>().rootVisualElement;
-
+            m_Root = GetComponentInParent<UIDocument>().rootVisualElement;
+            m_ButtonsToolbar = new List<ActionButton>();
+            
             foreach (var style in m_AdditionalStyles)
             {
-                root.styleSheets.Add(style);
+                m_Root.styleSheets.Add(style);
             }
 
-            var panelContainer = new VisualElement
+            m_PanelContainer = m_Root.Q(k_PanelContainer) ?? new VisualElement
             {
-                name = "panel-container",
+                name = k_PanelContainer,
                 style =
                 {
                     flexGrow = 1 // Fix: make children panels be able to fit full screen height by auto height
@@ -69,17 +79,19 @@ namespace Unity.ReferenceProject.Tools
                 pickingMode = PickingMode.Ignore // Ignore because now it is fullscreen
             };
 
-            root.Add(panelContainer);
+            m_Root.Add(m_PanelContainer);
 
             foreach (var toolData in m_ToolData)
             {
-                var buttonContainer = string.IsNullOrEmpty(toolData.ToolbarElementName) ? null : root.Q<VisualElement>(toolData.ToolbarElementName);
-                var handler = AddTool(panelContainer, buttonContainer, toolData);
+                var buttonContainer = string.IsNullOrEmpty(toolData.ToolbarElementName) ? null : m_Root.Q<VisualElement>(toolData.ToolbarElementName);
+                var handler = AddTool(m_PanelContainer, buttonContainer, toolData);
                 m_Handlers.Add(handler);
                 m_ToolUIManager.RegisterHandler(handler);
             }
+            
+            UICreated?.Invoke();
         }
-
+        
         void OnDestroy()
         {
             foreach (var handler in m_Handlers)
@@ -88,11 +100,12 @@ namespace Unity.ReferenceProject.Tools
             }
         }
 
-        IToolUIModeHandler AddTool(VisualElement panelContainer, VisualElement buttonContainer, ToolData toolData)
+        public IToolUIModeHandler AddTool(VisualElement panelContainer, VisualElement buttonContainer, ToolData toolData)
         {
             var toolUIController = toolData.ToolUIController;
 
             var button = CreateActionButton(toolUIController, toolData.ButtonStyleClass);
+            button.name = toolUIController.DisplayName;
             buttonContainer.Add(button);
 
             var handler = toolData.ToolUIMode.CreateHandler();
@@ -102,6 +115,8 @@ namespace Unity.ReferenceProject.Tools
             panelContainer.Add(panel);
 
             button.clickable.clicked += () => m_ToolUIManager.OpenTool(handler, toolData.CloseOtherTools);
+            
+            m_ButtonsToolbar.Add(button);
 
             return handler;
         }
@@ -119,8 +134,13 @@ namespace Unity.ReferenceProject.Tools
             {
                 button.AddToClassList(buttonStyleClass);
             }
-
             return button;
+        }
+        
+        public void AddHandler(IToolUIModeHandler handler)
+        {
+            m_Handlers.Add(handler);
+            m_ToolUIManager.RegisterHandler(handler);
         }
     }
 }

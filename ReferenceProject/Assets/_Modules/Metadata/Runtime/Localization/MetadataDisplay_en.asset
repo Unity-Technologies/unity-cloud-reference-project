@@ -23,15 +23,19 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1601333133312
-    m_Localized: All information
+    m_Localized: All informations
     m_Metadata:
       m_Items: []
   - m_Id: 1693108699136
-    m_Localized: Select an object to see its Metadata information
+    m_Localized: Select an object to see its Metadata informations
     m_Metadata:
       m_Items: []
   - m_Id: 2598688292864
-    m_Localized: Metadata display
+    m_Localized: Metadata
+    m_Metadata:
+      m_Items: []
+  - m_Id: 46342085247049728
+    m_Localized: The selected object doesn't have Metadata information
     m_Metadata:
       m_Items: []
   references:

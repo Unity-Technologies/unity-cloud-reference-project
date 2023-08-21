@@ -1,6 +1,7 @@
 ﻿using System;
 using Unity.ReferenceProject.Tools;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
 namespace Unity.ReferenceProject.Metadata
@@ -25,8 +26,8 @@ namespace Unity.ReferenceProject.Metadata
             searchInput.RegisterCallback<FocusOutEvent>(OnFocusOut);
 
             var parameterList = visualElement.Q("ParameterList");
-            parameterList.RegisterCallback<PointerEnterEvent>(OnPointerEntered);
-            parameterList.RegisterCallback<PointerLeaveEvent>(OnPointerExited);
+            parameterList.RegisterCallback<PointerCaptureEvent>(OnPointerCaptureEvent);
+            parameterList.RegisterCallback<PointerCaptureOutEvent>(OnPointerCaptureOutEvent);
         }
 
         protected override void UnregisterCallbacks(VisualElement visualElement)
@@ -36,8 +37,8 @@ namespace Unity.ReferenceProject.Metadata
             searchInput.UnregisterCallback<FocusOutEvent>(OnFocusOut);
 
             var parameterList = visualElement.Q("ParameterList");
-            parameterList.UnregisterCallback<PointerEnterEvent>(OnPointerEntered);
-            parameterList.UnregisterCallback<PointerLeaveEvent>(OnPointerExited);
+            parameterList.UnregisterCallback<PointerCaptureEvent>(OnPointerCaptureEvent);
+            parameterList.UnregisterCallback<PointerCaptureOutEvent>(OnPointerCaptureOutEvent);
         }
 
         public override void OnToolOpened()

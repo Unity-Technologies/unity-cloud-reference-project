@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Random = UnityEngine.Random;
 
 namespace Unity.ReferenceProject.UITableListView
 {
@@ -20,17 +19,16 @@ namespace Unity.ReferenceProject.UITableListView
         void OnPrimaryKeysCreated(List<object> list);
         Task PerformService(List<object> list, CancellationToken cancellationToken = default);
     }
-    
+
     public class ListTableServiceController
     {
         TableListView m_Table;
-        VisualElement m_LoadingIndicator;
-        
+
         List<object> m_ItemsSource;
         readonly List<object> m_ItemsSourceCache = new ();
         readonly SortedList<int, IService> m_Services = new ();
         readonly MonoBehaviour m_MonoBehaviour;
-        
+
         CancellationTokenSource m_CancellationTokenSource;
 
         public List<object> itemsSource
@@ -46,7 +44,7 @@ namespace Unity.ReferenceProject.UITableListView
                 m_Table.ItemsSource = m_ItemsSourceCache;
             }
         }
-        
+
         public ListTableServiceController(MonoBehaviour monoBehaviour, IService[] services)
         {
             m_MonoBehaviour = monoBehaviour;
@@ -55,12 +53,11 @@ namespace Unity.ReferenceProject.UITableListView
                 AddService(service);
             }
         }
-        
-        public void Initialize(VisualElement root, TableListView table, VisualElement loading, params IColumnEventData[] columns)
+
+        public void Initialize(VisualElement root, TableListView table, params IColumnEventData[] columns)
         {
             m_Table = table;
-            m_LoadingIndicator = loading;
-            
+
             foreach (var service in m_Services.Select(service => service.Value))
             {
                 service?.ClearService();
@@ -86,9 +83,9 @@ namespace Unity.ReferenceProject.UITableListView
 
             foreach (var column in m_Columns)
             {
-                if (column == null || !column.IsVisible || column is not IServiceData data) 
+                if (column == null || !column.IsVisible || column is not IServiceData data)
                     continue;
-                
+
                 foreach (var service in m_Services)
                 {
                     service.Value?.InitializeUIForData(m_Table, data);
@@ -112,38 +109,32 @@ namespace Unity.ReferenceProject.UITableListView
 
         IEnumerator RefreshServicesCoroutine()
         {
-            // Show loading indicator
-            SetVisible(m_LoadingIndicator, true);  
-            
-            // Hide list
-            SetVisible(m_Table, false);  
-            
             // Make cancellation token
             var cancellationTokenSource = new CancellationTokenSource();
-            
+
             // If there is an old cancellation token source then cancel it
             m_CancellationTokenSource?.Cancel();
             m_CancellationTokenSource = cancellationTokenSource;
 
             CreateCachedItemsSource(m_ItemsSource);
-            
+
             var m_Task = RefreshServicesAsync(cancellationTokenSource.Token);
             yield return new WaitWhile(() => !m_Task.IsCompleted);
-            
+
             // Manage token
             if (m_CancellationTokenSource == cancellationTokenSource)
             {
                 m_CancellationTokenSource = null;
             }
-            
+
             cancellationTokenSource.Dispose();
-            
+
             // Show Exception if it exists
             if (m_Task.Exception != null)
             {
                 Debug.LogError($"Exception: {m_Task.Exception.Message}");
             }
-            
+
             // Show cancellation if it exists
             if (m_Task.IsCanceled)
             {
@@ -151,28 +142,16 @@ namespace Unity.ReferenceProject.UITableListView
                 yield break;
             }
 
-            // Hide loading indicator
-            SetVisible(m_LoadingIndicator, false);
-            
             // Show list
             m_Table.RefreshItems();
-            SetVisible(m_Table, true);
         }
-        
+
         async Task RefreshServicesAsync(CancellationToken cancellationToken)
         {
             foreach (var service in m_Services)
             {
                 await service.Value.PerformService(m_ItemsSourceCache, cancellationToken);
             }
-        }
-        
-        void SetVisible(VisualElement e, bool isVisible)
-        {
-            if(e == null)
-                return;
-            
-            e.style.visibility = isVisible ? Visibility.Visible : Visibility.Hidden;
         }
     }
 }

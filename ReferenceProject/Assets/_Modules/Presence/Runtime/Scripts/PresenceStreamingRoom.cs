@@ -15,7 +15,8 @@ namespace Unity.ReferenceProject.Presence
     public sealed class PresenceStreamingRoom : MonoBehaviour
     {
         IAuthenticationStateProvider m_AuthenticationStateProvider;
-        PresenceRoomsManager m_RoomManager;
+        PresenceRoomsManager m_PresenceRoomsManager;
+        Room m_CurrentRoom;
         
         public event Action<Room> RoomJoined;
         public event Action RoomLeft;
@@ -24,7 +25,7 @@ namespace Unity.ReferenceProject.Presence
         public void Setup(IAuthenticationStateProvider authenticationStateProvider, ISceneEvents sceneEvents, PresenceRoomsManager roomManager)
         {
             m_AuthenticationStateProvider = authenticationStateProvider;
-            m_RoomManager = roomManager;
+            m_PresenceRoomsManager = roomManager;
 
             sceneEvents.SceneOpened += OnSceneOpened;
             sceneEvents.SceneClosed += OnSceneClosed;
@@ -60,24 +61,31 @@ namespace Unity.ReferenceProject.Presence
 
         async Task JoinRoom(SceneId sceneId)
         {
-            var isJoined = await m_RoomManager.JoinRoomAsync(sceneId);
+            if (m_CurrentRoom != null)
+            {
+                Debug.LogError("Previous Room Not Left Yet");
+                return;
+            }
             
-            m_RoomManager.SubscribeForMonitoring(sceneId, GetInstanceID());
+            var isJoined = await m_PresenceRoomsManager.JoinRoomAsync(sceneId, GetInstanceID());
             
             if(!isJoined)
                 return;
             
-            RoomJoined?.Invoke(m_RoomManager.CurrentRoom);
+            m_CurrentRoom = m_PresenceRoomsManager.GetRoomForScene(sceneId);
+            RoomJoined?.Invoke(m_CurrentRoom);
         }
 
         async Task LeaveRoom()
         {
-            var currentRoomLeft = await m_RoomManager.LeaveRoomAsync();
-            
-            m_RoomManager.UnsubscribeFromMonitoring(m_RoomManager.CurrentRoom, GetInstanceID());
-            
-            if(currentRoomLeft)
+            var isRoomLeft = await m_PresenceRoomsManager.LeaveRoomAsync(m_CurrentRoom);
+            await m_PresenceRoomsManager.UnsubscribeFromMonitoring(m_CurrentRoom, GetInstanceID());
+
+            if (isRoomLeft)
+            {
+                m_CurrentRoom = null;
                 RoomLeft?.Invoke();
+            }
         }
 
         async void OnSceneOpened(IScene scene)
@@ -93,7 +101,7 @@ namespace Unity.ReferenceProject.Presence
         
         public IParticipant GetParticipantFromID(ParticipantId id)
         {
-            return m_RoomManager.CurrentRoom?.ConnectedParticipants.FirstOrDefault(p => p.Id == id);
+            return m_CurrentRoom?.ConnectedParticipants.FirstOrDefault(p => p.Id == id);
         }
     }
 }

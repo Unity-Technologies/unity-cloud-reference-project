@@ -31,6 +31,10 @@ MonoBehaviour:
     m_Key: MetadataDisplay
     m_Metadata:
       m_Items: []
+  - m_Id: 46342085247049728
+    m_Key: NoMetadata
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

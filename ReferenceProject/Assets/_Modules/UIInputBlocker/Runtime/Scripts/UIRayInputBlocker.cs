@@ -66,31 +66,27 @@ namespace Unity.ReferenceProject.UIInputBlocker
             {
                 return;
             }
-
-            // We move execution to NextFrame because of next warning:
-            // Calling IsPointerOverGameObject() from within event processing (such as from InputAction callbacks)
-            // will not work as expected; it will query UI state from the last frame
+            
             if (m_Dispatcher != null && m_Dispatcher.IsListenersAvailable)
-                StartCoroutine(PerformCheck(m_Camera));
+                PerformCheck(m_Camera);
         }
 
-        IEnumerator PerformCheck(Camera camera)
+        void PerformCheck(Camera camera)
         {
             if (!camera)
             {
                 Debug.LogWarning($"Camera is missing! {nameof(UIRayInputBlocker)} has been stopped.");
-                yield break;
+                return;
             }
 
             var screenPosition = m_InputSystemUIInputModule.input.mousePosition;
-            yield return new WaitForEndOfFrame();
 
             var eventSystem = EventSystem.current;
 
             if (eventSystem == null)
             {
                 Debug.LogError($"Scene doesn't contain EventSystem! {nameof(UIRayInputBlocker)} can't perform check.");
-                yield break;
+                return;
             }
 
             var results = new List<RaycastResult>();
@@ -132,7 +128,7 @@ namespace Unity.ReferenceProject.UIInputBlocker
                 return true;
             }
 
-            // We hit someting, so block ray
+            // We hit something, so block ray
             return false;
         }
 

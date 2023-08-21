@@ -31,6 +31,11 @@ namespace Unity.ReferenceProject.ScenesList
         readonly Dictionary<WorkspaceId, string> m_IdToWorkspaces = new ();
 
         Task m_RefreshTask;
+        
+        /// <summary>
+        /// To check if currently, workspaces are loading from a server
+        /// </summary>
+        public bool IsLoadingWorkspaces => m_RefreshTask != null && !m_RefreshTask.IsCompleted;
 
         readonly IWorkspaceRepository m_WorkspaceProvider;
 
@@ -43,7 +48,7 @@ namespace Unity.ReferenceProject.ScenesList
 
         public Task RefreshAsync()
         {
-            if (m_RefreshTask == null || m_RefreshTask.IsCompleted)
+            if(!IsLoadingWorkspaces)
                 m_RefreshTask = PopulateWorkspacesAsync();
             return m_RefreshTask;
         }
@@ -62,17 +67,30 @@ namespace Unity.ReferenceProject.ScenesList
 
         async Task GetAllScenesFromWorkspacesAsync(IAsyncEnumerable<IWorkspace> workspaces)
         {
-            m_IdToScenesLookUp.Clear();
-            m_IdToWorkspaces.Clear();
+            var idToScenesLookUp = new Dictionary<SceneId, IScene>();
+            var idToWorkspaces = new Dictionary<WorkspaceId, string>();
 
             await foreach (var workspace in workspaces)
             {
                 var selectedScenes = await GetScenesFromWorkspaceAsync(workspace);
                 foreach (var scene in selectedScenes)
                 {
-                    m_IdToScenesLookUp.TryAdd(scene.Id, scene);
+                    idToScenesLookUp.TryAdd(scene.Id, scene);
                 }
-                m_IdToWorkspaces.TryAdd(workspace.Id, workspace.Name);
+                idToWorkspaces.TryAdd(workspace.Id, workspace.Name);
+            }
+            
+            m_IdToScenesLookUp.Clear();
+            m_IdToWorkspaces.Clear();
+
+            foreach (var itemScenes in idToScenesLookUp)
+            {
+                m_IdToScenesLookUp.Add(itemScenes.Key, itemScenes.Value);
+            }
+            
+            foreach (var itemWorkspaces in idToWorkspaces)
+            {
+                m_IdToWorkspaces.Add(itemWorkspaces.Key, itemWorkspaces.Value);
             }
         }
 

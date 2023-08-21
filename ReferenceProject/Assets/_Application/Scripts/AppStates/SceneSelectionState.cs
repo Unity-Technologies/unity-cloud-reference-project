@@ -20,13 +20,13 @@ namespace Unity.ReferenceProject
 
         PropertyValue<IScene> m_ActiveScene;
         
-        DeepLinkCameraInfo m_SetDeepLinkCamera;
+        DeepLinkData m_DeepLinkData;
 
         [Inject]
-        void Setup(PropertyValue<IScene> activeScene, DeepLinkCameraInfo deepLinkCameraInfo)
+        void Setup(PropertyValue<IScene> activeScene, DeepLinkData deepLinkData)
         {
             m_ActiveScene = activeScene;
-            m_SetDeepLinkCamera = deepLinkCameraInfo;
+            m_DeepLinkData = deepLinkData;
         }
 
         void Awake()
@@ -42,7 +42,7 @@ namespace Unity.ReferenceProject
         void OnProjectSelected(IScene scene)
         {
             Debug.Log($"Selected scene '{scene.Name}'");
-            m_SetDeepLinkCamera.SetDeepLinkCamera = false;
+            m_DeepLinkData.SetDeepLinkCamera = false;
             AppStateController.PrepareTransition(m_SceneSelectedState).OnBeforeEnter(() => m_ActiveScene.SetValue(scene)).Apply();
         }
     }

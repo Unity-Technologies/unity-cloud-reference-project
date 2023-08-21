@@ -147,6 +147,9 @@ namespace Unity.ReferenceProject.AppCamera
 
         public void OnOrbit(InputAction.CallbackContext context)
         {
+            if (m_ZoomGestureInProgress || m_PanGestureInProgress)
+                return;
+            
             var readValue = context.ReadValue<Vector2>();
 
             m_WorldOrbitDelta.SetNewFrameDelta(readValue);

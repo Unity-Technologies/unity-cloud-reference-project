@@ -193,10 +193,9 @@ namespace Unity.ReferenceProject.Presence
 
         public override VisualElement GetButtonContent()
         {
-            m_VoiceAvatarsBadgesContainer = new VoiceAvatarBadgesContainer
+            m_VoiceAvatarsBadgesContainer = new VoiceAvatarBadgesContainer(m_AvatarColorPalette)
             {
                 MaxParticipantsCount = m_MaxParticipantsCount,
-                AvatarColorPalette = m_AvatarColorPalette
             };
             return m_VoiceAvatarsBadgesContainer;
         }

@@ -4,6 +4,8 @@ using System.Linq;
 using ModestTree;
 using Unity.AppUI.UI;
 using Unity.Cloud.Presence;
+using Unity.ReferenceProject.Common;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Unity.ReferenceProject.Presence
@@ -44,6 +46,12 @@ namespace Unity.ReferenceProject.Presence
             RefreshContainer(Room);
         }
 #endif
+        
+        public VoiceAvatarBadgesContainer(ColorPalette avatarColorPalette) : base(avatarColorPalette)
+        {
+            
+        }
+        
         public void BindVoiceManager(VoiceManager voiceManager)
         {
 #if USE_VIVOX
@@ -52,7 +60,6 @@ namespace Unity.ReferenceProject.Presence
             RefreshContainer(Room);
 #endif
         }
-
     }
 }
 

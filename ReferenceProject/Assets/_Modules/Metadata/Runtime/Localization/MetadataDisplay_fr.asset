@@ -17,7 +17,27 @@ MonoBehaviour:
   m_SharedData: {fileID: 11400000, guid: bed46961ffe799c4ea5cd24a4a8ee555, type: 2}
   m_Metadata:
     m_Items: []
-  m_TableData: []
+  m_TableData:
+  - m_Id: 569857310720
+    m_Localized: Chercher
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1601333133312
+    m_Localized: Toutes les informations
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1693108699136
+    m_Localized: "S\xE9lectionner un objet pour voir ses informations Metadata"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2598688292864
+    m_Localized: Metadata
+    m_Metadata:
+      m_Items: []
+  - m_Id: 46342085247049728
+    m_Localized: "L'object s\xE9lectionn\xE9 ne contient pas d'information Metadata"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

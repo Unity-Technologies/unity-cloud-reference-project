@@ -124,7 +124,7 @@ namespace Unity.ReferenceProject.ScenesList
             );
 
             m_ListTableServiceController = new ListTableServiceController(this, GetComponents<IService>());
-            m_ListTableServiceController.Initialize(m_RootVisualElement, m_Table, m_LoadingIndicator, AllColumns);
+            m_ListTableServiceController.Initialize(m_RootVisualElement, m_Table, AllColumns);
             m_ListTableServiceController.itemsSource = default;
 
             foreach (var headerStyle in m_HeaderStyles)
@@ -166,14 +166,6 @@ namespace Unity.ReferenceProject.ScenesList
             StartCoroutine(UpdateData());
         }
 
-        public void RefreshOnlyTable()
-        {
-            if (ChangesAtSource())
-            {
-                ClearAndUpdateUI();
-            }
-        }
-
         public void SetVisibility(bool isVisible)
         {
             SetVisibility(m_RootVisualElement, isVisible);
@@ -185,9 +177,14 @@ namespace Unity.ReferenceProject.ScenesList
             {
                 yield break;
             }
+            
+            // Refresh current data before we make request to source.
+            // Could be data that is not only at the source (eg: local saved data) to show it immediately
+            m_Table.RefreshItems();
 
             SetVisibility(m_LoadingIndicator, true);
-
+            
+            // Request new data
             m_Task = RefreshScenesAndWorkspacesAsync();
             yield return new WaitWhile(() => !m_Task.IsCompleted);
 
@@ -195,6 +192,7 @@ namespace Unity.ReferenceProject.ScenesList
             {
                 ClearAndUpdateUI();
             }
+
             SetVisibility(m_LoadingIndicator, false);
         }
 
@@ -237,7 +235,7 @@ namespace Unity.ReferenceProject.ScenesList
                 visualElement.style.display = isVisible ? DisplayStyle.Flex : DisplayStyle.None;
             }
         }
-        
+
         public void SetBackground(bool toolIsOpen)
         {
             if (toolIsOpen)

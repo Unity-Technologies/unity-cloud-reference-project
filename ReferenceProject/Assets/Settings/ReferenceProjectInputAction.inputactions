@@ -76,6 +76,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Orbit Gesture Action",
+                    "type": "Value",
+                    "id": "16947dab-0d69-4a9f-baf4-de8b11e3272b",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "SingleTouchDrag",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -122,17 +131,6 @@
                     "action": "Orbit Action",
                     "isComposite": false,
                     "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "b471aeab-6f54-455c-a5bf-4b28f53b054b",
-                    "path": "<Touchscreen>/primaryTouch/delta",
-                    "interactions": "",
-                    "processors": "ScaleVector2(x=0.1,y=0.1)",
-                    "groups": "",
-                    "action": "Orbit Action",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 },
                 {
                     "name": "Mouse Drag",
@@ -463,6 +461,17 @@
                     "action": "Zoom Gesture Action",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "b471aeab-6f54-455c-a5bf-4b28f53b054b",
+                    "path": "<Touchscreen>/primaryTouch/delta",
+                    "interactions": "",
+                    "processors": "ScaleVector2(x=0.1,y=0.1)",
+                    "groups": "",
+                    "action": "Orbit Gesture Action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

@@ -62,23 +62,26 @@ namespace Unity.ReferenceProject.ScenesList
                 return;
             }
 
-            var text = e.Q<Text>(GetTextName(columnData));
+            var textElement = e.Q<Text>(GetTextName(columnData));
 
-            if (text != null)
+            if (textElement != null)
             {
-                text.text = m_AccessHistoryController.Accessed(scene.Id, out DateTime accessDate)
-                    ? LastAccessStringBuilder(accessDate)
-                    : null;
+                if (m_AccessHistoryController.Accessed(scene.Id, out DateTime accessDate))
+                {
+                    var text = Common.Utils.GetTimeIntervalSinceNow(accessDate.ToLocalTime(), out var variables);
+                    textElement.text = text;
+                    var localizedTextElement = textElement.Q<LocalizedTextElement>();
+                    localizedTextElement.variables = variables;
+                    textElement.tooltip = accessDate.ToString();
+                }
+                else
+                {
+                    textElement.text = null;
+                    textElement.tooltip = null;
+                }
             }
         }
 
         string GetTextName(IColumnData columnData) => $"text-{columnData.Name}";
-
-        static string LastAccessStringBuilder(DateTime accessDate)
-        {
-            return  accessDate.Day == DateTime.Now.Day
-                ? accessDate.ToShortTimeString()
-                : accessDate.ToShortDateString();
-        }
     }
 }

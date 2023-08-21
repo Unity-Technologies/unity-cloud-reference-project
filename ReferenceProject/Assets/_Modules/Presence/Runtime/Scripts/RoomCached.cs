@@ -31,17 +31,17 @@ namespace Unity.ReferenceProject.Presence
                     value.ParticipantRemoved += OnRefresh;
                 }
                 
-                RefeshCachedParticipants();
+                RefreshCachedParticipants();
             }
         }
 
         readonly List<IParticipant> m_CachedParticipants = new();
         
-        public List<IParticipant> Participants => m_CachedParticipants;
+        public IReadOnlyList<IParticipant> Participants => m_CachedParticipants;
 
         public RoomCached(Room room) => Room = room;
 
-        void RefeshCachedParticipants()
+        void RefreshCachedParticipants()
         {
             m_CachedParticipants.Clear();
             
@@ -55,7 +55,7 @@ namespace Unity.ReferenceProject.Presence
 
         void OnRefresh(IParticipant obj)
         {
-            RefeshCachedParticipants();
+            RefreshCachedParticipants();
         }
     }
 }

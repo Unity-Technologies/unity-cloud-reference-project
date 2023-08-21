@@ -18,8 +18,7 @@ namespace Unity.ReferenceProject.UITableListView
 
         readonly FilterModule<T> m_FilterModule;
         readonly Action m_OnFilterChanged;
-
-        readonly Dictionary<Checkbox, (string, int)> m_CheckboxMap = new();
+        
         readonly Dictionary<string, Checkbox> m_HeaderCheckBoxMap = new();
 
         readonly Dictionary<string, List<string>> m_AllOptions = new();
@@ -45,12 +44,6 @@ namespace Unity.ReferenceProject.UITableListView
             m_ColumnStyles = columnStyles;
 
             m_Button.clickable.clicked += OnShowFilterPopover;
-        }
-
-        void OnReset()
-        {
-            m_HeaderCheckBoxMap.Clear();
-            m_CheckboxMap.Clear();
         }
 
         public void Unsubscribe()
@@ -96,7 +89,6 @@ namespace Unity.ReferenceProject.UITableListView
                 column.MakeCell += OnMakeCell;
                 column.BindCell += OnBindCell;
                 column.CreateHeader += OnCreateHeader;
-                column.Reset += OnReset;
 
                 columns[i] = column;
                 i++;
@@ -172,7 +164,7 @@ namespace Unity.ReferenceProject.UITableListView
                     checkbox.label = optionList[id];
                     checkbox.tooltip = optionList[id];
                     checkbox.style.display = DisplayStyle.Flex;
-                    m_CheckboxMap[checkbox] = (column.Name, id);
+                    WriteDataToElement(checkbox, column.Name, id);
 
                     checkbox.SetValueWithoutNotify(m_FilterModule.ContainsOption(column.Name, optionList[id])
                         ? CheckboxState.Checked
@@ -217,7 +209,7 @@ namespace Unity.ReferenceProject.UITableListView
 
             EllipsisText(checkbox);
             checkbox.clickable.clicked += () => OnCheckBoxClicked(checkbox);
-            m_CheckboxMap[checkbox] = (name, -1);
+            WriteDataToElement(checkbox, name, -1);
 
             e.Add(checkbox);
 
@@ -233,15 +225,11 @@ namespace Unity.ReferenceProject.UITableListView
 
         void OnCheckBoxClicked(Checkbox checkBox)
         {
-            if (!m_CheckboxMap.TryGetValue(checkBox, out var value))
-                return;
-
-            var columnName = value.Item1;
+            ReadDataFromElement(checkBox, out var columnName, out var id);
 
             if (!m_AllOptions.TryGetValue(columnName, out var list))
                 return;
-
-            var id = value.Item2;
+            
             if (id >= 0 && id < list.Count)
             {
                 if (checkBox.value == CheckboxState.Checked)
@@ -327,6 +315,18 @@ namespace Unity.ReferenceProject.UITableListView
             }
         }
 
-        string GetCheckBoxName(string columnName) => $"checkbox{columnName}";
+        static void WriteDataToElement(VisualElement e, string name, int id)
+        {
+            e.userData = new Tuple<string, int>(name, id);
+        }
+
+        static void ReadDataFromElement(VisualElement e, out string name, out int id)
+        {
+            Tuple<string, int> value = (Tuple<string, int>)e.userData;
+            name = value.Item1;
+            id = value.Item2;
+        }
+
+        static string GetCheckBoxName(string columnName) => $"checkbox{columnName}";
     }
 }

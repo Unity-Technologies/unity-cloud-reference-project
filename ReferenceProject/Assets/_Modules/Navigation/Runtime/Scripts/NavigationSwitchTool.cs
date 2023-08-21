@@ -10,7 +10,6 @@ namespace Unity.ReferenceProject.Navigation
 {
     public class NavigationSwitchTool : ToolUIController
     {
-        
         [SerializeField]
         VisualTreeAsset m_ButtonTemplate;
         

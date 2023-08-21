@@ -31,11 +31,11 @@ namespace Unity.ReferenceProject
 
         IQueryArgumentsProcessor m_QueryArgumentsProcessor;
         QueryArgumentHandler<string> m_QueryArgumentCameraTransformHandler;
-        DeepLinkCameraInfo m_SetDeepLinkCamera;
+        DeepLinkData m_DeepLinkData;
 
         [Inject]
         void Setup(ISceneEvents sceneEvents, IDataStreamerProvider dataStreamerProvider, Camera streamingCamera, INavigationManager navigationManager, IDataStreamBound dataStreamBound,
-            IQueryArgumentsProcessor queryArgumentsProcessor, DeepLinkCameraInfo deepLinkCameraInfo)
+            IQueryArgumentsProcessor queryArgumentsProcessor, DeepLinkData deepLinkData)
         {
             m_SceneEvents = sceneEvents;
             m_SceneEvents.SceneOpened += OnSceneOpened;
@@ -48,7 +48,7 @@ namespace Unity.ReferenceProject
             m_DataStreamBound = dataStreamBound;
             
             m_QueryArgumentsProcessor = queryArgumentsProcessor;
-            m_SetDeepLinkCamera = deepLinkCameraInfo;
+            m_DeepLinkData = deepLinkData;
         }
 
         void Awake()
@@ -106,9 +106,9 @@ namespace Unity.ReferenceProject
 
             m_IsProcessing = true;
             
-            if (m_SetDeepLinkCamera.SetDeepLinkCamera) 
+            if (m_DeepLinkData.SetDeepLinkCamera) 
             {
-                m_SetDeepLinkCamera.SetCameraReady?.Invoke(); // Process Deeplink QueryArguments
+                m_DeepLinkData.SetCameraReady?.Invoke(); // Process Deeplink QueryArguments
                 m_DataStreamer.StreamingStateChanged -= OnStreamingStateChanged;
                 m_IsProcessing = false;
                 return; 

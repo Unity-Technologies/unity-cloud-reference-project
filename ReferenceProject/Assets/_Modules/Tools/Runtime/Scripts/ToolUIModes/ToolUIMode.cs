@@ -13,6 +13,8 @@ namespace Unity.ReferenceProject.Tools
         public void OpenTool();
 
         public void CloseTool();
+        
+        public ActionButton GetButton();
     }
 
     public abstract class ToolUIMode : ScriptableObject
@@ -66,5 +68,10 @@ namespace Unity.ReferenceProject.Tools
         protected abstract void OnToolOpenedInternal();
 
         protected abstract void OnToolClosedInternal();
+        
+        public ActionButton GetButton()
+        {
+            return Button;
+        }
     }
 }

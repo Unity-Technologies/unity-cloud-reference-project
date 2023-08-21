@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEditor;
+using UnityEditor.PackageManager;
 using UnityEditor.PackageManager.Requests;
 using UnityEditor.XR.Management;
 using UnityEditor.XR.Management.Metadata;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.XR.Management;
 using UnityEngine.XR.OpenXR;
 
@@ -87,6 +92,12 @@ namespace Unity.ReferenceProject.Editor
                             case "MockRuntime Standalone":
                                 feature.enabled = false;
                                 break;
+                            case "VIVEFocus3Feature Android":
+                                feature.enabled = false;
+                                break;
+                            case "VIVEFocus3Profile Android":
+                                feature.enabled = false;
+                                break;
                             case "OculusTouchControllerProfile Android":
                                 feature.enabled = true;
                                 break;
@@ -101,13 +112,16 @@ namespace Unity.ReferenceProject.Editor
                             case "MockRuntime Standalone":
                                 feature.enabled = false;
                                 break;
-                            case "HTCViveControllerProfile Android":
+                            case "OculusTouchControllerProfile Android":
+                                feature.enabled = false;
+                                break;
+                            case "MetaQuestFeature Android":
+                                feature.enabled = false;
+                                break;
+                            case "VIVEFocus3Feature Android":
                                 feature.enabled = true;
                                 break;
-                            case "ValveIndexControllerProfile Android":
-                                feature.enabled = true;
-                                break;
-                            case "VIVEFocus3ControllerInteraction Android":  // This one needs to be checked
+                            case "VIVEFocus3Profile Android":
                                 feature.enabled = true;
                                 break;
                         }
@@ -116,7 +130,7 @@ namespace Unity.ReferenceProject.Editor
             }
         }
 
-        static OpenXRSettings GetOrCreateOpenXRSettings(BuildTargetGroup buildTargetGroup)
+        public static OpenXRSettings GetOrCreateOpenXRSettings(BuildTargetGroup buildTargetGroup)
         {
             var settings = OpenXRSettings.Instance;
             if (settings == null)
@@ -182,6 +196,105 @@ namespace Unity.ReferenceProject.Editor
             }
 
             EditorBuildSettings.scenes = editorBuildSettingsScenes.ToArray();
+        }
+        
+        public static void EnsureAndroidBuildTarget()
+        {
+            if (EditorUserBuildSettings.activeBuildTarget != BuildTarget.Android || EditorUserBuildSettings.selectedBuildTargetGroup != BuildTargetGroup.Android)
+            {
+                EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android, BuildTarget.Android);
+                AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+            }
+        }
+        
+        public static void PrepareRendererPipelineAsset(string pipeLineName)
+        {
+            foreach (var pipeline in GraphicsSettings.allConfiguredRenderPipelines.OfType<UniversalRenderPipelineAsset>())
+            {
+                if (pipeline.name == pipeLineName)
+                {
+                    GraphicsSettings.defaultRenderPipeline = pipeline;
+                    EditorUtility.SetDirty(pipeline);
+                    AssetDatabase.SaveAssetIfDirty(pipeline);
+                    return;
+                }
+            }
+        }
+        
+        public static bool AddPackages(params string[] packs)
+        {
+            var request = Client.List(true);
+            
+            if(!WaitRequestForCompletion(request))
+            {
+                Debug.LogError($"Could not obtain the list of packages. Can not continue. ErrorCode:{request.Error.errorCode} message: {request.Error.message}");
+                return false;
+            }
+
+            foreach (var pack in packs)
+            {
+                if (request.Result.Any(x => x.name.Equals(pack)))
+                {
+                    Debug.LogWarning($"{pack} is already in the project and cannot be added. Skipping");
+                    continue;
+                }
+
+                var addRequest = Client.Add(pack);
+                
+                if(WaitRequestForCompletion(addRequest))
+                {
+                    Debug.Log($"{pack} was added");
+                }
+                else
+                {
+                    Debug.LogError($"{pack} cannot be added: errorCode:{addRequest.Error.errorCode}; message: {addRequest.Error.message}");
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        public static bool CheckPackagesExistence(params string[] packageNames)
+        {
+            var request = Client.List(true);
+
+            if(!WaitRequestForCompletion(request))
+            {
+                Debug.LogError($"Could not obtain the list of packages. Can not continue. ErrorCode:{request.Error.errorCode} message: {request.Error.message}");
+                return false;
+            }
+
+            int packagesCount = 0;
+
+            foreach (var package in request.Result)
+            {
+                foreach (var packageName in packageNames)
+                {
+                    if (package.name == packageName)
+                    {
+                        packagesCount++;
+                        break;
+                    }
+                }
+            }
+
+            return packagesCount == packageNames.Length;
+        }
+
+        static bool WaitRequestForCompletion(Request request)
+        {
+            while (!request.IsCompleted)
+            {
+                // Wait for completion.
+            }
+            
+            if (request.Status != StatusCode.Success)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

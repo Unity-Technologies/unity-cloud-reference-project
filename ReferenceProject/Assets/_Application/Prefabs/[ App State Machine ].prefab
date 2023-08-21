@@ -229,7 +229,7 @@ MonoBehaviour:
   m_MinimumDuration: 2
   m_LoggedInState: {fileID: 1412446346793829127}
   m_LoggedOutState: {fileID: 1412446346862836188}
-  m_SwitchFlagFoundState: {fileID: 1412446348075779933}
+  m_DeepLinkProcessingState: {fileID: 1412446348075779933}
 --- !u!1 &1412446347959046149
 GameObject:
   m_ObjectHideFlags: 0
