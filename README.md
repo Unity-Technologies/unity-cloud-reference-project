@@ -6,6 +6,8 @@
 
 ## A Unity project for building a collaborative 3D design review tool
 
+> **🚨 Critical**: This release of the Unity Cloud Reference Project is no longer functional due to its dependencies on Unity Cloud beta SDKs that are no longer operational. A new release will be available shortly with updated SDKs. We apologize for the inconvenience.
+
 > **Important**: Unity Reference project is an experimental project. For early access, contact your Unity Sales partner.
 
 The Unity Reference Project is a fully functional collaborative design review tool for 3D assets. It's a Unity project that you can build on to create your own custom viewer application. It also lets you take advantage of any improvements that Unity publishes to GitHub.
