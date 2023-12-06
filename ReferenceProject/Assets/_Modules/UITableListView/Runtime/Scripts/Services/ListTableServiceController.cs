@@ -11,7 +11,7 @@ namespace Unity.ReferenceProject.UITableListView
 {
     public interface IService
     {
-        event Action OnRefresh;
+        event Action Refresh;
         int ServicePriority { get; }
         void ClearService();
         void InitializeService(VisualElement root);
@@ -98,7 +98,7 @@ namespace Unity.ReferenceProject.UITableListView
             if (!m_Services.ContainsValue(service))
             {
                 m_Services.Add(service.ServicePriority, service);
-                service.OnRefresh += RefreshServices;
+                service.Refresh += RefreshServices;
             }
         }
 

@@ -17,8 +17,9 @@ namespace Unity.ReferenceProject.UITableListView
         readonly ActionButton m_Button;
 
         readonly FilterModule<T> m_FilterModule;
+
         readonly Action m_OnFilterChanged;
-        
+
         readonly Dictionary<string, Checkbox> m_HeaderCheckBoxMap = new();
 
         readonly Dictionary<string, List<string>> m_AllOptions = new();
@@ -26,12 +27,14 @@ namespace Unity.ReferenceProject.UITableListView
         readonly List<int> m_PrimaryKey = new();
 
         readonly string[] m_ColumnStyles;
+        readonly StyleSheet m_StyleSheet;
 
         public FilterTableUI(FilterModule<T> filterModule, VisualElement root, Action onFilterChanged,
-            string buttonName = "", string[] columnStyles = null)
+            string buttonName = "", StyleSheet styleSheet = null, string[] columnStyles = null)
         {
             m_FilterModule = filterModule;
             m_OnFilterChanged = onFilterChanged;
+            m_StyleSheet = styleSheet;
             CreateTable();
 
             m_Button = root.Q<ActionButton>(buttonName);
@@ -58,6 +61,10 @@ namespace Unity.ReferenceProject.UITableListView
         void CreateTable()
         {
             m_ContentContainer = new VisualElement();
+            if(m_StyleSheet != null){
+                m_ContentContainer.styleSheets.Add(m_StyleSheet);
+            }
+
             m_Table = new TableListView();
             m_Table.ListView.style.maxHeight = new StyleLength(StyleKeyword.None); // Because there is a bug with popover. When shadow element of popover takes this value and become 4k height
             m_Table.showTableHeader = true;

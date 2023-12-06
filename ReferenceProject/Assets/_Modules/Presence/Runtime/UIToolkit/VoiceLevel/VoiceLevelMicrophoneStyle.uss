@@ -1,0 +1,42 @@
+.image__microphone-voice-level {
+    align-items: stretch;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    scale: 1 1;
+    transform-origin: center 67%;
+    background-image: url("../../Sprites/VoiceLevel/VoiceLevel.png");
+}
+
+.button__mute {
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.is-selected.button__mute,
+.is-selected.button__mute:hover,
+.button__mute:hover,
+.button__mute:active{
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.appui-icon--microphone2x {
+    --unity-image: url("../../Sprites/VoiceLevel/Microphone@2x.png");
+}
+
+.appui-icon--microphone-slash2x {
+    --unity-image: url("../../Sprites/VoiceLevel/MicrophoneSlash@2x.png");
+}
+
+.button__collaborator-data-microphone{
+    flex-grow: 0;
+    flex-shrink: 0;
+    align-items: center;
+    margin-left: 10px;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.container__microphone{
+    align-items: center;
+}

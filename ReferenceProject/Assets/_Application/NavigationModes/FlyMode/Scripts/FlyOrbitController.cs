@@ -2,13 +2,14 @@
 using System.Collections;
 using System.Threading.Tasks;
 using Unity.ReferenceProject.AppCamera;
+using Unity.ReferenceProject.Common;
 using Unity.ReferenceProject.Navigation;
 using Unity.ReferenceProject.ObjectSelection;
-using Unity.ReferenceProject.UIInputBlocker;
+using Unity.ReferenceProject.InputSystem;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using Zenject;
-using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 namespace Unity.ReferenceProject.Application
 {
@@ -24,13 +25,9 @@ namespace Unity.ReferenceProject.Application
         [SerializeField]
         float m_ArrivalOffsetRelative = 1f;
 
-        [Tooltip("Offset along the surface normal of the selected object")]
+        [Tooltip("Angle threshold for teleport to detect if the surface is a floor")]
         [SerializeField]
-        float m_ArrivalOffsetNormal = 1f;
-
-        [Tooltip("Fixed offset in world space")]
-        [SerializeField]
-        Vector3 m_ArrivalOffsetFixed = Vector3.zero;
+        float m_AngleThreshold = 10f;
 
         [Tooltip("Fixed time for the teleport animation")]
         [SerializeField]
@@ -45,7 +42,7 @@ namespace Unity.ReferenceProject.Application
 
         bool m_IsInputsEnabled;
         bool m_IsTeleporting;
-        float m_LastClickTime;
+        bool m_IsValidStart;
 
         // Keyboard and Mouse
         static readonly string k_MovingAction = "Moving Action";
@@ -54,25 +51,24 @@ namespace Unity.ReferenceProject.Application
         static readonly string k_PanStart = "Pan Start";
         static readonly string k_PanAction = "Pan Action";
         static readonly string k_ZoomAction = "Zoom Action";
-        
+        static readonly string k_TeleportClickAction = "Teleport Click Action";
+
         // Touch Gestures
         static readonly string k_PanGestureAction = "Pan Gesture Action";
         static readonly string k_ZoomGestureAction = "Zoom Gesture Action";
         static readonly string k_OrbitGestureAction = "Orbit Gesture Action";
-        
-        static readonly float k_DoubleClickTime = 0.3f;
 
-        Task m_PickTask;
         IObjectPicker m_ObjectPicker;
-        IUIInputBlockerEvents m_ClickEventDispatcher;
-        Camera m_StreamingCamera;
+        ICameraProvider m_CameraProvider;
+        IInputManager m_InputManager;
+        InputScheme m_InputScheme;
 
         [Inject]
-        void Setup(IObjectPicker objectPicker, IUIInputBlockerEvents clickEventDispatcher, Camera streamingCamera)
+        void Setup(IObjectPicker objectPicker, ICameraProvider cameraProvider, IInputManager inputManager)
         {
             m_ObjectPicker = objectPicker;
-            m_ClickEventDispatcher = clickEventDispatcher;
-            m_StreamingCamera = streamingCamera;
+            m_CameraProvider = cameraProvider;
+            m_InputManager = inputManager;
         }
 
         void Awake()
@@ -83,6 +79,7 @@ namespace Unity.ReferenceProject.Application
         void OnDestroy()
         {
             ResetInputs();
+            m_InputScheme?.Dispose();
         }
 
         void Reset()
@@ -101,37 +98,60 @@ namespace Unity.ReferenceProject.Application
             if (m_IsInputsEnabled)
                 return;
 
+            m_InputScheme = m_InputManager.GetOrCreateInputScheme(InputSchemeType.FlyOrbital, InputSchemeCategory.Controller, m_InputActionAsset);
+            m_InputScheme.SetEnable(true);
+
             m_IsInputsEnabled = true;
 
             // Keyboard and Mouse
-            m_CameraController.MovingAction = m_InputActionAsset[k_MovingAction];
-            m_InputActionAsset[k_OrbitAction].performed += m_CameraController.OnOrbit;
-            m_InputActionAsset[k_WorldOrbitAction].performed += m_CameraController.OnWorldOrbit;
-            m_InputActionAsset[k_PanStart].performed += m_CameraController.OnPanStart;
-            m_InputActionAsset[k_PanAction].performed += m_CameraController.OnPan;
-            m_InputActionAsset[k_ZoomAction].performed += m_CameraController.OnZoom;
-            
-            if (m_ClickEventDispatcher != null)
-            {
-                m_ClickEventDispatcher.OnDispatchRay += PerformPick;
-            }
+            m_CameraController.MovingAction = m_InputScheme[k_MovingAction];
 
-            m_InputActionAsset[k_OrbitAction].Enable();
-            m_InputActionAsset[k_WorldOrbitAction].Enable();
-            m_InputActionAsset[k_PanStart].Enable();
-            m_InputActionAsset[k_PanAction].Enable();
-            m_InputActionAsset[k_ZoomAction].Enable();
+            m_InputScheme[k_MovingAction].IsUISelectionCheckEnabled = true;
+            m_InputScheme[k_MovingAction].IsEnabled = true;
+
+            m_InputScheme[k_OrbitAction].OnStarted += StartCheck;
+            m_InputScheme[k_OrbitAction].OnPerformed += TryOrbit;
+            m_InputScheme[k_OrbitAction].IsDelayedInput = true;
+
+            m_InputScheme[k_WorldOrbitAction].OnStarted += StartCheck;
+            m_InputScheme[k_WorldOrbitAction].OnPerformed += TryWorldOrbit;
+            m_InputScheme[k_WorldOrbitAction].IsDelayedInput = true;
+
+            m_InputScheme[k_PanStart].OnStarted += StartCheck;
+            m_InputScheme[k_PanStart].OnPerformed += TryPanStart;
+            m_InputScheme[k_PanStart].IsUIPointerCheckEnabled = true;
+
+            m_InputScheme[k_PanAction].OnPerformed += TryPan;
+            m_InputScheme[k_PanAction].IsDelayedInput = true;
+
+            m_InputScheme[k_ZoomAction].OnPerformed += TryZoom;
+            m_InputScheme[k_ZoomAction].IsUIPointerCheckEnabled = true;
+
+            m_InputScheme[k_TeleportClickAction].OnPerformed += PickFromInput;
+            m_InputScheme[k_TeleportClickAction].IsUIPointerCheckEnabled = true;
+
+            m_InputScheme[k_OrbitAction].IsEnabled = true;
+            m_InputScheme[k_WorldOrbitAction].IsEnabled = true;
+            m_InputScheme[k_PanStart].IsEnabled = true;
+            m_InputScheme[k_PanAction].IsEnabled = true;
+            m_InputScheme[k_ZoomAction].IsEnabled = true;
+            m_InputScheme[k_TeleportClickAction].IsEnabled = true;
 
             // Touch Gestures
-            m_InputActionAsset[k_PanGestureAction].started += m_CameraController.OnPanGestureStarted;
-            m_InputActionAsset[k_PanGestureAction].performed += m_CameraController.OnPanGesture;
-            m_InputActionAsset[k_ZoomGestureAction].started += m_CameraController.OnZoomGestureStarted;
-            m_InputActionAsset[k_ZoomGestureAction].performed += m_CameraController.OnZoomGesture;
-            m_InputActionAsset[k_OrbitGestureAction].performed += m_CameraController.OnOrbit;
+            m_InputScheme[k_PanGestureAction].OnStarted += StartCheck;
+            m_InputScheme[k_PanGestureAction].OnPerformed += TryPanStartGesture;
+            m_InputScheme[k_PanGestureAction].OnPerformed += TryPanGesture;
 
-            m_InputActionAsset[k_ZoomGestureAction].Enable();
-            m_InputActionAsset[k_PanGestureAction].Enable();
-            m_InputActionAsset[k_OrbitGestureAction].Enable();
+            m_InputScheme[k_ZoomGestureAction].OnPerformed += m_CameraController.OnZoomGestureStarted;
+            m_InputScheme[k_ZoomGestureAction].OnPerformed += m_CameraController.OnZoomGesture;
+
+            m_InputScheme[k_OrbitGestureAction].OnStarted += StartCheck;
+            m_InputScheme[k_OrbitGestureAction].OnPerformed += TryOrbitGesture;
+            m_InputScheme[k_OrbitGestureAction].IsDelayedInput = true;
+
+            m_InputScheme[k_ZoomGestureAction].IsEnabled = true;
+            m_InputScheme[k_PanGestureAction].IsEnabled = true;
+            m_InputScheme[k_OrbitGestureAction].IsEnabled = true;
         }
 
         void ResetInputs()
@@ -140,36 +160,10 @@ namespace Unity.ReferenceProject.Application
             m_CameraController.ForceStop();
 
             // Keyboard and Mouse
-            m_InputActionAsset[k_OrbitAction].Disable();
-            m_InputActionAsset[k_WorldOrbitAction].Disable();
-            m_InputActionAsset[k_PanStart].Disable();
-            m_InputActionAsset[k_PanAction].Disable();
-            m_InputActionAsset[k_ZoomAction].Disable();
-            
-            // Touch Gestures
-            m_InputActionAsset[k_ZoomGestureAction].Disable();
-            m_InputActionAsset[k_PanGestureAction].Disable();
-            m_InputActionAsset[k_OrbitGestureAction].Disable();
-            
-            if (m_ClickEventDispatcher != null)
-            {
-                m_ClickEventDispatcher.OnDispatchRay -= PerformPick;
-            }
+            m_InputScheme.SetEnable(false);
 
             // Keyboard and Mouse
             m_CameraController.MovingAction = null;
-            m_InputActionAsset[k_OrbitAction].performed -= m_CameraController.OnOrbit;
-            m_InputActionAsset[k_WorldOrbitAction].performed -= m_CameraController.OnWorldOrbit;
-            m_InputActionAsset[k_PanStart].performed -= m_CameraController.OnPanStart;
-            m_InputActionAsset[k_PanAction].performed -= m_CameraController.OnPan;
-            m_InputActionAsset[k_ZoomAction].performed -= m_CameraController.OnZoom;
-
-            // Touch Gestures
-            m_InputActionAsset[k_PanGestureAction].started -= m_CameraController.OnPanGestureStarted;
-            m_InputActionAsset[k_PanGestureAction].performed -= m_CameraController.OnPanGesture;
-            m_InputActionAsset[k_ZoomGestureAction].started -= m_CameraController.OnZoomGestureStarted;
-            m_InputActionAsset[k_ZoomGestureAction].performed -= m_CameraController.OnZoomGesture;
-            m_InputActionAsset[k_OrbitGestureAction].performed -= m_CameraController.OnOrbit;
         }
 
         void ResetCameraTransform()
@@ -204,41 +198,32 @@ namespace Unity.ReferenceProject.Application
             m_CameraController.ResetTo(position, eulerAngles, lookAt);
         }
 
-        void PerformPick(Ray ray)
+        void PickFromInput(InputAction.CallbackContext context)
         {
             if (m_IsTeleporting)
                 return;
 
-            if (Time.time - m_LastClickTime < k_DoubleClickTime)
-            {
-                if (m_PickTask?.IsCompleted ?? true)
-                {
-                    m_PickTask = PickFromRayAsync(ray);
-                }
-            }
-            else
-            {
-                m_LastClickTime = Time.time;
-            }
+            _ = TeleportRaycast(Pointer.current.position.value);
         }
 
-        async Task PickFromRayAsync(Ray ray)
+        async Task TeleportRaycast(Vector2 screenPosition)
         {
+            if (m_IsTeleporting)
+                return;
+
             try
             {
+                var currentCamera = m_CameraProvider.Camera;
+                var ray = currentCamera.ScreenPointToRay(screenPosition);
                 var raycastResult = await m_ObjectPicker.RaycastAsync(ray);
                 if (raycastResult.HasIntersected)
                 {
                     m_IsTeleporting = true;
 
-                    var normal = Vector3.up; // Default to up until we have a hit normal
-                    var source = m_StreamingCamera.transform.position;
-                    var target = raycastResult.Point +
-                        m_ArrivalOffsetFixed +
-                        m_ArrivalOffsetNormal * normal +
-                        m_ArrivalOffsetRelative * (source - raycastResult.Point).normalized;
-
-                   StartCoroutine(TeleportCoroutine(source, target));
+                    StartCoroutine(TeleportCoroutine(
+                        currentCamera.transform.position,
+                        raycastResult.Point,
+                        raycastResult.Normal.normalized));
                 }
             }
             catch (Exception e)
@@ -247,31 +232,95 @@ namespace Unity.ReferenceProject.Application
             }
         }
 
-        IEnumerator TeleportCoroutine(Vector3 startPosition, Vector3 targetPosition)
+        IEnumerator TeleportCoroutine(Vector3 startPosition, Vector3 targetPosition, Vector3 normal)
         {
-            var cameraTransform = m_StreamingCamera.transform;
+            var forward = targetPosition - startPosition;
+            forward.y = 0f;
+            var offsetTargetPosition = targetPosition -
+                m_ArrivalOffsetRelative * forward.normalized;
+            offsetTargetPosition += Vector3.Angle(Vector3.up, normal) < m_AngleThreshold ? m_ArrivalOffsetRelative * Vector3.up : Vector3.zero;
 
+            var cameraTransform = m_CameraProvider.Camera.transform;
             var startRotation = cameraTransform.rotation;
-            var targetRotation = Quaternion.LookRotation(targetPosition - startPosition);
-
-            var forwardVector = targetPosition + (targetPosition - startPosition).normalized;
+            Quaternion targetRotation;
+            if(Vector3.Dot(forward, offsetTargetPosition-startPosition) < 0) // this happens when offset target position is behind the camera
+            {
+                targetRotation = Quaternion.LookRotation(startPosition - offsetTargetPosition);
+            }
+            else
+            {
+                targetRotation = Quaternion.LookRotation(offsetTargetPosition - startPosition);
+            }
+            targetRotation = Quaternion.Euler(0, targetRotation.eulerAngles.y, 0);
 
             var t = 0f;
-            while(t < m_LerpTime)
+            while (t < m_LerpTime)
             {
                 var evaluatedValue = m_SmoothCurve.Evaluate(t / m_LerpTime);
-                var position = Vector3.Lerp(startPosition, targetPosition, evaluatedValue);
+                var position = Vector3.Lerp(startPosition, offsetTargetPosition, evaluatedValue);
                 var rotation = Quaternion.Lerp(startRotation, targetRotation, evaluatedValue);
-        
-                m_CameraController.ResetTo(position, rotation.eulerAngles, forwardVector);
-        
+
+                m_CameraController.ResetTo(position, rotation.eulerAngles, targetPosition);
+
                 t += Time.deltaTime;
                 yield return null;
             }
 
-            m_CameraController.ResetTo(targetPosition, targetRotation.eulerAngles, forwardVector);
+            m_CameraController.ResetTo(offsetTargetPosition, targetRotation.eulerAngles, targetPosition);
 
             m_IsTeleporting = false;
+        }
+
+        void StartCheck(InputAction.CallbackContext context)
+        {
+            m_IsValidStart = !EventSystem.current.IsPointerOverGameObject(-1);
+        }
+
+        void TryZoom(InputAction.CallbackContext context)
+        {
+            m_CameraController.OnZoom(context);
+        }
+
+        void TryPanStart(InputAction.CallbackContext context)
+        {
+            if (m_IsValidStart)
+                m_CameraController.OnPanStart(context);
+        }
+
+        void TryPan(InputAction.CallbackContext context)
+        {
+            if (m_IsValidStart)
+                m_CameraController.OnPan(context);
+        }
+
+        void TryOrbit(InputAction.CallbackContext context)
+        {
+            if (m_IsValidStart)
+                m_CameraController.OnOrbit(context);
+        }
+
+        void TryWorldOrbit(InputAction.CallbackContext context)
+        {
+            if (m_IsValidStart)
+                m_CameraController.OnWorldOrbit(context);
+        }
+
+        void TryPanStartGesture(InputAction.CallbackContext context)
+        {
+            if (m_IsValidStart)
+                m_CameraController.OnPanGestureStarted(context);
+        }
+
+        void TryPanGesture(InputAction.CallbackContext context)
+        {
+            if (m_IsValidStart)
+                m_CameraController.OnPanGesture(context);
+        }
+
+        void TryOrbitGesture(InputAction.CallbackContext context)
+        {
+            if (m_IsValidStart)
+                m_CameraController.OnOrbit(context);
         }
     }
 }

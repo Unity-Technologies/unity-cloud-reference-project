@@ -3,7 +3,8 @@
     "rootNamespace": "Unity.ReferenceProject.Settings",
     "references": [
         "GUID:2f101f87087d58f4ba92ca00188e763d",
-        "GUID:861d797aa4d05294d986157ebb717a0b"
+        "GUID:861d797aa4d05294d986157ebb717a0b",
+        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

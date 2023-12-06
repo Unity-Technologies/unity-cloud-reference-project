@@ -80,8 +80,16 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 3816319774720
-    m_Localized: "Bouton principale droit pour r\xE9initialiser la position de la
-      bar de l'interface usager devant vous."
+    m_Localized: "Bouton principal droit pour r\xE9initialiser la position de la
+      barre de l'interface usager devant vous."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55338003182985216
+    m_Localized: "Activer/D\xE9sactiver le microphone."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55338294221545472
+    m_Localized: Microphone
     m_Metadata:
       m_Items: []
   references:

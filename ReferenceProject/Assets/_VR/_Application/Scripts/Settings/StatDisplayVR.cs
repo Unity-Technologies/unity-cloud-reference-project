@@ -1,4 +1,5 @@
-﻿using Unity.ReferenceProject.VR.RigUI;
+﻿using System.Threading.Tasks;
+using Unity.ReferenceProject.VR.RigUI;
 using UnityEngine;
 using Unity.AppUI.UI;
 using UnityEngine.UIElements;
@@ -89,8 +90,9 @@ namespace Unity.ReferenceProject.VR
            m_StatsDisplay.ClosePanel();
         }
 
-        void OnDockButtonClicked()
+        async void OnDockButtonClicked()
         {
+            await Task.Delay(1);
             m_Panel = m_RigUIController.DockButtonClicked(m_Panel, m_RigUIController.PermanentDockPoint, m_Position);
             OnPanelBuilt(m_Panel.UIDocument);
         }

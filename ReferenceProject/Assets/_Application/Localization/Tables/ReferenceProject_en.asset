@@ -110,6 +110,10 @@ MonoBehaviour:
     m_Localized: Light
     m_Metadata:
       m_Items: []
+  - m_Id: 96746919168286720
+    m_Localized: Cancel
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -1,7 +1,5 @@
 using System;
-using System.Threading;
 using System.Threading.Tasks;
-using Unity.Cloud.Common;
 using Unity.Cloud.Presence;
 using UnityEngine;
 
@@ -19,7 +17,7 @@ namespace Unity.ReferenceProject.Presence.Tests.Runtime
         public event Action<ConnectionStatus> ConnectionStatusChanged;
 #pragma warning restore 0067
 
-        public Task JoinAsync(BaseRoom room, IRetryPolicy retryPolicy, CancellationToken cancellationToken)
+        public Task JoinAsync(BaseRoom room)
         {
             // Because we do not use it in tests
             throw new NotImplementedException();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Unity.AppUI.UI;
 using UnityEngine.UIElements;
 
@@ -41,11 +42,11 @@ namespace Unity.ReferenceProject.Settings
                 bindItem = (item, i) => item.label = m_SourceItems[i],
                 sourceItems = m_SourceItems
             };
-            dropdown.RegisterValueChangedCallback(b => m_Action.Invoke(b.newValue));
+            dropdown.RegisterValueChangedCallback(b => m_Action.Invoke(b.newValue.First()));
 
             if (m_SelectedValue != null)
             {
-                dropdown.value = m_SelectedValue.Invoke();
+                dropdown.value = new []{ m_SelectedValue.Invoke() };
             }
 
             visualElement.Add(dropdown);

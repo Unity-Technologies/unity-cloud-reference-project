@@ -1,19 +1,19 @@
-.fps-entry {
+.container__fps-entry {
     flex-direction: row;
     padding-right: 5px;
 }
 
-.fps-header {
+.heading__fps-header {
     color: white;
 }
 
-.fps-value {
+.heading__fps-value {
     flex-grow: 1;
     -unity-text-align: upper-right;
     margin-left: 5px;
 }
 
-.fps-entries {
+.container__fps-entries {
     flex-direction: column;
     border-radius: 10px;
     background-color: rgba(0,0,0,0.9);

@@ -34,11 +34,15 @@ namespace Unity.ReferenceProject.UIPanel
             m_Panel = new Panel
             {
                 name = k_PanelName,
-                style = { backgroundColor = new StyleColor(new Color(0.0f, 0.0f, 0.0f, 0.0f)) },
-                pickingMode = PickingMode.Position
+                style = { backgroundColor = new StyleColor(new Color(0.0f, 0.0f, 0.0f, 0.0f)) }
             };
 
             UIDocument.rootVisualElement.Add(m_Panel);
+            
+#if UNITY_ANDROID || UNITY_IPHONE
+            // Mobile device safe area
+            UIDocument.rootVisualElement.RegisterCallback<GeometryChangedEvent>((e) => m_Panel.SetSafeAreaMargin());
+#endif
         }
 
         public void Add(UIDocument uiDocument)
@@ -50,7 +54,7 @@ namespace Unity.ReferenceProject.UIPanel
                     m_AttachedDocuments.Remove(document);
             }
 
-            var insertAtElement = m_AttachedDocuments.FirstOrDefault(doc => uiDocument.sortingOrder < doc.sortingOrder);
+            var insertAtElement = m_AttachedDocuments.Find(doc => uiDocument.sortingOrder < doc.sortingOrder);
 
             if (insertAtElement != null)
             {

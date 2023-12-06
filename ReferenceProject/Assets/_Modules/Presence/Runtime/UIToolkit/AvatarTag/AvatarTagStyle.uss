@@ -1,0 +1,43 @@
+.container__avatar-tag-main {
+    align-items: center;
+    width: 200px;
+    height: 50px;
+}
+
+.container__avatar-tag-content {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 168, 168, 0);
+    flex-grow: 1;
+}
+
+.avatar__avatar-tag-badge {
+    height: 40px;
+    width: 40px;
+}
+
+.container__avatar-tag-name {
+    background-color: rgb(38, 38, 38);
+    flex-grow: 1;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.heading__avatar-tag-name {
+    font-size: 10px;
+    color: rgb(210, 210, 210);
+}
+
+.image__avatar-tag-pin {
+    width: 20px;
+    height: 10px;
+    align-items: center;
+    background-image: url('../../Sprites/AvatarTag/avatar-tag-pin.png');
+    background-color: rgba(0, 0, 0, 0);
+    position: relative;
+    margin-top: -5px;
+}

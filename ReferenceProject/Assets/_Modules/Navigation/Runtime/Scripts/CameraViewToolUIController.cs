@@ -10,21 +10,17 @@ namespace Unity.ReferenceProject.Navigation
 {
     public class CameraViewToolUIController : ToolUIController
     {
-        
         [SerializeField]
         VisualTreeAsset m_ButtonTemplate;
         
         INavigationManager m_NavigationManager;
-        
+
         [Inject]
-        void Setup(INavigationManager navigationManager, Camera streamingCamera)
+        void Setup(INavigationManager navigationManager)
         {
             m_NavigationManager = navigationManager;
-            m_NavigationManager.NavigationModeChanged += UpdateButtonState;
         }
-        
-        readonly List<VisualElement> m_Views = new();
-        
+
         protected override VisualElement CreateVisualTree(VisualTreeAsset template)
         {
             var root = base.CreateVisualTree(template);
@@ -35,7 +31,9 @@ namespace Unity.ReferenceProject.Navigation
             {
                 if (cameraViewData[i] == null)
                     continue;
+                
                 var button = SetupVisualElement(cameraViewData[i]);
+
                 if (i == 0)
                 {
                     button.style.borderTopLeftRadius = button.style.borderTopRightRadius = 4;
@@ -44,7 +42,7 @@ namespace Unity.ReferenceProject.Navigation
                 {
                     button.style.borderBottomLeftRadius = button.style.borderBottomRightRadius = 4;
                 }
-                m_Views.Add(button);
+                
                 root.Add(button);
             }
             return root;
@@ -54,22 +52,18 @@ namespace Unity.ReferenceProject.Navigation
         {
             var buttonTemplate = m_ButtonTemplate.CloneTree();
             buttonTemplate.tooltip = cameraViewData.ModeName;
+            
             var actionButton = buttonTemplate.Q<ActionButton>("ActionButton");
             actionButton.icon = cameraViewData.Icon.name;
             actionButton.clickable.clicked += () => OnModeClick(cameraViewData);
+            actionButton.focusable = false;
+
             return buttonTemplate;
         }
         
         void OnModeClick(CameraViewData cameraViewData)
         {
             m_NavigationManager.ChangeCameraView(cameraViewData);
-        }
-        
-        void UpdateButtonState(){
-            foreach (var button in m_Views)
-            { 
-                button.SetEnabled(m_NavigationManager.CurrentNavigationModeData.name == "FlyMode" );
-            }
         }
     }
 }

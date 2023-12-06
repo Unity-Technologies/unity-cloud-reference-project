@@ -1,0 +1,10 @@
+{
+  "name": "com.unity.reference-project.persistence-api",
+  "displayName": "Reference Project Persistence API",
+  "version": "0.1.0",
+  "dependencies": {
+    "com.unity.test-framework": "2.0.1-pre.18",
+    "com.unity.nuget.newtonsoft-json": "2.0.0",
+    "com.unity.cloud.common": "0.12.1"
+  }
+}

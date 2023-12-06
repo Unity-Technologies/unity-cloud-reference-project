@@ -1,0 +1,77 @@
+.container__asset-grid-item{
+    flex-grow: 1;
+    border-width: 2px;
+    border-color: rgba(0,0,0,0);
+    border-radius: var(--appui-alias-control-border-radius);
+    margin-right: 8px;
+    margin-bottom: 8px;
+    background-color: var(--appui-backgrounds-50);
+    justify-content: center;
+    align-items: center;
+}
+
+.container__asset-grid-item.is-selected{
+    border-color: var(--appui-accent-100);
+}
+
+.container__asset-grid-item:hover{
+    background-color: var(--appui-backgrounds-100);
+}
+
+.container__asset_not_streamable_badge{
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    background-color: rgb(85, 28, 34);
+}
+
+.container__asset_not_streamable_badge .appui-icon{
+    --unity-image-tint-color: rgb(229, 72, 77);
+    margin: 3px;
+}
+
+.container__asset_not_streamable_badge .appui-heading{
+    color: white;
+}
+
+.image__asset_grid_item_thumbnail{
+    flex-grow: 1;
+}
+
+.image__asset_grid_item_thumbnail--placeholder{
+    width: 25%;
+    height: 25%;
+}
+
+.container__asset-grid-item-name{
+    position: absolute;
+    flex-grow: 1;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    height: 20px;
+    border-radius: 5px;
+    background-color: var(--appui-backgrounds-200);
+}
+
+.text__asset-grid-item-name{
+    padding: 8px;
+    -unity-text-align: middle-left;
+    white-space: nowrap;
+    overflow: hidden;
+    -unity-text-overflow-position: end;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+}
+
+.linear-progress__asset-grid-item-progress{
+    position: absolute;
+    flex-grow: 1;
+    bottom: 48px;
+    left: 32px;
+    right: 32px;
+    height: 4px;
+    border-radius: 2px;
+}

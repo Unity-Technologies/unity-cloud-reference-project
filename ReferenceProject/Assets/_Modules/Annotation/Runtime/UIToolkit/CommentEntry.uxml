@@ -1,18 +1,26 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
-    <ui:VisualElement name="CommentEntry" class="comment-entry">
-        <ui:VisualElement name="CommentEntryContainer" class="comment-entry-container">
-            <ui:VisualElement name="CommentEntryHeader" class="comment-entry-header">
-                <appui:Avatar name="CommentEntryAvatar" class="comment-entry-avatar">
-                    <appui:Text name="CommentEntryAvatarInitials" class="comment-entry-avatar-initials"/>
+    <Style src="AnnotationStyle.uss" />
+    <ui:VisualElement name="CommentEntry">
+        <ui:VisualElement name="CommentEntryContainer" class="container__comment-entry">
+            <ui:VisualElement name="CommentEntryHeader" class="container__comment-entry-header">
+                <appui:Avatar name="CommentEntryAvatar">
+                    <appui:Text name="CommentEntryAvatarInitials" class="text__comment-entry-avatar-initials"/>
                 </appui:Avatar>
-                <ui:VisualElement name="CommentInfo" class="comment-entry-info">
-                    <appui:Text name="CommentEntryAuthor" size="M" class="comment-entry-author"/>
-                    <appui:Text name="CommentEntryDate" size="XS" class="comment-entry-date"/>
+                <ui:VisualElement name="CommentInfo" class="container__comment-entry-info">
+                    <appui:Text name="CommentEntryAuthor" size="M" />
+                    <appui:Text name="CommentEntryDate" size="XS" class="text__comment-entry-date"/>
                 </ui:VisualElement>
             </ui:VisualElement>
-            <appui:Text name="CommentEntryText" size="S" class="comment-entry-text"/>
+            <appui:Text name="CommentEntryText" size="S" />
+            <ui:VisualElement name="CommentEntryTextInput" class="container__entry-text-input">
+                <appui:TextArea name="CommentEntryTextArea" placeholder="@Annotation:AddComment" class="text-area__entry" />
+                <ui:VisualElement name="TextInputButtons" class="container__text-input-buttons">
+                    <appui:ActionButton name="TextInputCancel" quiet="true" icon="x" tooltip="@Annotation:Cancel" class="button__text-input-cancel" />
+                    <appui:ActionButton name="TextInputSubmit" icon="send" tooltip="@Annotation:Submit" class="button__text-input-submit" />
+                </ui:VisualElement>
+            </ui:VisualElement>
         </ui:VisualElement>
-        <appui:Divider name="CommentEntryDivider" class="annotation-divider"/>
-        <appui:ActionButton name="CommentEntryOptionButton" icon="ellipsis" quiet="true" tooltip="@Annotation:Options" class="comment-entry-option-button"/>
+        <appui:Divider name="CommentEntryDivider" class="divider__annotation"/>
+        <appui:ActionButton name="CommentEntryOptionButton" icon="ellipsis" quiet="true" tooltip="@Annotation:Options" class="button__comment-entry-option"/>
     </ui:VisualElement>
 </ui:UXML>

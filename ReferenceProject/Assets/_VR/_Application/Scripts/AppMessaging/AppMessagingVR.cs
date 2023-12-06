@@ -90,29 +90,51 @@ namespace Unity.ReferenceProject.VR
             m_InputDisablingManager = inputDisablingManager;
         }
 
-        public override void ShowMessage(string message, bool dismissable = false, params object[] args)
+        public override void DismissToast(Toast toast)
         {
-            ShowToastMessage(message, NotificationStyle.Default, NotificationDuration.Long, dismissable, args);
+            if (toast == null)
+                return;
+
+            if (m_ToastToPanel.TryGetValue(toast, out var panel))
+            {
+                m_ToastToPanel.Remove(toast);
+                toast.Dismiss();
+                m_PanelManager.DestroyPanel(panel);
+            }
         }
 
-        public override void ShowInfo(string message, bool dismissable = false, params object[] args)
+        public override void DismissModal(Modal modal)
         {
-            ShowToastMessage(message, NotificationStyle.Informative, NotificationDuration.Long, dismissable, args);
+            if (m_ModalToPanel.TryGetValue(modal, out var panel))
+            {
+                m_PanelManager.DestroyPanel(panel);
+                m_ModalToPanel.Remove(modal);
+            }
         }
 
-        public override void ShowSuccess(string message, bool dismissable = false, params object[] args)
+        public override Toast ShowMessage(string message, bool dismissable = false, params object[] args)
         {
-            ShowToastMessage(message, NotificationStyle.Positive, NotificationDuration.Long, dismissable, args);
+            return ShowToastMessage(message, NotificationStyle.Default, NotificationDuration.Long, dismissable, args);
         }
 
-        public override void ShowWarning(string message, bool dismissable = false, params object[] args)
+        public override Toast ShowInfo(string message, bool dismissable = false, params object[] args)
         {
-            ShowToastMessage(message, NotificationStyle.Warning, NotificationDuration.Long, dismissable, args);
+            return ShowToastMessage(message, NotificationStyle.Informative, NotificationDuration.Long, dismissable, args);
         }
 
-        public override void ShowError(string message, bool dismissable = false, params object[] args)
+        public override Toast ShowSuccess(string message, bool dismissable = false, params object[] args)
         {
-            ShowToastMessage(message, NotificationStyle.Negative, NotificationDuration.Long, dismissable, args);
+            return ShowToastMessage(message, NotificationStyle.Positive, NotificationDuration.Long, dismissable, args);
+        }
+
+        public override Toast ShowWarning(string message, bool dismissable = false, params object[] args)
+        {
+            return ShowToastMessage(message, NotificationStyle.Warning, NotificationDuration.Long, dismissable, args);
+        }
+
+        public override Toast ShowError(string message, bool dismissable = false, params object[] args)
+        {
+            return ShowToastMessage(message, NotificationStyle.Negative, NotificationDuration.Long, dismissable, args);
         }
 
         public override void ShowException(Exception exception, string title = null, params object[] args)
@@ -157,7 +179,7 @@ namespace Unity.ReferenceProject.VR
             DisplayModalExceptionPanel(m_ModalDockedPanel.UIDocument, new ModalException(exception, message, args));
         }
 
-        void ShowToastMessage(string message, NotificationStyle style, NotificationDuration duration, bool dismissable = false, params object[] args)
+        Toast ShowToastMessage(string message, NotificationStyle style, NotificationDuration duration, bool dismissable = false, params object[] args)
         {
             var size = k_ToastSize;
             size.x += message.Length*k_CharacterWidth + (dismissable ? k_DismissWidth : 0);
@@ -165,10 +187,10 @@ namespace Unity.ReferenceProject.VR
             m_ToastDockedPanel.name = "ToastMessagePanel";
             m_ToastDockedPanel.DockPoint = m_RigUIController.PermanentDockPoint;
             m_ToastDockedPanel.transform.localPosition += (-1 * k_ToastSize.y) / 1000f * Vector3.up - 0.01f * Vector3.forward;
-            DisplayToastPanel(m_ToastDockedPanel.UIDocument, new ToastMessage(message, style, duration, dismissable, args));
+            return DisplayToastPanel(m_ToastDockedPanel.UIDocument, new ToastMessage(message, style, duration, dismissable, args));
         }
 
-        void DisplayToastPanel(UIDocument document, ToastMessage toastMessage)
+        Toast DisplayToastPanel(UIDocument document, ToastMessage toastMessage)
         {
             var panel = document.rootVisualElement.Q<Panel>();
 
@@ -189,7 +211,7 @@ namespace Unity.ReferenceProject.VR
 
             toast.dismissed += (t, type) =>
             {
-                if (type == DismissType.PanelDestroyed)
+                if (type == DismissType.PanelDestroyed && m_ToastToPanel.ContainsKey(t))
                 {
                     // Show message again (this happens when the panel is re parented)
                     ShowToastMessage(message, style, duration, dismissable, args);
@@ -203,6 +225,7 @@ namespace Unity.ReferenceProject.VR
             };
 
             toast.Show();
+            return toast;
         }
 
         void DisplayModalPanel(UIDocument document, ModalMessage modalMessage)
@@ -229,7 +252,7 @@ namespace Unity.ReferenceProject.VR
                 m_InputDisablingManager.RemoveOverride(this);
                 m_PanelManager.BlockPanels(block:false);
 
-                if (type == DismissType.PanelDestroyed)
+                if (type == DismissType.PanelDestroyed && m_ModalToPanel.ContainsKey(m))
                 {
                     // Show message again (this happens when the panel is re parented)
                     ShowModalMessage(title, message, cancelLabel, cancelCallback, primaryLabel, primaryAction, args);

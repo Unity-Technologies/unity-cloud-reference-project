@@ -1,8 +1,10 @@
 using System;
+using System.Threading.Tasks;
 using Unity.ReferenceProject.Instructions;
 using Unity.ReferenceProject.VR.RigUI;
 using UnityEngine;
 using Unity.AppUI.UI;
+using Unity.ReferenceProject.Common;
 using UnityEngine.UIElements;
 using Zenject;
 
@@ -74,7 +76,7 @@ namespace Unity.ReferenceProject.VR
             }
             else
             {
-                DestroyPanel();
+                StartCoroutine(Utils.WaitAFrame(DestroyPanel));
             }
         }
 
@@ -93,8 +95,9 @@ namespace Unity.ReferenceProject.VR
             dockButton.selected = m_Panel is FloatingPanelController;
         }
 
-        void OnDockButtonClicked()
+        async void OnDockButtonClicked()
         {
+            await Task.Delay(1);
             m_Panel = m_RigUIController.DockButtonClicked(m_Panel, m_RigUIController.DockPoint, m_PositionOffset);
             OnPanelBuilt(m_Panel.UIDocument);
         }

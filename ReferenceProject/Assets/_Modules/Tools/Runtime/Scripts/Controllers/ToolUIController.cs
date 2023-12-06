@@ -17,7 +17,15 @@ namespace Unity.ReferenceProject.Tools
         VisualTreeAsset m_Template;
 
         [SerializeField]
-        bool m_HideButtonAtStart;
+        ToolState m_InitialToolState = ToolState.Active;
+
+        public enum ToolState
+        {
+            None,
+            Active,
+            Inactive,
+            Hidden
+        }
 
         public event Action ToolOpened;
         public event Action ToolClosed;
@@ -32,7 +40,8 @@ namespace Unity.ReferenceProject.Tools
         public event Action<Sprite> IconChanged;
 
         Action m_CloseAction;
-        Action<DisplayStyle> m_SetButtonDisplayStyleAction;
+        
+        public event Action<ToolState> ButtonStateChanged;
 
         static readonly string k_ActionButtonIconUssClassName = "appui-actionbutton__icon";
 
@@ -71,6 +80,11 @@ namespace Unity.ReferenceProject.Tools
             ToolClosed += OnToolClosed;
         }
 
+        protected virtual void Start()
+        {
+            SetToolState(m_InitialToolState);
+        }
+
         protected virtual void OnDestroy()
         {
             if (m_RootVisualElement != null)
@@ -99,19 +113,9 @@ namespace Unity.ReferenceProject.Tools
             m_CloseAction?.Invoke();
         }
 
-        public void SetButtonDisplayStyleAction(Action<DisplayStyle> action)
+        protected void SetToolState(ToolState state)
         {
-            m_SetButtonDisplayStyleAction = action;
-
-            if (m_HideButtonAtStart)
-            {
-                m_SetButtonDisplayStyleAction?.Invoke(DisplayStyle.None);
-            }
-        }
-
-        protected void SetButtonDisplayStyle(DisplayStyle style)
-        {
-            m_SetButtonDisplayStyleAction?.Invoke(style);
+            ButtonStateChanged?.Invoke(state);
         }
 
         protected virtual VisualElement CreateVisualTree(VisualTreeAsset template)

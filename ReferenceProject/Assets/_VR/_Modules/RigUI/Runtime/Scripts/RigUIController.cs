@@ -54,6 +54,7 @@ namespace Unity.ReferenceProject.VR.RigUI
 
         Vector3 m_LastResetPosition;
         int m_MaxSecondaryBarButton;
+        int m_BarWidth;
         List<ActionButton> m_MainBarButtons;
         List<ActionButton> m_SecondaryBarButtons;
         readonly List<FloatingPanelController> m_FloatingPanels = new();
@@ -109,13 +110,10 @@ namespace Unity.ReferenceProject.VR.RigUI
         public void InitMainBar(List<ActionButton> buttons)
         {
             m_MainBarButtons = buttons;
-
-            // Compute the max width of the bar
-            var nbButton = Mathf.Max(buttons.Count, m_MaxSecondaryBarButton);
-            nbButton = nbButton > 1 ? nbButton : 2; // At least two button width to avoid tooltip to be cut.
+            m_BarWidth = 0;
 
             // Create main bar panel
-            m_RigUIBarPanel = m_PanelManager.CreatePanel<FloatingPanelController>(new Vector2(nbButton * m_ButtonSize, m_ButtonSize * 2));
+            m_RigUIBarPanel = m_PanelManager.CreatePanel<FloatingPanelController>(new Vector2(m_ButtonSize, m_ButtonSize * 2));
             OnPanelBuilt(m_RigUIBarPanel.UIDocument);
 
             MoveAtPosition(m_LastResetPosition);
@@ -341,6 +339,19 @@ namespace Unity.ReferenceProject.VR.RigUI
         void OnReset(InputAction.CallbackContext obj)
         {
             ResetPosition();
+        }
+
+        void Update()
+        {
+            if (float.IsNaN(m_MainBar.parent.localBound.width))
+                return;
+
+            var barWidth = (int)m_MainBar.parent.localBound.width;
+            if(barWidth != m_BarWidth)
+            {
+                m_BarWidth = barWidth;
+                m_RigUIBarPanel.PanelSize = new Vector2(m_BarWidth, m_ButtonSize * 2);
+            }
         }
     }
 }

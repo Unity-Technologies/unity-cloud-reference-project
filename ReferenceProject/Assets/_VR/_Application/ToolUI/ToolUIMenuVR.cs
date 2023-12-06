@@ -99,6 +99,7 @@ namespace Unity.ReferenceProject.VR
             button.quiet = true;
             m_Buttons.Add(button);
             var handler = toolData.ToolUIMode.CreateHandler();
+            handler.KeepOpened = toolData.KeepOpened;
             handler.CreateVisualTree(button, toolUIController);
 
             // Need to inject the handler indirectly
@@ -108,7 +109,7 @@ namespace Unity.ReferenceProject.VR
                 toolUIModePanelVRHandler.RigUIController = m_RigUIController;
             }
 
-            button.clickable.clicked += () => OnButtonClicked(toolData, handler);
+            button.clicked += () => OnButtonClicked(toolData, handler);
 
             return handler;
         }

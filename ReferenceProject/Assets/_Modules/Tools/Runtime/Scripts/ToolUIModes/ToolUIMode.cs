@@ -8,12 +8,13 @@ namespace Unity.ReferenceProject.Tools
     public interface IToolUIModeHandler
     {
         bool IsOpened { get; }
+        bool KeepOpened { get; set; }
         public VisualElement CreateVisualTree(ActionButton button, ToolUIController toolUIController);
 
         public void OpenTool();
 
         public void CloseTool();
-        
+
         public ActionButton GetButton();
     }
 
@@ -33,12 +34,13 @@ namespace Unity.ReferenceProject.Tools
             Button = button;
             ToolUIController = toolUIController;
             ToolUIController.SetCloseAction(CloseTool);
-            ToolUIController.SetButtonDisplayStyleAction(SetButtonDisplayStyle);
+            ToolUIController.ButtonStateChanged += OnButtonStateChanged;
 
             return CreateVisualTreeInternal();
         }
 
         public bool IsOpened => Button.selected;
+        public bool KeepOpened { get; set; }
 
         public void OpenTool()
         {
@@ -54,10 +56,26 @@ namespace Unity.ReferenceProject.Tools
             ToolUIController.InvokeToolClosed();
         }
 
-        void SetButtonDisplayStyle(DisplayStyle style)
+        void OnButtonStateChanged(ToolUIController.ToolState state)
         {
-            Button.style.display = style;
-            if (style == DisplayStyle.None)
+            switch (state)
+            {
+                case ToolUIController.ToolState.Active:
+                    Button.style.display = DisplayStyle.Flex;
+                    Button.SetEnabled(true);
+                    break;
+                
+                case ToolUIController.ToolState.Inactive:
+                    Button.style.display = DisplayStyle.Flex;
+                    Button.SetEnabled(false);
+                    break;
+                
+                case ToolUIController.ToolState.Hidden:
+                    Button.style.display = DisplayStyle.None;
+                    break;
+            }
+            
+            if (state != ToolUIController.ToolState.Active)
             {
                 CloseTool();
             }

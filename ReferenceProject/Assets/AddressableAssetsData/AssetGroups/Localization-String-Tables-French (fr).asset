@@ -31,13 +31,6 @@ MonoBehaviour:
     - Locale-fr
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0b9c834029afc174cbd60874635513d7
-    m_Address: SceneList_fr
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-fr
-    - Preload
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 990e24b38a24c614ba68d08646be72a4
     m_Address: AppUI_fr
     m_ReadOnly: 1
@@ -91,6 +84,24 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 30ec3eae3ab2d9f4d944e9475244e7ff
     m_Address: DataStreaming_fr
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-fr
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30bd738010e9645a7901f4b625049fc0
+    m_Address: WalkMode_fr
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-fr
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d24b0c8575dd4a42ac85469211fa309
+    m_Address: MeasureTool_fr
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-fr
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef4cfd11a7fcb224db83fe6544bfbf8b
+    m_Address: AssetList_fr
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-fr

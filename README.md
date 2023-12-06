@@ -1,200 +1,65 @@
-# Unity Reference Project
+# Unity Cloud Reference Project
 
-<img src="https://img.shields.io/badge/unity-2021.3.15-green.svg?style=flat-square" alt="unity 2021.3.15f1">
+[![UnityVersion](https://img.shields.io/badge/Unity%20Version:-2022.3%20LTS-57b9d3.svg?logo=unity&color=2196F3)](https://unity.com/releases/editor/whats-new/2022.3.0)
+[![LatestRelease](https://img.shields.io/badge/Latest%20Github%20Release:-v0.3.0-57b9d3.svg?logo=github&color=brightgreen)](https://github.com/Unity-Technologies/unity-cloud-reference-project/releases/tag/v0.3.0)
 
-<img src="ReferenceProject/Packages/Documentation~/images/ucrp-scene-list.png" width="32%" /> <img src="ReferenceProject/Packages/Documentation~/images/ucrp-collab-1.png" width="32%" /> <img src="ReferenceProject/Packages/Documentation~/images/ucrp-collab-2.png" width="32%" />
+<img src="ReferenceProject/Packages/Documentation~/images/ucrp_assets.jpg" width="32%" /> <img src="ReferenceProject/Packages/Documentation~/images/ucrp_collaborate.jpg" width="32%" /> <img src="ReferenceProject/Packages/Documentation~/images/ucrp_vr.jpg" width="32%" />
 
 ## A Unity project for building a collaborative 3D design review tool
 
-> **🚨 Critical**: This release of the Unity Cloud Reference Project is no longer functional due to its dependencies on Unity Cloud beta SDKs that are no longer operational. A new release will be available shortly with updated SDKs. We apologize for the inconvenience.
+> **Important**: Unity Cloud Reference project is an experimental project. For early access, contact your Unity Sales partner.
 
-> **Important**: Unity Reference project is an experimental project. For early access, contact your Unity Sales partner.
-
-The Unity Reference Project is a fully functional collaborative design review tool for 3D assets. It's a Unity project that you can build on to create your own custom viewer application. It also lets you take advantage of any improvements that Unity publishes to GitHub.
-
-## Get support
-
-To connect and find support, join the [Unity forum](https://forum.unity.com/forums/unity-cloud.868/).
-
-### Supported platforms
-
-The Unity Reference Project is currently compatible with [Unity Editor 2021.3.15f1](https://unity.com/releases/editor/qa/lts-releases?version=2021.3) (LTS) and will occassionally be updated to support newer versions. Builds are tested on the following platforms:
-
-- Windows
-- MacOS (Intel and Apple Silicon)
-- iOS
-- Android
-- WebGL
-- Tethered VR headsets
+The Unity Cloud Reference Project is a fully functional collaborative design review tool for 3D assets. It's a Unity project that you can build on to create your own custom viewer application. It is actively developed and built so that you can easily upgrade to get improvements and new features Unity publishes to GitHub.
 
 ## Contents
 
-- [Unity Reference Project](#unity-reference-project)
+- [Unity Cloud Reference Project](#unity-cloud-reference-project)
   - [A Unity project for building a collaborative 3D design review tool](#a-unity-project-for-building-a-collaborative-3d-design-review-tool)
-  - [Get support](#get-support)
-    - [Supported platforms and files](#supported-platforms)
   - [Contents](#contents)
   - [Overview](#overview)
-  - [Prerequisites](#prerequisites)
-  - [Get the project](#get-the-project)
-  - [Configure Unity services](#configure-unity-services)
-    - [Sign into your Unity account](#sign-into-your-unity-account)
-    - [Create an ID for your application](#create-an-id-for-your-application)
-      - [Set the App Id in the Unity Editor](#set-the-app-id-in-the-unity-editor)
-    - [Upload assets to review](#upload-assets-to-review)
-  - [Open the project for the first time](#open-the-project-for-the-first-time)
-    - [Setup VR](#setup-vr) 
-  - [Run the project](#run-the-project)
-    - [View 3D assets](#view-3d-assets)
-    - [Manage assets](#manage-assets)
-  - [Troubleshooting](#troubleshooting)
-    - [You can't stream your asset](#you-cant-stream-your-asset)
-  - [Bugs](#bugs)
+    - [Customize](#customize)
+    - [Integrate with Unity Cloud](#integrate-with-unity-cloud)
+  - [Documentation](#documentation)
   - [License](#license)
   - [Tell us what you think!](#tell-us-what-you-think)
 
 ## Overview
 
-The Unity Reference Project is a Unity project intended to be used as a starting point for building a collaborative 3D asset review tool. It can be built for many platforms, including WebGL, making it highly accessible and simple to share. The Unity Reference Project is designed to be highly customizable so you can add, remove, or change its features, tools, and UI; while still being able to pull in the latest updates with minimal conflicts.
+Software vendors creating custom industrial applications repeat similar steps to get started:
 
-This project lets you customize your application. For example, you can:
+1. Create a Unity application
+2. Build a 3D asset ingestion pipeline
+3. Optimize for large models
+4. Add collaborative tools
+5. Add AR & VR functionality, etc.
 
-- Customize navigation modes.
-- Localize your application.
-- Add a view that you can toggle to troubleshoot performance.
-- Customize the user interface and tools.
-- Add and customize tools for VR.
+This is expensive and takes away time they could be spending developing their unique value proposition targeted towards their industry or use case.
 
-It also leverages Unity services that make it easier to:
+The Unity Cloud Reference Project is a Unity project intended as a starting point for industry developers, and is architected with customization and extensibility in mind. Developers can pull in changes from the latest release with minimal conflicts to their codebase and can easily remove unwanted features. It supports many build targets, empowering users to easily share their 3D assets for review.
 
-- Authenticate with your Unity account.
-- List and select an asset from cloud storage.
-- Stream a large 3D asset from cloud storage (vast support for 3D formats).
-- Online multiplayer collaboration.
-- Share a deep-link to an asset for others to view.
+### Customize
 
-## Prerequisites
+- Navigation modes (users can toggle between walk, fly, teleport, VR, or your own custom modes)
+- Localization to support multiple languages in the user interface
+- Tools and user interface elements (add, remove, and completely modify)
+- Tools to support VR applications, such as virtual keyboards and other world-space user interfaces
 
-### MacOS
+### Integrate with Unity Cloud
 
-To open this Unity project on MacOS, you must have the Xcode command line tools installed. 
+- Authenticate with your Unity account or SSO
+- Browse and view your 3D assets from the Unity Asset Manager
+- Stream large 3D assets (skyscrapers, offshore drilling, cities) of vast 3D formats
+- Collaborate online with multiuser avatars and voice chat
+- Annotate your 3D assets with topics, threads, comments, and attachments
 
-1. Open the `Terminal` app on MacOS
-2. Enter the following command `xcode-select --install`
+## Documentation
 
-## Get the project
+For a deep dive into the Unity Cloud Reference Project, visit our [documentation site](https://docs.unity.com/cloud/en-us/creator-sdks/referenceProject).
 
-* To get the Reference project, you can clone or download it.
-
-## Configure Unity services
-
-Configuring Unity services typically involves signing into your Unity account and registering your application.
-
-### Sign into your Unity account
-
-> **Important**: The packages used in this project recently switched to services hosted on Azure. When you sign in, ensure the toggle next to the `Sign In` button says `Using Azure`. If you were using a release prior to version `0.2.0` then you will need to register a new App Id and upload your assets to be processed again.
-
-* To sign in, go to the [Digital Twin dashboard](https://dashboard.unity3d.com/digital-twins/).
-
-### Create an ID for your application
-
-For your application to function effectively with Unity streaming services and deep linking, you must first create an App Id.
-
-> **Important**: If you do not set an App Id, your project will fail to build.
-
-To create an `App Id`, follow these steps:
-
-1. Log into the [Digital Twin dashboard](https://dashboard.unity3d.com/digital-twins/) and ensure you have selected "Using Azure".
-2. Select **Developer Hub** > **Registered Applications**.
-3. Select the **+ Register an application**.
-4. Enter the application name in the **App Name** field.
-5. (Optional) Add a description for your application in the **Description** field.
-6. Select **Create**.
-7. Copy your `App Id` to your clipboard.
-
-#### Set the App Id in the Unity Editor
-
-To use the `App Id`, follow these steps:
-
-1. Open the Unity Reference Project in the Unity Editor.
-2. Go to **Edit > Project Settings > Unity Cloud > App Registration**.
-3. Paste your `App Id` in the **App Id** field.
-4. Select **Refresh** to update the application data in the Unity Cloud Portal.
-
-### Upload assets to review
-
-Before you can view assets in the Unity Reference Project, you must upload them to the portal.
-
-To access assets in a different organization, change organizations in the upper-right of the dashboard page.
-
-To upload an asset:
-
-1. In the [Digital Twin dashboard](https://dashboard.unity3d.com/digital-twins/), select **+ New**.
-2. Name the asset.
-3. Drag your 3D asset and its dependent files into the upload area.
-4. Select **Create**.
-
-Once the asset finishes processing, you can stream through the Unity Reference Project.
-
-## Open the project for the first time
-
-Once you have downloaded the project, follow these steps:
-
-1. Check that you have installed the [2021 LTS Unity Editor](https://unity.com/releases/2021-lts).
-2. To add the project to the Unity Hub, select **Open**.
-3. Select the folder called **ReferenceProject** in the downloaded repository.
-
-> **Note**: The first time you open the project, Unity will import all assets, including packages it depends on, which will take longer than usual.
-
-4. [Set your App Id](#create-an-id-for-your-application).
-5. Open the `Main` scene (`Assets/_Application/Scenes/Main.unity`).
-
-### Setup VR
-
-To enable VR navigation, follow these steps:
-
-1. Activate the OpenXR plug-in by going to **Edit > Project Settings > XR Plug-in Management**.
-2. Ensure that **Initialize XR on Startup** is unchecked.
-3. Your VR hardware must be connected prior to running the app in order to be detected.
-4. (Optional) To launch the app in VR, use the `MainVR` scene found in `Assets/_VR/_Applications/Scenes`.
-
-## Run the project
-
-After you run the `Main` scene, you must sign in.
-
-
-### View 3D assets
-
-- To open an asset in the viewer, select it from the list.
-- To move the camera, you can do any of the following:
-   - select
-   - touch
-   - drag-and-drop
-   - zoom in and out
-   - scroll
-   - pinch
-- To change the navigation mode, select the icon in the lower-left corner.
-
-### Manage assets
-
-1. To return to your asset list, select the folder icon in the upper-left corner.
-2. If you need to access personal settings, select the cog icon in the top-right corner. From there, you can change between English and French localization or toggle the display of frame rate information.
-3. To sign out of your Unity account, select the avatar icon in the upper-right corner.
-
-## Troubleshooting
-
-### You can't stream your asset
-
-To correctly stream your asset, you need to [set your App Id](#create-an-id-for-your-application).
-  
-## Bugs  
-
-Report bugs in the Unity Reference Project using GitHub Issues. Report Unity Editor bugs using the [Unity bug submission process](https://unity3d.com/unity/qa/bug-reporting).
-  
 ## License
 
 For legal information or third-party license information, see [LICENSE.md](LICENSE.md).
 
 ## Tell us what you think!
 
-Thank you for taking a look at the project! To help us improve and provide greater value, please consider providing [feedback on our forum](https://forum.unity.com/forums/unity-cloud.868/) about your experience with the Unity Reference Project. Thank you!
+Thank you for taking a look at the project! To help us improve and provide greater value, please consider providing [feedback on our forum](https://forum.unity.com/forums/unity-cloud.868/) about your experience. Thank you!

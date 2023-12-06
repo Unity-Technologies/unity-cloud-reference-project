@@ -1,0 +1,33 @@
+﻿.container__save-dialog {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+}
+
+.container__save-dialog-body {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.container__save-dialog-body-input {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.text-field__save-dialog-body-input {
+    width: 250px;
+    margin-left: 6px;
+}
+
+.container__save-dialog-footer-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+.button__save-dialog-footer-save {
+    margin-left: 6px;
+}

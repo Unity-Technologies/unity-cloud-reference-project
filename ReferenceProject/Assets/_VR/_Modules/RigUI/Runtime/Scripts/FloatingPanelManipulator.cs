@@ -49,6 +49,14 @@ namespace Unity.ReferenceProject.VR.RigUI
             }
         }
 
+        public bool OnlyVerticalAxis
+        {
+            get => m_OnlyVerticalAxis;
+            set => m_OnlyVerticalAxis = value;
+        }
+
+        public bool IsDragging => m_DragInProcess;
+
         void Awake()
         {
             m_Handle.DragStarted += OnHandleDragStarted;
@@ -60,13 +68,10 @@ namespace Unity.ReferenceProject.VR.RigUI
         {
             UpdateSize();
 
-            IEnumerator WaitAFrame()
+            StartCoroutine(Common.Utils.WaitAFrame(() =>
             {
-                yield return null;
                 TurnToFace();
-            }
-
-            StartCoroutine(WaitAFrame());
+            }));
         }
 
         void OnDestroy()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Unity.ReferenceProject.Gestures;
+using Unity.ReferenceProject.InputSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -24,18 +25,17 @@ namespace Unity.ReferenceProject.AppCamera
 
         uint m_InputSkipper;
         Vector3 m_LastMovingAction;
-        bool m_MoveEnabled = true;
         
         Coroutine m_PanGestureCoroutine;
         bool m_PanGestureInProgress;
         Coroutine m_ZoomGestureCoroutine;
         bool m_ZoomGestureInProgress;
-        
+
         readonly DeltaCalculator m_PanDelta = new ();
         readonly DeltaCalculator m_WorldOrbitDelta = new ();
         readonly DeltaCalculator m_ZoomDelta = new ();
 
-        public InputAction MovingAction { get; set; }
+        public InputActionWrapper MovingAction { get; set; }
 
         public void Reset()
         {
@@ -46,7 +46,6 @@ namespace Unity.ReferenceProject.AppCamera
             m_ZoomGestureInProgress = false;
             m_PanGestureInProgress = false;
             m_GestureCameraStartPosition = 0;
-            m_MoveEnabled = true;
             m_LastMovingAction = Vector3.zero;
         }
 
@@ -75,41 +74,21 @@ namespace Unity.ReferenceProject.AppCamera
             if (MovingAction == null)
                 return;
 
-            if (Time.unscaledDeltaTime <= m_UINavigationControllerSettings.InputLagCutoffThreshold)
+            if(MovingAction.AttachedScheme.IsSchemeEligibleForInputs() && 
+                MovingAction.AttachedScheme.IsActionEligibleForTrigger(MovingAction) &&
+                MovingAction.InputAction.inProgress)
             {
-                ToggleMovingAction(Time.unscaledDeltaTime <= m_UINavigationControllerSettings.InputLagSkipThreshold);
-
-                if (!m_MoveEnabled)
-                {
-                    return;
-                }
-
-                var val = MovingAction.ReadValue<Vector3>();
+                var val = MovingAction.InputAction.ReadValue<Vector3>();
                 if (val != m_LastMovingAction)
                 {
                     m_LastMovingAction = val;
                     m_Camera.MoveInLocalDirection(val, LookAtConstraint.Follow);
                 }
             }
-            else
+            else if (m_LastMovingAction != Vector3.zero)
             {
-                MovingAction.Disable();
-                m_Camera.ForceStop();
-                m_LastMovingAction = Vector3.zero;
                 m_Camera.MoveInLocalDirection(Vector3.zero, LookAtConstraint.Follow);
-            }
-        }
-
-        void ToggleMovingAction(bool value)
-        {
-            switch (value)
-            {
-                case true when !MovingAction.enabled:
-                    MovingAction.Enable();
-                    break;
-                case false when MovingAction.enabled:
-                    MovingAction.Disable();
-                    break;
+                m_LastMovingAction = Vector3.zero;
             }
         }
 

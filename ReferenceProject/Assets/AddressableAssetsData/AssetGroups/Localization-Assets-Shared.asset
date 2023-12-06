@@ -23,11 +23,6 @@ MonoBehaviour:
     m_ReadOnly: 1
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2f80b62a3b14d6f41834edb08cbf049c
-    m_Address: Assets/_Modules/ScenesList/Runtime/Localization/SceneList Shared Data.asset
-    m_ReadOnly: 1
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5a8e1111f86a1e54e844c7cb7175f5bb
     m_Address: Assets/_Modules/Identity/Runtime/Localization/Identity Shared Data.asset
     m_ReadOnly: 1
@@ -80,6 +75,22 @@ MonoBehaviour:
   - m_GUID: 8e313b96cdf91bd419a35ad74d3d39a2
     m_Address: Assets/_Modules/DataStreaming/Runtime/Localization/DataStreaming Shared
       Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8bb79e5cdbc7c489a8e2b564d56fa46f
+    m_Address: Assets/_Modules/WalkController/Runtime/WalkMode Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8eb2735d8f73b4a4eac3389fed3a28cf
+    m_Address: Assets/_Modules/MeasureTool/Runtime/Localization/MeasureTool Shared
+      Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8565366f83a70e4f8b8c053e9f1fb16
+    m_Address: Assets/_Modules/AssetList/Localization/AssetList Shared Data.asset
     m_ReadOnly: 1
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

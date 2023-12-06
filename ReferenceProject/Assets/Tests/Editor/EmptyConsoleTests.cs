@@ -21,9 +21,8 @@ namespace Unity.ReferenceProject.Tests.Editor
             "With test settings file:",
             "Executing tests with settings:",
             "[Code Coverage]",
-            "Assets/", // Log regression coming from com.unity.cloud.common@0.13.1
-            "Library/", // Log regression coming from com.unity.cloud.common@0.13.1
-            "Packages/" // Log regression coming from com.unity.cloud.common@0.13.1
+            "Running tests for ExecutionSettings with details",
+            "Unity is running with Administrator privileges"
         };
         LogEntriesWrapper m_LogEntriesWrapper;
 

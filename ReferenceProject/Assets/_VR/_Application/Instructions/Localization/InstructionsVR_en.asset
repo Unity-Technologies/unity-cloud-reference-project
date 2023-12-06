@@ -83,6 +83,14 @@ MonoBehaviour:
     m_Localized: Right primary button to reset the UI bar on front of you.
     m_Metadata:
       m_Items: []
+  - m_Id: 55338003182985216
+    m_Localized: Mute/Unmute the microphone.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55338294221545472
+    m_Localized: Microphone
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -1,0 +1,11 @@
+.container__instruction-keys{
+    height: 118px;
+}
+
+#Teleport{
+    width: 180px;
+}
+
+#Rotate{
+    width: 105px;
+}

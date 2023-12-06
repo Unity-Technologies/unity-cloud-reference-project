@@ -21,7 +21,7 @@ namespace Unity.ReferenceProject.Presence.Tests.Runtime
             badgeContainer.BindRoom(roomCached);
             Assert.AreEqual(0, badgeContainer.childCount);
 
-            await room.StartMonitoringAsync(null, new CancellationToken());
+            await room.StartMonitoringAsync();
             Assert.AreEqual(0, badgeContainer.childCount);
 
             // Add one participant
@@ -56,7 +56,7 @@ namespace Unity.ReferenceProject.Presence.Tests.Runtime
                 m_DummyServer.AddParticipant(GetNextParticipantID, room.RoomId.ToString());
             }
 
-            await room.StartMonitoringAsync(null, new CancellationToken());
+            await room.StartMonitoringAsync();
             Assert.AreNotEqual(0, badgeContainer.childCount);
             Assert.AreEqual(AvatarBadgesContainer.PlusSignName, badgeContainer.Children().Last().name);
             
@@ -99,7 +99,7 @@ namespace Unity.ReferenceProject.Presence.Tests.Runtime
             // Add Participant
             m_DummyServer.AddParticipant(GetNextParticipantID, room.RoomId.ToString());
             m_DummyServer.AddParticipant(GetNextParticipantID, room.RoomId.ToString(), isSelf: true);
-            await room.StartMonitoringAsync(null, new CancellationToken());
+            await room.StartMonitoringAsync();
 
             // Check Participants count in cached room
             Assert.AreEqual(room.ConnectedParticipants.Count, roomCached.Participants.Count);
@@ -116,7 +116,7 @@ namespace Unity.ReferenceProject.Presence.Tests.Runtime
             // Add Participant
             m_DummyServer.AddParticipant(GetNextParticipantID, room.RoomId.ToString());
             m_DummyServer.AddParticipant(GetNextParticipantID, room.RoomId.ToString(), isSelf: true);
-            await room.StartMonitoringAsync(null, new CancellationToken());
+            await room.StartMonitoringAsync();
 
             // Check Participants count in cached room
             Assert.AreEqual(1, badgeContainer.childCount);
@@ -138,7 +138,7 @@ namespace Unity.ReferenceProject.Presence.Tests.Runtime
                 m_DummyServer.AddParticipant(GetNextParticipantID, room.RoomId.ToString());
             }
 
-            await room.StartMonitoringAsync(null, new CancellationToken());
+            await room.StartMonitoringAsync();
             Assert.AreEqual(badgeContainer.MaxParticipantsCount + 1, badgeContainer.childCount);
 
             badgeContainer.MaxParticipantsCount = 3;

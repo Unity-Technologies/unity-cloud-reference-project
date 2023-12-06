@@ -1,13 +1,14 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
-    <ui:VisualElement class="avatar-tag-main">
-        <ui:VisualElement class="avatar-tag-content">
-            <appui:Avatar name="avatar-tag-badge" size="L" text="AB" class="avatar-tag-badge">
+    <Style src="AvatarTagStyle.uss" />
+    <ui:VisualElement class="container__avatar-tag-main">
+        <ui:VisualElement class="container__avatar-tag-content">
+            <appui:Avatar name="avatar-tag-badge" size="L" text="AB" class="avatar__avatar-tag-badge">
                 <appui:Text name="avatar-tag-badge-text"/>
             </appui:Avatar>
-            <ui:VisualElement name="avatar-tag-name-container" class="avatar-tag-name-container">
-                <appui:Heading name="avatar-tag-name" size="S" text="USERNAME" class="avatar-tag-name" />
+            <ui:VisualElement name="avatar-tag-name-container" class="container__avatar-tag-name">
+                <appui:Heading name="avatar-tag-name" size="S" text="USERNAME" class="heading__avatar-tag-name" />
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement class="avatar-tag-pin" />
+        <ui:VisualElement class="image__avatar-tag-pin" />
     </ui:VisualElement>
 </ui:UXML>

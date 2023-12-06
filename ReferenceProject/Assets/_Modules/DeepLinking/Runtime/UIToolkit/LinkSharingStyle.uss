@@ -1,21 +1,21 @@
-.link-sharing-content {
-    min-width: 250px;
+.container__link-sharing-content {
+    width: 250px;
 }
 
-.generate-url-button {
+.button__generate-url {
     margin-bottom: 5px;
 }
 
-.open-url-section {
+.container__open-url-section {
     flex-direction: row;
     align-items: center;
 }
 
-.url-text {
+.text__url {
     margin-right: 10px;
     width: 70%
 }
 
-.open-url-button {
+.button__open-url {
     flex-grow: 1;
 }

@@ -23,27 +23,27 @@ namespace Unity.ReferenceProject.Common
         [SerializeField, Tooltip("If enabled, ignore the z axis when rotating")]
         bool m_IgnoreZ;
 
-        Camera m_StreamingCamera;
+        ICameraProvider m_CameraProvider;
         Vector3 m_lastCameraPosition;
 
         [Inject]
-        public void Setup(Camera streamingCamera)
+        public void Setup(ICameraProvider cameraProvider)
         {
-            m_StreamingCamera = streamingCamera;
+            m_CameraProvider = cameraProvider;
         }
 
         void OnEnable()
         {
-            m_lastCameraPosition = m_StreamingCamera.transform.position;
+            m_lastCameraPosition = m_CameraProvider.Camera.transform.position;
             transform.rotation = GetTargetRotation();
         }
 
         void Update()
         {
-            if (m_StreamingCamera == null)
+            if (m_CameraProvider.Camera.transform == null)
                 return;
 
-            var currentCamPosition = m_StreamingCamera.transform.position;
+            var currentCamPosition = m_CameraProvider.Camera.transform.position;
             var targetRotation = GetTargetRotation();
 
             // avoid interpolating when there are large jumps in camera position
@@ -62,10 +62,11 @@ namespace Unity.ReferenceProject.Common
 
         Quaternion GetTargetRotation()
         {
-            if (m_StreamingCamera == null)
+            var cameraTransform = m_CameraProvider.Camera.transform;
+            
+            if (cameraTransform == null)
                 return Quaternion.identity;
-
-            var cameraTransform = m_StreamingCamera.transform;
+            
             var facePosition = cameraTransform.position;
             var forward = facePosition - transform.position;
             var up = cameraTransform.up;

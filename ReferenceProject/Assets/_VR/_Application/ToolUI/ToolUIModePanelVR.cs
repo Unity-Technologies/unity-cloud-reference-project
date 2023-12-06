@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.ReferenceProject.Tools;
 using Unity.ReferenceProject.VR.RigUI;
 using UnityEngine;
@@ -144,8 +145,9 @@ namespace Unity.ReferenceProject.VR
             Panel.SetDocked(m_PanelController is DockedPanelController);
         }
 
-        void OnDockButtonClicked()
+        async void OnDockButtonClicked()
         {
+            await Task.Delay(1);
             m_PanelController = RigUIController.DockButtonClicked(m_PanelController, RigUIController.DockPoint, m_PanelPosition);
             OnPanelBuilt(m_PanelController.UIDocument);
         }

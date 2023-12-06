@@ -43,11 +43,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 10432575787134976
-    m_Localized: Opening "{0}" scene from link...
+    m_Localized: Opening "{0}" datase from link...
     m_Metadata:
       m_Items: []
   - m_Id: 10432927760543744
-    m_Localized: Scene "{0}" is already opened
+    m_Localized: Dataset "{0}" is already opened
     m_Metadata:
       m_Items: []
   - m_Id: 2039713263616

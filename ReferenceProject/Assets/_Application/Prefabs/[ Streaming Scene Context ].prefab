@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 3369306365793481793}
   - component: {fileID: 6721872474388768866}
   - component: {fileID: 356613553515981098}
+  - component: {fileID: 1871447000953619958}
   m_Layer: 0
   m_Name: '[ Streaming Scene Context ]'
   m_TagString: Untagged
@@ -56,6 +57,7 @@ MonoBehaviour:
   - {fileID: 3369306365793481793}
   - {fileID: 6721872474388768866}
   - {fileID: 356613553515981098}
+  - {fileID: 1871447000953619958}
   _installerPrefabs: []
   _autoRun: 1
   OnPreInstall:
@@ -137,3 +139,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46384562332f038489af04372698f5d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1871447000953619958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3369306365793481850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e35b21ef68534bc1a4e560b8fb7d595f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MainCameraProvider: {fileID: 0}
+  m_MeasureToolController: {fileID: 0}
+  m_MeasureListController: {fileID: 0}
+  m_DataStore: {fileID: 0}
+  m_MeasureLinePrefab: {fileID: 1588412849265992692, guid: 0b0698133e304f947892d81938a0b33e,
+    type: 3}

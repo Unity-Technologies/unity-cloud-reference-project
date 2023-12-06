@@ -1,3 +1,4 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
-    <appui:Heading name="header" text="Title" style="align-self: center; picking-mode:ignore; min-height: 48px; -unity-text-align: middle-left;"/>
+    <Style src="SceneNameStyle.uss" />
+    <appui:Heading name="header" text="Title" picking-mode="ignore" class="heading__scene-name" />
 </ui:UXML>

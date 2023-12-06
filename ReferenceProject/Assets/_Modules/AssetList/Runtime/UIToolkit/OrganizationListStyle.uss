@@ -1,0 +1,20 @@
+.container__organization-list{
+    min-width: 300px;
+}
+
+.scroll-view__organization-list{
+    max-height: 400px;
+}
+
+.appui-button__titlecontainer{
+    align-items: flex-start;
+}
+
+.appui-button__trailingicon{
+    --unity-image-tint-color: var(--appui-accent-100);
+}
+
+.text__organization-list-no-result
+{
+    padding-left: 5px;
+}

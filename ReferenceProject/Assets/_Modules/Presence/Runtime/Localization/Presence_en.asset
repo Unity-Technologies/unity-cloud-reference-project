@@ -16,7 +16,8 @@ MonoBehaviour:
     m_Code: en
   m_SharedData: {fileID: 11400000, guid: 48090bc5154b24caf82ce6cb32babf22, type: 2}
   m_Metadata:
-    m_Items: []
+    m_Items:
+    - rid: 4540994257411112967
   m_TableData:
   - m_Id: 2877987741696
     m_Localized: Collaborators
@@ -34,6 +35,97 @@ MonoBehaviour:
     m_Localized: Vivox unsupported
     m_Metadata:
       m_Items: []
+  - m_Id: 66758940513431552
+    m_Localized: Microphone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 63835881523539968
+    m_Localized: Follow
+    m_Metadata:
+      m_Items: []
+  - m_Id: 63835966240092160
+    m_Localized: Unfollow
+    m_Metadata:
+      m_Items: []
+  - m_Id: 75438328369016832
+    m_Localized: Following
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71819289141764096
+    m_Localized: Start presentation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71825755420549120
+    m_Localized: 'Presenter :'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71819606302449664
+    m_Localized: Join presentation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71819715324993536
+    m_Localized: Quit presentation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71819843427426304
+    m_Localized: Presentation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71820072688082944
+    m_Localized: '{0} started a presentation. Would you like to join? '
+    m_Metadata:
+      m_Items:
+      - rid: 4540994257411112967
+  - m_Id: 71820422551756800
+    m_Localized: Close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73243622850486272
+    m_Localized: 'Audience :'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73245952190767104
+    m_Localized: Stop presentation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73248310362693632
+    m_Localized: Join
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73610433743872000
+    m_Localized: Empty
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83072218588766208
+    m_Localized: Voice level
+    m_Metadata:
+      m_Items: []
+  - m_Id: 88067894718554112
+    m_Localized: You are presenting
+    m_Metadata:
+      m_Items: []
+  - m_Id: 91328982194221056
+    m_Localized: Warning - Follow Mode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 91329788050042880
+    m_Localized: 'This action is not possible while following. Would you like to
+      exit follow mode? '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 92074335105347584
+    m_Localized: 'This action is not possible while assisting a presentation. Would
+      you like to exit the presentation? '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 92075029338157056
+    m_Localized: Warning - Presentation
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4540994257411112967
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 00e050c0f927ff00

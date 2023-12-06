@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Unity.ReferenceProject.Common;
 using Unity.ReferenceProject.Navigation;
 using UnityEngine;
 using Zenject;
@@ -25,9 +26,8 @@ namespace Unity.ReferenceProject.AppCamera
     {
         [SerializeField]
         CameraProxySettings m_Settings;
-
-        [SerializeField, Tooltip("Once set, the camera will follow this transform")]
-        Camera m_Camera;
+        
+        ICameraProvider m_CameraProvider;
         
         readonly float m_Acceleration = 10.0f;
         readonly float m_MaxSpeed = 1000.0f;
@@ -53,9 +53,9 @@ namespace Unity.ReferenceProject.AppCamera
         Task m_Task;
 
         [Inject]
-        public void Setup(Camera targetCamera, INavigationManager navigationManager)
+        public void Setup(ICameraProvider cameraProvider)
         {
-            m_Camera = targetCamera;
+            m_CameraProvider = cameraProvider;
         }
 
         public CameraProxySettings settings
@@ -66,16 +66,19 @@ namespace Unity.ReferenceProject.AppCamera
 
         void Start()
         {
-            m_DesiredLookAt = m_Camera.transform.position + m_Camera.transform.forward * 100;
-            m_DesiredPosition = m_Camera.transform.position;
-            m_DesiredRotation = m_Camera.transform.rotation;
+            var cameraTransform = m_CameraProvider.Camera.transform;
+            var cameraPosition = cameraTransform.position;
+            
+            m_DesiredLookAt = cameraPosition + cameraTransform.forward * 100;
+            m_DesiredPosition = cameraPosition;
+            m_DesiredRotation = cameraTransform.rotation;
             m_DesiredRotationEuler = m_DesiredRotation.eulerAngles;
 
             m_IsSphericalMovement = false;
         }
 
         void Update()
-        {
+        { 
             var delta = Time.unscaledDeltaTime;
 
             if (m_MovingDirection != Vector3.zero)
@@ -103,8 +106,10 @@ namespace Unity.ReferenceProject.AppCamera
                 }
             }
 
-            var rotation = Quaternion.Lerp(m_Camera.transform.rotation, m_DesiredRotation, Mathf.Clamp(delta / m_Settings.RotationElasticity, 0.0f, 1.0f));
-            m_Camera.transform.rotation = rotation;
+            var cameraTransform = m_CameraProvider.Camera.transform;
+            
+            var rotation = Quaternion.Lerp(cameraTransform.rotation, m_DesiredRotation, Mathf.Clamp(delta / m_Settings.RotationElasticity, 0.0f, 1.0f));
+            cameraTransform.rotation = rotation;
 
             Vector3 position;
             if (m_IsSphericalMovement)
@@ -113,12 +118,12 @@ namespace Unity.ReferenceProject.AppCamera
             }
             else
             {
-                position = Vector3.Lerp(m_Camera.transform.position, m_DesiredPosition, Mathf.Clamp(delta / m_Settings.PositionElasticity, 0.0f, 1.0f));
+                position = Vector3.Lerp(cameraTransform.position, m_DesiredPosition, Mathf.Clamp(delta / m_Settings.PositionElasticity, 0.0f, 1.0f));
             }
 
-            m_Camera.transform.position = position;
+            cameraTransform.position = position;
 
-            m_Camera.transform.localScale = Vector3.Lerp(m_Camera.transform.localScale, m_DesiredScale, Mathf.Clamp(delta / m_Settings.ScalingElasticity, 0.0f, 1.0f));
+            cameraTransform.localScale = Vector3.Lerp(cameraTransform.localScale, m_DesiredScale, Mathf.Clamp(delta / m_Settings.ScalingElasticity, 0.0f, 1.0f));
         }
 
         void UpdateSphericalMovement(bool isSphericalMovement)
@@ -186,7 +191,7 @@ namespace Unity.ReferenceProject.AppCamera
         {
             var frustumCorners = new Vector3[4];
             var depth = -m_DesiredPosition.magnitude;
-            m_Camera.CalculateFrustumCorners(new Rect(0, 0, 1, 1), depth, Camera.MonoOrStereoscopicEye.Mono, frustumCorners);
+            m_CameraProvider.Camera.CalculateFrustumCorners(new Rect(0, 0, 1, 1), depth, Camera.MonoOrStereoscopicEye.Mono, frustumCorners);
             m_PanningScale = Mathf.Abs((frustumCorners[2].x - frustumCorners[1].x) / Screen.width);
         }
 
@@ -218,7 +223,7 @@ namespace Unity.ReferenceProject.AppCamera
 
             m_DesiredPosition = pos;
 
-            if (originalDistanceFromLookAt - nbUnits < m_Settings.MinDistanceFromLookAt)
+            if (nbUnits > 0 && originalDistanceFromLookAt - nbUnits < m_Settings.MinDistanceFromLookAt)
             {
                 m_DesiredLookAt = m_DesiredPosition + forward * m_Settings.MinDistanceFromLookAt;
             }
@@ -303,7 +308,7 @@ namespace Unity.ReferenceProject.AppCamera
 
         public void SetRotation(Quaternion quaternion)
         {
-            m_Camera.transform.rotation = quaternion;
+            m_CameraProvider.Camera.transform.rotation = quaternion;
             m_DesiredRotation = quaternion;
             m_DesiredRotationEuler = quaternion.eulerAngles;
             m_DesiredLookAt = m_DesiredRotation * new Vector3(0.0f, 0.0f, (m_DesiredLookAt - m_DesiredPosition).magnitude) + m_DesiredPosition;
@@ -311,8 +316,10 @@ namespace Unity.ReferenceProject.AppCamera
 
         public void TransformTo(Transform newTransform)
         {
-            m_DesiredRotation = newTransform.rotation;
-            m_DesiredRotationEuler = newTransform.rotation.eulerAngles;
+            var rotation = newTransform.rotation;
+            
+            m_DesiredRotation = rotation;
+            m_DesiredRotationEuler = rotation.eulerAngles;
             m_DesiredLookAt = newTransform.forward;
             m_DesiredPosition = newTransform.position;
             m_DesiredScale = newTransform.localScale;
@@ -323,8 +330,7 @@ namespace Unity.ReferenceProject.AppCamera
         {
             var newRotation = Quaternion.Euler(newEulerAngle);
 
-            m_Camera.transform.position = newPosition;
-            m_Camera.transform.rotation = newRotation;
+            m_CameraProvider.Camera.transform.SetPositionAndRotation(newPosition, newRotation);
             m_DesiredRotation = newRotation;
             m_DesiredRotationEuler = newRotation.eulerAngles;
             m_DesiredLookAt = newForward;

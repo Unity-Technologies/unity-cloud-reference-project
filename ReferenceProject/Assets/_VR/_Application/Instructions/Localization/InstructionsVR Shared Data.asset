@@ -79,6 +79,14 @@ MonoBehaviour:
     m_Key: ResetDetails
     m_Metadata:
       m_Items: []
+  - m_Id: 55338003182985216
+    m_Key: MicrophoneDetails
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55338294221545472
+    m_Key: Microphone
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

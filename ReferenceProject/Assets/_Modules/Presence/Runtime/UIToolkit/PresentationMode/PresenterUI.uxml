@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" appui="Unity.AppUI.UI" editor-extension-mode="False">
+    <Style src="PresenterUIStyle.uss" />
+    <ui:VisualElement name="Border" picking-mode="Ignore" class="container__presenter-border">
+        <ui:VisualElement name="TextBox" picking-mode="Ignore" class="textbox__presenter">
+            <ui:VisualElement name="TextContainer" picking-mode="Ignore" class="container__presenter-info">
+                <Unity.AppUI.UI.Text name="FollowText" text="@Presence:PresentingText" picking-mode="Ignore" class="text__presenter" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

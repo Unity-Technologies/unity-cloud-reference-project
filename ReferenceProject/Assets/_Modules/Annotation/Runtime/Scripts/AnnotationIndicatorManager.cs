@@ -13,8 +13,8 @@ namespace Unity.ReferenceProject.Annotation
         void ClearIndicators();
         void SetIndicatorsVisible(bool visible=true);
         void AddIndicator(ITopic topic);
-        void RemoveIndicator(Guid topicId);
-        AnnotationIndicatorController GetIndicator(Guid topicId);
+        void RemoveIndicator(TopicId topicId);
+        AnnotationIndicatorController GetIndicator(TopicId topicId);
         AnnotationIndicatorController GetEmptyIndicator();
         void ReleaseAnnotationIndicator(AnnotationIndicatorController indicator);
     }
@@ -23,7 +23,7 @@ namespace Unity.ReferenceProject.Annotation
     {
         readonly AnnotationIndicatorController m_AnnotationIndicatorPrefab;
         readonly ObjectPool<AnnotationIndicatorController> m_Pool;
-        readonly Dictionary<Guid, AnnotationIndicatorController> m_ActiveIndicators = new ();
+        readonly Dictionary<TopicId, AnnotationIndicatorController> m_ActiveIndicators = new ();
 
         DiContainer m_DiContainer;
         bool m_IsShowing;
@@ -76,7 +76,7 @@ namespace Unity.ReferenceProject.Annotation
             m_ActiveIndicators.Add(topic.Id, indicator);
         }
 
-        public void RemoveIndicator(Guid topicId)
+        public void RemoveIndicator(TopicId topicId)
         {
             if (m_ActiveIndicators.TryGetValue(topicId, out var indicator))
             {
@@ -85,7 +85,7 @@ namespace Unity.ReferenceProject.Annotation
             }
         }
 
-        public AnnotationIndicatorController GetIndicator(Guid topicId)
+        public AnnotationIndicatorController GetIndicator(TopicId topicId)
         {
             if (m_ActiveIndicators.TryGetValue(topicId, out var indicator))
             {

@@ -103,7 +103,7 @@ namespace Unity.ReferenceProject.VR
         public override bool CheckDeviceCapability()
         {
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
-            return true;
+            return false; // Until deeplink is fixed
 #else
             return false;
 #endif

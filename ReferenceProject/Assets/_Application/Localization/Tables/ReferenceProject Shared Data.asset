@@ -107,6 +107,10 @@ MonoBehaviour:
     m_Key: light
     m_Metadata:
       m_Items: []
+  - m_Id: 96746919168286720
+    m_Key: Cancel
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

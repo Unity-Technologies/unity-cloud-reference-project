@@ -1,0 +1,18 @@
+{
+    "name": "Unity.Replica.PersistenceAPI",
+    "rootNamespace": "",
+    "references": [
+        "GUID:498d02e03062b2649b108f31a9668c56"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Newtonsoft.Json.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

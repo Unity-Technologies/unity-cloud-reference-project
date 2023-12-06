@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Unity.Cloud.Identity;
 using Unity.ReferenceProject.Common;
 using Unity.ReferenceProject.Messaging;
@@ -31,9 +32,7 @@ namespace Unity.ReferenceProject.Identity
         public event Action LoggedIn;
         public event Action LoggedOut;
 
-        IUrlRedirectionAuthenticator m_Authenticator;
-
-        AuthenticationState m_CurrentState;
+        ICloudSession m_Session;
 
         bool m_IsRetrying;
         VisualElement m_LoadingIndicator;
@@ -42,9 +41,9 @@ namespace Unity.ReferenceProject.Identity
         IAppMessaging m_AppMessaging;
 
         [Inject]
-        public void Setup(IUrlRedirectionAuthenticator authenticator, IAppMessaging appMessaging)
+        public void Setup(ICloudSession session, IAppMessaging appMessaging)
         {
-            m_Authenticator = authenticator;
+            m_Session = session;
             m_AppMessaging = appMessaging;
         }
 
@@ -62,12 +61,12 @@ namespace Unity.ReferenceProject.Identity
         {
             if (m_LoginLogoutButton != null)
             {
-                m_LoginLogoutButton.clicked -= LoginLogout;
+                m_LoginLogoutButton.clicked -= OnLogoutClicked;
             }
 
-            if (m_Authenticator != null)
+            if (m_Session != null)
             {
-                m_Authenticator.AuthenticationStateChanged -= OnAuthenticationStateChanged;
+                m_Session.SessionStateChanged -= OnAuthenticationStateChanged;
             }
         }
 
@@ -78,34 +77,39 @@ namespace Unity.ReferenceProject.Identity
 
             Utils.SetVisible(m_LoadingIndicator, false);
 
-            m_Authenticator.AuthenticationStateChanged += OnAuthenticationStateChanged;
-            m_LoginLogoutButton.clicked += LoginLogout;
+            m_Session.SessionStateChanged += OnAuthenticationStateChanged;
+            m_LoginLogoutButton.clicked += ApplyLogState;
         }
 
-        async void LoginLogout()
+        void OnLogoutClicked()
+        {
+            ApplyLogState();
+        }
+
+        async void ApplyLogState()
         {
             try
             {
-                var state = m_Authenticator.AuthenticationState;
+                var state = m_Session.State;
 
                 switch (state)
                 {
-                    case AuthenticationState.AwaitingLogin:
+                    case SessionState.LoggingIn:
                     {
-                        m_Authenticator.CancelLogin();
                         m_IsRetrying = true;
+                        m_Session.CancelLogin();
                         break;
                     }
 
-                    case AuthenticationState.LoggedIn:
+                    case SessionState.LoggedIn:
                     {
-                        await m_Authenticator.LogoutAsync();
+                        await m_Session.Logout();
                         break;
                     }
 
-                    case AuthenticationState.LoggedOut:
+                    case SessionState.LoggedOut:
                     {
-                        await m_Authenticator.LoginAsync();
+                        await m_Session.Login();
                         break;
                     }
                 }
@@ -116,11 +120,11 @@ namespace Unity.ReferenceProject.Identity
             }
         }
 
-        void OnAuthenticationStateChanged(AuthenticationState state)
+        void OnAuthenticationStateChanged(SessionState state)
         {
             switch (state)
             {
-                case AuthenticationState.LoggedIn:
+                case SessionState.LoggedIn:
                 {
                     m_LoginLogoutButton.title = m_LogoutString;
                     m_LoginLogoutButton.SetEnabled(false);
@@ -129,19 +133,19 @@ namespace Unity.ReferenceProject.Identity
                     break;
                 }
 
-                case AuthenticationState.AwaitingLogin:
+                case SessionState.LoggingIn:
                 {
                     m_LoginLogoutButton.title = m_RetryString;
                     Utils.SetVisible(m_LoadingIndicator, true);
                     break;
                 }
 
-                case AuthenticationState.LoggedOut:
+                case SessionState.LoggedOut:
                 {
                     if (m_IsRetrying)
                     {
                         m_IsRetrying = false;
-                        LoginLogout();
+                        ApplyLogState();
                         break;
                     }
 

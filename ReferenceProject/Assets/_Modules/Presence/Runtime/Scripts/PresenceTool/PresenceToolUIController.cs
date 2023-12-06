@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.AppUI.UI;
 using Unity.Cloud.Presence;
 using Unity.Cloud.Presence.Runtime;
 using Unity.ReferenceProject.Common;
@@ -18,28 +16,31 @@ namespace Unity.ReferenceProject.Presence
         int m_MaxParticipantsCount = 4;
 
         [SerializeField]
-        ColorPalette m_AvatarColorPalette;
-        
-        [SerializeField]
-        string m_VivoxUnsupportedString = "@Presence:Vivox_Unsupported";
+        bool m_ShowFollow = true;
 
-        static readonly string k_CollaboratorDataMicrophoneUssClassName = "collaborator-data-microphone";
-        
-        PresenceStreamingRoom m_PresenceStreamingRoom;
+        [SerializeField]
+        ColorPalette m_AvatarColorPalette;
+
+        [SerializeField]
+        StyleSheet m_VoiceLevelStyleSheet;
+
+        IPresenceStreamingRoom m_PresenceStreamingRoom;
         VoiceAvatarBadgesContainer m_VoiceAvatarsBadgesContainer;
         VisualElement m_ListContainerVisualElement;
         CollaboratorsDataPanel m_CollaboratorsDataPanel;
-        VoiceManager m_VoiceManager;
-        IconButton m_MuteButton;
+        IVoiceManager m_VoiceManager;
+        IFollowManager m_FollowManager;
+        VoiceLevelMicrophoneButton m_MuteButton;
 
         protected CollaboratorsDataPanel CollaboratorsDataPanel => m_CollaboratorsDataPanel;
         protected Room CurrentRoom { get; set; }
 
         [Inject]
-        void Setup(PresenceStreamingRoom presenceStreamingRoom, VoiceManager voiceManager)
+        void Setup(IPresenceStreamingRoom presenceStreamingRoom, IVoiceManager voiceManager, IFollowManager followManager)
         {
             m_PresenceStreamingRoom = presenceStreamingRoom;
             m_VoiceManager = voiceManager;
+            m_FollowManager = followManager;
         }
 
         protected override void Awake()
@@ -47,27 +48,77 @@ namespace Unity.ReferenceProject.Presence
             base.Awake();
             m_CollaboratorsDataPanel = new CollaboratorsDataPanel()
             {
-                AvatarColorPalette = m_AvatarColorPalette
+                AvatarColorPalette = m_AvatarColorPalette,
+                VoiceLevelStyleSheet = m_VoiceLevelStyleSheet,
+                ShowFollowButton = m_ShowFollow
             };
+            m_FollowManager.EnterFollowMode += OnEnterFollowMode;
+            m_FollowManager.ExitFollowMode += OnExitFollowMode;
+            m_FollowManager.ChangeFollowTarget += OnChangeFollowTarget;
+        }
+
+        protected override void OnDestroy()
+        {
+            if(m_FollowManager != null)
+            {
+                m_FollowManager.EnterFollowMode -= OnEnterFollowMode;
+                m_FollowManager.ExitFollowMode -= OnExitFollowMode;
+                m_FollowManager.ChangeFollowTarget -= OnChangeFollowTarget;
+            }
         }
 
         void OnEnable()
         {
             m_PresenceStreamingRoom.RoomJoined += OnRoomJoined;
             m_PresenceStreamingRoom.RoomLeft += OnRoomLeft;
-            m_VoiceManager.VoiceStatusChanged += VoiceStatusChanged;
-            m_VoiceManager.VoiceServiceUpdated += VoiceServiceUpdated;
-            
-            VoiceStatusChanged(m_VoiceManager.CurrentVoiceStatus);
+            m_VoiceManager.VoiceStatusChanged += OnVoiceStatusChanged;
+            m_VoiceManager.VoiceParticipantAdded += OnVoiceParticipantAdded;
+            m_VoiceManager.VoiceParticipantRemoved += OnVoiceParticipantRemoved;
+            m_VoiceManager.VoiceParticipantUpdated += OnVoiceParticipantUpdated;
+
+            OnVoiceStatusChanged(m_VoiceManager.CurrentVoiceStatus);
+        }
+
+        void OnExitFollowMode()
+        {
+            m_CollaboratorsDataPanel.OnExitFollowMode();
+        }
+
+        void OnEnterFollowMode(IParticipant participant, bool isPresentation)
+        {
+            m_CollaboratorsDataPanel.UpdateFollowModeCollaboratorDataUI(participant.Id, isPresentation);
+        }
+
+        void OnChangeFollowTarget(IParticipant participant)
+        {
+            m_CollaboratorsDataPanel.UpdateFollowModeCollaboratorDataUI(participant.Id);
+        }
+
+        void OnDataUIExistFollowMode(IParticipant participant)
+        {
+            m_FollowManager.StopFollowMode();
+        }
+
+        void OnDataUIEnterFollowMode(IParticipant participant)
+        {
+            if (m_FollowManager.IsFollowing)
+            {
+                m_FollowManager.UpdateFollowTarget(participant);
+            }
+            else
+            {
+                m_FollowManager.StartFollowMode(participant);
+            }
         }
 
         void OnDisable()
         {
             m_PresenceStreamingRoom.RoomJoined -= OnRoomJoined;
             m_PresenceStreamingRoom.RoomLeft -= OnRoomLeft;
-            m_VoiceManager.VoiceStatusChanged -= VoiceStatusChanged;
-            m_VoiceManager.VoiceServiceUpdated -= VoiceServiceUpdated;
-            m_VoiceManager.MuteStatusUpdated -= UpdateMuteButtonIcon;
+            m_VoiceManager.VoiceStatusChanged -= OnVoiceStatusChanged;
+            m_VoiceManager.VoiceParticipantAdded -= OnVoiceParticipantAdded;
+            m_VoiceManager.VoiceParticipantRemoved -= OnVoiceParticipantRemoved;
+            m_VoiceManager.VoiceParticipantUpdated -= OnVoiceParticipantUpdated;
         }
 
         protected virtual void OnRoomJoined(Room room)
@@ -78,14 +129,6 @@ namespace Unity.ReferenceProject.Presence
             cachedRoom.Room = room; // Assign new room
             m_VoiceAvatarsBadgesContainer.BindRoom(cachedRoom);
             m_VoiceAvatarsBadgesContainer.BindVoiceManager(m_VoiceManager);
-            
-            foreach (var participant in room.ConnectedParticipants)
-            {
-                if (participant.IsSelf)
-                    continue;
-                
-                m_CollaboratorsDataPanel.AddParticipant(participant);
-            }
 
             RefreshVisualTree();
 
@@ -93,22 +136,36 @@ namespace Unity.ReferenceProject.Presence
             CurrentRoom.ParticipantRemoved += OnParticipantRemoved;
         }
 
-        protected void OnRoomLeft()
+        protected void OnRoomLeft(Room room)
         {
+            if(room != null)
+            {
+                foreach (var participant in room.ConnectedParticipants)
+                {
+                    if (participant.IsSelf)
+                        continue;
+                    OnParticipantRemoved(participant);
+                }
+
+                room.ParticipantAdded -= OnParticipantAdded;
+                room.ParticipantRemoved -= OnParticipantRemoved;
+            }
+
             m_CollaboratorsDataPanel.ClearParticipants();
 
-            CurrentRoom.ParticipantAdded -= OnParticipantAdded;
-            CurrentRoom.ParticipantRemoved -= OnParticipantRemoved;
-
             CurrentRoom = null;
-            
+            m_VoiceAvatarsBadgesContainer.UnBindVoiceManager(m_VoiceManager);
+
             RefreshVisualTree();
         }
-        
+
         protected void OnParticipantRemoved(IParticipant participant)
         {
-            m_CollaboratorsDataPanel.RemoveVoiceToParticipant(participant);
-            m_CollaboratorsDataPanel.RemoveParticipant(participant);
+            m_CollaboratorsDataPanel.UnSubscribeUIFollowModeEvent(participant.Id);
+            m_CollaboratorsDataPanel.DataUIEnterFollowMode -= OnDataUIEnterFollowMode;
+            m_CollaboratorsDataPanel.DataUIExitFollowMode -= OnDataUIExistFollowMode;
+            m_CollaboratorsDataPanel.RemoveVoiceToParticipant(participant.Id);
+            m_CollaboratorsDataPanel.RemoveParticipant(participant.Id);
 
             RefreshVisualTree();
         }
@@ -119,36 +176,24 @@ namespace Unity.ReferenceProject.Presence
                 return;
 
             m_CollaboratorsDataPanel.AddParticipant(participant);
-            
+
             var voice = m_VoiceManager.GetVoiceParticipant(participant);
             if (voice != null)
             {
-                m_CollaboratorsDataPanel.AddVoiceToParticipant(participant, (VoiceParticipant)voice);
+                m_CollaboratorsDataPanel.AddVoiceToParticipant(voice);
             }
-            
+
+            m_CollaboratorsDataPanel.SubscribeUIFollowModeEvent(participant.Id);
+            m_CollaboratorsDataPanel.DataUIEnterFollowMode += OnDataUIEnterFollowMode;
+            m_CollaboratorsDataPanel.DataUIExitFollowMode += OnDataUIExistFollowMode;
+
             RefreshVisualTree();
         }
 
         protected override VisualElement CreateVisualTree(VisualTreeAsset template)
         {
+            // Create Panel
             var rootVisualElement = base.CreateVisualTree(template);
-            var container = new VisualElement();
-            container.AddToClassList(k_CollaboratorDataMicrophoneUssClassName);
-            
-            m_MuteButton = new IconButton(m_VoiceManager.Muted ? "microphone-slash" : "microphone", () =>
-            {
-                m_VoiceManager.Muted = !m_VoiceManager.Muted;
-            });
-            m_VoiceManager.MuteStatusUpdated += UpdateMuteButtonIcon;
-
-            if (m_VoiceManager.CurrentVoiceStatus == VoiceStatus.Unsupported)
-            {
-                m_MuteButton.tooltip = m_VivoxUnsupportedString;
-                m_MuteButton.SetEnabled(false);
-            }
-
-            container.Add(m_MuteButton);
-            rootVisualElement.Add(container);
 
             if (m_ListContainerVisualElement == null || m_CollaboratorsDataPanel.IsDirty)
             {
@@ -159,35 +204,26 @@ namespace Unity.ReferenceProject.Presence
             return rootVisualElement;
         }
 
-        void UpdateMuteButtonIcon(bool isMuted)
-        {
-            m_MuteButton.icon = isMuted switch
-            {
-                true => "microphone-slash",
-                _ => "microphone"
-            };
-        }
-
         protected virtual void RefreshVisualTree()
         {
             if (m_CollaboratorsDataPanel.IsDirty)
             {
                 m_ListContainerVisualElement.Clear();
                 m_ListContainerVisualElement = m_CollaboratorsDataPanel.CreateVisualTree();
-                
-                RefreshButtonDisplayStyle();
+
+                RefreshToolState();
             }
         }
 
-        void RefreshButtonDisplayStyle()
+        void RefreshToolState()
         {
             if (CurrentRoom != null && CurrentRoom.ConnectedParticipants.Where(p => !p.IsSelf).ToList().Count > 0)
             {
-                SetButtonDisplayStyle(DisplayStyle.Flex);
+                SetToolState(ToolState.Active);
             }
             else
             {
-                SetButtonDisplayStyle(DisplayStyle.None);
+                SetToolState(ToolState.Hidden);
             }
         }
 
@@ -199,45 +235,57 @@ namespace Unity.ReferenceProject.Presence
             };
             return m_VoiceAvatarsBadgesContainer;
         }
-        
-        void VoiceStatusChanged(VoiceStatus status)
+
+        void OnVoiceStatusChanged(VoiceStatus status)
         {
             switch (status)
             {
                 case VoiceStatus.Unsupported:
                     m_CollaboratorsDataPanel.DisableVivox();
                     break;
+
                 case VoiceStatus.NotConnected:
                 case VoiceStatus.NoRoom:
                     if (CurrentRoom == null)
                         break;
-                    
                     foreach (var participant in CurrentRoom.ConnectedParticipants)
                     {
-                        m_CollaboratorsDataPanel.RemoveVoiceToParticipant(participant);
+                        m_CollaboratorsDataPanel.RemoveVoiceToParticipant(participant.Id);
                     }
+
                     break;
+
                 case VoiceStatus.Connected:
                     if (CurrentRoom == null)
                         break;
-
                     foreach (var participant in CurrentRoom.ConnectedParticipants)
                     {
                         var voice = m_VoiceManager.GetVoiceParticipant(participant);
                         if (voice != null)
                         {
-                            m_CollaboratorsDataPanel.AddVoiceToParticipant(participant, (VoiceParticipant)voice);
+                            m_CollaboratorsDataPanel.AddVoiceToParticipant(voice);
                         }
                     }
+
                     break;
             }
-            
+
             RefreshVisualTree();
         }
 
-        void VoiceServiceUpdated(IEnumerable<VoiceParticipant> participants)
+        void OnVoiceParticipantAdded(IEnumerable<IVoiceParticipant> participants)
         {
-            m_CollaboratorsDataPanel.VoiceServiceUpdated(participants);
+            m_CollaboratorsDataPanel.VoiceParticipantAdded(participants);
+        }
+
+        void OnVoiceParticipantRemoved(IEnumerable<IVoiceParticipant> participants)
+        {
+            m_CollaboratorsDataPanel.VoiceParticipantRemoved(participants);
+        }
+
+        void OnVoiceParticipantUpdated(IEnumerable<IVoiceParticipant> participants)
+        {
+            m_CollaboratorsDataPanel.VoiceParticipantUpdated(participants);
         }
     }
 }

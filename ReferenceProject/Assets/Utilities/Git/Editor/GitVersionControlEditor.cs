@@ -89,8 +89,7 @@ namespace Unity.Cloud.ReferenceProject.Utils.Git {
 
             if (!string.IsNullOrEmpty(errorOutput))
             {
-                Debug.LogError(errorOutput);
-                return "SomethingWentWrong";
+                return String.Empty;
             }
 
             return output;

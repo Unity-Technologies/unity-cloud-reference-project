@@ -27,6 +27,7 @@ build.bat.meta
 [Oo]bj/
 [Bb]uilds/
 
+*.vsconfig
 *.csproj
 *.csproj.meta
 *.unityproj
@@ -57,6 +58,7 @@ ReferenceProject/Assets/Unity Cloud.meta
 ReferenceProject/Assets/Samples
 ReferenceProject/Assets/Samples.meta
 ReferenceProject/UIElementsSchema
-ReferenceProject/Assets/Utilities/Git/Resources
+ReferenceProject/Assets/Utilities/Git/Resources*
 ReferenceProject/Assets/Utilities/Git/Resources.git
 ReferenceProject/Assets/Resources.meta
+ReferenceProject/ProjectSettings/Packages/com.unity.services.core/Settings.json

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
-using Unity.Cloud.Identity;
 using Unity.ReferenceProject.DeepLinking;
+using Unity.ReferenceProject.Identity;
 using Unity.ReferenceProject.StateMachine;
 using UnityEngine;
 using Zenject;
@@ -21,63 +21,44 @@ namespace Unity.ReferenceProject
         [SerializeField]
         AppState m_LoggedOutState;
 
-        IAuthenticator m_Authenticator;
+        ICloudSession m_Session;
 
-        bool m_TimerFinished;
-        
         DeepLinkData m_DeepLinkData;
 
         [Inject]
-        public void Setup(IAuthenticator authenticator, DeepLinkData deepLinkData)
+        public void Setup(ICloudSession session, DeepLinkData deepLinkData)
         {
-            m_Authenticator = authenticator;
+            m_Session = session;
             m_DeepLinkData = deepLinkData;
-        }
-
-        void Awake()
-        {
-            if (m_Authenticator.AuthenticationState != AuthenticationState.LoggedIn)
-            {
-                m_Authenticator.InitializeAsync();
-            }
-        }
-
-        void Start()
-        {
-            StartCoroutine(StartTimer(m_MinimumDuration));
-        }
-
-        IEnumerator StartTimer(float duration)
-        {
-            m_TimerFinished = false;
-            yield return new WaitForSeconds(duration);
-            m_TimerFinished = true;
-            CheckForStateChange();
         }
 
         protected override void EnterStateInternal()
         {
-            m_Authenticator.AuthenticationStateChanged += OnAuthenticationStateChanged;
-            // Force update
-            CheckForStateChange();
+            if (!m_Session.Initialized)
+            {
+                _ = m_Session.Initialize();
+            }
+            StartCoroutine(WaitForInitialization());
         }
 
-        void CheckForStateChange()
+        IEnumerator WaitForInitialization()
         {
-            OnAuthenticationStateChanged(m_Authenticator.AuthenticationState);
+            float time = Time.realtimeSinceStartup;
+            while (!m_Session.Initialized)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+            float elapsed = Time.realtimeSinceStartup - time;
+            if (elapsed < m_MinimumDuration)
+            {
+                yield return new WaitForSeconds(m_MinimumDuration - elapsed);
+            }
+            CheckLoginState();
         }
 
-        protected override void ExitStateInternal()
+        void CheckLoginState()
         {
-            m_Authenticator.AuthenticationStateChanged -= OnAuthenticationStateChanged;
-        }
-
-        void OnAuthenticationStateChanged(AuthenticationState state)
-        {
-            if (!m_TimerFinished)
-                return;
-
-            if (state == AuthenticationState.LoggedIn)
+            if (m_Session.State == SessionState.LoggedIn)
             {
                 if (m_DeepLinkData.DeepLinkIsProcessing)
                 {
@@ -88,7 +69,7 @@ namespace Unity.ReferenceProject
                     AppStateController.PrepareTransition(m_LoggedInState).Apply();
                 }
             }
-            else if (state == AuthenticationState.LoggedOut)
+            else if (m_Session.State == SessionState.LoggedOut)
             {
                 AppStateController.PrepareTransition(m_LoggedOutState).Apply();
             }

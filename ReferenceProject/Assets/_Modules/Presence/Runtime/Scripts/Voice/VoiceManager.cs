@@ -1,11 +1,15 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Unity.Cloud.Presence;
 
 #if USE_VIVOX
+using Unity.Services.Core;
+using Unity.Services.Vivox;
 using System.Threading.Tasks;
 using Unity.Cloud.Presence.Runtime;
+using Unity.ReferenceProject.Common;
 using Zenject;
 #endif
 
@@ -19,7 +23,19 @@ namespace Unity.ReferenceProject.Presence
         Connected
     }
 
-    public class VoiceManager : MonoBehaviour
+    public interface IVoiceManager
+    {
+        event Action<VoiceStatus> VoiceStatusChanged;
+        event Action<IEnumerable<IVoiceParticipant>> VoiceParticipantAdded;
+        event Action<IEnumerable<IVoiceParticipant>> VoiceParticipantRemoved;
+        event Action<IEnumerable<IVoiceParticipant>> VoiceParticipantUpdated;
+        event Action<bool> MuteStatusUpdated;
+        VoiceStatus CurrentVoiceStatus { get; }
+        bool Muted { get; set; }
+        IVoiceParticipant GetVoiceParticipant(IParticipant participant);
+    }
+
+    public class VoiceManager : MonoBehaviour, IVoiceManager
     {
         VoiceStatus m_CurrentVoiceStatus = VoiceStatus.Unsupported;
 
@@ -28,87 +44,132 @@ namespace Unity.ReferenceProject.Presence
             get => m_CurrentVoiceStatus;
             private set
             {
-                m_CurrentVoiceStatus = value;
-                VoiceStatusChanged?.Invoke(m_CurrentVoiceStatus);
+                if (m_CurrentVoiceStatus != value)
+                {
+                    m_CurrentVoiceStatus = value;
+                    VoiceStatusChanged?.Invoke(m_CurrentVoiceStatus);
+                }
             }
         }
 
         public event Action<VoiceStatus> VoiceStatusChanged;
         public event Action<bool> MuteStatusUpdated;
-        public event Action<IEnumerable<VoiceParticipant>> VoiceServiceUpdated;
+        public event Action<IEnumerable<IVoiceParticipant>> VoiceParticipantAdded;
+        public event Action<IEnumerable<IVoiceParticipant>> VoiceParticipantRemoved;
+        public event Action<IEnumerable<IVoiceParticipant>> VoiceParticipantUpdated;
 #if USE_VIVOX
-        PresenceStreamingRoom m_PresenceStreamingRoom;
-        IVoiceService m_VoiceService;
+        IPresenceStreamingRoom m_PresenceStreamingRoom;
+        IPresenceVivoxServiceComponents m_PresenceVivoxServiceComponents;
+        ServicesInitializer m_ServicesInitializer;
 
         [Inject]
-        void Setup(PresenceStreamingRoom presenceStreamingRoom, IVoiceService voiceService)
+        void Setup(IPresenceStreamingRoom presenceStreamingRoom, IPresenceVivoxServiceComponents presenceVivoxServiceComponents, InitializationOptions initializationOptions, ServicesInitializer servicesInitializer)
         {
             CurrentVoiceStatus = VoiceStatus.NotConnected;
             m_PresenceStreamingRoom = presenceStreamingRoom;
-            m_VoiceService = voiceService;
+            m_PresenceVivoxServiceComponents = presenceVivoxServiceComponents;
+            m_ServicesInitializer = servicesInitializer;
+            initializationOptions.SetVivoxCredentials(m_PresenceVivoxServiceComponents.VivoxServer, m_PresenceVivoxServiceComponents.VivoxDomain, m_PresenceVivoxServiceComponents.VivoxIssuer);
         }
-        
+
+        void Awake()
+        {
+            if (m_ServicesInitializer.Initialized)
+            {
+                OnUnityServicesInitialized();
+            }
+            else
+            {
+                m_ServicesInitializer.UnityServicesInitialized += OnUnityServicesInitialized;
+            }
+        }
+
+        async void OnUnityServicesInitialized()
+        {
+            VivoxService.Instance.SetTokenProvider(m_PresenceVivoxServiceComponents.VivoxTokenProvider);
+            await VivoxService.Instance.InitializeAsync();
+            Muted = true;
+            m_ServicesInitializer.UnityServicesInitialized -= OnUnityServicesInitialized;
+        }
+
         void OnEnable()
         {
-            m_VoiceService.VoiceUpdated += OnVoiceUpdated;
+            m_PresenceVivoxServiceComponents.VoiceService.VoiceParticipantAdded += OnVoiceParticipantAdded;
+            m_PresenceVivoxServiceComponents.VoiceService.VoiceParticipantRemoved += OnVoiceParticipantRemoved;
+            m_PresenceVivoxServiceComponents.VoiceService.VoiceParticipantUpdated += OnVoiceParticipantUpdated;
+            
             m_PresenceStreamingRoom.RoomJoined += OnRoomJoined;
             m_PresenceStreamingRoom.RoomLeft += OnRoomLeft;
-            Muted = true;
         }
 
         void OnDisable()
         {
             m_PresenceStreamingRoom.RoomJoined -= OnRoomJoined;
             m_PresenceStreamingRoom.RoomLeft -= OnRoomLeft;
-            m_VoiceService.VoiceUpdated -= OnVoiceUpdated;
+            m_PresenceVivoxServiceComponents.VoiceService.VoiceParticipantAdded -= OnVoiceParticipantAdded;
+            m_PresenceVivoxServiceComponents.VoiceService.VoiceParticipantRemoved -= OnVoiceParticipantRemoved;
+            m_PresenceVivoxServiceComponents.VoiceService.VoiceParticipantUpdated -= OnVoiceParticipantUpdated;
         }
-
-        void OnRoomJoined(Room obj)
+        
+        void OnRoomJoined(Room room)
         {
             CurrentVoiceStatus = VoiceStatus.NotConnected;
-            OnJoinVoice();
+            OnJoinVoice().ConfigureAwait(true);
         }
 
-        void OnRoomLeft()
+        void OnRoomLeft(Room room)
         {
-            OnLeaveVoice();
+            OnLeaveVoice().ConfigureAwait(true);
             CurrentVoiceStatus = VoiceStatus.NoRoom;
         }
 
-        void OnVoiceUpdated(IEnumerable<VoiceParticipant> voiceParticipants)
+        void OnVoiceParticipantAdded(IEnumerable<IVoiceParticipant> voiceParticipants)
         {
-            CurrentVoiceStatus = m_VoiceService.MyVoiceParticipant.HasValue ? VoiceStatus.Connected : VoiceStatus.NotConnected;
-            VoiceServiceUpdated?.Invoke(voiceParticipants);
+            CurrentVoiceStatus = m_PresenceVivoxServiceComponents.VoiceService.SelfVoiceParticipant != null ? VoiceStatus.Connected : VoiceStatus.NotConnected;
+            VoiceParticipantAdded?.Invoke(voiceParticipants);
         }
         
-        void OnJoinVoice()
+        void OnVoiceParticipantRemoved(IEnumerable<IVoiceParticipant> voiceParticipants)
         {
-            m_VoiceService.JoinAsync();
+            CurrentVoiceStatus = m_PresenceVivoxServiceComponents.VoiceService.SelfVoiceParticipant != null ? VoiceStatus.Connected : VoiceStatus.NotConnected;
+            VoiceParticipantRemoved?.Invoke(voiceParticipants);
         }
 
-        void OnLeaveVoice()
+        void OnVoiceParticipantUpdated(IEnumerable<IVoiceParticipant> voiceParticipants)
         {
-            m_VoiceService.LeaveAsync().ContinueWith(t =>
+            CurrentVoiceStatus = m_PresenceVivoxServiceComponents.VoiceService.SelfVoiceParticipant != null ? VoiceStatus.Connected : VoiceStatus.NotConnected;
+            VoiceParticipantUpdated?.Invoke(voiceParticipants);
+        }
+
+        async Task OnJoinVoice()
+        {
+            await m_PresenceVivoxServiceComponents.VoiceService.JoinAsync();
+        }
+
+        async Task OnLeaveVoice()
+        {
+            await m_PresenceVivoxServiceComponents.VoiceService.LeaveAsync().ContinueWith(t =>
             {
                 DisconnectedToVoice();
             }, TaskContinuationOptions.ExecuteSynchronously);
         }
-        
+
         void DisconnectedToVoice()
         {
             CurrentVoiceStatus = VoiceStatus.NotConnected;
         }
-        
-        public static VoiceId GetVoiceId(VoiceParticipant? voiceParticipant)
+
+        public static CommunicationId GetVoiceId(IVoiceParticipant voiceParticipant)
         {
-            return voiceParticipant?.VoiceId ?? VoiceId.None;
+            return voiceParticipant?.Id ?? CommunicationId.None;
         }
 #endif
-        public bool Muted {
+        public bool Muted
+        {
             get
             {
 #if USE_VIVOX
-                return m_VoiceService.Muted;
+                return VivoxService.Instance != null && m_PresenceVivoxServiceComponents.VoiceService.Muted;
 #else
                 return true;
 #endif
@@ -116,16 +177,20 @@ namespace Unity.ReferenceProject.Presence
             set
             {
 #if USE_VIVOX
-                m_VoiceService.Muted = value;
+                if (VivoxService.Instance != null)
+                {
+                    m_PresenceVivoxServiceComponents.VoiceService.Muted = value;
+                }
 #endif
                 MuteStatusUpdated?.Invoke(value);
-            } 
+            }
         }
 
-        public VoiceParticipant? GetVoiceParticipant(IParticipant participant)
+        [NotNull]
+        public IVoiceParticipant GetVoiceParticipant(IParticipant participant)
         {
 #if USE_VIVOX
-            return m_VoiceService.GetServiceParticipant((Participant)participant);
+            return m_PresenceVivoxServiceComponents.VoiceService.GetServiceParticipant((Participant)participant);
 #else
             return null;
 #endif

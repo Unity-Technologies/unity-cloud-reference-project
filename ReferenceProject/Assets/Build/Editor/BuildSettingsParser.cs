@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using Unity.Cloud.Common.Runtime;
 using UnityEditor;
 using UnityEditor.Build;
 #if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
@@ -11,32 +9,13 @@ using UnityEngine;
 
 namespace Unity.ReferenceProject.Editor
 {
-    public class BuildSettingsParser
+    public static class Utils
     {
-        Dictionary<string, string> m_CommandLineArgsByKey;
-
-        public BuildTarget ActiveBuildTarget { get; private set; }
-
-        public string BuildDirectory { get; private set; }
-
-        public void StartParsing()
-        {
-            Initialize();
-            ParseArguments();
-            ActOnHandledArguments();
-        }
-
-        void Initialize()
-        {
-            m_CommandLineArgsByKey = new Dictionary<string, string>();
-            ActiveBuildTarget = BuildTarget.NoTarget;
-            BuildDirectory = BuilderConstants.DEFAULT_BUILD_DIRECTORY;
-        }
-
-        void ParseArguments()
+        public static IDictionary<string, string> ParseArguments()
         {
             var commandLinesArgs = Environment.GetCommandLineArgs();
             var len = commandLinesArgs.Length;
+            var arguments = new Dictionary<string, string>(len);
             for (var i = 0; i < len; ++i)
             {
                 var argument = commandLinesArgs[i];
@@ -47,52 +26,52 @@ namespace Unity.ReferenceProject.Editor
                     var value = commandLinesArgs[i + 1];
                     if (!isLast && !value.StartsWith("-"))
                     {
-                        m_CommandLineArgsByKey.Add(argument, value);
+                        arguments.Add(argument, value);
                     }
                 }
             }
+            return arguments;
+        }
+    }
+
+    public class BuildSettingsParser
+    {
+        public BuildTarget ActiveBuildTarget { get; private set; }
+
+        public string BuildDirectory { get; private set; }
+
+        public void StartParsing()
+        {
+            Initialize();
+            ProcessHandledArguments(Utils.ParseArguments());
         }
 
-        void ActOnHandledArguments()
+        void Initialize()
         {
-            if (m_CommandLineArgsByKey.ContainsKey(BuilderArguments.APP_ID))
-            {
-                SetAppID(m_CommandLineArgsByKey[BuilderArguments.APP_ID],
-                    m_CommandLineArgsByKey[BuilderArguments.APP_NAME],
-                    m_CommandLineArgsByKey[BuilderArguments.APP_DISPLAY_NAME]);
-            }
-
-            if (m_CommandLineArgsByKey.ContainsKey(BuilderArguments.BUILD_TARGET))
-            {
-                SwitchToRespectiveBuildTarget(m_CommandLineArgsByKey[BuilderArguments.BUILD_TARGET]);
-            }
-
-            if (m_CommandLineArgsByKey.ContainsKey(BuilderArguments.OUTPUT_PATH))
-            {
-                BuildDirectory = m_CommandLineArgsByKey[BuilderArguments.OUTPUT_PATH];
-            }
+            ActiveBuildTarget = BuildTarget.NoTarget;
+            BuildDirectory = BuilderConstants.DEFAULT_BUILD_DIRECTORY;
         }
 
-        static void SetAppID(string appID, string appName, string appDisplayName)
+        void ProcessHandledArguments(IDictionary<string, string> arguments)
         {
-            var settings = ScriptableObject.CreateInstance<UnityCloudPlayerSettings>();
 
-            settings.AppId = appID;
-            settings.AppName = appName;
-            settings.AppDisplayName = appDisplayName;
+            if (arguments.TryGetValue(BuilderArguments.BUILD_TARGET, out var buildTarget))
+            {
+                SwitchToRespectiveBuildTarget(buildTarget);
+            }
 
-            const string directory = "Assets/Resources/";
+            if (arguments.TryGetValue(BuilderArguments.OUTPUT_PATH, out var outputPath))
+            {
+                BuildDirectory = outputPath;
+            }
 
-            if (!AssetDatabase.IsValidFolder(directory))
-                Directory.CreateDirectory(directory);
-
-            var assetPath = $"{directory}{UnityCloudPlayerSettings.k_AssetName}.asset";
-            AssetDatabase.CreateAsset(settings, assetPath);
-
-            EditorUtility.SetDirty(settings);
-            AssetDatabase.SaveAssetIfDirty(settings);
-
-            Debug.Log($"App ID successfully set in '{assetPath}'");
+            if (arguments.TryGetValue(BuilderArguments.APP_ID, out var appId)
+                && arguments.TryGetValue(BuilderArguments.APP_NAME, out var appName)
+                && arguments.TryGetValue(BuilderArguments.APP_DISPLAY_NAME, out var appDisplayName)
+                && arguments.TryGetValue(BuilderArguments.ORGANIZATION_ID, out var organizationId))
+            {
+                BuildCloudPlayerSettingsProvider.CreateCloudPlayerSettings(appId, appName, appDisplayName, organizationId);
+            }
         }
 
         void SwitchToRespectiveBuildTarget(string buildTarget)
@@ -110,7 +89,7 @@ namespace Unity.ReferenceProject.Editor
                 case BuilderConstants.OSX_BUILD_TARGET:
                     ActiveBuildTarget = BuildTarget.StandaloneOSX;
 #if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
-                    UserBuildSettings.architecture = MacOSArchitecture.x64;
+                    UserBuildSettings.architecture = OSArchitecture.x64;
 #endif
                     break;
 

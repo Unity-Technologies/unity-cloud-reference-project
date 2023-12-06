@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Unity.Cloud.Assets;
 using Unity.Cloud.Common;
 using Unity.Cloud.DataStreaming.Runtime;
 using UnityEngine;
@@ -17,31 +18,34 @@ namespace Unity.ReferenceProject.DataStreaming
     {
         const float k_BoundsFillRatio = 0.9f;
         Bounds m_TotalBound;
-        IDataStreamer m_DataStreamer;
+        IStage m_Stage;
 
         [Inject]
-        void Setup(ISceneEvents sceneEvents, IDataStreamerProvider dataStreamerProvider)
+        void Setup(IAssetEvents assetEvents, IDataStreamerProvider dataStreamerProvider)
         {
-            sceneEvents.SceneOpened += OnSceneOpened;
-            sceneEvents.SceneClosed += OnSceneClosed;
+            assetEvents.AssetLoaded += OnAssetLoad;
+            assetEvents.AssetUnloaded += OnAssetUnload;
 
-            m_DataStreamer = dataStreamerProvider.DataStreamer;
-        }
-        
-        void OnSceneOpened(IScene scene)
-        {
-            m_DataStreamer.StreamingStateChanged += OnStreamingStateChanged;
+            dataStreamerProvider.DataStreamer.StageCreated.Subscribe(stage => m_Stage = stage);
+            dataStreamerProvider.DataStreamer.StageDestroyed.Subscribe(() => m_Stage = null);
         }
 
-        void OnSceneClosed()
+        void OnAssetLoad(IAsset asset, IDataset dataset)
         {
-            m_DataStreamer.StreamingStateChanged -= OnStreamingStateChanged;
+            m_Stage.StreamingStateChanged.Subscribe(OnStreamingStateChanged);
+        }
+
+        void OnAssetUnload()
+        {
+            if (m_Stage != null)
+            {
+                m_Stage.StreamingStateChanged.Unsubscribe(OnStreamingStateChanged);
+            }
         }
 
         async void OnStreamingStateChanged(StreamingState state)
         {
-            var volumeOfInterest = await m_DataStreamer.GetDefaultVolumeOfInterestAsync();
-            m_TotalBound = volumeOfInterest.Bounds;
+            m_TotalBound = await m_Stage.GetWorldBoundsAsync();
         }
 
         public Bounds GetBound()

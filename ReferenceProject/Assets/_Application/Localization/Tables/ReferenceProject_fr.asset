@@ -79,7 +79,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 11157830847590400
-    m_Localized: Theme
+    m_Localized: "Th\xE8me"
     m_Metadata:
       m_Items: []
   - m_Id: 14082381072818176
@@ -99,7 +99,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 20262629618642944
-    m_Localized: "Etes-vous s\xFBr de vouloir quitter le mode RV?"
+    m_Localized: "\xCAtes-vous s\xFBr de vouloir quitter le mode RV?"
     m_Metadata:
       m_Items: []
   - m_Id: 25308710870966272
@@ -108,6 +108,10 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 25308774330785792
     m_Localized: Clair
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96746919168286720
+    m_Localized: Annuler
     m_Metadata:
       m_Items: []
   references:

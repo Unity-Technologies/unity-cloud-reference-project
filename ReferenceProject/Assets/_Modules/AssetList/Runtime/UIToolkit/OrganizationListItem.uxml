@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <Style src="OrganizationListStyle.uss" />
+    <appui:Button quiet="true" trailing-icon="check" class="button__organization-list-item" />
+</ui:UXML>

@@ -2,7 +2,9 @@
     "name": "Unity.ReferenceProject.InputDisabling.Runtime",
     "rootNamespace": "Unity.ReferenceProject.InputDisabling",
     "references": [
-        "GUID:861d797aa4d05294d986157ebb717a0b"
+        "GUID:861d797aa4d05294d986157ebb717a0b",
+        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4",
+        "GUID:b024a75f7ab0cd44b8467e05ca5da44c"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,3 +1,4 @@
+using System;
 using Unity.Cloud.Presence;
 using Unity.AppUI.UI;
 using Unity.ReferenceProject.Common;
@@ -9,21 +10,38 @@ namespace Unity.ReferenceProject.Presence
     public class CollaboratorDataUI
     {
         public ColorPalette AvatarColorPalette { get; set; }
-        static readonly string k_CollaboratorDataBadgeUssClassName = "collaborator-data-badge";
-        static readonly string k_CollaboratorDataHeaderUssClassName = "collaborator-data-header";
-        static readonly string k_CollaboratorDataMicrophoneUssClassName = "collaborator-data-microphone";
+        public StyleSheet VoiceLevelStyleSheet { get; set; }
+        static readonly string k_CollaboratorDataBadgeUssClassName = "avatar_badge__collaborator-data";
+        static readonly string k_CollaboratorDataHeaderUssClassName = "heading__collaborator-data";
+        static readonly string k_CollaboratorDataMicrophoneUssClassName = "button__collaborator-data-microphone";
+        static readonly string k_FollowButtonUssClassName = "button__collaborator-follow";
+        bool m_FollowButtonSelected = false;
         
         public readonly IParticipant Participant;
+        public event Action<IParticipant> UIEnterFollowMode;
+        public event Action<IParticipant> UIExitFollowMode;
 
         public CollaboratorDataUI(IParticipant participant)
         {
             Participant = participant;
         }
-        
-        public VoiceParticipant? VoiceParticipant { get; set; }
+
+        IVoiceParticipant m_VoiceParticipant;
+        public IVoiceParticipant VoiceParticipant
+        {
+            get { return m_VoiceParticipant; }
+            set
+            {
+                m_VoiceParticipant = value;
+                VoiceLevelIndicator?.SetVoiceLevel((float)(m_VoiceParticipant?.AudioIntensity ?? 0f));
+            }
+        }
+
         public bool IsVoiceParticipant => VoiceParticipant != null;
-
-
+        public ActionButton FollowButton { get; set; }
+        
+        public VoiceLevelMicrophoneButton VoiceLevelIndicator { get; set; }
+        
         public VisualElement CreateVisualTree()
         {
             var element = new VisualElement();
@@ -44,27 +62,55 @@ namespace Unity.ReferenceProject.Presence
             header.AddToClassList(k_CollaboratorDataHeaderUssClassName);
             element.Add(header);
             
-            var icon = new Icon();
-            if (VoiceParticipant is { IsMutedForAll: false })
+            var voiceLevelIndicator = new VoiceLevelMicrophoneButton(false);
+            voiceLevelIndicator.styleSheets.Add(VoiceLevelStyleSheet);
+            voiceLevelIndicator.AddToClassList(k_CollaboratorDataMicrophoneUssClassName);
+            voiceLevelIndicator.SetEnabled(false);
+            voiceLevelIndicator.tooltip = "@Presence:VoiceLevel";
+
+            VoiceLevelIndicator = voiceLevelIndicator;
+            element.Add(voiceLevelIndicator);
+            
+            var followButton = new ActionButton();
+            followButton.label = m_FollowButtonSelected ? "@Presence:Unfollow" : "@Presence:Follow";
+            followButton.selected = m_FollowButtonSelected;
+            followButton.focusable = false;
+            followButton.clicked += () => OnClickFollow(Participant);
+            followButton.AddToClassList(k_FollowButtonUssClassName);
+
+            FollowButton = followButton;
+            element.Add(followButton);
+
+            return element;
+        }
+        
+        void OnClickFollow(IParticipant participant)
+        {
+            if (!FollowButton.selected)
             {
-                icon.name = "Microphone";
-                icon.iconName = "microphone";
+                UIEnterFollowMode?.Invoke(participant);
+                FollowButton.label = "@Presence:Unfollow";
+                m_FollowButtonSelected = true;
             }
             else
             {
-                icon.name = "MicrophoneSlash";
-                icon.iconName = "microphone-slash";
-
-                if (!IsVoiceParticipant)
-                {
-                    icon.SetEnabled(false);
-                    icon.tooltip = "@Presence:Vivox_Unsupported";
-                }
+                UIExitFollowMode?.Invoke(participant);
+                FollowButton.label = "@Presence:Follow";
+                m_FollowButtonSelected = false;
             }
-            
-            icon.AddToClassList(k_CollaboratorDataMicrophoneUssClassName);
-            element.Add(icon);
-            return element;
+        }
+
+        public void FollowModeSelected(ParticipantId id)
+        {
+            FollowButton.selected = true;
+            m_FollowButtonSelected = true;
+        }
+
+        public void UpdateButton(bool isSelected)
+        {
+            m_FollowButtonSelected = isSelected;
+            FollowButton.label = m_FollowButtonSelected ? "@Presence:Unfollow" : "@Presence:Follow";
+            FollowButton.selected = m_FollowButtonSelected;
         }
     }
 }

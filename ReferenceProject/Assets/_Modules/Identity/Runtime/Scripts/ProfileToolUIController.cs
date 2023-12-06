@@ -1,19 +1,12 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using Unity.Cloud.Identity;
-using Unity.ReferenceProject.StateMachine;
+﻿using Unity.ReferenceProject.StateMachine;
 using Unity.ReferenceProject.Tools;
-using UnityEngine;
-using Unity.AppUI.UI;
-using Unity.Cloud.Presence;
-using Unity.Cloud.Presence.Runtime;
 using Unity.ReferenceProject.Common;
 using Unity.ReferenceProject.Presence;
+using Unity.AppUI.UI;
+using UnityEngine;
 using UnityEngine.UIElements;
 using Zenject;
 using Button = Unity.AppUI.UI.Button;
-using Debug = UnityEngine.Debug;
 
 namespace Unity.ReferenceProject.Identity
 {
@@ -33,34 +26,34 @@ namespace Unity.ReferenceProject.Identity
         ColorPalette m_AvatarColorPalette;
 
         IAppStateController m_AppStateController;
-        IUrlRedirectionAuthenticator m_Authenticator;
-        IUserInfoProvider m_UserInfoProvider;
-        PresenceStreamingRoom m_PresenceStreamingRoom;
+        ICloudSession m_Session;
 
         Heading m_UserName;
         Button m_Button;
         AvatarBadge m_Badge;
 
-        [Inject]
-        void Setup(IUrlRedirectionAuthenticator authenticator, IUserInfoProvider userInfoProvider, IAppStateController appStateController, PresenceStreamingRoom streamingRoom)
+        public AppState LogoutState
         {
-            m_Authenticator = authenticator;
-            m_UserInfoProvider = userInfoProvider;
+            get => m_LogoutState;
+            set => m_LogoutState = value;
+        }
+
+        [Inject]
+        void Setup(ICloudSession session, IAppStateController appStateController)
+        {
+            m_Session = session;
             m_AppStateController = appStateController;
-            m_PresenceStreamingRoom = streamingRoom;
         }
 
         void OnEnable()
         {
-            m_Authenticator.AuthenticationStateChanged += OnAuthenticationStateChanged;
-            m_PresenceStreamingRoom.RoomJoined += OnRoomJoined;
-            m_PresenceStreamingRoom.RoomLeft += OnRoomLeft;
-            OnAuthenticationStateChanged(m_Authenticator.AuthenticationState);
+            m_Session.SessionStateChanged += OnSessionStateChanged;
+            OnSessionStateChanged(m_Session.State);
         }
 
         void OnDisable()
         {
-            m_Authenticator.AuthenticationStateChanged -= OnAuthenticationStateChanged;
+            m_Session.SessionStateChanged -= OnSessionStateChanged;
         }
 
         protected override VisualElement CreateVisualTree(VisualTreeAsset template)
@@ -70,31 +63,38 @@ namespace Unity.ReferenceProject.Identity
             m_UserName = root.Q<Heading>(m_UserNameHeaderElement);
             m_Button = root.Q<Button>(m_LogoutButtonElement);
 
-            m_Button.clickable.clicked += Logout;
+            m_Button.clickable.clicked += OnLogoutClicked;
+
+            OnSessionStateChanged(m_Session.State);
 
             return root;
         }
 
-        async void Logout()
+        void OnLogoutClicked()
         {
-            await m_Authenticator.LogoutAsync();
-            CloseSelf();
+            Logout();
+        }
 
+        void Logout()
+        {
+            CloseSelf();
             m_AppStateController.PrepareTransition(m_LogoutState).Apply();
         }
 
-        async void OnAuthenticationStateChanged(AuthenticationState obj)
+        void OnSessionStateChanged(SessionState state)
         {
-            if (obj == AuthenticationState.LoggedIn)
+            if (state == SessionState.LoggedIn)
             {
-                var userInfo = await m_UserInfoProvider.GetUserInfoAsync();
-
                 if (m_UserName != null)
-                    m_UserName.text = userInfo.Name;
+                {
+                    m_UserName.text = m_Session.UserData.Name;
+                }
 
                 UpdateButtonContent(true);
 
                 m_Button?.SetEnabled(true);
+                m_Session.UserData.ColorChanged -= OnBadgeColorChanged;
+                m_Session.UserData.ColorChanged += OnBadgeColorChanged;
             }
             else
             {
@@ -105,6 +105,11 @@ namespace Unity.ReferenceProject.Identity
 
                 m_Button?.SetEnabled(false);
             }
+        }
+
+        void OnBadgeColorChanged(Color newColor)
+        {
+            UpdateBadgeColor(newColor);
         }
 
         public override VisualElement GetButtonContent()
@@ -145,38 +150,26 @@ namespace Unity.ReferenceProject.Identity
             }
         }
 
-        void UpdateButtonColor(Color color)
+        public void ResetBadgeColor()
+        {
+            UpdateBadgeColor(Color.grey);
+        }
+
+        public void UpdateBadgeColorIndex(int colorIndex)
+        {
+            if (m_Badge == null)
+                return;
+            
+            Color color = m_AvatarColorPalette.GetColor(colorIndex);
+            m_Badge.backgroundColor = color;
+        }
+
+        public void UpdateBadgeColor(Color color)
         {
             if (m_Badge == null)
                 return;
             
             m_Badge.backgroundColor = color;
-        }
-
-        void OnRoomJoined(Room room)
-        {
-            room.ParticipantAdded += OnParticipantAdded;
-            
-            var owner = room.ConnectedParticipants.FirstOrDefault(p => p.IsSelf);
-            if (owner == null)
-            {
-                return;
-            }
-
-            UpdateButtonColor(m_AvatarColorPalette.GetColor(owner.ColorIndex));
-        }
-
-        void OnParticipantAdded(IParticipant participant)
-        {
-            if (participant.IsSelf)
-            {
-                UpdateButtonColor(m_AvatarColorPalette.GetColor(participant.ColorIndex));
-            }
-        }
-
-        void OnRoomLeft()
-        {
-            UpdateButtonColor(Color.gray);
         }
     }
 }

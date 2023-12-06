@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Cloud.Annotation;
 using Unity.Cloud.Annotation.Runtime;
+using Unity.Cloud.Assets;
 using Unity.Cloud.Common;
+using Unity.ReferenceProject.AssetManager;
 using Unity.ReferenceProject.DataStores;
+using Unity.ReferenceProject.DataStreaming;
 using Unity.ReferenceProject.Messaging;
 using UnityEngine;
 using Zenject;
@@ -22,10 +25,10 @@ namespace Unity.ReferenceProject.Annotation
 
     public interface IAnnotationController
     {
-        public void Initialize();
+        public void Initialize(DatasetDescriptor datasetDescriptor);
         public void Shutdown();
 
-        public void GetTopic(Guid guid, Action<ITopic> callback);
+        public void GetTopic(TopicId topicId, Action<ITopic> callback);
         public void CreateTopic(AnnotationData data);
         public void UpdateTopic(ITopic topic, AnnotationData data);
         public void DeleteTopic(ITopic topic);
@@ -35,36 +38,36 @@ namespace Unity.ReferenceProject.Annotation
 
         public event Action<IEnumerable<ITopic>> Initialized;
         public event Action<ITopic> TopicCreatedOrUpdated;
-        public event Action<Guid> TopicRemoved;
+        public event Action<TopicId> TopicRemoved;
     }
 
     public class AnnotationController : IAnnotationController
     {
-        AnnotationRepository m_AnnotationRepository;
+        IAnnotationRepository m_AnnotationRepository;
 
         IServiceHttpClient m_ServiceHttpClient;
         IServiceHostResolver m_ServiceHostResolver;
-        PropertyValue<IScene> m_SelectedScene;
         IAppMessaging m_AppMessaging;
+
+        public static readonly int k_TextMaxChar = 512;
 
         public event Action<IEnumerable<ITopic>> Initialized;
         public event Action<ITopic> TopicCreatedOrUpdated;
-        public event Action<Guid> TopicRemoved;
+        public event Action<TopicId> TopicRemoved;
 
         [Inject]
-        public void Setup(IServiceHttpClient serviceHttpClient, IServiceHostResolver cloudConfiguration, PropertyValue<IScene> selectedScene, IAppMessaging appMessaging)
+        public void Setup(IServiceHttpClient serviceHttpClient, IServiceHostResolver cloudConfiguration, IAppMessaging appMessaging)
         {
             m_ServiceHttpClient = serviceHttpClient;
             m_ServiceHostResolver = cloudConfiguration;
-            m_SelectedScene = selectedScene;
             m_AppMessaging = appMessaging;
         }
 
-        public void Initialize()
+        public void Initialize(DatasetDescriptor datasetDescriptor)
         {
             try
             {
-                InitializeForceSceneAsync().ConfigureAwait(false);
+                InitializeAsync(datasetDescriptor).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -80,7 +83,6 @@ namespace Unity.ReferenceProject.Annotation
                 m_AnnotationRepository.TopicCreated -= OnTopicCreatedOrUpdatedNotification;
                 m_AnnotationRepository.TopicUpdated -= OnTopicCreatedOrUpdatedNotification;
                 m_AnnotationRepository.TopicRemoved -= OnTopicRemovedNotification;
-                m_AnnotationRepository.Dispose();
             }
 
             m_AnnotationRepository = null;
@@ -158,7 +160,7 @@ namespace Unity.ReferenceProject.Annotation
             DeleteTopicAsync(topic.Id).ConfigureAwait(false);
         }
 
-        async Task DeleteTopicAsync(Guid topicId)
+        async Task DeleteTopicAsync(TopicId topicId)
         {
             try
             {
@@ -216,7 +218,7 @@ namespace Unity.ReferenceProject.Annotation
             DeleteCommentAsync(topic, comment.Id).ConfigureAwait(false);
         }
 
-        async Task DeleteCommentAsync(ITopic topic, Guid commentId)
+        async Task DeleteCommentAsync(ITopic topic, CommentId commentId)
         {
             try
             {
@@ -229,15 +231,9 @@ namespace Unity.ReferenceProject.Annotation
             }
         }
 
-        async Task InitializeForceSceneAsync()
+        async Task InitializeAsync(DatasetDescriptor datasetDescriptor)
         {
-            var scene = m_SelectedScene.GetValue();
-            await InitializeAsync(scene);
-        }
-
-        async Task InitializeAsync(IScene scene)
-        {
-            m_AnnotationRepository = new AnnotationRepository(scene, m_ServiceHttpClient, m_ServiceHostResolver);
+            m_AnnotationRepository = AnnotationRepositoryFactory.Create(datasetDescriptor, m_ServiceHttpClient, m_ServiceHostResolver);
 
             try
             {
@@ -258,16 +254,16 @@ namespace Unity.ReferenceProject.Annotation
             }
         }
 
-        public void GetTopic(Guid guid, Action<ITopic> callback)
+        public void GetTopic(TopicId topicId, Action<ITopic> callback)
         {
-            GetTopicAsync(guid, callback).ConfigureAwait(false);
+            GetTopicAsync(topicId, callback).ConfigureAwait(false);
         }
 
-        async Task GetTopicAsync(Guid guid, Action<ITopic> callback)
+        async Task GetTopicAsync(TopicId topicId, Action<ITopic> callback)
         {
             try
             {
-                var topic = await m_AnnotationRepository.GetTopicAsync(guid);
+                var topic = await m_AnnotationRepository.GetTopicAsync(topicId);
                 callback?.Invoke(topic);
             }
             catch (ServiceException e)

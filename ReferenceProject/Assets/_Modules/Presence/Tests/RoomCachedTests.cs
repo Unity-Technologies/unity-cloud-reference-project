@@ -15,7 +15,7 @@ namespace Unity.ReferenceProject.Presence.Tests.Runtime
 
             // Creating a room and start monitor
             var room = await m_PresenceManager.GetRoomAsync(roomID);
-            await room.StartMonitoringAsync(new NoRetryPolicy(), new CancellationToken());
+            await room.StartMonitoringAsync();
 
             // Add participants on a server
             m_DummyServer.AddParticipant(GetNextParticipantID, roomID.ToString());
@@ -27,7 +27,7 @@ namespace Unity.ReferenceProject.Presence.Tests.Runtime
             Assert.AreEqual(2, roomCached.Participants.Count);
 
             // Stop monitoring
-            await room.StopMonitoringAsync(null, new CancellationToken());
+            await room.StopMonitoringAsync();
             Assert.AreEqual(0, room.ConnectedParticipants.Count);
             Assert.AreEqual(2, roomCached.Participants.Count);
         }
@@ -42,7 +42,7 @@ namespace Unity.ReferenceProject.Presence.Tests.Runtime
             RoomCached roomCached = new RoomCached(room);
             int callbackCount = 0;
             roomCached.ParticipantsChanged += () => callbackCount++;
-            await room.StartMonitoringAsync(new NoRetryPolicy(), new CancellationToken());
+            await room.StartMonitoringAsync();
             Assert.AreEqual(0, callbackCount); // Because no participants
 
             // Add participant on a server

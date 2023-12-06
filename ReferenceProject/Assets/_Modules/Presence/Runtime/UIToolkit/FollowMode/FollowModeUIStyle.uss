@@ -1,0 +1,35 @@
+.container__follow-border {
+    background-color: rgba(255, 255, 255, 0);
+    border-bottom-width: 6px;
+    border-top-width: 6px;
+    border-left-width: 6px;
+    border-right-width: 6px;
+    margin-top: 48px;
+    align-items: flex-end;
+    height: 100%;
+}
+
+.container__follow-textbox{
+    align-items: center;
+    border-bottom-left-radius: 4px;
+    flex-direction: row;
+    padding: 0 4px 0 4px;
+}
+
+.container__follow-info{
+    margin-right: 5px;
+    margin-left: 5px;
+    flex-direction: row;
+}
+
+.text__follow{
+    margin: 2px;
+    padding-bottom: 4px;
+    padding-top: 4px;
+}
+
+.button__follow{
+    margin: 4px 0px 6px 0px;
+    padding: 8px;
+    border-radius: 4px;
+}

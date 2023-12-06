@@ -12,7 +12,10 @@ namespace Unity.ReferenceProject.Navigation
     {
         [SerializeField]
         VisualTreeAsset m_ButtonTemplate;
-        
+
+        [SerializeField]
+        bool m_ShowButtonLabels;
+
         readonly Dictionary<NavigationModeData, ActionButton> m_NavigationModes = new();
         INavigationManager m_NavigationManager;
 
@@ -45,6 +48,8 @@ namespace Unity.ReferenceProject.Navigation
         protected override VisualElement CreateVisualTree(VisualTreeAsset template)
         {
             var root = base.CreateVisualTree(template);
+            
+            var container = root.Q("panel-content") ?? root;
 
             var navigationModes = m_NavigationManager.NavigationModes;
 
@@ -66,7 +71,7 @@ namespace Unity.ReferenceProject.Navigation
                         button.style.borderBottomLeftRadius = button.style.borderBottomRightRadius = 4;
                     }
 
-                    root.Add(button);
+                    container.Add(button);
                 }
             }
 
@@ -81,7 +86,12 @@ namespace Unity.ReferenceProject.Navigation
             var buttonTemplate = m_ButtonTemplate.CloneTree();
             buttonTemplate.tooltip = navigationMode.ModeName;
             var actionButton = buttonTemplate.Q<ActionButton>("ActionButton");
-            actionButton.label = navigationMode.ModeName;
+
+            if (m_ShowButtonLabels)
+            {
+                actionButton.label = navigationMode.ModeName;
+            }
+
             actionButton.icon = navigationMode.Icon.name;
             actionButton.clickable.clicked += () => OnModeClick(idMode);
             m_NavigationModes.Add(navigationMode, actionButton);

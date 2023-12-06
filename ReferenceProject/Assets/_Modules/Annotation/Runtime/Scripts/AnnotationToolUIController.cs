@@ -1,4 +1,4 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,18 +6,28 @@ using Unity.ReferenceProject.Tools;
 using UnityEngine;
 using Unity.Cloud.Annotation;
 using Unity.Cloud.Annotation.Runtime;
-using Unity.Cloud.Common;
+using Unity.Cloud.Assets;
+using Unity.ReferenceProject.Common;
 using Unity.ReferenceProject.DataStores;
+using Unity.ReferenceProject.DataStreaming;
 using Unity.ReferenceProject.Navigation;
 using Unity.ReferenceProject.ObjectSelection;
-using Unity.ReferenceProject.UIInputBlocker;
+using Unity.ReferenceProject.InputSystem;
 using UnityEngine.UIElements;
 using Zenject;
+using UnityEngine.InputSystem;
+using Unity.ReferenceProject.InputSystem.VR;
+using UnityEngine.XR.Interaction.Toolkit;
 
 namespace Unity.ReferenceProject.Annotation
 {
     public class AnnotationToolUIController : ToolUIController
     {
+        const string k_MouseSelectActionKey = "<Mouse>/leftButton";
+        const string k_TouchSelectActionKey = "<Touchscreen>/primaryTouch/tap";
+        const string k_MouseSelectAction = "ClickAction";
+        const string k_TouchSelectAction = "TouchAction";
+
         [SerializeField]
         TopicPanelController m_TopicPanel;
 
@@ -25,41 +35,74 @@ namespace Unity.ReferenceProject.Annotation
         CommentPanelController m_CommentPanel;
 
         [SerializeField]
-        AnnotationTextInputController m_TextInput;
-
-        [SerializeField]
         LayerMask m_IndicatorsLayerMask;
 
         ITopic m_EditedTopic;
-        IComment m_EditedComment;
         AnnotationIndicatorController m_WorkingIndicator;
         ITopic m_CurrentTopic;
 
         IAnnotationController m_Controller;
         IAnnotationIndicatorManager m_IndicatorManager;
-        IUIInputBlockerEvents m_InputBlockerEvents;
-        Camera m_Camera;
+        IInputManager m_InputManager;
+        ICameraProvider m_CameraProvider;
         INavigationManager m_NavigationManager;
         ObjectSelectionActivator m_ObjectSelectionActivator;
         PropertyValue<IObjectSelectionInfo> m_ObjectSelectionProperty;
+
+        InputScheme m_InputScheme;
+        InputScheme[] m_InputSchemeVR;
+        Dictionary<InputAction, XRRayInteractor> m_ActionToVRControllers;
+
+        Ray m_SelectionRay;
+        bool m_SelectionStarted;
 
         [Inject]
         void Setup(
             IAnnotationController annotationController,
             IAnnotationIndicatorManager indicatorManager,
-            IUIInputBlockerEvents inputBlockerEvents,
+            IInputManager inputManager,
             PropertyValue<IObjectSelectionInfo> objectSelectionProperty,
             ObjectSelectionActivator objectSelectionActivator,
-            Camera cam,
-            INavigationManager navigationManager)
+            ICameraProvider cameraProvider,
+            INavigationManager navigationManager,
+            IVRControllerList vrControllers,
+            IAssetEvents assetEvents)
         {
             m_Controller = annotationController;
             m_IndicatorManager = indicatorManager;
-            m_InputBlockerEvents = inputBlockerEvents;
             m_ObjectSelectionProperty = objectSelectionProperty;
             m_ObjectSelectionActivator = objectSelectionActivator;
-            m_Camera = cam;
+            m_CameraProvider = cameraProvider;
             m_NavigationManager = navigationManager;
+            m_InputManager = inputManager;
+            SetupInputs(vrControllers);
+
+            assetEvents.AssetLoaded += OnAssetLoaded;
+            assetEvents.AssetUnloaded += OnAssetUnloaded;
+        }
+
+        void OnAssetLoaded(IAsset asset, IDataset dataset)
+        {
+            m_Controller.Initialize(dataset.Descriptor);
+        }
+
+        void OnAssetUnloaded()
+        {
+            m_Controller.Shutdown();
+        }
+
+        void SetupInputs(IVRControllerList vrControllers)
+        {
+            if (vrControllers == null)
+            {
+                SetupRegularInputs();
+            }
+            else
+            {
+                m_ActionToVRControllers = new Dictionary<InputAction, XRRayInteractor>();
+                vrControllers.GetSelectActionFromControllers(m_ActionToVRControllers);
+                SetupVRInputs(vrControllers);
+            }
         }
 
         protected override void Awake()
@@ -75,6 +118,47 @@ namespace Unity.ReferenceProject.Annotation
             m_WorkingIndicator.gameObject.SetActive(false);
         }
 
+        void SetupRegularInputs()
+        {
+            InputAction clickAction = new InputAction(k_MouseSelectAction, InputActionType.Button, k_MouseSelectActionKey, "");
+            InputAction touchAction = new InputAction(k_TouchSelectAction, InputActionType.Button, k_TouchSelectActionKey, "");
+
+            m_InputScheme = m_InputManager.GetOrCreateInputScheme(InputSchemeType.Annotation, InputSchemeCategory.Tools, new InputAction[] { clickAction, touchAction });
+
+            m_InputScheme[k_MouseSelectAction].OnStarted += AnnotationSelectionStarted;
+            m_InputScheme[k_MouseSelectAction].OnCanceled += AnnotationSelectionCanceled;
+            m_InputScheme[k_MouseSelectAction].OnPerformed += PerformSelection;
+            m_InputScheme[k_MouseSelectAction].IsUIPointerCheckEnabled = true;
+
+            m_InputScheme[k_TouchSelectAction].OnStarted += AnnotationSelectionStarted;
+            m_InputScheme[k_TouchSelectAction].OnCanceled += AnnotationSelectionCanceled;
+            m_InputScheme[k_TouchSelectAction].OnPerformed += PerformSelection;
+            m_InputScheme[k_TouchSelectAction].IsUIPointerCheckEnabled = true;
+        }
+
+        void SetupVRInputs(IVRControllerList vrControllers)
+        {
+            List<InputScheme> inputSchemes = new List<InputScheme>();
+
+            foreach (GameObject controller in vrControllers.Controllers)
+            {
+                ActionBasedController xrController = controller.GetComponent<ActionBasedController>();
+                XRRayInteractor xrRayInteractor = controller.GetComponent<XRRayInteractor>();
+
+                if (xrController == null || xrRayInteractor == null)
+                    continue;
+
+                InputScheme inputScheme = m_InputManager.GetOrCreateInputScheme(InputSchemeType.Other, InputSchemeCategory.Tools, new InputAction[] { xrController.selectAction.action });
+                inputScheme[xrController.selectAction.action.name].OnStarted += AnnotationSelectionStartedVR;
+                inputScheme[xrController.selectAction.action.name].OnCanceled += AnnotationSelectionCanceled;
+                inputScheme[xrController.selectAction.action.name].OnPerformed += PerformSelection;
+                inputScheme[xrController.selectAction.action.name].IsUIPointerCheckEnabled = true;
+                inputSchemes.Add(inputScheme);
+            }
+
+            m_InputSchemeVR = inputSchemes.ToArray();
+        }
+
         protected override void OnDestroy()
         {
             base.OnDestroy();
@@ -82,108 +166,92 @@ namespace Unity.ReferenceProject.Annotation
             m_Controller.TopicCreatedOrUpdated -= OnTopicCreatedOrUpdated;
             m_Controller.TopicRemoved -= OnTopicRemoved;
             m_Controller.Shutdown();
+
+            m_InputScheme?.Dispose();
+
+            if (m_InputSchemeVR != null)
+            {
+                foreach (InputScheme inputScheme in m_InputSchemeVR)
+                {
+                    inputScheme.Dispose();
+                }
+            }
         }
 
         protected override VisualElement CreateVisualTree(VisualTreeAsset template)
         {
             var rootVisualElement = base.CreateVisualTree(template);
             Initialize(rootVisualElement);
-            m_Controller.Initialize();
 
             return rootVisualElement;
-        }
-
-        protected override void RegisterCallbacks(VisualElement visualElement)
-        {
-            var topicContainer = visualElement.Q("TopicListContainer");
-            topicContainer.RegisterCallback<PointerCaptureEvent>(OnPointerCaptureEvent);
-            topicContainer.RegisterCallback<PointerCaptureOutEvent>(OnPointerCaptureOutEvent);
-
-            var commentContainer = visualElement.Q("CommentListContainer");
-            commentContainer.RegisterCallback<PointerCaptureEvent>(OnPointerCaptureEvent);
-            commentContainer.RegisterCallback<PointerCaptureOutEvent>(OnPointerCaptureOutEvent);
-
-            var title = visualElement.Q("TextInputTitle");
-            title.RegisterCallback<FocusInEvent>(OnFocusIn);
-            title.RegisterCallback<FocusOutEvent>(OnFocusOut);
-
-            var message = visualElement.Q("TextInputMessage");
-            message.RegisterCallback<FocusInEvent>(OnFocusIn);
-            message.RegisterCallback<FocusOutEvent>(OnFocusOut);
-            message.RegisterCallback<PointerCaptureEvent>(OnPointerCaptureEvent);
-            message.RegisterCallback<PointerCaptureOutEvent>(OnPointerCaptureOutEvent);
-        }
-
-        protected override void UnregisterCallbacks(VisualElement visualElement)
-        {
-            var topicContainer = visualElement.Q("TopicListContainer");
-            topicContainer.UnregisterCallback<PointerCaptureEvent>(OnPointerCaptureEvent);
-            topicContainer.UnregisterCallback<PointerCaptureOutEvent>(OnPointerCaptureOutEvent);
-
-            var commentContainer = visualElement.Q("CommentListContainer");
-            commentContainer.UnregisterCallback<PointerCaptureEvent>(OnPointerCaptureEvent);
-            commentContainer.UnregisterCallback<PointerCaptureOutEvent>(OnPointerCaptureOutEvent);
-
-            var title = visualElement.Q("TextInputTitle");
-            title.UnregisterCallback<FocusInEvent>(OnFocusIn);
-            title.UnregisterCallback<FocusOutEvent>(OnFocusOut);
-
-            var message = visualElement.Q("TextInputMessage");
-            message.UnregisterCallback<FocusInEvent>(OnFocusIn);
-            message.UnregisterCallback<FocusOutEvent>(OnFocusOut);
-            message.UnregisterCallback<PointerCaptureEvent>(OnPointerCaptureEvent);
-            message.UnregisterCallback<PointerCaptureOutEvent>(OnPointerCaptureOutEvent);
         }
 
         public override void OnToolOpened()
         {
             m_TopicPanel.Show();
             m_CommentPanel.Hide();
-            m_TextInput.Hide();
 
             m_IndicatorManager.SetIndicatorsVisible();
-            m_InputBlockerEvents.OnDispatchRay += OnDispatchRay;
             EnableObjectSelection();
+            m_InputScheme?.SetEnable(true);
+
+            if (m_InputSchemeVR != null)
+            {
+                foreach (InputScheme inputScheme in m_InputSchemeVR)
+                {
+                    inputScheme.SetEnable(true);
+                }
+            }
 
             m_TopicPanel.TopicSelected += OnTopicSelected;
             m_TopicPanel.TopicDeleted += OnTopicDeleted;
             m_TopicPanel.TopicEdited += OnTopicEdited;
+            m_TopicPanel.TopicSubmitEdited += OnSubmitEditTopic;
+            m_TopicPanel.TopicSubmitted += OnSubmitAddTopic;
+            m_TopicPanel.CancelClicked += OnCancelClicked;
+            m_TopicPanel.ReplySelected += OnReplySelected;
 
-            m_CommentPanel.AddClicked += OnAddComment;
             m_CommentPanel.GotoClicked += OnGotoClicked;
             m_CommentPanel.BackClicked += OnBackClicked;
             m_CommentPanel.CommentDeleted += OnDeleteComment;
-            m_CommentPanel.CommentEdited += OnEditComment;
-
-            m_TextInput.CancelClicked += OnCancelClicked;
-            m_TextInput.AddTopicSubmitClicked += OnSubmitAddTopic;
-            m_TextInput.EditTopicSubmitClicked += OnSubmitEditTopic;
-            m_TextInput.AddCommentSubmitClicked += OnSubmitAddComment;
-            m_TextInput.EditCommentSubmitClicked += OnSubmitEditComment;
+            m_CommentPanel.CommentEdited += OnSubmitEditComment;
+            m_CommentPanel.CommentSubmitted += OnSubmitAddComment;
         }
 
         public override void OnToolClosed()
         {
             CancelInput();
+
+            if (m_CurrentTopic != null)
+            {
+                SelectTopic(null);
+            }
+
             m_IndicatorManager.SetIndicatorsVisible(visible: false);
-            m_InputBlockerEvents.OnDispatchRay -= OnDispatchRay;
             DisableObjectSelection();
+            m_InputScheme?.SetEnable(false);
+
+            if (m_InputSchemeVR != null)
+            {
+                foreach (InputScheme inputScheme in m_InputSchemeVR)
+                {
+                    inputScheme.SetEnable(false);
+                }
+            }
 
             m_TopicPanel.TopicSelected -= OnTopicSelected;
             m_TopicPanel.TopicDeleted -= OnTopicDeleted;
             m_TopicPanel.TopicEdited -= OnTopicEdited;
+            m_TopicPanel.TopicSubmitEdited -= OnSubmitEditTopic;
+            m_TopicPanel.TopicSubmitted -= OnSubmitAddTopic;
+            m_TopicPanel.CancelClicked -= OnCancelClicked;
+            m_TopicPanel.ReplySelected -= OnReplySelected;
 
-            m_CommentPanel.AddClicked -= OnAddComment;
             m_CommentPanel.GotoClicked -= OnGotoClicked;
             m_CommentPanel.BackClicked -= OnBackClicked;
             m_CommentPanel.CommentDeleted -= OnDeleteComment;
-            m_CommentPanel.CommentEdited -= OnEditComment;
-
-            m_TextInput.CancelClicked -= OnCancelClicked;
-            m_TextInput.AddTopicSubmitClicked -= OnSubmitAddTopic;
-            m_TextInput.EditTopicSubmitClicked -= OnSubmitEditTopic;
-            m_TextInput.AddCommentSubmitClicked -= OnSubmitAddComment;
-            m_TextInput.EditCommentSubmitClicked -= OnSubmitEditComment;
+            m_CommentPanel.CommentEdited -= OnSubmitEditComment;
+            m_CommentPanel.CommentSubmitted -= OnSubmitAddComment;
         }
 
         void EnableObjectSelection()
@@ -220,7 +288,7 @@ namespace Unity.ReferenceProject.Annotation
 
         void OnInitialized(IEnumerable<ITopic> topics)
         {
-            m_TopicPanel.RefreshTopic(topics);
+            StartCoroutine(m_TopicPanel.RefreshTopics(topics));
             m_IndicatorManager.SetIndicators(topics);
         }
 
@@ -239,15 +307,10 @@ namespace Unity.ReferenceProject.Annotation
             }
         }
 
-        void OnTopicRemoved(Guid topicId)
+        void OnTopicRemoved(TopicId topicId)
         {
             if (m_CurrentTopic != null && m_CurrentTopic.Id == topicId)
             {
-                if (m_TextInput.IsOpened)
-                {
-                    CancelInput();
-                }
-
                 // Opened topic was deleted, return to topic list
                 BackToTopicList();
             }
@@ -260,7 +323,6 @@ namespace Unity.ReferenceProject.Annotation
         {
             m_TopicPanel.Initialize(rootVisualElement);
             m_CommentPanel.Initialize(rootVisualElement);
-            m_TextInput.Initialize(rootVisualElement);
         }
 
         void OnCancelClicked()
@@ -270,11 +332,7 @@ namespace Unity.ReferenceProject.Annotation
 
         void CancelInput()
         {
-            m_TextInput.Clear();
             m_WorkingIndicator.gameObject.SetActive(false);
-            m_EditedComment = null;
-            m_TopicPanel.EnablePanel();
-            m_CommentPanel.EnablePanel();
             ClearEditTopic();
         }
 
@@ -294,18 +352,36 @@ namespace Unity.ReferenceProject.Annotation
             m_EditedTopic = null;
         }
 
-        async void OnTopicSelected(ITopic topic)
+        void OnTopicSelected(ITopic topic)
         {
-            await SelectTopic(topic);
+            GotoTopic(topic);
+            SelectTopic(topic);
         }
 
-        async Task SelectTopic(ITopic topic)
+        void SelectTopic(ITopic topic)
         {
-            m_CurrentTopic = topic;
-            m_IndicatorManager.GetIndicator(topic.Id)?.SetSelected(true);
+            if (m_CommentPanel.IsOpen())
+            {
+                BackToTopicList();
+            }
+            else
+            {
+                CancelInput();
+                m_TopicPanel.ResetTextInput();
+            }
 
-            var comments = await topic.GetCommentsAsync();
-            ShowComments(comments);
+            if (m_CurrentTopic != null)
+            {
+                m_IndicatorManager.GetIndicator(m_CurrentTopic.Id)?.SetSelected(false);
+            }
+
+            m_CurrentTopic = topic;
+            if (topic != null)
+            {
+                m_IndicatorManager.GetIndicator(topic.Id)?.SetSelected(true);
+            }
+
+            m_TopicPanel.SelectTopicEntry(topic);
         }
 
         void ShowComments(IEnumerable<IComment> comments)
@@ -333,13 +409,15 @@ namespace Unity.ReferenceProject.Annotation
             m_CurrentTopic.CommentRemoved -= UpdateCommentPanel;
             m_CurrentTopic.CommentUpdated -= UpdateCommentPanel;
 
-            m_IndicatorManager.GetIndicator(m_CurrentTopic.Id)?.SetSelected(false);
-
-            m_CurrentTopic = null;
-
             m_TopicPanel.Show();
             m_CommentPanel.Hide();
             EnableObjectSelection();
+
+            // Wait next frame before scrolling to the selected topic because ScrollView doesn't update its content immediately
+            StartCoroutine(Common.Utils.WaitAFrame(() =>
+            {
+                m_TopicPanel.SelectTopicEntry(m_CurrentTopic);
+            }));
         }
 
         void UpdateCommentPanel(IComment comment)
@@ -355,25 +433,15 @@ namespace Unity.ReferenceProject.Annotation
 
         void AddTopic()
         {
-            m_TopicPanel.EnablePanel(false);
-            m_TextInput.ShowAddTopic();
+            m_TopicPanel.AddTopic();
         }
 
         void OnTopicEdited(ITopic topic)
         {
-            m_TopicPanel.EnablePanel(false);
-
-            var indicator = m_IndicatorManager.GetIndicator(topic.Id);
-            if (indicator != null)
-            {
-                indicator.gameObject.SetActive(false);
-                m_WorkingIndicator.transform.position = indicator.transform.position;
-                m_WorkingIndicator.gameObject.SetActive(true);
-            }
+            SelectTopic(topic);
 
             m_Controller.GetTopic(topic.Id, (ITopic t) =>
             {
-                m_TextInput.ShowEditTopic(t.Title, t.Description);
                 m_EditedTopic = t;
                 GotoTopic(t);
             });
@@ -384,19 +452,6 @@ namespace Unity.ReferenceProject.Annotation
             m_Controller.DeleteTopic(topic);
         }
 
-        void OnAddComment()
-        {
-            m_TextInput.ShowAddComment();
-            m_CommentPanel.EnablePanel(false);
-        }
-
-        void OnEditComment(IComment comment)
-        {
-            m_TextInput.ShowEditComment(comment.Text);
-            m_CommentPanel.EnablePanel(false);
-            m_EditedComment = comment;
-        }
-
         void OnDeleteComment(IComment comment)
         {
             m_Controller.DeleteComment(m_CurrentTopic, comment);
@@ -404,10 +459,9 @@ namespace Unity.ReferenceProject.Annotation
 
         void OnSubmitAddTopic(string title, string description)
         {
-            m_TopicPanel.EnablePanel();
             m_WorkingIndicator.gameObject.SetActive(false);
 
-            var cameraTransform = m_Camera.transform;
+            var cameraTransform = m_CameraProvider.Camera.transform;
             m_Controller.CreateTopic(new AnnotationData
             {
                 Title = title,
@@ -420,11 +474,9 @@ namespace Unity.ReferenceProject.Annotation
 
         void OnSubmitEditTopic(string title, string description)
         {
-            m_TopicPanel.EnablePanel();
-
             m_Controller.GetTopic(m_EditedTopic.Id, (ITopic t) =>
             {
-                var cameraTransform = m_Camera.transform;
+                var cameraTransform = m_CameraProvider.Camera.transform;
                 m_Controller.UpdateTopic(t, new AnnotationData
                 {
                     Title = title,
@@ -438,36 +490,70 @@ namespace Unity.ReferenceProject.Annotation
             ClearEditTopic();
         }
 
+        async void OnReplySelected(ITopic topic)
+        {
+            if (m_CurrentTopic != topic)
+            {
+                SelectTopic(topic);
+            }
+
+            var comments = await topic.GetCommentsAsync();
+            ShowComments(comments);
+        }
+
         void OnSubmitAddComment(string text)
         {
-            m_CommentPanel.EnablePanel();
             m_Controller.CreateComment(m_CurrentTopic, text);
         }
 
-        void OnSubmitEditComment(string text)
+        void OnSubmitEditComment(IComment comment, string text)
         {
-            m_CommentPanel.EnablePanel();
-
             if (string.IsNullOrEmpty(text))
             {
-                OnDeleteComment(m_EditedComment);
+                OnDeleteComment(comment);
             }
-            else if (text != m_EditedComment.Text)
+            else if (text != comment.Text)
             {
-                m_Controller.UpdateComment(m_CurrentTopic, m_EditedComment, text);
+                m_Controller.UpdateComment(m_CurrentTopic, comment, text);
             }
-
-            m_EditedComment = null;
         }
 
-        void OnDispatchRay(Ray ray)
+        void AnnotationSelectionStarted(InputAction.CallbackContext _)
         {
-            // If we are adding or editing a comment, we don't want to select an indicator
-            if (m_TextInput.IsOpened)
+            m_SelectionRay = m_CameraProvider.Camera.ScreenPointToRay(Pointer.current.position.ReadValue());
+            m_SelectionStarted = true;
+        }
+
+        void AnnotationSelectionCanceled(InputAction.CallbackContext _)
+        {
+            m_SelectionStarted = false;
+        }
+
+        void AnnotationSelectionStartedVR(InputAction.CallbackContext context)
+        {
+            m_SelectionStarted = true;
+
+            if (m_ActionToVRControllers.TryGetValue(context.action, out XRRayInteractor controller))
+            {
+                m_SelectionRay = new Ray(controller.transform.position, controller.transform.forward);
+            }
+        }
+
+        void PerformSelection(InputAction.CallbackContext context)
+        {
+            if (!m_SelectionStarted)
                 return;
 
+            m_SelectionStarted = false;
+
+            FindIndicator(m_SelectionRay);
+        }
+
+        void FindIndicator(Ray ray)
+        {
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, m_Camera.farClipPlane, m_IndicatorsLayerMask))
+
+            if (Physics.Raycast(ray, out hit, m_CameraProvider.Camera.farClipPlane, m_IndicatorsLayerMask))
             {
                 var indicator = hit.collider.GetComponentInParent<AnnotationIndicatorController>();
                 if (indicator != null && indicator.Topic != null)
@@ -479,29 +565,22 @@ namespace Unity.ReferenceProject.Annotation
 
         void SelectIndicator(AnnotationIndicatorController indicator)
         {
-            if (m_CurrentTopic != null)
+            if (m_CurrentTopic != null && m_CurrentTopic.Id == indicator.Topic.Id)
             {
-                m_IndicatorManager.GetIndicator(m_CurrentTopic.Id)?.SetSelected(false);
-                m_CurrentTopic.CommentCreated -= UpdateCommentPanel;
-                m_CurrentTopic.CommentRemoved -= UpdateCommentPanel;
-                m_CurrentTopic.CommentUpdated -= UpdateCommentPanel;
-
-                // If the same indicator is selected again
-                if (m_CurrentTopic.Id == indicator.Topic.Id)
-                {
-                    m_CurrentTopic = null;
-                    m_TopicPanel.Show();
-                    m_CommentPanel.Hide();
-                    EnableObjectSelection();
-                    return;
-                }
+                m_TopicPanel.Show();
+                m_CommentPanel.Hide();
+                EnableObjectSelection();
+                SelectTopic(null);
+                return;
             }
 
-            SelectTopic(indicator.Topic).ConfigureAwait(false);
+            SelectTopic(indicator.Topic);
         }
 
         void OnObjectSelectionChanged(IObjectSelectionInfo objectSelectionInfo)
         {
+            SelectTopic(null);
+
             if (!objectSelectionInfo.HasIntersected)
                 return;
 

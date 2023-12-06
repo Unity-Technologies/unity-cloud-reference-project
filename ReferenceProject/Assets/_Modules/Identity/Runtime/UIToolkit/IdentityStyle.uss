@@ -1,4 +1,8 @@
-.right-content {
+.transparent-background {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.container__right-content {
     position: absolute;
     white-space: normal;
     width: 270px;
@@ -6,7 +10,7 @@
     top: 25%;
 }
 
-.login-button {
+.button__login {
     justify-content: center;
     align-items: center;
     padding: 0px 16px;
@@ -16,16 +20,16 @@
     border-radius: 6px;
 }
 
-.loading-indicator {
+.container__loading-indicator {
     margin-left: 10px;
 }
 
-.welcome-text-section {
+.heading__welcome-text-section {
     flex-grow: 1;
     white-space: normal;
 }
 
-.login-button-section {
+.container__login-button-section {
     flex-direction: row;
     align-items: center;
 }

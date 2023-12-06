@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="DraggablePadStyle.uss" />
+    <ui:VisualElement focusable="true" name="draggable_button" class="image__draggable-button" />
+</ui:UXML>

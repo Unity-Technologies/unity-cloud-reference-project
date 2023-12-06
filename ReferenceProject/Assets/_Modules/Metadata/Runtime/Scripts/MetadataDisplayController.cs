@@ -8,11 +8,12 @@ using Unity.ReferenceProject.SearchSortFilter;
 using Unity.ReferenceProject.DataStores;
 using UnityEngine;
 using Unity.AppUI.UI;
+using Unity.Cloud.Assets;
 using Unity.Cloud.Common;
 using Unity.Cloud.Metadata;
+using Unity.ReferenceProject.AssetManager;
 using Unity.ReferenceProject.DataStreaming;
 using Unity.ReferenceProject.Messaging;
-using UnityEngine.Diagnostics;
 using UnityEngine.UIElements;
 using Zenject;
 using Utils = Unity.ReferenceProject.Common.Utils;
@@ -55,9 +56,9 @@ namespace Unity.ReferenceProject.Metadata
 
         CancellationTokenSource m_CancellationTokenSource;
 
-        MetadataProvider m_MetadataProvider;
+        IMetadataRepository m_MetadataRepository;
 
-        ISceneEvents m_SceneEvents;
+        IAssetEvents m_AssetEvents;
         IServiceHttpClient m_ServiceHttpClient;
         IServiceHostResolver m_ServiceHostResolver;
         ObjectSelectionActivator m_ObjectSelectionActivator;
@@ -66,12 +67,11 @@ namespace Unity.ReferenceProject.Metadata
         IAppMessaging m_AppMessaging;
 
         [Inject]
-        void Setup(ISceneEvents sceneEvents, IServiceHttpClient serviceHttpClient, IServiceHostResolver serviceHostResolver,
+        void Setup(IAssetEvents assetEvents, IServiceHttpClient serviceHttpClient, IServiceHostResolver serviceHostResolver,
             PropertyValue<IObjectSelectionInfo> objectSelectionProperty, ObjectSelectionActivator objectSelectionActivator,
-            ObjectSelectionHighlightActivator objectSelectionHighlightActivator,
-            IAppMessaging appMessaging)
+            ObjectSelectionHighlightActivator objectSelectionHighlightActivator, IAppMessaging appMessaging)
         {
-            m_SceneEvents = sceneEvents;
+            m_AssetEvents = assetEvents;
             m_ServiceHttpClient = serviceHttpClient;
             m_ServiceHostResolver = serviceHostResolver;
             m_ObjectSelectionProperty = objectSelectionProperty;
@@ -82,12 +82,12 @@ namespace Unity.ReferenceProject.Metadata
 
         void Awake()
         {
-            m_SceneEvents.SceneOpened += OnSceneOpened;
+            m_AssetEvents.AssetLoaded += OnAssetLoaded;
         }
 
         void OnDestroy()
         {
-            m_SceneEvents.SceneOpened -= OnSceneOpened;
+            m_AssetEvents.AssetLoaded -= OnAssetLoaded;
             m_SearchUI?.UnregisterCallbacks();
             m_FilterSingleUI?.UnregisterCallbacks();
         }
@@ -169,22 +169,20 @@ namespace Unity.ReferenceProject.Metadata
             OnRefresh();
         }
 
-        async void OnSceneOpened(IScene scene)
+        async void OnAssetLoaded(IAsset asset, IDataset dataset)
         {
-            if (scene == null)
-                return;
-
-            await OnSceneOpenedAsync(scene);
+            var data = dataset.Descriptor;
+            await OnAssetLoadedAsync(data.ProjectId, data.AssetId, data.DatasetId);
         }
 
-        async Task OnSceneOpenedAsync(IScene scene)
+        async Task OnAssetLoadedAsync(ProjectId projectId, AssetId assetId, DatasetId datasetId)
         {
-            await InitializeMetadataProviderAsync(scene);
+            await InitializeMetadataProviderAsync(projectId, assetId, datasetId);
         }
 
-        Task InitializeMetadataProviderAsync(IScene scene)
+        Task InitializeMetadataProviderAsync(ProjectId projectId, AssetId assetId, DatasetId datasetId)
         {
-            m_MetadataProvider = new MetadataProvider(m_ServiceHttpClient, m_ServiceHostResolver, scene.Id.ToString(), scene.LatestVersion.ToString());
+            m_MetadataRepository = new MetadataRepository(m_ServiceHttpClient, m_ServiceHostResolver, projectId, assetId, datasetId);
             return Task.CompletedTask;
         }
 
@@ -212,8 +210,8 @@ namespace Unity.ReferenceProject.Metadata
             m_CancellationTokenSource?.Cancel();
             m_CancellationTokenSource = cancellationTokenSource;
 
-            var m_Task = RefreshAsync(cancellationTokenSource.Token);
-            yield return new WaitWhile(() => !m_Task.IsCompleted);
+            var task = RefreshAsync(cancellationTokenSource.Token);
+            yield return new WaitWhile(() => !task.IsCompleted);
 
             // Manage token
             if (m_CancellationTokenSource == cancellationTokenSource)
@@ -224,13 +222,13 @@ namespace Unity.ReferenceProject.Metadata
             cancellationTokenSource.Dispose();
 
             // Show Exception if it exists
-            if (m_Task.Exception != null)
+            if (task.Exception != null)
             {
-                Debug.LogError($"Exception: {m_Task.Exception.Message}");
+                Debug.LogError($"Exception: {task.Exception.Message}");
             }
 
             // Show cancellation if it exists
-            if (m_Task.IsCanceled)
+            if (task.IsCanceled)
             {
                 Debug.LogWarning($"Operation has been canceled");
                 yield break;
@@ -270,29 +268,7 @@ namespace Unity.ReferenceProject.Metadata
             {
                 try
                 {
-                    var query = m_MetadataProvider.Query();
-                    query.SelectAll();
-                    query.IncludedIn(id);
-                    var result = await query.ExecuteAsync();
-
-                    var metadataObjectList = result[id];
-                    foreach (var key in metadataObjectList.Keys)
-                    {
-                        if (metadataObjectList.TryGetValue(key, out var metadataContainer))
-                        {
-                            switch (metadataContainer)
-                            {
-                                case MetadataObject metadataObject:
-                                    string group = metadataObject["group"].ToString();
-                                    string value = metadataObject["value"].ToString();
-                                    m_MetadataList.Add(new MetadataList { Key = key, Group = group, Value = value });
-                                    break;
-                                default:
-                                    Debug.LogError($"Unexpected type {metadataContainer.GetType()} for key {key}");
-                                    break;
-                            }
-                        }
-                    }
+                    await QueryMetadataForInstance(id);
                 }
                 catch (Exception exception)
                 {
@@ -302,7 +278,7 @@ namespace Unity.ReferenceProject.Metadata
                 // Show msg if no metadata
                 if (m_MetadataList.Count == 0)
                 {
-                    m_AppMessaging.ShowWarning("The selected object doesn't have metadata information.");
+                    m_AppMessaging.ShowWarning("@MetadataDisplay:NoMetadata");
                 }
             }
 
@@ -314,6 +290,35 @@ namespace Unity.ReferenceProject.Metadata
 
                 OnRefresh();
             }, null);
+        }
+
+        async Task QueryMetadataForInstance(InstanceId id)
+        {
+            var query = m_MetadataRepository.Query();
+            query.SelectAll();
+            query.IncludedIn(id);
+            var result = await query.ExecuteAsync();
+
+            if (!result.TryGetValue(id, out MetadataObject metadataObjectList))
+                return;
+
+            foreach (var key in metadataObjectList.Keys)
+            {
+                if (metadataObjectList.TryGetValue(key, out var metadataContainer))
+                {
+                    switch (metadataContainer)
+                    {
+                        case MetadataObject metadataObject:
+                            string group = metadataObject["group"].ToString();
+                            string value = metadataObject["value"].ToString();
+                            m_MetadataList.Add(new MetadataList { Key = key, Group = group, Value = value });
+                            break;
+                        default:
+                            Debug.LogError($"Unexpected type {metadataContainer.GetType()} for key {key}");
+                            break;
+                    }
+                }
+            }
         }
 
         void SetupList(ListView listView, List<MetadataList> itemsSourceList)

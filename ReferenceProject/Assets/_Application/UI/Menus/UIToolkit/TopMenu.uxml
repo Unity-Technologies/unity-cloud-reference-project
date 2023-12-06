@@ -1,8 +1,8 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" appui="Unity.AppUI.UI" editor-extension-mode="False">
-    <Style src="project://database/Assets/_Application/UI/Tools/TopMenuStyle.uss?fileID=7433441132597879392&amp;guid=2622e5982d5820041b6c135bcf46f03a&amp;type=3#TopMenuStyle" />
-    <ui:VisualElement name="top-menu" picking-mode="Ignore" class="top-menu">
-        <ui:VisualElement name="top-menu-left" class="top-menu-left" />
-        <ui:VisualElement name="top-menu-center" class="top-menu-center" />
-        <ui:VisualElement name="top-menu-right" class="top-menu-right" />
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="TopMenuStyle.uss" />
+    <ui:VisualElement name="top-menu" picking-mode="Ignore" class="container__top-menu">
+        <ui:VisualElement name="top-menu-left" class="container__top-menu-left" />
+        <ui:VisualElement name="top-menu-center" class="container__top-menu-center" />
+        <ui:VisualElement name="top-menu-right" class="container__top-menu-right" />
     </ui:VisualElement>
 </ui:UXML>

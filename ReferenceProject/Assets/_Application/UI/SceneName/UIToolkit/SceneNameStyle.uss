@@ -1,0 +1,5 @@
+.heading__scene-name{
+    align-self: center;
+    min-height: 48px; 
+    -unity-text-align: middle-left;
+}

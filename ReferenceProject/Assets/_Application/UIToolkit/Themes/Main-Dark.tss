@@ -15,4 +15,5 @@
      --appui-transparent-backgrounds-active-300: var(--appui-color-transparent-white-300);
      --appui-transparent-backgrounds-active-100: var(--appui-color-transparent-white-100);
      --appui-transparent-backgrounds-active-010: var(--appui-color-transparent-white-010);
+     --appui-backgrounds-25: var(--appui-primary-25);
 }

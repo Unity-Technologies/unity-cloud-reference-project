@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <Style src="FollowModeUIStyle.uss" />
+    <ui:VisualElement name="Border" class="container__follow-border" >
+        <ui:VisualElement name="BlockingLayout" picking-mode="Ignore">
+            <ui:VisualElement name="TextBox" class="container__follow-textbox">
+                <ui:VisualElement name="TextContainer" class="container__follow-info">
+                    <appui:Text name="FollowText" class="text__follow"/>
+                    <appui:Text name="FollowedName" text="Label" display-tooltip-when-elided="true" class="text__follow"/>
+                </ui:VisualElement>
+                <appui:IconButton name="Button" class="button__follow" title="@Presence:Unfollow"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

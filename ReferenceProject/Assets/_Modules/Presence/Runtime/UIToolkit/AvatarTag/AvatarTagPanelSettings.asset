@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 19101, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: AvatarTagPanelSettings
   m_EditorClassIdentifier: 
-  themeUss: {fileID: -4733365628477956816, guid: d51e4fc228d879e429c817ad6e30afa0,
+  themeUss: {fileID: -4733365628477956816, guid: 3c3937ea58c441ab93fc1e0f7ec5fa46,
     type: 3}
   m_TargetTexture: {fileID: 8400000, guid: fb772aa8f0bc5ef4c9f6b0576be4d853, type: 2}
   m_ScaleMode: 0
+  m_ReferenceSpritePixelsPerUnit: 100
   m_Scale: 1.5
   m_ReferenceDpi: 24.2
   m_FallbackDpi: 96

@@ -31,6 +31,14 @@ MonoBehaviour:
     m_Key: Retry
     m_Metadata:
       m_Items: []
+  - m_Id: 94935165987614720
+    m_Key: LoggingOut
+    m_Metadata:
+      m_Items: []
+  - m_Id: 94935527381430272
+    m_Key: LogoutSuccess
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

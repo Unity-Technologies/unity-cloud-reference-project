@@ -1,0 +1,20 @@
+{
+    "name": "Unity.ReferenceProject.AssetManager.Runtime",
+    "rootNamespace": "Unity.ReferenceProject.AssetManager",
+    "references": [
+        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4",
+        "GUID:7e0d14980460abd439d6db881ce553fb",
+        "GUID:18a3ee135d24342f7ae628142b5114cb",
+        "GUID:f2f9fbb8654eff343bf4a94f2a688687",
+        "GUID:498d02e03062b2649b108f31a9668c56"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

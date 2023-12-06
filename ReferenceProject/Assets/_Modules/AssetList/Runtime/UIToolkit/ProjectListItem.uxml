@@ -1,0 +1,3 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <appui:ActionButton quiet="true" size="S" class="button__project-list-item" />
+</ui:UXML>

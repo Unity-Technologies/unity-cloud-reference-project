@@ -34,6 +34,14 @@ MonoBehaviour:
     m_Localized: "R\xE9essayer"
     m_Metadata:
       m_Items: []
+  - m_Id: 94935165987614720
+    m_Localized: "D\xE9connexion en cours..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 94935527381430272
+    m_Localized: "D\xE9connexion r\xE9ussie"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

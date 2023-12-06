@@ -1,0 +1,18 @@
+{
+    "name": "Unity.ReferenceProject.CustomKeyboard.Editor",
+    "rootNamespace": "Unity.ReferenceProject.CustomKeyboard.Editor",
+    "references": [
+        "GUID:b2bd107788eac8c449ed37f6cf8fc93d"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

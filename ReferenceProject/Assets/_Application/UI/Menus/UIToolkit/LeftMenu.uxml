@@ -1,8 +1,8 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" appui="Unity.AppUI.UI" editor-extension-mode="False">
-    <Style src="project://database/Assets/_Application/UI/Menus/UIToolkit/LeftMenuStyle.uss?fileID=7433441132597879392&amp;guid=361154be1b4a6954695cb20984480c49&amp;type=3#LeftMenuStyle" />
-    <Unity.AppUI.UI.ActionGroup name="toolbar" vertical="true" compact="true" class="left-toolbar">
-        <ui:VisualElement name="left-menu-top" class="left-menu-top" />
-        <ui:VisualElement name="left-menu-center" class="left-menu-center" />
-        <ui:VisualElement name="left-menu-bottom" class="left-menu-bottom" />
-    </Unity.AppUI.UI.ActionGroup>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <Style src="LeftMenuStyle.uss" />
+    <ui:VisualElement name="toolbar" class="container__left-toolbar">
+        <ui:VisualElement name="left-menu-top" class="container__left-menu-top" />
+        <appui:ActionGroup name="left-menu-center" vertical="true" compact="true" class="action-group__left-menu-center" />
+        <ui:VisualElement name="left-menu-bottom" class="container__left-menu-bottom" />
+    </ui:VisualElement>
 </ui:UXML>

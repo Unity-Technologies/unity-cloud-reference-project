@@ -1,6 +1,6 @@
 ﻿using System;
-using Unity.Cloud.Common;
-using Unity.ReferenceProject.AccessHistory;
+using Unity.Cloud.Assets;
+using Unity.ReferenceProject.AssetManager;
 using Unity.ReferenceProject.DataStreaming;
 using Unity.ReferenceProject.StateMachine;
 using Unity.ReferenceProject.DataStores;
@@ -21,15 +21,16 @@ namespace Unity.ReferenceProject
         bool m_IsUnloadingScene;
         bool m_IsWaitingToLoadScene;
 
-        PropertyValue<IScene> m_SelectedScene;
+        PropertyValue<IAsset> m_SelectedAsset;
 
         StreamingSceneLoader m_StreamingSceneLoader;
 
         [Inject]
-        void Setup(IDataStreamController dataStreamController, PropertyValue<IScene> selectedScene)
+        void Setup(IDataStreamController dataStreamController, AssetManagerStore assetManagerStore)
         {
-            m_SelectedScene = selectedScene;
             m_DataStreamController = dataStreamController;
+
+            m_SelectedAsset = assetManagerStore.GetProperty<IAsset>(nameof(AssetManagerViewModel.Asset));
         }
 
         void Awake()
@@ -50,8 +51,8 @@ namespace Unity.ReferenceProject
 
         void OnSceneLoaded()
         {
-            var scene = m_SelectedScene.GetValue();
-            m_DataStreamController.Open(scene);
+            var asset = m_SelectedAsset.GetValue();
+            m_DataStreamController.Load(asset);
         }
 
         void OnSceneUnloaded()
@@ -79,8 +80,8 @@ namespace Unity.ReferenceProject
 
         protected override void ExitStateInternal()
         {
-            m_SelectedScene.SetValue((IScene)null);
-            m_DataStreamController.Close();
+            m_SelectedAsset.SetValue((IAsset)null);
+            m_DataStreamController.Unload();
 
             m_IsUnloadingScene = true;
             m_StreamingSceneLoader.UnloadScene();

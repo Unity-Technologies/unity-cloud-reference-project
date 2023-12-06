@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 195ac8c3bd192774c8da6729c383199d, type: 3}
+  m_Script: {fileID: 11500000, guid: 28265184bfd344cf089eb7883560e191, type: 3}
   m_Name: WalkMode
   m_EditorClassIdentifier: 
   m_Icon: {fileID: 21300000, guid: 6e18862ab7cff6d41a782f8dc4afb59b, type: 3}

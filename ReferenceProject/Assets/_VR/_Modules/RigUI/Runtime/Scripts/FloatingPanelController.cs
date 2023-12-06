@@ -27,6 +27,8 @@ namespace Unity.ReferenceProject.VR.RigUI
             }
         }
 
+        public FloatingPanelManipulator PanelManipulator => m_PanelManipulator;
+
         public override void SetVisible(bool isVisible)
         {
             base.SetVisible(isVisible);

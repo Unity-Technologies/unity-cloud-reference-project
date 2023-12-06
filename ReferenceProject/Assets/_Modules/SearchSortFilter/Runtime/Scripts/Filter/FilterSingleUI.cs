@@ -20,15 +20,15 @@ namespace Unity.ReferenceProject.SearchSortFilter
         List<string> m_Options;
 
         readonly string m_FilterColumnName;
-        
-        string GetFilterColumnKey(Dictionary<string, IFilterBindNode<T>> filterNodes) => 
+
+        string GetFilterColumnKey(Dictionary<string, IFilterBindNode<T>> filterNodes) =>
             !string.IsNullOrEmpty(m_FilterColumnName) && filterNodes.ContainsKey(m_FilterColumnName) ? m_FilterColumnName : filterNodes.First().Key;
 
         public FilterSingleUI(FilterModule<T> filterModule, VisualElement root, Action onFilterChanged,
             List<T> dataList, string defaultValue = null, string dropDownKey = "FilterDropdown", string filterColumnName = null)
         {
             m_FilterModule = filterModule;
-            OnDropDownChanged += onFilterChanged;
+            DropDownChanged += onFilterChanged;
 
             m_FilterColumnName = filterColumnName;
 
@@ -62,11 +62,11 @@ namespace Unity.ReferenceProject.SearchSortFilter
 
             SetFilterOptions(dataList);
 
-            m_Dropdown.SetValueWithoutNotify(0);
+            m_Dropdown.SetValueWithoutNotify(new[] { 0 });
             m_Dropdown.RegisterValueChangedCallback(OnDropDownValueChanged);
         }
 
-        public event Action OnDropDownChanged;
+        public event Action DropDownChanged;
 
         public void UnregisterCallbacks()
         {
@@ -74,24 +74,25 @@ namespace Unity.ReferenceProject.SearchSortFilter
                 m_Dropdown.UnregisterValueChangedCallback(OnDropDownValueChanged);
         }
 
-        void OnDropDownValueChanged(ChangeEvent<int> evt)
+        void OnDropDownValueChanged(ChangeEvent<IEnumerable<int>> changeEvent)
         {
-            if (m_Options == null || evt.newValue >= m_Options.Count)
+            var newValue = changeEvent.newValue.First();
+            if (m_Options == null || newValue >= m_Options.Count)
                 return;
-            
+
             var filterNodes = m_FilterModule.AllFilterNodes;
-            if(filterNodes.Count == 0)
+            if (filterNodes.Count == 0)
                 return;
-            
+
             m_FilterModule.ClearAllOptions();
-            m_FilterModule.AddSelectedOption(GetFilterColumnKey(filterNodes), m_Options[evt.newValue].Equals(m_DefaultValue) ? null : m_Options[evt.newValue]);
-            OnDropDownChanged?.Invoke();
+            m_FilterModule.AddSelectedOption(GetFilterColumnKey(filterNodes), m_Options[newValue].Equals(m_DefaultValue) ? null : m_Options[newValue]);
+            DropDownChanged?.Invoke();
         }
 
         public void SetDefaultValueWithoutNotify()
         {
             m_FilterModule.ClearAllOptions();
-            m_Dropdown.SetValueWithoutNotify(0);
+            m_Dropdown.SetValueWithoutNotify(new []{0});
         }
 
         public void SetFilterOptions(List<T> list)
@@ -101,9 +102,9 @@ namespace Unity.ReferenceProject.SearchSortFilter
                 SetDropdownOptions(null);
                 return;
             }
-            
+
             var filterNodes = m_FilterModule.AllFilterNodes;
-            if(filterNodes.Count == 0)
+            if (filterNodes.Count == 0)
                 return;
 
             var bindPath = filterNodes[GetFilterColumnKey(filterNodes)].bindPath;
@@ -113,7 +114,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
             foreach (var item in list)
             {
                 var line = bindPath(item);
-                if(!string.IsNullOrEmpty(line))
+                if (!string.IsNullOrEmpty(line))
                     filterOptions.Add(line);
             }
 

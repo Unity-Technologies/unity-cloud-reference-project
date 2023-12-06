@@ -23,16 +23,18 @@ namespace Unity.ReferenceProject.Presence
         string m_LoadingString = "@Presence:Loading_Name";
 
         INetcodeParticipant m_Participant;
-        PresenceStreamingRoom m_PresenceStreamingRoom;
-        Camera m_StreamingCamera;
+        IPresenceStreamingRoom m_PresenceStreamingRoom;
+        ICameraProvider m_CameraProvider;
         Transform m_Transform;
         String m_CurrentAvatarName;
 
+        public static readonly string k_HideKey = "Hide";
+
         [Inject]
-        void Setup(PresenceStreamingRoom presenceStreamingRoom, Camera streamingCamera)
+        void Setup(IPresenceStreamingRoom presenceStreamingRoom, ICameraProvider cameraProvider)
         {
             m_PresenceStreamingRoom = presenceStreamingRoom;
-            m_StreamingCamera = streamingCamera;
+            m_CameraProvider = cameraProvider;
         }
 
         void Update()
@@ -43,7 +45,7 @@ namespace Unity.ReferenceProject.Presence
             if (m_Participant.IsOwner)
             {
                 // Set up the owner Avatar and the INetcodeParticipant to follow the camera
-                var cameraTransform = m_StreamingCamera.transform;
+                var cameraTransform = m_CameraProvider.Camera.transform;
                 transform.SetPositionAndRotation(cameraTransform.position, cameraTransform.rotation);
                 m_Participant.SetParticipantTransform(cameraTransform.position, cameraTransform.rotation);
             }
@@ -64,16 +66,29 @@ namespace Unity.ReferenceProject.Presence
             if (m_Participant != null)
             {
                 m_Participant.ParticipantIdChanged -= OnParticipantIDChanged;
+                if (m_Participant.GenericDataHandler != null)
+                {
+                    m_Participant.GenericDataHandler.GenericDataUpdated -= OnGenericDataUpdated;
+                }
             }
         }
 
         public void InitParticipant(INetcodeParticipant participant)
         {
             m_Participant = participant;
+            m_Participant.GenericDataHandler.GenericDataUpdated += OnGenericDataUpdated;
             m_Transform = participant.Transform;
             m_Participant.ParticipantIdChanged += OnParticipantIDChanged;
             m_CurrentAvatarName = m_LoadingString;
             RefreshParticipant(m_Participant);
+        }
+
+        void OnGenericDataUpdated(GenericDataUpdate data)
+        {
+            if (data.Key == k_HideKey)
+            {
+                RefreshParticipant(m_Participant);
+            }
         }
 
         void OnParticipantIDChanged(INetcodeParticipant participant, ParticipantId id)
@@ -92,15 +107,21 @@ namespace Unity.ReferenceProject.Presence
                 color = m_AvatarColorPalette.GetColor(roomParticipant.ColorIndex);
             }
 
-            var visible = !participant.IsOwner;
-
             gameObject.name = $"Avatar ({m_CurrentAvatarName})";
 
-            m_Model.SetVisible(visible);
+            var isHidden = participant.IsOwner;
+
+            if (participant.GenericDataHandler.GenericData.TryGetValue(k_HideKey, out var value))
+            {
+                isHidden = isHidden || GenericDataExtensions.DeserializeFromByteArray<bool>(value);
+            }
+
+            m_Model.SetVisible(!isHidden);
             m_Model.SetColor(color);
 
-            m_Tag.SetVisible(visible);
+            m_Tag.SetVisible(!isHidden);
             m_Tag.SetName(m_CurrentAvatarName);
+            m_Tag.SetInitials(m_CurrentAvatarName.Equals(m_LoadingString) ? "-" : Utils.GetInitials(m_CurrentAvatarName));
             m_Tag.SetColor(color);
         }
     }

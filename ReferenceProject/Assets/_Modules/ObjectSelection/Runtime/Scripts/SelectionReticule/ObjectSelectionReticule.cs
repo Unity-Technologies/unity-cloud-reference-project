@@ -27,7 +27,7 @@ namespace Unity.ReferenceProject.ObjectSelection
             m_ObjectSelectionProperty = objectSelectionProperty;
 
             m_ObjectSelectionHighlightActivator = objectSelectionHighlightActivator;
-            objectSelectionHighlightActivator.OnActivate += OnActivate;
+            objectSelectionHighlightActivator.SetActivated += OnSetActivated;
         }
 
         void OnDestroy()
@@ -36,7 +36,7 @@ namespace Unity.ReferenceProject.ObjectSelection
                 m_ObjectSelectionProperty.ValueChanged -= OnObjectSelectionChanged;
 
             if (m_ObjectSelectionHighlightActivator != null)
-                m_ObjectSelectionHighlightActivator.OnActivate -= OnActivate;
+                m_ObjectSelectionHighlightActivator.SetActivated -= OnSetActivated;
         }
 
         void Start()
@@ -45,7 +45,7 @@ namespace Unity.ReferenceProject.ObjectSelection
             m_Indicator.SetActive(false);
         }
 
-        void OnActivate(bool isActive)
+        void OnSetActivated(bool isActive)
         {
             if (isActive)
             {

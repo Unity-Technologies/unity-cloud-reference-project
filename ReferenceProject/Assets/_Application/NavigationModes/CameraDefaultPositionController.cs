@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Unity.Cloud.Common;
+using Unity.Cloud.Assets;
 using Unity.Cloud.DataStreaming.Runtime;
 using Unity.Cloud.DeepLinking;
+using Unity.ReferenceProject.Common;
 using Unity.ReferenceProject.DataStreaming;
 using Unity.ReferenceProject.DeepLinking;
 using Unity.ReferenceProject.Navigation;
@@ -19,12 +20,12 @@ namespace Unity.ReferenceProject
 
         [SerializeField]
         float m_BoundsFillRatio = 0.9f;
-
-        IDataStreamer m_DataStreamer;
+        
+        IStage m_Stage;
         INavigationManager m_NavigationManager;
-        Camera m_StreamingCamera;
+        ICameraProvider m_CameraProvider;
 
-        ISceneEvents m_SceneEvents;
+        IAssetEvents m_AssetEvents;
         IDataStreamBound m_DataStreamBound;
 
         bool m_IsProcessing;
@@ -34,16 +35,17 @@ namespace Unity.ReferenceProject
         DeepLinkData m_DeepLinkData;
 
         [Inject]
-        void Setup(ISceneEvents sceneEvents, IDataStreamerProvider dataStreamerProvider, Camera streamingCamera, INavigationManager navigationManager, IDataStreamBound dataStreamBound,
+        void Setup(IAssetEvents assetEvents, IDataStreamerProvider dataStreamerProvider, ICameraProvider cameraProvider, INavigationManager navigationManager, IDataStreamBound dataStreamBound,
             IQueryArgumentsProcessor queryArgumentsProcessor, DeepLinkData deepLinkData)
         {
-            m_SceneEvents = sceneEvents;
-            m_SceneEvents.SceneOpened += OnSceneOpened;
-            m_SceneEvents.SceneClosed += OnSceneClosed;
+            m_AssetEvents = assetEvents;
+            m_AssetEvents.AssetLoaded += OnAssetLoaded;
+            m_AssetEvents.AssetUnloaded += OnAssetUnloaded;
 
-            m_DataStreamer = dataStreamerProvider.DataStreamer;
+            dataStreamerProvider.DataStreamer.StageCreated.Subscribe(stage => m_Stage = stage);
+            dataStreamerProvider.DataStreamer.StageDestroyed.Subscribe(() => m_Stage = null);
 
-            m_StreamingCamera = streamingCamera;
+            m_CameraProvider = cameraProvider;
             m_NavigationManager = navigationManager;
             m_DataStreamBound = dataStreamBound;
             
@@ -59,14 +61,14 @@ namespace Unity.ReferenceProject
                 SetCameraPosition
             );
             
-            m_QueryArgumentsProcessor.Register(m_QueryArgumentCameraTransformHandler, DeepLinkResourceType.Scene);
+            m_QueryArgumentsProcessor.Register(m_QueryArgumentCameraTransformHandler, DeepLinkResourceType.Dataset);
         }
 
         void OnDestroy()
         {
-            m_SceneEvents.SceneOpened -= OnSceneOpened;
-            m_SceneEvents.SceneClosed -= OnSceneClosed;
-            m_QueryArgumentsProcessor.Unregister(m_QueryArgumentCameraTransformHandler, DeepLinkResourceType.Scene);
+            m_AssetEvents.AssetLoaded -= OnAssetLoaded;
+            m_AssetEvents.AssetUnloaded -= OnAssetUnloaded;
+            m_QueryArgumentsProcessor.Unregister(m_QueryArgumentCameraTransformHandler, DeepLinkResourceType.Dataset);
         }
         
         static string Vector3UrlFormat(Vector3 v)
@@ -75,7 +77,8 @@ namespace Unity.ReferenceProject
         }
         public string GetCameraPosition()
         {
-            return $"{Vector3UrlFormat(m_StreamingCamera.transform.position)}, {Vector3UrlFormat(m_StreamingCamera.transform.rotation.eulerAngles)}";
+            var cameraTransform = m_CameraProvider.Camera.transform;
+            return $"{Vector3UrlFormat(cameraTransform.position)}, {Vector3UrlFormat(cameraTransform.rotation.eulerAngles)}";
         }
         
         void SetCameraPosition(string cameraString)
@@ -89,14 +92,14 @@ namespace Unity.ReferenceProject
             }
         }
 
-        void OnSceneOpened(IScene scene)
+        void OnAssetLoaded(IAsset asset, IDataset dataset)
         {
-            m_DataStreamer.StreamingStateChanged += OnStreamingStateChanged;
+            m_Stage.StreamingStateChanged.Subscribe(OnStreamingStateChanged);
         }
         
-        void OnSceneClosed()
+        void OnAssetUnloaded()
         {
-            m_DataStreamer.StreamingStateChanged -= OnStreamingStateChanged;
+            m_Stage?.StreamingStateChanged.Unsubscribe(OnStreamingStateChanged);
         }
 
         async void OnStreamingStateChanged(StreamingState state)
@@ -109,14 +112,14 @@ namespace Unity.ReferenceProject
             if (m_DeepLinkData.SetDeepLinkCamera) 
             {
                 m_DeepLinkData.SetCameraReady?.Invoke(); // Process Deeplink QueryArguments
-                m_DataStreamer.StreamingStateChanged -= OnStreamingStateChanged;
+                m_Stage.StreamingStateChanged.Unsubscribe(OnStreamingStateChanged);
                 m_IsProcessing = false;
                 return; 
             }
             
             if (await ProcessDefaultVolumeOfInterestAsync())
             {
-                m_DataStreamer.StreamingStateChanged -= OnStreamingStateChanged;
+                m_Stage.StreamingStateChanged.Unsubscribe(OnStreamingStateChanged);
             }
             
             m_IsProcessing = false;
@@ -124,12 +127,12 @@ namespace Unity.ReferenceProject
 
         async Task<bool> ProcessDefaultVolumeOfInterestAsync()
         {
-            var v = await m_DataStreamer.GetDefaultVolumeOfInterestAsync();
+            var bounds = await m_Stage.GetWorldBoundsAsync();
             
-            if (m_StreamingCamera == null) // Camera might have been destroyed since last loop.
+            if (m_CameraProvider.Camera == null) // Camera might have been destroyed since last loop.
                 return false;
 
-            SetView(v.Bounds, m_StreamingCamera);
+            SetView(bounds, m_CameraProvider.Camera);
 
             return true;
         }

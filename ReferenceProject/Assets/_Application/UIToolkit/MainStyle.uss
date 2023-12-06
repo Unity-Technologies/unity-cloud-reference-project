@@ -23,10 +23,22 @@
     flex-shrink: 0;
 }
 
+.appui-accordionitem__header {
+    -unity-font-style: normal;
+}
 .is-selected.appui-actionbutton {
     background-color: var(--appui-accent-100);
 }
 
 .unity-collection-view__item:hover:enabled {
     background-color: var(--appui-transparent-backgrounds-active-010);
+}
+
+/* Safe Area on Pop Up backgrounds */
+.appui-modal {
+    position: absolute;
+    left: -10%;
+    top: -10%;
+    bottom: -10%;
+    right: -10%;
 }

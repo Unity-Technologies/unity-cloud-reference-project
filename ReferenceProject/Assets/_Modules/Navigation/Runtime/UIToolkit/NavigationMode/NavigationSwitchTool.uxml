@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="NavigationSwitchToolStyle.uss" />
+    <ui:VisualElement name="panel-content" class="container__navigation-switch-tool"/>
+</ui:UXML>

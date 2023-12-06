@@ -1,6 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
-    <ui:VisualElement picking-mode="Ignore" class="metadata-display-list-element__parameter">
-        <appui:Text name="ParameterLabel" primary="false" text="Key" size="S" display-tooltip-when-elided="true" picking-mode="Ignore" class="metadata-display-text__parameter-key" />
-        <appui:Text name="ParameterValue" text="Value" size="S" display-tooltip-when-elided="true" picking-mode="Ignore" class="metadata-display-text__parameter-value" />
+    <Style src="MetadataDisplayStyle.uss" />
+    <ui:VisualElement picking-mode="Ignore" class="container__metadata-list-element-parameter">
+        <appui:Text name="ParameterLabel" primary="false" text="Key" size="S" display-tooltip-when-elided="true" picking-mode="Ignore" class="text__metadata-list-element-parameter-key" />
+        <appui:Text name="ParameterValue" text="Value" size="S" display-tooltip-when-elided="true" picking-mode="Ignore" class="text__metadata-list-element-parameter-value" />
     </ui:VisualElement>
 </ui:UXML>

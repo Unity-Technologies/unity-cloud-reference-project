@@ -22,7 +22,7 @@ namespace Unity.ReferenceProject.Presence.Tests.Runtime
 
         public DateTime Connected { get; internal set; }
 
-        public VoiceId VoiceId { get; internal set; }
+        public CommunicationId CommunicationId { get; internal set; }
 
         public bool IsSelf { get; internal set; }
     }

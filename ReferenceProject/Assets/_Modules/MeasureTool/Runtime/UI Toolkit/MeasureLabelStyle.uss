@@ -1,0 +1,14 @@
+.container__line-measure-label {
+    border-radius: 10px;
+    background-color: var(--appui-color-orange-900);
+}
+
+.text__line-measure {
+    margin: 2px 10px;
+}
+
+.appui-text{
+    color: white;
+    padding-left: 6px;
+    padding-right: 6px;
+}

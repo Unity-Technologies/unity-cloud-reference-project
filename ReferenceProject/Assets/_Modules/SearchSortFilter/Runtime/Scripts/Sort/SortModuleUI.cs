@@ -26,7 +26,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
             params (string bindPathName, string uiElementName)[]
                 keys)
         {
-            OnSortChanged += onSortChanged;
+            SortChanged += onSortChanged;
             m_SortModule = sortModule;
 
             if(keys != null)
@@ -38,7 +38,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
             }
         }
 
-        public event Action OnSortChanged;
+        public event Action SortChanged;
 
         public void AddSortButton(VisualElement root, string bindPathName, string uiElementName)
         {
@@ -137,7 +137,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
 
             m_LastClickedElement = targetBlock;
 
-            OnSortChanged?.Invoke();
+            SortChanged?.Invoke();
         }
     }
 }

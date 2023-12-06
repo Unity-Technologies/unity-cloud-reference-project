@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -213,10 +214,67 @@ namespace Unity.ReferenceProject.Common
             variables = new object[] { years };
             return TimeIntervalYears;
         }
-        
+
         public static void SetVisible(VisualElement element, bool visible)
         {
             element.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
+        public static bool IsVisible(VisualElement element)
+        {
+            return element.style.display != DisplayStyle.None;
+        }
+
+        public static bool IsFocused(VisualElement visualElement)
+        {
+            if (visualElement.focusController == null)
+                return false;
+
+            var focusedElement = visualElement.focusController.focusedElement;
+            if (focusedElement == null)
+                return false;
+
+            if (focusedElement == visualElement)
+                return true;
+
+            foreach (var child in visualElement.Children())
+            {
+                if (child == focusedElement)
+                {
+                    return true;
+                }
+            }
+
+            var parent = visualElement.parent;
+            while (parent != null)
+            {
+                if (parent == focusedElement)
+                {
+                    return true;
+                }
+
+                parent = parent.parent;
+            }
+
+            return false;
+        }
+
+        public static IEnumerator WaitAFrame(Action action)
+        {
+            yield return null;
+            action?.Invoke();
+        }
+
+        public static IEnumerator WaitAFrame<T>(Action<T> action, T arg) where T : class
+        {
+            yield return null;
+            action?.Invoke(arg);
+        }
+
+        public static IEnumerator WaitAFrame(Action<object[]> action, object[] arg)
+        {
+            yield return null;
+            action?.Invoke(arg);
         }
     }
 }

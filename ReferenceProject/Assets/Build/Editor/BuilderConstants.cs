@@ -18,6 +18,7 @@ namespace Unity.ReferenceProject.Editor
         public const string APP_ID = "-appId";
         public const string APP_NAME = "-appName";
         public const string APP_DISPLAY_NAME = "-appDisplayName";
+        public const string ORGANIZATION_ID = "-organizationId";
         public const string BUILD_TARGET = "-buildTarget";
         public const string OUTPUT_PATH = "-outputPath";
     }

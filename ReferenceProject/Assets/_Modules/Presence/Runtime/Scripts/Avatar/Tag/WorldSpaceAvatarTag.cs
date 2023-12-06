@@ -36,13 +36,13 @@ namespace Unity.ReferenceProject.Presence
         Unity.AppUI.UI.Avatar m_AvatarBadge;
         Unity.AppUI.UI.Text m_AvatarInitials;
 
-        Camera m_Camera;
+        ICameraProvider m_CameraProvider;
         RenderTexture m_RenderTexture;
 
         [Inject]
-        void Setup(Camera streamingCamera)
+        void Setup(ICameraProvider cameraProvider)
         {
-            m_Camera = streamingCamera;
+            m_CameraProvider = cameraProvider;
         }
 
         void Awake()
@@ -56,6 +56,20 @@ namespace Unity.ReferenceProject.Presence
             m_Header = root.Q<Heading>(m_HeaderElement);
             m_AvatarBadge = root.Q<Unity.AppUI.UI.Avatar>(m_AvatarBadgeElement);
             m_AvatarInitials = root.Q<Unity.AppUI.UI.Text>(m_AvatarBadgeTextElement);
+            
+            // Because it's using world space, element can still be clipped over other UI.
+            // Make sure every element is ignoring picking so this issue never happen.
+            DisablePickingRecursive(root);
+
+        }
+
+        static void DisablePickingRecursive(VisualElement element)
+        {
+            element.pickingMode = PickingMode.Ignore;
+            foreach (var child in element.Children())
+            {
+                DisablePickingRecursive(child);
+            }
         }
 
         void SetupRenderTexture()
@@ -75,7 +89,7 @@ namespace Unity.ReferenceProject.Presence
 
         void Update()
         {
-            if ((transform.position - m_Camera.transform.position).sqrMagnitude <= m_ShowNameDistance * m_ShowNameDistance)
+            if ((transform.position - m_CameraProvider.Camera.transform.position).sqrMagnitude <= m_ShowNameDistance * m_ShowNameDistance)
             {
                 m_NameContainer.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
             }
@@ -92,13 +106,20 @@ namespace Unity.ReferenceProject.Presence
 
         public override void SetVisible(bool visible)
         {
-            gameObject.SetActive(visible);
+            if (m_UIDocument != null && m_UIDocument.rootVisualElement != null)
+            {
+                Utils.SetVisible(m_UIDocument.rootVisualElement, visible);
+            }
         }
 
         public override void SetName(string tagName)
         {
             m_Header.text = tagName;
-            m_AvatarInitials.text = Utils.GetInitials(tagName);
+        }
+
+        public override void SetInitials(string tagInitials)
+        {
+            m_AvatarInitials.text = tagInitials;
         }
 
         public override void SetColor(Color color)

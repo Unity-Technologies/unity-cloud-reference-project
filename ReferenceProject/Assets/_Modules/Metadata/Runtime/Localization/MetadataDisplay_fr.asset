@@ -35,7 +35,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 46342085247049728
-    m_Localized: "L'object s\xE9lectionn\xE9 ne contient pas d'information Metadata"
+    m_Localized: "L'objet s\xE9lectionn\xE9 ne contient pas d'information Metadata"
     m_Metadata:
       m_Items: []
   references:

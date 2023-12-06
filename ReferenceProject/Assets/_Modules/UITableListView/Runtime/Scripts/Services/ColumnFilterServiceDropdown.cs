@@ -27,7 +27,7 @@ namespace Unity.ReferenceProject.UITableListView
         
         List<object> m_ListKeys;
 
-        public event Action OnRefresh;
+        public event Action Refresh;
         public int ServicePriority => m_ServicePriority;
         
         void OnDestroy() => ClearService();
@@ -47,7 +47,7 @@ namespace Unity.ReferenceProject.UITableListView
             
             // Filter UI setup
             m_FilterSingleUI = new FilterSingleUI<object>(m_FilterModule, root,
-                OnRefresh, null, m_DefaultValue, m_DropdownName, m_FilterColumnName);
+                Refresh, null, m_DefaultValue, m_DropdownName, m_FilterColumnName);
         }
         
         public void InitializeUIForData(VisualElement e, IServiceData data) 

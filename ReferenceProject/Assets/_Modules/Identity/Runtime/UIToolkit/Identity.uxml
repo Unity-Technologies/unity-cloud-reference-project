@@ -1,10 +1,11 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
-    <ui:VisualElement class="appui appui--dark" style="background-color: rgba(0, 0, 0, 0);">
-        <ui:VisualElement class="right-content">
-            <appui:Heading text="@Identity:Welcome" size="L" class="welcome-text-section"/>
-            <ui:VisualElement class="login-button-section">
-                <appui:Button name="login-button" title="@Identity:Login" primary="true" class="login-button" />
-                <ui:VisualElement name="loading-indicator" class="loading-indicator">
+    <Style src="IdentityStyle.uss" />
+    <ui:VisualElement class="appui appui--dark transparent-background">
+        <ui:VisualElement class="container__right-content">
+            <appui:Heading text="@Identity:Welcome" size="L" class="heading__welcome-text-section"/>
+            <ui:VisualElement class="container__login-button-section">
+                <appui:Button name="login-button" title="@Identity:Login" primary="true" class="button__login" />
+                <ui:VisualElement name="loading-indicator" class="container__loading-indicator">
                     <appui:CircularProgress/>
                 </ui:VisualElement>
             </ui:VisualElement>

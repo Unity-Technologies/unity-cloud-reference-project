@@ -1,0 +1,8 @@
+{
+  "SharedAssetDependencies": [  ],
+  "SampleEntries": [
+    {
+      "Path": "GooglePersistenceSample"
+    }
+  ]
+}

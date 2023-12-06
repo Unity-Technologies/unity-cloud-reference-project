@@ -1,35 +1,54 @@
-.left-toolbar{
+.container__left-toolbar{
     --appui-alias-control-border-radius: 32px;
-    display: flex;
     flex-grow: 1;
     justify-content: space-between;
-    position: absolute;
-    left: 12px;
-    top: 50px;
-    bottom: 50px;
     width: 64px;
+    margin-left: 12px;
+    padding-top: 50px;
+    padding-bottom: 12px;
+    position: absolute;
+    height: 100%;
 }
 
-.left-toolbar-button{
+.action-group__left-toolbar-top{
+    top: 60px; 
+    bottom: auto; 
+    left: 12px;
+}
+
+.button__left-toolbar{
     height: 64px;
     border-width: 0;
 }
 
-.left-menu-top{
+.button__left-toolbar-secondary{
+    height: 45px;
+    width: 45px;
+    margin-bottom: 5px;
+    margin-left: 10px;
+    align-content: center;
+}
+
+.container__left-menu-top{
     padding-top: 10px;
     padding-bottom: 20px;
-    min-height: 10%;
+    width: 64px;
+    height: 132px;
+    flex-shrink: 0;
+    flex-grow: 0;
     justify-content: flex-start;
 }
 
-.left-menu-center{
+.action-group__left-menu-center{
     justify-content: center;
-    flex: 1;
-    min-height: 60%;
+    flex-grow: 1;
 }
 
-.left-menu-bottom{
+.container__left-menu-bottom{
     padding-top: 20px;
     justify-content: flex-end;
-    min-height: 10%;
+    width: 64px;
+    height: 132px;
+    flex-shrink: 0;
+    flex-grow: 0;
 }

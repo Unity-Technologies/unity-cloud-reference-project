@@ -1,8 +1,8 @@
-﻿using System;
-using Unity.ReferenceProject.Tools;
+﻿using Unity.ReferenceProject.Tools;
+using Unity.ReferenceProject.InputSystem;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
+using Zenject;
 
 namespace Unity.ReferenceProject.Metadata
 {
@@ -10,6 +10,13 @@ namespace Unity.ReferenceProject.Metadata
     {
         [SerializeField]
         MetadataDisplayController m_Controller;
+        IInputManager m_InputManager;
+
+        [Inject]
+        void Setup(IInputManager inputManager)
+        {
+            m_InputManager = inputManager;
+        }
 
         protected override VisualElement CreateVisualTree(VisualTreeAsset template)
         {
@@ -22,12 +29,18 @@ namespace Unity.ReferenceProject.Metadata
         protected override void RegisterCallbacks(VisualElement visualElement)
         {
             var searchInput = visualElement.Q("search-input");
-            searchInput.RegisterCallback<FocusInEvent>(OnFocusIn);
-            searchInput.RegisterCallback<FocusOutEvent>(OnFocusOut);
+            searchInput.RegisterCallback<FocusInEvent>(UIFocused);
+            searchInput.RegisterCallback<FocusOutEvent>(UIUnFocused);
+        }
 
-            var parameterList = visualElement.Q("ParameterList");
-            parameterList.RegisterCallback<PointerCaptureEvent>(OnPointerCaptureEvent);
-            parameterList.RegisterCallback<PointerCaptureOutEvent>(OnPointerCaptureOutEvent);
+        void UIFocused(FocusInEvent ev)
+        {
+            m_InputManager.IsUIFocused = true;
+        }
+
+        void UIUnFocused(FocusOutEvent ev)
+        {
+            m_InputManager.IsUIFocused = false;
         }
 
         protected override void UnregisterCallbacks(VisualElement visualElement)

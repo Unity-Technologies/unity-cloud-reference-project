@@ -34,8 +34,13 @@ namespace Unity.ReferenceProject.DataStores
             if (m_CachedProperties.ContainsKey(propertyName))
                 return (PropertyValue<TValue>) m_CachedProperties[propertyName];
 
-            var propertyDelegates = new PropertyDelegates<TValue>(GetValue<TValue>, SetValue, SetValue);
-            
+            var propertyDelegates = new PropertyDelegates<TValue>
+            {
+                GetValue = GetValue<TValue>,
+                SetValue = SetValue,
+                SetValueAction = SetValue
+            };
+
             var property = new PropertyValue<TValue>(propertyName, propertyDelegates, this);
             m_CachedProperties.Add(propertyName, property);
             return property;
@@ -46,14 +51,14 @@ namespace Unity.ReferenceProject.DataStores
             if (!PropertyContainer.TryGetProperty(ref dataContainer, new PropertyPath(propertyName), out var prop,
                     out var returnCode))
             {
-                Debug.LogError($"Failed to get property '{propertyName}': {returnCode}");
+                Debug.LogWarning($"Failed to get property '{propertyName}': {returnCode}");
                 return false;
             }
 
             var propType = prop.DeclaredValueType();
             if (propType == typeof(TValue)) return true;
 
-            Debug.LogError($"Property type does not match! {typeof(TValue)} != {propType}");
+            Debug.LogWarning($"Property type does not match! {typeof(TValue)} != {propType}");
             return false;
         }
 
@@ -120,7 +125,7 @@ namespace Unity.ReferenceProject.DataStores
             return changed;
         }
 
-        static bool Compare<TValue>(TValue value, TValue oldValue)
+        bool Compare<TValue>(TValue value, TValue oldValue)
         {
             var changed = false;
             

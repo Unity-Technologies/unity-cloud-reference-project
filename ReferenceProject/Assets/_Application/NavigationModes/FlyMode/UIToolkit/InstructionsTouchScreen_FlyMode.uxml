@@ -1,21 +1,21 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd">
-    <Style src="project://database/Assets/_Application/NavigationModes/WalkMode/UIToolkit/InstructionsStyle.uss?fileID=7433441132597879392&amp;guid=a150b698576572b4abce03740c4e235d&amp;type=3#InstructionsStyle" />
-    <ui:VisualElement name="Container" style="flex-direction: row;">
-        <ui:VisualElement name="LookAround" class="container__instruction_block" style="flex-shrink: 0;">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <Style src="../../UIToolkit/InstructionsStyle.uss" />
+    <ui:VisualElement name="Container" class="row">
+        <ui:VisualElement name="LookAround" class="container__instruction_block no-shrink">
             <ui:VisualElement name="Keys" class="container__instruction-keys">
-                <ui:Image style="background-image: url(&apos;project://database/Assets/_Application/NavigationModes/Sprites/NavigationMobile@1_5x.png?fileID=1147382449&amp;guid=0d3be75dd7710ec46b787771bb4dcd99&amp;type=3#NavigationMobile@1_5x_0&apos;); height: 56px; width: 56px;" />
+                <ui:Image class="image__instruction-size image__color image__touch--one-finger" />
             </ui:VisualElement>
             <appui:Text text="@Instructions:Orbit" name="KeysDescription" size="XS" class="text__instruction-description" />
         </ui:VisualElement>
-        <ui:VisualElement name="Zoom" class="container__instruction_block" style="flex-shrink: 0;">
+        <ui:VisualElement name="Zoom" class="container__instruction_block no-shrink">
             <ui:VisualElement name="Keys" class="container__instruction-keys">
-                <ui:Image style="background-image: url(&apos;project://database/Assets/_Application/NavigationModes/Sprites/NavigationMobile@1_5x.png?fileID=2101553878&amp;guid=0d3be75dd7710ec46b787771bb4dcd99&amp;type=3#NavigationMobile@1_5x_2&apos;); height: 56px; width: 56px;" />
+                <ui:Image class="image__instruction-size image__color image__touch--pinch" />
             </ui:VisualElement>
             <appui:Text text="@Instructions:Zoom" name="KeysDescription" size="XS" class="text__instruction-description" />
         </ui:VisualElement>
-        <ui:VisualElement name="Pan" class="container__instruction_block" style="flex-shrink: 0;">
+        <ui:VisualElement name="Pan" class="container__instruction_block no-shrink">
             <ui:VisualElement name="Keys" class="container__instruction-keys">
-                <ui:Image style="background-image: url(&apos;project://database/Assets/_Application/NavigationModes/Sprites/NavigationMobile@1_5x.png?fileID=1356565982&amp;guid=0d3be75dd7710ec46b787771bb4dcd99&amp;type=3#NavigationMobile@1_5x_1&apos;); height: 56px; width: 56px;" />
+                <ui:Image class="image__instruction-size image__color image__touch--two-fingers" />
             </ui:VisualElement>
             <appui:Text text="@Instructions:Pan" name="KeysDescription" size="XS" class="text__instruction-description" />
         </ui:VisualElement>

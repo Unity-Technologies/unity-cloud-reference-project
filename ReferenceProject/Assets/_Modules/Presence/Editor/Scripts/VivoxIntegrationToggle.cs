@@ -66,13 +66,13 @@ namespace Unity.ReferenceProject.Presence.Editor
             }
 
 #if UNITY_EDITOR_OSX
-            if (UserBuildSettings.architecture != MacOSArchitecture.x64) {
+            if (UserBuildSettings.architecture != UnityEditor.Build.OSArchitecture.x64) {
                 if (DisplayDialog("Vivox Unsupported",
                         "Vivox is not supported on Apple Silicon architecture. However it will run with _X64 CPU emulation.\nSet the architecture to Intel 64-bit, or else, remove the USE_VIVOX define symbol in Player Settings",
                         "Set Architecture to Intel 64-bit",
                         "Disable Vivox"))
                 {
-                    UserBuildSettings.architecture = MacOSArchitecture.x64;
+                    UserBuildSettings.architecture = UnityEditor.Build.OSArchitecture.x64;
                 }
                 else
                 {

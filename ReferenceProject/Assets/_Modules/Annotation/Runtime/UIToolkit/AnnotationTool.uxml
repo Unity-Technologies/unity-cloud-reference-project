@@ -1,28 +1,26 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
-    <ui:VisualElement name="TopicList" class="topic-list">
-        <ui:VisualElement name="TopicListHeader" class="topic-list-header">
-            <appui:Heading text="@Annotation:Topics" class="topic-list-title"/>
+    <ui:Style src="AnnotationStyle.uss" />
+    <ui:VisualElement name="TopicList" class="grow">
+        <ui:VisualElement name="TopicListHeader" class="container__topic-list-header">
+            <appui:LocalizedTextElement text="@Annotation:TopicsHelp" name="TopicsHelp" class="container__topic-list-help" />
+            <appui:Divider class="divider__no-padding" />
         </ui:VisualElement>
-        <ui:ScrollView name="TopicListContainer" class="topic-list-container"/>
+        <ui:ScrollView name="TopicListContainer" class="grow" />
     </ui:VisualElement>
-    <ui:VisualElement name="CommentList" class="comment-list">
-        <ui:VisualElement name="CommentListHeader" class="comment-list-header">
-            <appui:Heading text="@Annotation:Comments" class="comment-list-title"/>
-            <ui:VisualElement name="CommentListHeaderButtons" class="comment-list-header-buttons">
-                <appui:ActionButton name="AddCommentButton" icon="plus" quiet="true" tooltip="@Annotation:Add" class="comment-header-add"/>
-                <appui:ActionButton name="GotoButton" icon="focus-object" quiet="true" tooltip="@Annotation:Goto" class="comment-header-goto"/>
-                <appui:ActionButton name="BackButton" icon="arrow-u-down-left" quiet="true" tooltip="@Annotation:Back" class="comment-header-back"/>
+    <ui:VisualElement name="CommentList" class="grow">
+        <ui:VisualElement name="CommentListHeader" class="container__comment-list-header">
+            <appui:ActionButton name="BackButton" icon="caret-left" quiet="true" tooltip="@Annotation:Back" class="button__comment-header-back" />
+            <ui:VisualElement name="CommentListHeaderButtons" class="row">
+                <appui:ActionButton name="GotoButton" icon="focus-object" quiet="true" tooltip="@Annotation:Goto" class="button__comment-header-goto" />
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="CommentTopicContainer" class="comment-list-topic-container"/>
-        <ui:ScrollView name="CommentListContainer" class="comment-list-container"/>
-    </ui:VisualElement>
-    <ui:VisualElement name="TextInputContainer" class="text-input-container">
-        <appui:TextField name="TextInputTitle" placeholder="@Annotation:AddTitle" class="text-input-title"/>
-        <appui:TextArea name="TextInputMessage" class="text-input-message"/>
-        <ui:VisualElement name="TextInputButtons" class="text-input-buttons">
-            <appui:ActionButton name="TextInputCancel" label="@Annotation:Cancel" class="text-input-cancel-button"/>
-            <appui:ActionButton name="TextInputSubmit" label="@Annotation:Submit" class="text-input-submit-button"/>
-        </ui:VisualElement>
+        <ui:ScrollView class="grow">
+            <ui:VisualElement name="CommentTopicContainer" class="container__comment-list-topic" />
+            <ui:VisualElement name="CommentSeparator" class="container__comment-separator">
+                <appui:Text name="CommentNumberReply" text="@Annotation:Reply" size="XS" class="text__comment-separator" />
+                <appui:Divider name="CommentDivider" class="divider__comment-separator" />
+            </ui:VisualElement>
+            <ui:VisualElement name="CommentListContainer" class="container__comment-list" />
+        </ui:ScrollView>
     </ui:VisualElement>
 </ui:UXML>

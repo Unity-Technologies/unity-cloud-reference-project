@@ -1,0 +1,60 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <Style src="AssetListStyle.uss" />
+    <Style src="AssetGridItemStyle.uss" />
+    <ui:VisualElement name="MainContainer" class="container__asset-main container__asset-main--init-state">
+        <ui:VisualElement name="ProjectContainer" class="container__asset-project">
+            <appui:Heading name="ProjectTitle" text="@AssetList:Project" class="text__asset-project" />
+            <ui:ScrollView name="ProjectScrollView" class="scroll-view__asset-project-list">
+                <appui:ActionGroup name="ProjectGroup" selection-type="Single" vertical="true" quiet="true" class="action-group__asset-project-group" />
+            </ui:ScrollView>
+        </ui:VisualElement>
+        <ui:VisualElement name="Content" class="container__asset-content">
+            <ui:VisualElement class="container__asset-top-bar">
+                <appui:CircularProgress name="LoadingIndicator" class="progress__asset-loading-indicator"/>
+                <appui:Button name="OrganizationButton" quiet="true" title="--" subtitle="@AssetList:Organization" trailing-icon="sync" class="button__asset-organization" />
+            </ui:VisualElement>
+            <ui:VisualElement name="AssetsContainer" class="container__asset-assets">
+                <ui:VisualElement name="AssetListContainer" class="container__asset-list">
+                    <appui:SearchBar name="SearchBar" placeholder="@AssetList:Search" class="searchfield__asset-search" />
+                    <ui:VisualElement name="AssetFunctionBar" class="container_asset-function-bar">
+                        <ui:VisualElement name="FilterContainer" class="container_asset-filter">
+                            <appui:ActionButton name="FilterStreamableButton" label="Streamable" class="button__asset-filter-streamable" />
+                            <appui:Button name="FilterButton" size="S" title="@AssetList:Filter" leading-icon="plus" class="button__asset-filter" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="ViewOptions" class="container__asset-view-options">
+                            <ui:VisualElement name="SortOptions" class="container__asset-sort-options">
+                                <appui:Text text="@AssetList:Sort" size="S" class="text__asset-sort" />
+                                <appui:Dropdown name="SortDropdown" class="dropdown__asset-sort" />
+                                <appui:Button name="SortOrder" quiet="true" leading-icon="arrow-down" class="button__asset-sort-order" />
+                            </ui:VisualElement>
+                            <appui:Button name="ListViewOptions" leading-icon="ellipsis" quiet="true" class="button__asset-list-view-options" />
+                            <appui:ActionGroup name="ViewTypeGroup" selection-type="Single" vertical="false" compact="true" quiet="true" class="action-group__asset-view-type-group">
+                                <appui:ActionButton name="ListViewButton" icon="list" class="button__asset-list-view" />
+                                <appui:ActionButton name="GridViewButton" icon="grid-four" class="button__asset-grid-view" />
+                            </appui:ActionGroup>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <appui:Text name="AssetWarningMessage" text="@AssetList:WarningMessageNoAssets" class="text__asset-warning-message"/>
+                    <appui:GridView name="AssetGrid" class="grid-view__asset-grid" />
+                </ui:VisualElement>
+                <appui:Drawer name="AssetPanel" anchor="right" swipeable="false" swipe-area-width="0" class="drawer__asset-panel">
+                    <ui:VisualElement name="AssetPanelContainer" class="container__asset-panel">
+                        <ui:VisualElement name="AssetPanelHeader" class="container__asset-panel-header">
+                            <ui:VisualElement name="ButtonContainer" class="container__asset-buttons">
+                                <appui:Button name="OpenButton" title="@AssetList:Open" variant="Accent" class="button__asset-open" />
+                                <appui:Button name="GenerateStreamableButton" title="@AssetList:GenerateStreamable" class="button__asset-generate-streamable" />
+                            </ui:VisualElement>
+                            <appui:Button name="CloseButton" leading-icon="x" quiet="true" class="button__asset-close-panel" />
+                        </ui:VisualElement>
+                        <ui:ScrollView name="AssetPanelInfo" class="scroll-view__asset-info">
+                            <appui:Heading name="AssetName" class="text__asset-name" />
+                            <appui:Chip name="AssetTypeChip" class="chip__asset-type" />
+                            <ui:Image name="Thumbnail" class="container__asset-thumbnail" />
+                            <ui:VisualElement name="AssetInfoContent" class="container__asset-information-content" />
+                        </ui:ScrollView>
+                    </ui:VisualElement>
+                </appui:Drawer>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

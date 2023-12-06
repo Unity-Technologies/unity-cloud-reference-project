@@ -1,0 +1,23 @@
+{
+    "name": "Persistence.Tests",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0709b3a0b1318a443ac11593cd73bb95",
+        "GUID:27619889b8ba8c24980f49ee34dbb44a",
+        "GUID:498d02e03062b2649b108f31a9668c56"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Newtonsoft.Json.dll",
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

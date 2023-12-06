@@ -9,6 +9,14 @@ namespace Unity.ReferenceProject.VR
     {
         Badge m_Badge;
 
+        protected override void Awake()
+        {
+            base.Awake();
+
+            // Hide the follow button in VR
+            CollaboratorsDataPanel.ShowFollowButton = false;
+        }
+
         public override VisualElement GetButtonContent()
         {
             var icon = GetIcon();
@@ -50,7 +58,7 @@ namespace Unity.ReferenceProject.VR
             base.RefreshVisualTree();
 
             // Keep the button always visible in VR
-            SetButtonDisplayStyle(DisplayStyle.Flex);
+            SetToolState(ToolState.Active);
         }
 
         void RefreshAvatarNotificationBadge()

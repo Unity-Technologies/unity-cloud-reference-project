@@ -29,20 +29,12 @@ namespace Unity.ReferenceProject.Instructions
 
         Checkbox m_CheckboxDontShowAgain;
         bool m_IsEnabled = true;
-        IInputDisablingManager m_InputDisablingManager;
-        SwipeInputDisabling m_SwipeInputDisabling;
 
         static readonly string k_CheckboxDontShowAgain = "Checkbox_dont-show-again";
         static readonly string k_ButtonClose = "Button-close";
         static readonly string k_TextHeader = "Text-header";
         static readonly string k_InstructionsContainer = "Instructions-container";
         static readonly string k_TemplateInstructions = "Template-instructions";
-
-        [Inject]
-        void Setup(IInputDisablingManager inputDisablingManager)
-        {
-            m_InputDisablingManager = inputDisablingManager;
-        }
 
         void Start()
         {
@@ -135,9 +127,6 @@ namespace Unity.ReferenceProject.Instructions
         {
             if (container != null)
             {
-                // Disable navigation input when instructions is swiped in
-                m_SwipeInputDisabling = new SwipeInputDisabling(gameObject, m_InputDisablingManager, container);
-
                 container.Clear();
                 var entries = GetComponents<InstructionUIEntry>();
                 foreach (var entry in entries)

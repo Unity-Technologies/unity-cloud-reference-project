@@ -36,10 +36,7 @@ namespace Unity.ReferenceProject.Tools
             {
                 if (closeOtherTools)
                 {
-                    foreach (var otherHandler in m_ToolHandlers)
-                    {
-                        otherHandler.CloseTool();
-                    }
+                    CloseAllTools();
                 }
 
                 toolHandler.OpenTool();
@@ -50,7 +47,10 @@ namespace Unity.ReferenceProject.Tools
         {
             foreach (var toolHandler in m_ToolHandlers)
             {
-                toolHandler.CloseTool();
+                if (!toolHandler.KeepOpened)
+                {
+                    toolHandler.CloseTool();
+                }
             }
         }
     }

@@ -1,0 +1,21 @@
+# For more information about the available options please visit: http://go/backstage (VPN required)
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  annotations:
+    github.com/project-slug: unity/gis-unit
+  name: gis-unit
+  description: "Library allowing to encapsulate and convert numeric values from one measurement unit to another. (Angle, Angular Area, Area, Currency, Frequency, Length, Mass, Radioactivity, Substance Amount, Temperature, Time, Volume"
+  labels:
+    costcenter: "5010"
+  tags:
+    - planned-public
+    - enterprise
+  links:
+    - url: https://unity.slack.com/messages/C01RU3BHA3S/
+      title: "#devs-geospatial"
+      icon: chat
+spec:
+  type: library
+  lifecycle: experimental
+  owner: unity/labs-geospatial

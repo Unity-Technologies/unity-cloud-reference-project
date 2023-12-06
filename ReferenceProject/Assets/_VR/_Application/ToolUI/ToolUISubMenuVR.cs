@@ -18,7 +18,10 @@ namespace Unity.ReferenceProject.VR
                 m_RigUIController.ClearSecondaryBar();
                 if (m_OpenedTool != null)
                 {
-                    m_OpenedTool.CloseTool();
+                    if (!m_OpenedTool.KeepOpened)
+                    {
+                        m_OpenedTool.CloseTool();
+                    }
                     m_OpenedTool = null;
                 }
             }
@@ -33,7 +36,11 @@ namespace Unity.ReferenceProject.VR
                 {
                     if (handler != m_OpenedTool)
                     {
-                        m_OpenedTool.CloseTool();
+                        if (!m_OpenedTool.KeepOpened)
+                        {
+                            m_OpenedTool.CloseTool();
+                        }
+
                         m_OpenedTool = handler;
                     }
                     else

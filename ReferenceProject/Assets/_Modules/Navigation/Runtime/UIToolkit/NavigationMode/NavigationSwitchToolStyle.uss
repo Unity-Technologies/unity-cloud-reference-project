@@ -1,0 +1,11 @@
+.container__navigation-switch-tool{
+    flex-direction: row;
+}
+
+.button__navigation-switch-tool{
+    margin-left: 5px;
+    margin-right: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 40px;
+}

@@ -6,8 +6,3 @@
     bottom: 0;
     border-radius: 8px;
 }
-
-.scene-list-container{
-    border-radius: 0px;
-    margin : 0px;
-}

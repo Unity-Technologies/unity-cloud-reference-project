@@ -19,17 +19,17 @@ namespace Unity.ReferenceProject.Annotation
             visualElement.style.display = DisplayStyle.None;
         }
 
-        public static VisualElement OptionButton(string icon, string text, Action action)
+        public static VisualElement OptionButton(VisualTreeAsset template, string icon, string text, Action action)
         {
-            var button = new ActionButton();
-            button.quiet = true;
+            var instance = template.Instantiate();
+            var button = instance.Q<ActionButton>();
             button.icon = icon;
             button.label = text;
             button.clicked += () =>
             {
                 action?.Invoke();
             };
-            return button;
+            return instance;
         }
 
         public static void UpdateEntryHeader(Avatar avatar, Text authorText, Author author, Color color, Text dateText, DateTime date)

@@ -1,0 +1,5 @@
+.image__draggable-button {
+    background-image: url("../Sprites/PadControl.png");
+    width: 80px;
+    height: 80px;
+}

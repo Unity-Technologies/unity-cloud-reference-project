@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <Style src="NavigationSwitchToolStyle.uss" />
+    <appui:ActionButton name="ActionButton" icon="notnull" quiet="true" class="button__navigation-switch-tool" />
+</ui:UXML>

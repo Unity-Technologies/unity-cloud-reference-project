@@ -1,0 +1,17 @@
+{
+	"name": "com.unity.gis.unit",
+	"displayName":"Geospatial Unit",
+	"version": "0.2.0",
+	"unity": "2020.2",
+	"unityRelease": "6f1",
+	"description": "Library allowing to encapsulate and convert numeric values from one measurement unit to another.\n\nAvailable Types:\n\u25AA Angle\n\u25AA Angular Area\n\u25AA Area\n\u25AA Currency\n\u25AA Frequency\n\u25AA Length\n\u25AA Mass\n\u25AA Radioactivity\n\u25AA Substance Amount\n\u25AA Temperature\n\u25AA Time\n\u25AA Volume",
+	"type": "library",
+	"keywords": [
+		"unit",
+		"double",
+        "gis"
+	],
+	"dependencies": {
+		"com.unity.nuget.newtonsoft-json": "2.0.2"
+	}
+}

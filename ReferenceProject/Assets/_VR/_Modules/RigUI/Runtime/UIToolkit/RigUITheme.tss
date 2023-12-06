@@ -1,9 +1,0 @@
-@import url("/Packages/com.unity.dt.app-ui/PackageResources/Styles/Themes/App UI.tss");
-@import url("/Assets/_Modules/Tools/Runtime/UIToolkit/ToolUIManagerTheme.tss");
-
-@import url("RigUIStyle.uss");
-
-
-
-
-VisualElement {}

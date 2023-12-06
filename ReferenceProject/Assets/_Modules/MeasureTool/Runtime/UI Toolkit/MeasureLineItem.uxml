@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <ui:VisualElement name="MeasureLineItem" class="container__line-list-item">
+        <ui:VisualElement name="LineItemContainer" class="container__line-list-item-name">
+           <appui:Text name="LineItemName" text="Name" class="text__line-list-item-name" />
+        </ui:VisualElement>
+        <ui:VisualElement name="LineItemButtonContainer" class="container__line-list-item-button">
+            <appui:ActionButton name="LineItemView" icon="eye-slash" tooltip="@MeasureTool:View" quiet="true" class="button__icon" />
+            <appui:ActionButton name="LineItemEdit" icon="pen" tooltip="@MeasureTool:Edit" quiet="true" class="button__icon" />
+            <appui:ActionButton name="LineItemDelete" icon="delete" tooltip="@MeasureTool:Delete" quiet="true" class="button__icon" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

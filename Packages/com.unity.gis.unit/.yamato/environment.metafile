@@ -1,0 +1,60 @@
+test_platforms:
+  - name: win
+    type: Unity::VM
+    image: package-ci/win10:stable
+    flavor: b1.large
+    runtime: playmode
+    versions: [2020.3, 2021.1, trunk]
+    platform: desktop
+    components:
+      - editor
+      - il2cpp
+  - name: mac
+    type: Unity::VM::osx
+    image: package-ci/mac:stable
+    flavor: m1.mac
+    runtime: playmode
+    versions: [2020.3, 2021.1, trunk]
+    platform: desktop
+    components:
+      - editor
+      - il2cpp
+  - name: ubuntu
+    type: Unity::VM
+    image: package-ci/ubuntu:stable
+    flavor: b1.large
+    runtime: playmode
+    versions: [2020.3, 2021.1, trunk]
+    platform: desktop
+    components:
+      - editor
+  - name: centos
+    type: Unity::VM::GPU
+    image: package-ci/centos:stable
+    flavor: b1.large
+    runtime: playmode
+    versions: [2020.3, 2021.1]
+    platform: desktop
+    components:
+      - editor
+  - name: iOS
+    type: Unity::mobile::iPhone
+    image: mobile/macos-10.15-testing:latest
+    flavor: b1.medium
+    versions: [2020.3, 2021.1, trunk]
+    platform: iOS
+    runtime: playmode
+    components:
+      - editor
+      - il2cpp
+  - name: Android
+    type: Unity::mobile::shield
+    image: mobile/android-execution-base:stable
+    flavor: b1.medium
+    versions: [2020.3, 2021.1, trunk]
+    platform: android
+    runtime: playmode
+    components:
+      - editor
+      - il2cpp
+package-assembly: com.unity.gis.unit

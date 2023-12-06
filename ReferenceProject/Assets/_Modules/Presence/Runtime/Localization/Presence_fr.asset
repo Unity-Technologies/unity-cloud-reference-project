@@ -16,7 +16,8 @@ MonoBehaviour:
     m_Code: fr
   m_SharedData: {fileID: 11400000, guid: 48090bc5154b24caf82ce6cb32babf22, type: 2}
   m_Metadata:
-    m_Items: []
+    m_Items:
+    - rid: 4540994257411112968
   m_TableData:
   - m_Id: 2877987741696
     m_Localized: Collaborateurs
@@ -34,6 +35,97 @@ MonoBehaviour:
     m_Localized: "Vivox non support\xE9"
     m_Metadata:
       m_Items: []
+  - m_Id: 66758940513431552
+    m_Localized: Microphone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 63835881523539968
+    m_Localized: Suivre
+    m_Metadata:
+      m_Items: []
+  - m_Id: 63835966240092160
+    m_Localized: "Arr\xEAt suivi"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 75438328369016832
+    m_Localized: Suit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71819289141764096
+    m_Localized: "\rD\xE9marrer pr\xE9sentation"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71825755420549120
+    m_Localized: "Pr\xE9sentateur :"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71819606302449664
+    m_Localized: "Rejoindre pr\xE9sentation"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71819715324993536
+    m_Localized: "Quitter pr\xE9sentation"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71819843427426304
+    m_Localized: "Pr\xE9sentation"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71820072688082944
+    m_Localized: "{0} a commenc\xE9 une pr\xE9sentation. Souhaitez-vous la rejoindre?"
+    m_Metadata:
+      m_Items:
+      - rid: 4540994257411112968
+  - m_Id: 71820422551756800
+    m_Localized: Fermer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73243622850486272
+    m_Localized: 'Audience :'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73245952190767104
+    m_Localized: "\rArr\xEAter pr\xE9sentation"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73248310362693632
+    m_Localized: Rejoindre
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73610433743872000
+    m_Localized: Vide
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83072218588766208
+    m_Localized: Volume voix
+    m_Metadata:
+      m_Items: []
+  - m_Id: 88067894718554112
+    m_Localized: "Vous pr\xE9sentez"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 91328982194221056
+    m_Localized: Avertissement - Mode de suivi
+    m_Metadata:
+      m_Items: []
+  - m_Id: 91329788050042880
+    m_Localized: "Cette action n\u2019est pas possible lors du suivi. Souhaitez-vous
+      quitter le mode de suivi? "
+    m_Metadata:
+      m_Items: []
+  - m_Id: 92074335105347584
+    m_Localized: "Cette action n\u2019est pas possible en assistant \xE0 une pr\xE9sentation.
+      Aimeriez-vous quitter la pr\xE9sentation? "
+    m_Metadata:
+      m_Items: []
+  - m_Id: 92075029338157056
+    m_Localized: "Avertissement - Pr\xE9sentation"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4540994257411112968
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 00e050c0f927ff00

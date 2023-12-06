@@ -1,44 +1,76 @@
 ﻿using System;
 using System.Text;
-using Unity.Cloud.ReferenceProject.Utils.Git;
 using UnityEngine;
+
+#if USE_GIT_INFO
+using Unity.Cloud.ReferenceProject.Utils.Git;
+#endif
 
 namespace Unity.DTReferenceProject
 {
     [ExecuteInEditMode]
     public class DisplayBuildVersion : MonoBehaviour
     {
+        [SerializeField]
+        TextAsset m_ReferenceProjectVersion;
+        
+        [SerializeField]
+        int m_FontSize = 16;
+
+        [SerializeField]
+        int m_Padding = 3;
+
         GUIStyle m_Style;
         string m_VersionStr;
-        string m_GitVersion;
-        string m_Version;
-        StringBuilder m_Sb = new StringBuilder();
+
+        void Awake()
+        {
+            m_VersionStr = GenerateVersion();
+        }
 
         void OnGUI()
         {
-            m_Style ??= new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleRight };
-            if (Application.version != m_Version)
-            {
-                m_Version = Application.version;
-                m_Sb.Append("ver. ");
-                m_Sb.Append(m_Version);
-                m_Sb.Append("\n");
-            }
-#if USE_GIT_INFO
-            if (VersionControlInformation.Instance.CommitHash != m_GitVersion)
-            {
-                m_GitVersion = VersionControlInformation.Instance.CommitHash;
-                m_Sb.Append("hash. ");
-                m_Sb.Append(m_GitVersion);
-            }
+#if UNITY_EDITOR
+            m_VersionStr = GenerateVersion();
 #endif
-            if (m_Sb.Length != 0)
+            DrawUI();
+        }
+        
+        string GenerateVersion()
+        {
+            var sb = new StringBuilder();
+            
+            sb.Append("ver. ");
+            sb.Append(Application.version);
+            
+            if (m_ReferenceProjectVersion != null)
             {
-                m_VersionStr = m_Sb.ToString();
-                m_Sb = m_Sb.Clear();
+                sb.Append(" ");
+                sb.Append(m_ReferenceProjectVersion.text.Trim());
             }
 
-            var rect = new Rect(0.0f, Screen.height - 40.0f, Screen.width - 10.0f, 60.0f);
+#if USE_GIT_INFO
+            if (!string.IsNullOrEmpty(VersionControlInformation.Instance.CommitHash))
+            {
+                sb.Append(" hash. ");
+                sb.Append(VersionControlInformation.Instance.CommitHash);
+            }
+#endif
+            return sb.ToString();
+        }
+
+        void DrawUI(){
+
+            var fontHeight = Mathf.Min(Mathf.FloorToInt(Screen.width * m_FontSize / 1000f), Mathf.FloorToInt(Screen.height * m_FontSize / 1000f));
+            
+            m_Style ??= new GUIStyle(GUI.skin.label)
+            {
+                alignment = TextAnchor.LowerRight,
+                fontSize = fontHeight
+            };
+
+            var h = fontHeight + m_Padding + 1f; // +1f for drop shadow
+            var rect = new Rect(m_Padding, Screen.height - h, Screen.width - 2f * m_Padding, h);
 
             var currentColor = GUI.color;
 

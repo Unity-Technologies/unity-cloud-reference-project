@@ -18,6 +18,9 @@ namespace Unity.ReferenceProject.UITableListView
         
         [Header("Styles")]
         [SerializeField]
+        StyleSheet m_StyleSheet;
+        
+        [SerializeField]
         string m_PopoverStyle;
         
         [SerializeField]
@@ -34,7 +37,7 @@ namespace Unity.ReferenceProject.UITableListView
         
         List<object> m_ListKeys;
         
-        public event Action OnRefresh;
+        public event Action Refresh;
         public int ServicePriority => m_ServicePriority;
 
         void OnDestroy() => ClearService();
@@ -51,7 +54,7 @@ namespace Unity.ReferenceProject.UITableListView
         public void InitializeService(VisualElement root)
         {
             m_FilterModule = new FilterModule<object>();
-            m_FilterTableUI = new FilterTableUI<object>(m_FilterModule, root, OnRefresh, m_ButtonName, m_ColumnStyles);
+            m_FilterTableUI = new FilterTableUI<object>(m_FilterModule, root, Refresh, m_ButtonName, m_StyleSheet, m_ColumnStyles);
             m_FilterTableUI.SetStylesToHeader(m_FilterHeaderStyle);
             m_FilterTableUI.SetStylesToRow(m_FilterRowStyle);
             m_FilterTableUI.SetStylesToPopover(m_PopoverStyle);

@@ -31,6 +31,90 @@ MonoBehaviour:
     m_Key: Vivox_Unsupported
     m_Metadata:
       m_Items: []
+  - m_Id: 63835881523539968
+    m_Key: Follow
+    m_Metadata:
+      m_Items: []
+  - m_Id: 63835966240092160
+    m_Key: Unfollow
+    m_Metadata:
+      m_Items: []
+  - m_Id: 66758940513431552
+    m_Key: Mic
+    m_Metadata:
+      m_Items: []
+  - m_Id: 75438328369016832
+    m_Key: Following
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71819289141764096
+    m_Key: StartPresentation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71819606302449664
+    m_Key: JoinPresentation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71819715324993536
+    m_Key: QuitPresentation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71819843427426304
+    m_Key: Presentation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71820072688082944
+    m_Key: PresentationStartedMessage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71820422551756800
+    m_Key: Close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71825755420549120
+    m_Key: Presenter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73243622850486272
+    m_Key: Audience
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73245952190767104
+    m_Key: StopPresentation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73248310362693632
+    m_Key: Join
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73610433743872000
+    m_Key: Empty
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83072218588766208
+    m_Key: VoiceLevel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 88067894718554112
+    m_Key: PresentingText
+    m_Metadata:
+      m_Items: []
+  - m_Id: 91328982194221056
+    m_Key: WarningTitleFollowMode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 91329788050042880
+    m_Key: WarningMessageFollowMode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 92074335105347584
+    m_Key: WarningMessagePresentation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 92075029338157056
+    m_Key: WarningTitlePresentation
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

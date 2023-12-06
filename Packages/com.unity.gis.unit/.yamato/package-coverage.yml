@@ -1,0 +1,61 @@
+{% metadata_file .yamato/environment.metafile -%}
+
+---
+{% for platform in test_platforms -%}
+{% for version in platform.versions -%}
+test_coverage_{{ platform.name }}_{{ version }}:
+  name : Test Coverage on {{ platform.name }} ({{ version }})
+  agent:
+    type: {{ platform.type }}
+    image: {{ platform.image }}
+    flavor: {{ platform.flavor}}
+  commands:
+    {% if platform.platform == "desktop" %}- npm install upm-ci-utils@stable -g --registry https://artifactory.prd.cds.internal.unity3d.com/artifactory/api/npm/upm-npm
+    - upm-ci package test -u {{ version }} --platform {{ platform.runtime }} --type isolation-tests --extra-create-project-arg=-upmNoDefaultPackages --enable-code-coverage --code-coverage-options 'generateAdditionalMetrics;generateHtmlReport;assemblyFilters:+{{ package-assembly }}*'
+    {% else %}- pip install unity-downloader-cli --index-url https://artifactory.prd.it.unity3d.com/artifactory/api/pypi/pypi/simple --upgrade
+    - unity-downloader-cli -c Editor -c {{ platform.name }} -c il2cpp -u trunk --fast --wait
+    - curl -s https://artifactory.internal.unity3d.com/core-automation/tools/utr-standalone/utr{% if platform.name == "Android" %}.bat{% endif %} --output utr{% if platform.name == "Android" %}.bat{% endif %}{% if platform.name == "iOS" %}
+    - chmod +x ./utr{% endif %}
+    - ./utr{% if platform.name == "Android" %}.bat{% endif %} --suite=playmode --platform={{ platform.name }} --editor-location=.Editor --testproject=TestProject --player-save-path=build/players --artifacts_path=build/logs --build-only
+    - |
+      {% if platform.name == "Android" %}set ANDROID_DEVICE_CONNECTION=%BOKKEN_DEVICE_IP%
+      start %ANDROID_SDK_ROOT%\platform-tools\adb.exe connect %BOKKEN_DEVICE_IP%
+      start %ANDROID_SDK_ROOT%\platform-tools\adb.exe devices
+      {% endif %}./utr --suite=playmode --platform={{ platform.name }} --player-load-path=build/players --artifacts_path=build/test-results
+    {% endif %}
+  artifacts:
+    logs:
+      paths:
+        - "{% if platform.platform == "desktop" %}upm-ci~{% else %}build{% endif %}/test-results/**/*"
+  dependencies:
+    - .yamato/package-pack.yml#pack
+{% endfor -%}
+{% endfor -%}
+
+{% for platform in test_platforms -%}
+tests_coverage_all_{{ platform.name }}:
+  name: _Run All Coverage Tests ({{ platform.name }})
+  dependencies:
+    - .yamato/package-pack.yml#pack
+{% for version in platform.versions -%}
+    - .yamato/package-coverage.yml#test_coverage_{{ platform.name }}_{{ version }}
+{% endfor -%}
+{% endfor -%}
+
+test_trigger:
+  name: Package Tests Trigger
+  triggers:
+    branches:
+      only:
+      - "master"
+    pull_requests:
+      - targets:
+          only:
+            - "/.*/"
+  dependencies:
+    - .yamato/package-pack.yml#pack
+{% for platform in test_platforms -%}
+{% for version in platform.versions -%}
+    - .yamato/package-coverage.yml#test_coverage_{{platform.name}}_{{version}}
+{% endfor -%}
+{% endfor -%}

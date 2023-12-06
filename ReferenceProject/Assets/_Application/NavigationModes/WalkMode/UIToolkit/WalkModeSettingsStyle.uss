@@ -1,0 +1,9 @@
+.container__settings-list{
+    flex-grow: 1;
+    margin: 24px;
+    letter-spacing: 3px;
+}
+
+.slider-float__margin{
+    margin-bottom: 25px;
+}

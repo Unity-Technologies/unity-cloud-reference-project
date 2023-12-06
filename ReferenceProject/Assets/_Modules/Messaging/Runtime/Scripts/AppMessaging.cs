@@ -24,29 +24,54 @@ namespace Unity.ReferenceProject.Messaging
             m_InputDisablingManager = inputDisablingManager;
         }
 
-        public virtual void ShowMessage(string message, bool dismissable = false, params object[] args)
+        public virtual void DismissToast(Toast toast)
         {
-            BuildToastMessage(m_MainUIPanel.Panel, message, NotificationStyle.Default, NotificationDuration.Long, dismissable, args).Show();
+            toast?.Dismiss();
         }
 
-        public virtual void ShowInfo(string message, bool dismissable = false, params object[] args)
+        public virtual void DismissModal(Modal modal)
         {
-            BuildToastMessage(m_MainUIPanel.Panel, message, NotificationStyle.Informative, NotificationDuration.Long, dismissable, args).Show();
+            modal.Dismiss();
         }
 
-        public virtual void ShowSuccess(string message, bool dismissable = false, params object[] args)
+        public virtual Toast ShowMessage(string message, bool dismissable = false, params object[] args)
         {
-            BuildToastMessage(m_MainUIPanel.Panel, message, NotificationStyle.Positive, NotificationDuration.Long, dismissable, args).Show();
+            Toast toast = BuildToastMessage(m_MainUIPanel.Panel, message, NotificationStyle.Default, NotificationDuration.Long, dismissable, args);
+            toast.Show();
+
+            return toast;
         }
 
-        public virtual void ShowWarning(string message, bool dismissable = false, params object[] args)
+        public virtual Toast ShowInfo(string message, bool dismissable = false, params object[] args)
         {
-            BuildToastMessage(m_MainUIPanel.Panel, message, NotificationStyle.Warning, NotificationDuration.Long, dismissable, args).Show();
+            Toast toast = BuildToastMessage(m_MainUIPanel.Panel, message, NotificationStyle.Informative, NotificationDuration.Long, dismissable, args);
+            toast.Show();
+
+            return toast;
         }
 
-        public virtual void ShowError(string message, bool dismissable = false, params object[] args)
+        public virtual Toast ShowSuccess(string message, bool dismissable = false, params object[] args)
         {
-            BuildToastMessage(m_MainUIPanel.Panel, message, NotificationStyle.Negative, NotificationDuration.Long, dismissable, args).Show();
+            Toast toast = BuildToastMessage(m_MainUIPanel.Panel, message, NotificationStyle.Positive, NotificationDuration.Long, dismissable, args);
+            toast.Show();
+
+            return toast;
+        }
+
+        public virtual Toast ShowWarning(string message, bool dismissable = false, params object[] args)
+        {
+            Toast toast = BuildToastMessage(m_MainUIPanel.Panel, message, NotificationStyle.Warning, NotificationDuration.Long, dismissable, args);
+            toast.Show();
+
+            return toast;
+        }
+
+        public virtual Toast ShowError(string message, bool dismissable = false, params object[] args)
+        {
+            Toast toast = BuildToastMessage(m_MainUIPanel.Panel, message, NotificationStyle.Negative, NotificationDuration.Long, dismissable, args);
+            toast.Show();
+
+            return toast;
         }
 
         public virtual void ShowException(Exception exception, string title = null, params object[] args)
@@ -58,7 +83,7 @@ namespace Unity.ReferenceProject.Messaging
             string primaryActionLabel = null, Action primaryActionCallback = null, params object[] args)
         {
             m_InputDisablingManager.AddOverride(this);
-            var modal = BuildDialog(m_MainUIPanel.Panel, title, message, cancelButtonLabel, primaryActionLabel, primaryActionCallback);
+            var modal = BuildDialog(m_MainUIPanel.Panel, title, message, cancelButtonLabel, primaryActionLabel, primaryActionCallback, args);
             modal.dismissed += (t, type) =>
             {
                 m_InputDisablingManager.RemoveOverride(this);

@@ -22,7 +22,7 @@ namespace Unity.ReferenceProject.UITableListView
         SortModuleUI m_SortModuleUI;
         SortModule<object> m_SortModule;
 
-        public event Action OnRefresh;
+        public event Action Refresh;
         public int ServicePriority => m_ServicePriority;
 
         void OnDestroy() => ClearService();
@@ -42,8 +42,8 @@ namespace Unity.ReferenceProject.UITableListView
             m_SortModule.CurrentSortPathName = string.IsNullOrEmpty(initialSorting) ? m_DefaultSortColumn: initialSorting;
             m_SortModule.SortOrder = Enum.TryParse<SortOrder>(sortOrder, out var value ) ? value : SortOrder.Ascending;
 
-            m_SortModuleUI = new SortModuleUI(m_SortModule, root, OnRefresh);
-            m_SortModuleUI.OnSortChanged += WritePlayerPrefs;
+            m_SortModuleUI = new SortModuleUI(m_SortModule, root, Refresh);
+            m_SortModuleUI.SortChanged += WritePlayerPrefs;
         }
 
         void WritePlayerPrefs()

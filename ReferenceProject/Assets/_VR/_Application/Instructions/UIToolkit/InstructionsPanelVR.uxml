@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI" >
+    <Style src="/Assets/_Modules/Instructions/Runtime/UIToolkit/InstructionsPanelStyle.uss" />
+    <Style src="InstructionsPanelVRStyle.uss" />
+    <ui:VisualElement name="Container" class="container__panel-instruction">
+        <appui:Button name="Button-close" focusable="false" size="S" leading-icon="x" preferred-tooltip-placement="Left" class="button__panel-instruction-close" />
+        <appui:ActionButton name="Button-dock" size="S" icon="draghandle" preferred-tooltip-placement="Left" class="button_panel-instruction-vr-dock" />
+        <appui:Text name="Text-header" text="Heading" size="M" picking-mode="Ignore" class="heading__panel-instruction" />
+        <appui:Divider spacing="S" />
+        <appui:Divider name="Divider_empty" spacing="S" class="divider__empty flex" />
+        <ui:VisualElement name="Instructions-container" picking-mode="Ignore" />
+        <appui:Divider name="Divider_empty" spacing="S" class="divider__empty flex" />
+        <appui:Checkbox name="Checkbox_dont-show-again" focusable="false" label="@Instructions:Dont_Show_Again" size="M" />
+    </ui:VisualElement>
+</ui:UXML>

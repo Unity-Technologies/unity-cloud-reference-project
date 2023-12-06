@@ -156,7 +156,7 @@ namespace Unity.ReferenceProject.UITableListView
             m_ListView.bindItem = OnBindItem;
             m_ListView.unbindItem = OnUnbindItem;
             m_ListView.makeItem = OnMakeItem;
-            m_ListView.onSelectionChange += OnSelectionChange;
+            m_ListView.selectionChanged += OnSelectionChange;
 
             RegisterCallback<DetachFromPanelEvent>(OnDetachFromHierarchy);
             RegisterCallback<GeometryChangedEvent>(OnGeometryChange);

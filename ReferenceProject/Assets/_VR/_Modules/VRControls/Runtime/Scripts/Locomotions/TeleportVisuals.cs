@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Unity.ReferenceProject.ObjectSelection;
 using UnityEngine;
@@ -21,7 +22,7 @@ namespace Unity.ReferenceProject.VR.VRControls
         float m_TimeStep = 0.75f;
 
         [SerializeField, Tooltip("The maximum number of segments in the arc ray.")]
-        int m_MaxProjectileSteps = 150;
+        int m_MaxProjectileSteps = 256;
 
         [SerializeField, Tooltip("The time it takes for the ray to reach its normal teleport distance when aiming begins.")]
         float m_TransitionTime = 0.03f;
@@ -53,6 +54,10 @@ namespace Unity.ReferenceProject.VR.VRControls
         Vector3 m_EasedStartPosition = Vector3.zero;
         Vector3 m_HitNormal;
         int m_LastHitIndex;
+        bool m_LastHitUI;
+        float m_ConvertedTimeStep;
+        Vector3 m_Gravity;
+        Vector3 m_ConvertedGravity;
 
         LineRenderer m_LineRenderer;
         Vector3[] m_LineVertexPositions;
@@ -68,6 +73,7 @@ namespace Unity.ReferenceProject.VR.VRControls
         bool m_Visible;
 
         int k_UILayerMask;
+        int m_StepSize;
 
         [Inject]
         public void Setup(IObjectPicker picker)
@@ -87,22 +93,22 @@ namespace Unity.ReferenceProject.VR.VRControls
         /// <summary>
         ///     The target position to teleport to, if there is one
         /// </summary>
-        public Vector3? targetPosition { get; private set; }
+        public Vector3? TargetPosition { get; private set; }
 
         /// <summary>
         ///     The target rotation to teleport to, if there is one
         /// </summary>
-        public Quaternion? targetRotation { get; private set; }
+        public Quaternion? TargetRotation { get; private set; }
 
         /// <summary>
         ///     A set of gameObjects to ignore when casting the teleport ray
         /// </summary>
-        public HashSet<GameObject> ignoredGameObjects { private get; set; }
+        public HashSet<GameObject> IgnoredGameObjects { private get; set; }
 
         /// <summary>
         ///     The XRRyInteractor associated with the Teleport script which created this visuals object.
         /// </summary>
-        public XRRayInteractor xrRayInteractor { get; set; }
+        public XRRayInteractor XRRayInteractor { get; set; }
 
         /// <summary>
         ///     Sets whether the Teleport visuals should currently be visible or not.
@@ -120,7 +126,7 @@ namespace Unity.ReferenceProject.VR.VRControls
 
                 m_Picking = false;
 
-                targetPosition = null;
+                TargetPosition = null;
                 m_ResetAimEasing = true;
 
                 if (m_VisibilityCoroutine != null)
@@ -136,15 +142,39 @@ namespace Unity.ReferenceProject.VR.VRControls
                 m_VisibilityCoroutine = StartCoroutine(VisibilityTransition(false));
             }
 
-            if (xrRayInteractor != null)
-                xrRayInteractor.enabled = !m_Visible;
+            if (XRRayInteractor != null)
+                XRRayInteractor.enabled = !m_Visible;
         }
 
         void Awake()
         {
+#if UNITY_ANDROID
+            // Limit the number of projectile steps on Android to avoid performance issues
+            if (m_MaxProjectileSteps <= 0 || m_MaxProjectileSteps > 64)
+            {
+                m_TimeStep = (m_TimeStep * m_MaxProjectileSteps) / 64;
+                m_MaxProjectileSteps = 64;
+            }
+#endif
+            if (m_MaxProjectileSteps != 0 && (m_MaxProjectileSteps & (m_MaxProjectileSteps - 1)) != 0)
+            {
+                Debug.LogWarning("Max Projectile Steps should be a power of 2 for performance reasons.");
+                m_MaxProjectileSteps = (int)Math.Pow(2, (int)Math.Log(m_MaxProjectileSteps, 2));
+            }
+
+            m_StepSize = Mathf.FloorToInt(Mathf.Sqrt(m_MaxProjectileSteps));
+            m_Gravity = Physics.gravity;
+            if (m_Gravity == Vector3.zero)
+            {
+                m_Gravity = Vector3.down; // Assume (0,-1,0) if gravity is zero
+            }
+
+            m_ConvertedTimeStep = m_TimeStep / Mathf.Sqrt(m_TeleportDistance * m_Gravity.magnitude);
+            m_ConvertedGravity = m_Gravity * m_ConvertedTimeStep * m_ConvertedTimeStep;
+
             m_Positions = new Vector3[m_MaxProjectileSteps];
             m_EasedLineVertexPositions = new Vector3[m_MaxProjectileSteps];
-            m_LineVertexPositions = new Vector3[m_MaxProjectileSteps + 1];
+            m_LineVertexPositions = new Vector3[m_MaxProjectileSteps];
 
             m_LineRenderer = GetComponent<LineRenderer>();
             m_LineRenderer.positionCount = m_MaxProjectileSteps;
@@ -156,39 +186,37 @@ namespace Unity.ReferenceProject.VR.VRControls
 
         void Update()
         {
-            var rayOrigin = xrRayInteractor?.rayOriginTransform;
+            var rayOrigin = XRRayInteractor?.rayOriginTransform;
             if (rayOrigin == null)
                 return;
 
             var currentTeleportDistance = m_TeleportDistance;
 
-            var gravity = Physics.gravity;
-            if (gravity == Vector3.zero)
-                gravity = Vector3.down; // Assume (0,-1,0) if gravity is zero
-
-            var timeStep = m_TimeStep / Mathf.Sqrt(currentTeleportDistance * gravity.magnitude);
-
             currentTeleportDistance *= m_TransitionAmount;
-            var speed = Mathf.Sqrt(currentTeleportDistance * gravity.magnitude);
+            var speed = Mathf.Sqrt(currentTeleportDistance * m_Gravity.magnitude);
             var aimRayOrigin = rayOrigin;
-            var velocity = aimRayOrigin.forward * (speed * timeStep);
-            gravity *= timeStep * timeStep;
+            var velocity = aimRayOrigin.forward * (speed * m_ConvertedTimeStep);
+
             var lastPosition = aimRayOrigin.position + rayOrigin.forward * 0.04f;
 
             var easeFactor = 1f;
             if (!m_ResetAimEasing)
+            {
                 easeFactor -= Mathf.Exp(-m_LineDampening * Time.deltaTime);
+            }
             else
+            {
                 m_ResetAimEasing = false;
+            }
 
             m_EasedStartPosition = Vector3.Lerp(m_EasedStartPosition, lastPosition, easeFactor);
             m_EasedForward = Vector3.Slerp(m_EasedForward, aimRayOrigin.forward, easeFactor);
-            var easedVelocity = m_EasedForward * (speed * timeStep);
+            var easedVelocity = m_EasedForward * (speed * m_ConvertedTimeStep);
 
-            CalculateTrajectory(lastPosition, velocity, gravity, ref m_Positions);
-            CalculateTrajectory(m_EasedStartPosition, easedVelocity, gravity, ref m_EasedLineVertexPositions);
+            CalculateTrajectory(lastPosition, velocity, m_ConvertedGravity, ref m_Positions);
+            CalculateTrajectory(m_EasedStartPosition, easedVelocity, m_ConvertedGravity, ref m_EasedLineVertexPositions);
 
-            FindTargetPosition(m_EasedLineVertexPositions).ConfigureAwait(false);
+            _ = FindTargetPosition(m_EasedLineVertexPositions.ToList());
         }
 
         void OnEnable()
@@ -208,7 +236,7 @@ namespace Unity.ReferenceProject.VR.VRControls
 
         void OnDisable()
         {
-            targetPosition = null;
+            TargetPosition = null;
             m_AnimPlaying = false;
         }
 
@@ -221,7 +249,7 @@ namespace Unity.ReferenceProject.VR.VRControls
         public void Rotate(float angle, Quaternion rigRotation, Quaternion lookRotation)
         {
             var rotateAmount = Quaternion.Euler(0f, angle, 0f);
-            targetRotation = rigRotation * rotateAmount;
+            TargetRotation = rigRotation * rotateAmount;
 
             var rotateToNormal = Quaternion.FromToRotation(Vector3.up, m_HitNormal);
             var rotateEase = 1f;
@@ -304,22 +332,21 @@ namespace Unity.ReferenceProject.VR.VRControls
             }
         }
 
-        async Task FindTargetPosition(IReadOnlyList<Vector3> linePoints)
+        async Task FindTargetPosition(List<Vector3> linePoints)
         {
             bool hasHitUI = false;
             var size = linePoints.Count;
-            if (m_TeleportPicker == null || size == 0 || linePoints[0] == linePoints[size- 1])
-            {
+            if (m_TeleportPicker == null || size == 0 || linePoints[0] == linePoints[size - 1])
                 return;
-            }
 
             if (m_Picking)
             {
-                if (m_FinishedComputeFirstRayHit)
+                if (m_FinishedComputeFirstRayHit && !m_LastHitUI)
                 {
                     // Reuse the last target value for in between frame before callback
-                    SetTargetPosition(targetPosition, m_LastHitIndex);
+                    SetTargetPosition(TargetPosition, m_LastHitIndex);
                 }
+
                 return;
             }
 
@@ -329,35 +356,37 @@ namespace Unity.ReferenceProject.VR.VRControls
             // pick
             var hitIndex = linePoints.Count - 1;
             Vector3? hitPosition = null;
-            var step = 32; // Remove this when the picker will be able to handle raycast by bunch
-            for (int i = 0; i < size - 2; i+=step)
+
+            List<Vector3> subPoints = new List<Vector3>();
+            for (int i = 0; i < linePoints.Count; i += m_StepSize)
             {
-                if (i + step > size - 1)
+                subPoints.Add(linePoints[i]);
+            }
+
+            subPoints.Add(linePoints[linePoints.Count - 1]);
+
+            var result = await m_TeleportPicker.PickFromPathAsync(subPoints.ToArray());
+            if (result.Index != -1)
+            {
+                var secondSubPoints = new List<Vector3>();
+                var start = result.Index * m_StepSize;
+                for (int i = start; i <= start + m_StepSize + 1 && i < linePoints.Count; i++)
                 {
-                    step = size - i - 1;
+                    secondSubPoints.Add(linePoints[i]);
                 }
 
-                var ray = new Ray(linePoints[i], linePoints[i + step] - linePoints[i]);
-                var distance = Vector3.Distance(linePoints[i], linePoints[i + step]);
-
-                // Detect if the ray hit a UI element
-                if(Physics.Raycast(ray, out RaycastHit hitInfo, distance, 1 << k_UILayerMask))
+                var secondResult = await m_TeleportPicker.PickFromPathAsync(secondSubPoints.ToArray());
+                if (secondResult.Index != -1)
                 {
-                    hitIndex = i;
-                    hitPosition = hitInfo.point;
-                    hasHitUI = true;
-                    break;
-                }
-
-                var result = await m_TeleportPicker.RaycastAsync(ray, distance);
-                if(result.HasIntersected)
-                {
-                    hitIndex = i;
-                    hitPosition = result.Point;
-                    m_HitNormal = Vector3.up; // Until we have a way to get the normal from the picker
-                    break;
+                    // Find hit index
+                    hitIndex = start + secondResult.Index;
+                    hitPosition = secondResult.RaycastResult.Point;
+                    m_HitNormal = secondResult.RaycastResult.Normal;
                 }
             }
+
+            // Detect if the ray hit a UI element
+            hasHitUI = CheckRaycastUI(linePoints, ref hitIndex, ref hitPosition);
 
             m_FinishedComputeFirstRayHit = true;
             m_Picking = false;
@@ -365,19 +394,37 @@ namespace Unity.ReferenceProject.VR.VRControls
             SetTargetPosition(hitPosition, hitIndex, hasHitUI);
         }
 
+        bool CheckRaycastUI(List<Vector3> linePoints, ref int hitIndex, ref Vector3? hitPosition)
+        {
+            for (int i = 0; i < linePoints.Count - 1; i++)
+            {
+                var ray = new Ray(linePoints[i], linePoints[i + 1] - linePoints[i]);
+                var distance = Vector3.Distance(linePoints[i], linePoints[i + 1]);
+                if (Physics.Raycast(ray, out RaycastHit hitInfo, distance, 1 << k_UILayerMask))
+                {
+                    hitIndex = i;
+                    hitPosition = hitInfo.point;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         void SetTargetPosition(Vector3? position, int easedHitIndex, bool hasHitUI = false)
         {
             bool isValid;
             bool isVerticalSurface = false;
 
-            targetPosition = position;
-            m_LastHitIndex = targetPosition.HasValue && easedHitIndex == m_MaxProjectileSteps - 1 ? m_LastHitIndex : easedHitIndex;
+            TargetPosition = position;
+            m_LastHitUI = hasHitUI;
+            m_LastHitIndex = TargetPosition.HasValue && easedHitIndex == m_MaxProjectileSteps - 1 ? m_LastHitIndex : easedHitIndex;
             if (m_AnimPlaying)
             {
-                targetPosition = null;
+                TargetPosition = null;
             }
 
-            if(hasHitUI)
+            if (hasHitUI)
             {
                 isValid = false;
             }
@@ -385,41 +432,42 @@ namespace Unity.ReferenceProject.VR.VRControls
             {
                 // Check if destination is too much vertical
                 isVerticalSurface = Vector3.Dot(m_HitNormal, Vector3.up) < 0.3f;
-                isValid = targetPosition.HasValue && !isVerticalSurface;
+                isValid = TargetPosition.HasValue && !isVerticalSurface;
             }
+
             m_TargetRigPoseVisual.SetActive(isValid);
 
             if (isValid)
             {
                 m_TargetRigPoseVisual.transform.rotation = Quaternion.identity;
-                m_TargetRigPoseVisual.transform.position = targetPosition.Value;
+                m_TargetRigPoseVisual.transform.position = TargetPosition.Value;
                 m_TargetRigPoseVisual.transform.localScale = Vector3.one;
             }
 
             if (!m_Visible)
             {
-                targetPosition = null;
+                TargetPosition = null;
                 return;
             }
 
             var color = isValid ? m_Gradient : m_InvalidGradient;
 
+            var lastVertexPosition = m_EasedLineVertexPositions[m_LastHitIndex];
+            var delta = TargetPosition.HasValue ? TargetPosition.Value - lastVertexPosition : Vector3.zero;
             for (var i = 0; i <= m_LastHitIndex; i++)
             {
                 var bendAmount = Mathf.Clamp01((float)i / (m_LastHitIndex + 1));
-                m_LineVertexPositions[i] = Vector3.Lerp(m_Positions[i], m_EasedLineVertexPositions[i], bendAmount);
+                m_LineVertexPositions[i] = Vector3.Lerp(m_Positions[i], m_EasedLineVertexPositions[i], bendAmount) + Vector3.Lerp(Vector3.zero, delta, bendAmount * bendAmount);
             }
 
-            // The final point of the visible vertices is directly set to the target point, because the line vertex positions will end at the start of the segment that resulted in a hit.
-            m_LineVertexPositions[m_LastHitIndex + 1] = targetPosition.HasValue ? Vector3.Lerp(m_LineVertexPositions[m_LastHitIndex], targetPosition.Value, 0.8f) : m_LineVertexPositions[m_LastHitIndex];
             m_LineRenderer.widthMultiplier = hasHitUI ? 0.01f : m_LineWidth;
             m_LineRenderer.colorGradient = color;
-            m_LineRenderer.positionCount = m_LastHitIndex + 2;
+            m_LineRenderer.positionCount = m_LastHitIndex + 1;
             m_LineRenderer.SetPositions(m_LineVertexPositions);
 
             if (hasHitUI || isVerticalSurface)
             {
-                targetPosition = null;
+                TargetPosition = null;
             }
         }
     }

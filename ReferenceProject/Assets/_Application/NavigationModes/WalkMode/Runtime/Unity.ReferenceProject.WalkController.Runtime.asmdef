@@ -1,0 +1,27 @@
+{
+    "name": "Unity.ReferenceProject.WalkController.Runtime",
+    "rootNamespace": "Unity.ReferenceProject.WalkController",
+    "references": [
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:a570873a4d8399244a70dbfa167a1a8a",
+        "GUID:4ec2f17b56d3110429d5070c9afd21d4",
+        "GUID:a3cd878ac7267624f9fb0eec6d224927",
+        "GUID:786a25291c56430c910c997c4a7e195b",
+        "GUID:acd4a4024fe5b1e4ab791e2ef2b8ddc8",
+        "GUID:861d797aa4d05294d986157ebb717a0b",
+        "GUID:2f101f87087d58f4ba92ca00188e763d",
+        "GUID:3f567e9222663784a984cf9f95c0bfac",
+        "GUID:b024a75f7ab0cd44b8467e05ca5da44c",
+        "GUID:677c01c2362aab3418258447a333d74f",
+        "GUID:da5749944c50f764887a2df69388c74d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

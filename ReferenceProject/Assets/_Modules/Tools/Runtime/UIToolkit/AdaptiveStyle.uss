@@ -1,5 +1,5 @@
 .adaptive-popover-button{
-    margin : 0 0 6px 0;
+    margin : 3px 0 3px 0;
     padding: 5px 10px;
     height: auto;
     justify-content: space-between;

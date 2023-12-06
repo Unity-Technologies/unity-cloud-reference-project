@@ -2,27 +2,25 @@
 using System.Threading.Tasks;
 using Unity.Cloud.Common;
 using Unity.Cloud.DeepLinking;
-using Unity.Cloud.Identity;
-using Unity.Cloud.Storage;
+using Unity.ReferenceProject.Identity;
 using UnityEngine;
 
 namespace Unity.ReferenceProject.DeepLinking
 {
     public interface IDeepLinkingController : IDisposable
     {
-        event Action<IScene, bool> DeepLinkConsumed;
+        event Action<DatasetDescriptor, bool> DeepLinkConsumed;
         event Action<Exception> LinkConsumptionFailed;
-        Task<Uri> GenerateUri(IScene scene);
+        Task<Uri> GenerateUri(AssetDescriptor assetDescriptor);
         Task<bool> TryConsumeUri(string url);
     }
 
     public sealed class DeepLinkingController : IDeepLinkingController
     {
-        readonly IAuthenticationStateProvider m_Authenticator;
+        readonly ICloudSession m_Session;
         readonly IDeepLinkProvider m_DeepLinkProvider;
 
         readonly IQueryArgumentsProcessor m_QueryArgumentsProcessor;
-        readonly ISceneProvider m_SceneProvider;
         readonly IUrlRedirectionInterceptor m_UrlRedirectionInterceptor;
 
         Uri m_ForwardedDeepLink;
@@ -31,33 +29,32 @@ namespace Unity.ReferenceProject.DeepLinking
         DeepLinkInfo m_CurrentDeepLinkInfo;
 
         public DeepLinkingController(IQueryArgumentsProcessor argumentsProcessor, IUrlRedirectionInterceptor interceptor,
-            IDeepLinkProvider linkProvider, ISceneProvider sceneProvider, IAuthenticationStateProvider authenticator, DeepLinkData deepLinkData)
+            IDeepLinkProvider linkProvider, ICloudSession session, DeepLinkData deepLinkData)
         {
             m_QueryArgumentsProcessor = argumentsProcessor;
             m_UrlRedirectionInterceptor = interceptor;
             m_DeepLinkProvider = linkProvider;
-            m_SceneProvider = sceneProvider;
-            m_Authenticator = authenticator;
+            m_Session = session;
 
-            m_Authenticator.AuthenticationStateChanged += OnAuthenticationStateChanged;
+            m_Session.SessionStateChanged += OnAuthenticationStateChanged;
             m_UrlRedirectionInterceptor.DeepLinkForwarded += OnDeepLinkForwarded;
 
             m_DeepLinkData = deepLinkData;
             m_DeepLinkData.SetCameraReady += OnSetCameraReady;
         }
 
-        public event Action<IScene, bool> DeepLinkConsumed;
+        public event Action<DatasetDescriptor, bool> DeepLinkConsumed;
         public event Action<Exception> LinkConsumptionFailed;
 
         public void Dispose()
         {
-            m_Authenticator.AuthenticationStateChanged -= OnAuthenticationStateChanged;
+            m_Session.SessionStateChanged -= OnAuthenticationStateChanged;
             m_UrlRedirectionInterceptor.DeepLinkForwarded -= OnDeepLinkForwarded;
         }
 
-        public async Task<Uri> GenerateUri(IScene scene)
+        public async Task<Uri> GenerateUri(AssetDescriptor assetDescriptor)
         {
-            return await m_DeepLinkProvider.CreateDeepLinkAsync(scene);
+            return await m_DeepLinkProvider.CreateDeepLinkAsync(assetDescriptor);
         }
 
         public async Task<bool> TryConsumeUri(string url)
@@ -68,7 +65,7 @@ namespace Unity.ReferenceProject.DeepLinking
                 {
                     if (await TryConsumeUri(uri))
                     {
-                        return true;   
+                        return true;
                     }
                 }
                 catch (Exception e)
@@ -76,6 +73,7 @@ namespace Unity.ReferenceProject.DeepLinking
                     LinkConsumptionFailed?.Invoke(e);
                 }
             }
+
             return false;
         }
 
@@ -83,23 +81,38 @@ namespace Unity.ReferenceProject.DeepLinking
         {
             if (uri == null)
                 return false;
-            
-            m_DeepLinkData.DeepLinkIsProcessing = true; 
+
+            m_DeepLinkData.DeepLinkIsProcessing = true;
             var deepLinkInfo = await m_DeepLinkProvider.GetDeepLinkInfoAsync(uri);
-            if (deepLinkInfo is { ResourceType: DeepLinkResourceType.Scene })
+            if (deepLinkInfo is { ResourceType: DeepLinkResourceType.Dataset })
             {
-                var scene = await m_SceneProvider.GetSceneAsync(new SceneId(deepLinkInfo.ResourceId));
                 m_DeepLinkData.SetDeepLinkCamera = true;
-                
-                // check if Query Arguments hold a different scene state. For now, just a null check instead of a full comparison of states
+
+                // Move to utils
+                var splitId = deepLinkInfo.ResourceId.ToString().Split(',');
+
+                var organizationId = new OrganizationId(splitId[0]);
+                var projectId = new ProjectId(splitId[1]);
+                var assetId = new AssetId(splitId[2]);
+                var datasetId = new DatasetId(splitId[3]);
+
                 var hasNewSceneState = !string.IsNullOrEmpty(deepLinkInfo.QueryArguments);
-                DeepLinkConsumed?.Invoke(scene, hasNewSceneState);
+                if (hasNewSceneState)
+                {
+                    m_QueryArgumentsProcessor.Process(deepLinkInfo);
+                }
+
+                var datasetDescriptor = new DatasetDescriptor(new AssetDescriptor(new ProjectDescriptor(organizationId, projectId), assetId, new AssetVersion(0)), datasetId);
+
+                DeepLinkConsumed?.Invoke(datasetDescriptor, hasNewSceneState);
+                m_CurrentDeepLinkInfo = deepLinkInfo;
+
+                return true;
             }
-            m_QueryArgumentsProcessor.Process(deepLinkInfo);
-            m_CurrentDeepLinkInfo = deepLinkInfo;
-            return true;
+
+            return false;
         }
-        
+
         void OnSetCameraReady()
         {
             if (m_CurrentDeepLinkInfo != null && !string.IsNullOrEmpty(m_CurrentDeepLinkInfo.QueryArguments))
@@ -114,7 +127,7 @@ namespace Unity.ReferenceProject.DeepLinking
             {
                 return;
             }
-            
+
             try
             {
                 if (await TryConsumeUri(m_ForwardedDeepLink))
@@ -135,9 +148,9 @@ namespace Unity.ReferenceProject.DeepLinking
             await TryConsumeForwardedDeepLink();
         }
 
-        async void OnAuthenticationStateChanged(AuthenticationState state)
+        async void OnAuthenticationStateChanged(SessionState state)
         {
-            if (state == AuthenticationState.LoggedIn)
+            if (state == SessionState.LoggedIn)
             {
                 await TryConsumeForwardedDeepLink();
             }

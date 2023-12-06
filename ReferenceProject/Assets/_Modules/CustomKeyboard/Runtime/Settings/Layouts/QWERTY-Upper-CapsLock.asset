@@ -1,0 +1,493 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4369720386d0ce34f8f6af734ae49372, type: 3}
+  m_Name: QWERTY-Upper-CapsLock
+  m_EditorClassIdentifier: 
+  m_KeyRows:
+  - Keys:
+    - Type: 0
+      Character: 49
+      Icon: {fileID: 21300000, guid: eae18d31f354e4382ad047ecad6eff61, type: 3}
+      Size: 1
+      Layout: {fileID: 11400000}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 0
+      Character: 50
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 0
+      Character: 51
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 0
+      Character: 52
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 0
+      Character: 53
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 0
+      Character: 54
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 0
+      Character: 55
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 0
+      Character: 56
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 0
+      Character: 57
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 0
+      Character: 48
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+  - Keys:
+    - Type: 0
+      Character: 81
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 0
+      Character: 87
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 5
+      Character: 69
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: "\u0116\u0118\u011A\u0114\u018F|\xC9\xC8\xCA\xCB\u0112"
+    - Type: 5
+      Character: 82
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: "\u0154\u0158"
+    - Type: 5
+      Character: 84
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: "\xDE\u0164\u021A\u0162"
+    - Type: 5
+      Character: 89
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: "\xDD"
+    - Type: 5
+      Character: 85
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: "\u0172\u0170\u016E\u016A|\xDC\xDA\xD9\xDB"
+    - Type: 5
+      Character: 73
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: "\u0128\u0130\u012E\u012A|\xCD\xCC\xCF\xCE"
+    - Type: 5
+      Character: 79
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: "\u0150\xD8\xD6\xD5|\xD3\xD2\u0152\xD4"
+    - Type: 0
+      Character: 80
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+  - Keys:
+    - Type: 5
+      Character: 65
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: "\xC5\xC6\u0100\u0102\u0104|\xC0\xC2\xC1\xC3\xC4"
+    - Type: 5
+      Character: 83
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: "\xDF\xA7\u015A\u0160\u015E"
+    - Type: 5
+      Character: 68
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: "\u010E\u0110"
+    - Type: 0
+      Character: 70
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 5
+      Character: 71
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: "\u0122\u011E"
+    - Type: 0
+      Character: 72
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 0
+      Character: 74
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 5
+      Character: 75
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: "\u0136"
+    - Type: 5
+      Character: 76
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: "\u0141\u013D\u013B\u0139"
+  - Keys:
+    - Type: 1
+      Character: 97
+      Icon: {fileID: 21300000, guid: d198624dfe8d68d4ca83217e32aea09e, type: 3}
+      Size: 1.5
+      Layout: {fileID: 11400000, guid: b6f684765b14b6243a1684d7a0220ba0, type: 2}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 5
+      Character: 90
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: "\u0179\u017B\u017D"
+    - Type: 0
+      Character: 88
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 5
+      Character: 67
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: "\xC7\u0106\u010C"
+    - Type: 0
+      Character: 86
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 0
+      Character: 66
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 5
+      Character: 78
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: "\u0147\u0145\u0143\xD1"
+    - Type: 0
+      Character: 77
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 3
+      Character: 77
+      Icon: {fileID: 21300000, guid: 91cdb936bd11614499a35bfff6f90ba2, type: 3}
+      Size: 1.5
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+  - Keys:
+    - Type: 4
+      Character: 92
+      Icon: {fileID: 21300000, guid: 35c85e2df32c34fc6b32a2b30928d4d5, type: 3}
+      Size: 1.5
+      Layout: {fileID: 0}
+      AsciiCode: 10
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 1
+      Character: 92
+      Icon: {fileID: 21300000, guid: 35c85e2df32c34fc6b32a2b30928d4d5, type: 3}
+      Size: 1.5
+      Layout: {fileID: 11400000, guid: 889c589c943dc514b82f921ff10dea19, type: 2}
+      AsciiCode: 10
+      FunctionalKeyType: 0
+      UseText: 1
+      Text: '!#@'
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 2
+      Character: 32
+      Icon: {fileID: 21300000, guid: ff1a196c378ef4ee7b59c81fd914c58a, type: 3}
+      Size: 5
+      Layout: {fileID: 11400000, guid: b6f684765b14b6243a1684d7a0220ba0, type: 2}
+      AsciiCode: 32
+      FunctionalKeyType: 0
+      UseText: 1
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 3
+      Character: 92
+      Icon: {fileID: 21300000, guid: ff5e8ea5b9bd34d0aa4670ca2133bd53, type: 3}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 10
+      FunctionalKeyType: 1
+      UseText: 1
+      Text: Del
+      ReturnMainLayout: 0
+      ExtendedCharacters: 
+    - Type: 2
+      Character: 92
+      Icon: {fileID: 21300000, guid: 23bd6ebdbea74f746a0c6d172cdf9432, type: 3}
+      Size: 2
+      Layout: {fileID: 0}
+      AsciiCode: 10
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+      ExtendedCharacters: 

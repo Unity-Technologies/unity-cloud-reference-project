@@ -18,9 +18,23 @@ namespace Unity.ReferenceProject.VR.VRControls
 
         Coroutine m_Coroutine;
 
+        void OnDisable()
+        {
+            Cancel();
+        }
+
+        void Cancel()
+        {
+            if (m_Coroutine != null)
+            {
+                StopCoroutine(m_Coroutine);
+                m_Coroutine = null;
+            }
+        }
+
         protected override void OnStarted(InputAction.CallbackContext callbackContext)
         {
-            if (m_Coroutine == null)
+            if (m_Coroutine == null && gameObject.activeInHierarchy)
             {
                 m_Coroutine = StartCoroutine(OnLeftRight());
             }
@@ -28,11 +42,7 @@ namespace Unity.ReferenceProject.VR.VRControls
 
         protected override void OnCanceled(InputAction.CallbackContext callbackContext)
         {
-            if (m_Coroutine != null)
-            {
-                StopCoroutine(m_Coroutine);
-                m_Coroutine = null;
-            }
+            Cancel();
         }
 
         IEnumerator OnLeftRight()

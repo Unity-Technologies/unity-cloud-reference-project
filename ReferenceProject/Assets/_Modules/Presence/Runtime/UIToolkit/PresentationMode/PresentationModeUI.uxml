@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI" >
+    <Style src="PresentationModeUI.uss" />
+    <ui:VisualElement name="PresentationPanel" class="container__presentation-panel">
+        <appui:Text name="PresenterText" text="@Presence:Presenter" />
+        <ui:VisualElement name="Presenter" />
+        <appui:Divider name="Divider" />
+        <appui:Text name="AudienceText" text="@Presence:Audience" />
+        <ui:VisualElement name="Audience" />
+        <appui:Text name="Empty" text="@Presence:Empty" class="text__presentation-panel-empty"/>
+        <appui:ActionButton name="StartPresentation" label = "@Presence:StartPresentation" class ="button__presentation-panel"/>
+        <appui:ActionButton name="StopPresentation" label = "@Presence:StopPresentation" class ="button__presentation-panel"/>
+        <appui:ActionButton name="JoinPresentation" label = "@Presence:JoinPresentation" class ="button__presentation-panel"/>
+        <appui:ActionButton name="ExitPresentation" label = "@Presence:QuitPresentation" class ="button__presentation-panel"/>
+    </ui:VisualElement>
+</ui:UXML>

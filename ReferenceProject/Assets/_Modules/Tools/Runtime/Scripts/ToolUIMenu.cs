@@ -19,8 +19,11 @@ namespace Unity.ReferenceProject.Tools
         [SerializeField]
         string m_ButtonStyleClass;
         
-        [SerializeField]
+        [SerializeField, Tooltip("Close other tools when this tool is opened")]
         bool m_CloseOtherTools;
+
+        [SerializeField, Tooltip("Keep tool opened when switching to another tool")]
+        bool m_KeepOpened;
         
         [SerializeField]
         ToolUIController m_ToolUIController;
@@ -29,6 +32,7 @@ namespace Unity.ReferenceProject.Tools
         public string ToolbarElementName => m_ToolbarElementName;
         public string ButtonStyleClass => m_ButtonStyleClass;
         public bool CloseOtherTools => m_CloseOtherTools;
+        public bool KeepOpened => m_KeepOpened;
         public ToolUIController ToolUIController => m_ToolUIController;
     }
 
@@ -109,6 +113,7 @@ namespace Unity.ReferenceProject.Tools
             buttonContainer.Add(button);
 
             var handler = toolData.ToolUIMode.CreateHandler();
+            handler.KeepOpened = toolData.KeepOpened;
 
             var panel = handler.CreateVisualTree(button, toolUIController);
 

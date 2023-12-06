@@ -1,31 +1,34 @@
-.top-menu-background
+.container__top-menu-background
 {
     height: 48px;
     background-color: var(--appui-transparent-backgrounds-900); 
+    width: 102%;
+    border-radius: 10px;
+    align-self: center;
 }
 
-.top-menu{
+.container__top-menu{
     height: 48px;
     flex-direction: row;
     justify-content: space-between;
 }
 
-.top-menu-left{
+.container__top-menu-left{
     flex-direction: row;
     justify-content: flex-start;
 }
 
-.top-menu-center{
+.container__top-menu-center{
     flex-direction: row;
     justify-content: center;
 }
 
-.top-menu-right{
+.container__top-menu-right{
     flex-direction: row;
     justify-content: flex-start;
 }
 
-.top-menu-button{
+.button__top-menu{
     width: 48px;
     height: 48px;
     border-width: 0;
@@ -33,18 +36,18 @@
     background-color: var(--appui-color-transparent-black-0);
 }
 
-.is-selected.top-menu-button{
+.is-selected.button__top-menu{
     background-color: var(--appui-accent-100);
 }
 
-.top-menu-button:hover {
+.button__top-menu:hover {
     background-color: var(--appui-base-50);
 }
 
-.is-selected.top-menu-button:hover{
+.is-selected.button__top-menu:hover{
     background-color: var(--appui-accent-200);
 }
 
-.top-menu-button:active {
+.button__top-menu:active {
     background-color: var(--appui-accent-50);
 }

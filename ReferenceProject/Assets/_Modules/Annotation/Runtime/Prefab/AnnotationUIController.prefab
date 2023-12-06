@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 1046324653212224921}
   - component: {fileID: -7792017382595754125}
   - component: {fileID: -8390870255139806586}
-  - component: {fileID: 5155736377939414734}
   m_Layer: 0
   m_Name: AnnotationUIController
   m_TagString: Untagged
@@ -28,13 +27,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7188676291563206931}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &941548908183524618
 MonoBehaviour:
@@ -52,10 +51,9 @@ MonoBehaviour:
   m_Icon: {fileID: 21300000, guid: d58d86a16ac8c194ba4a0b407fe7b389, type: 3}
   m_Template: {fileID: 9197481963319205126, guid: 898aceeb049180c44bad8a7550635845,
     type: 3}
-  m_HideButtonAtStart: 0
+  m_InitialToolState: 1
   m_TopicPanel: {fileID: 1046324653212224921}
   m_CommentPanel: {fileID: -7792017382595754125}
-  m_TextInput: {fileID: 5155736377939414734}
   m_IndicatorsLayerMask:
     serializedVersion: 2
     m_Bits: 128
@@ -74,9 +72,16 @@ MonoBehaviour:
   m_ColorPalette: {fileID: 11400000, guid: d738ddede4da5a24ca3103d68f0f7718, type: 2}
   m_TopicEntryTemplate: {fileID: 9197481963319205126, guid: 29750923f27949b4c8a7f1a0c06d8ba6,
     type: 3}
+  m_TextInputTemplate: {fileID: 9197481963319205126, guid: bf2e70f46fba10a4ea66d9b130b44f17,
+    type: 3}
+  m_OptionButtonTemplate: {fileID: 9197481963319205126, guid: d70c4f1cf52fe7c42b70ccf96f81a92c,
+    type: 3}
   m_Delete: '@Annotation:Delete'
   m_Edit: '@Annotation:Edit'
   m_NoTopic: '@Annotation:NoTopic'
+  m_DescriptionPlaceholder: '@Annotation:AddDescription'
+  m_NoTitleWarning: '@Annotation:NoTitleWarning'
+  m_TextTooLong: '@Annotation:TextTooLong'
 --- !u!114 &-7792017382595754125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,9 +99,14 @@ MonoBehaviour:
     type: 3}
   m_TopicEntryTemplate: {fileID: 9197481963319205126, guid: 29750923f27949b4c8a7f1a0c06d8ba6,
     type: 3}
-  m_NoComment: '@Annotation:NoComment'
+  m_TextInputTemplate: {fileID: 9197481963319205126, guid: bf2e70f46fba10a4ea66d9b130b44f17,
+    type: 3}
+  m_OptionButtonTemplate: {fileID: 9197481963319205126, guid: d70c4f1cf52fe7c42b70ccf96f81a92c,
+    type: 3}
   m_Delete: '@Annotation:Delete'
   m_Edit: '@Annotation:Edit'
+  m_CommentPlaceholder: '@Annotation:AddComment'
+  m_TextTooLong: '@Annotation:TextTooLong'
 --- !u!114 &-8390870255139806586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110,19 +120,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_OverrideTypes: 20
---- !u!114 &5155736377939414734
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7188676291563206931}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30952d34634ab864790e4d662c0d7fb3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_TopicDescriptionPlaceholder: '@Annotation:AddDescription'
-  m_CommentPlaceholder: '@Annotation:AddComment'
-  m_NoTitleWarning: '@Annotation:NoTitleWarning'
-  m_NoCommentWarning: '@Annotation:NoCommentWarning'

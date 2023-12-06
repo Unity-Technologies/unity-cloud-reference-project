@@ -18,15 +18,15 @@ namespace Unity.ReferenceProject.Presence.Tests.Runtime
 
             // Start room monitoring
             var room = await m_PresenceManager.GetRoomAsync(roomID);
-            await room.StartMonitoringAsync(new NoRetryPolicy(), new CancellationToken());
+            await room.StartMonitoringAsync();
             Assert.AreEqual(2, room.ConnectedParticipants.Count);
 
             // Stop monitoring
-            await room.StopMonitoringAsync(null, new CancellationToken());
+            await room.StopMonitoringAsync();
             Assert.AreEqual(0, room.ConnectedParticipants.Count);
 
             // Start room monitoring
-            await room.StartMonitoringAsync(new NoRetryPolicy(), new CancellationToken());
+            await room.StartMonitoringAsync();
             Assert.AreEqual(2, room.ConnectedParticipants.Count);
 
             // Remove one participant
@@ -41,7 +41,7 @@ namespace Unity.ReferenceProject.Presence.Tests.Runtime
             m_DummyServer.RemoveAllParticipants();
             Assert.AreEqual(0, room.ConnectedParticipants.Count);
 
-            await room.StopMonitoringAsync(null, new CancellationToken());
+            await room.StopMonitoringAsync();
         }
     }
 }

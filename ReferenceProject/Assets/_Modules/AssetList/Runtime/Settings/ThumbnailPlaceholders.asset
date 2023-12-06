@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48874a4f05cd6f940aeb7fa773f0f719, type: 3}
+  m_Name: ThumbnailPlaceholders
+  m_EditorClassIdentifier: 
+  m_DefaultPlaceholder: {fileID: 2800000, guid: 1472113067500124ba2e2b8268c830b1,
+    type: 3}
+  m_ThumbnailsPlaceholder:
+  - m_AssetType: 0
+    m_Placeholder: {fileID: 2800000, guid: 623927c0ab69d43429e3df7c1f93e061, type: 3}
+  - m_AssetType: 1
+    m_Placeholder: {fileID: 2800000, guid: 4815d06e934b60c4bbad0baaafb86858, type: 3}
+  - m_AssetType: 2
+    m_Placeholder: {fileID: 2800000, guid: 879b1755e86921641943610beee279c5, type: 3}
+  - m_AssetType: 3
+    m_Placeholder: {fileID: 2800000, guid: 88b23117cb272a14095df3b31f1d29b9, type: 3}
+  - m_AssetType: 4
+    m_Placeholder: {fileID: 2800000, guid: 1472113067500124ba2e2b8268c830b1, type: 3}
+  - m_AssetType: 5
+    m_Placeholder: {fileID: 2800000, guid: 4e663fe877a8153439473636553c80a7, type: 3}
+  - m_AssetType: 6
+    m_Placeholder: {fileID: 2800000, guid: eb0ffa3e970b75f48be49294fe0d59f2, type: 3}

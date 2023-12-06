@@ -1,0 +1,15 @@
+﻿<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <Style src="MeasureToolSaveDialog.uss"/>
+    <ui:VisualElement name="SaveDialog" class="container__save-dialog">
+        <ui:VisualElement name="SaveDialogBody" class="container__save-dialog-body">
+            <ui:VisualElement name="SaveDialogBodyInput" class="container__save-dialog-body-input">
+                <appui:Text name="SaveDialogNameLabel" text="@MeasureTool:Name"/>
+                <appui:TextField name="SaveDialogNameField" placeholder="@MeasureTool:NamePlaceHolder" class="text-field__save-dialog-body-input"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="SaveDialogFooterButtons" class="container__save-dialog-footer-buttons">
+            <appui:ActionButton name="SaveDialogFooterCancelButton" label="@MeasureTool:Cancel"/>
+            <appui:ActionButton name="SaveDialogFooterSaveButton" label="@MeasureTool:Save" class="button__save-dialog-footer-save" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

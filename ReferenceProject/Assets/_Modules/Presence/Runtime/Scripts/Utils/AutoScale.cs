@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.ReferenceProject.Common;
 using UnityEngine;
 using Zenject;
 
@@ -15,13 +16,13 @@ namespace Unity.ReferenceProject.Presence
         [SerializeField]
         float m_MaxScaleFactor = 10.0f;
 
-        Transform m_Target;
+        ICameraProvider m_CameraProvider;
         Vector3 m_OriginalScale;
 
         [Inject]
-        void Setup(Camera streamingCamera)
+        void Setup(ICameraProvider cameraProvider)
         {
-            m_Target = streamingCamera.transform;
+            m_CameraProvider = cameraProvider;
         }
 
         void Awake()
@@ -31,7 +32,7 @@ namespace Unity.ReferenceProject.Presence
 
         void LateUpdate()
         {
-            var distance = Vector3.Distance(m_Target.position,transform.position);
+            var distance = Vector3.Distance(m_CameraProvider.Camera.transform.position,transform.position);
             var scale = Mathf.Clamp(m_ScaleFactor * distance, m_MinScaleFactor, m_MaxScaleFactor);
             transform.localScale = m_OriginalScale * scale;
         }

@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <Style src="MeasureLabelStyle.uss" />
+    <ui:VisualElement name="line_measure_label" class="container__line-measure-label">
+        <appui:Text name="line_measure_label_text" class="text__line-measure" />
+    </ui:VisualElement>
+</ui:UXML>

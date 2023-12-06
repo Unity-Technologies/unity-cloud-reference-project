@@ -1,20 +1,31 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
-    <ui:VisualElement name="TopicEntry" class="topic-entry">
-        <ui:VisualElement name="TopicEntryContainer" class="topic-entry-container">
-            <ui:VisualElement name="TopicEntryHeader" class="topic-entry-header">
-                <appui:Avatar name="TopicEntryAvatar" class="topic-entry-avatar">
-                    <appui:Text name="TopicEntryAvatarInitials" class="topic-entry-avatar-initials" text="NA"/>
+    <Style src="AnnotationStyle.uss"/>
+    <ui:VisualElement name="TopicEntry">
+        <ui:VisualElement name="TopicEntryContainer" class="container__topic-entry">
+            <ui:VisualElement name="TopicEntryHeader" class="container__topic-entry-header">
+                <appui:Avatar name="TopicEntryAvatar">
+                    <appui:Text name="TopicEntryAvatarInitials" class="text__topic-entry-avatar-initials" text="NA" />
                 </appui:Avatar>
-                <ui:VisualElement name="TopicInfo" class="topic-entry-info">
-                    <appui:Text name="TopicEntryAuthor" size="M" class="topic-entry-author" text="Unknown"/>
-                    <appui:Text name="TopicEntryDate" size="XS" class="topic-entry-date" text="Not available"/>
+                <ui:VisualElement name="TopicInfo" class="container__topic-entry-info">
+                    <appui:Text name="TopicEntryAuthor" text="@Annotation:Unknown"/>
+                    <appui:Text name="TopicEntryDate" size="XS" text="Not available" class="text__topic-entry-date" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <appui:Text name="TopicEntryTitle" size="L" class="topic-entry-title"/>
-            <appui:Text name="TopicEntryDescription" size="S" class="topic-entry-description"/>
-            <appui:Text name="TopicEntryReply" size="XS" text="@Annotation:Reply" class="topic-entry-reply"/>
+            <ui:VisualElement name="TopicEntryText" class="container__topic-entry-text">
+                <appui:Text name="TopicEntryTitle" size="L" class="text__topic-entry-title"/>
+                <appui:Text name="TopicEntryDescription" size="S" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TopicEntryTextInput" class="container__entry-text-input">
+                <appui:TextField name="TopicEntryTextField" placeholder="@Annotation:AddTitle" class="text-field__entry" />
+                <appui:TextArea name="TopicEntryTextArea" placeholder="@Annotation:AddDescription" class="text-area__entry" />
+                <ui:VisualElement name="TextInputButtons" class="container__text-input-buttons">
+                    <appui:ActionButton name="TextInputCancel" quiet="true" icon="x" tooltip="@Annotation:Cancel" class="button__text-input-cancel" />
+                    <appui:ActionButton name="TextInputSubmit" icon="send" tooltip="@Annotation:Submit" class="button__text-input-submit" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <appui:Text name="TopicEntryReply" size="XS" text="@Annotation:Reply" class="text__topic-entry-reply"/>
         </ui:VisualElement>
-        <appui:Divider name="TopicEntryDivider" class="annotation-divider"/>
-        <appui:ActionButton name="TopicEntryOptionButton" tooltip="@Annotation:Options" icon="ellipsis" quiet="true" class="topic-entry-option-button"/>
+        <appui:Divider name="TopicEntryDivider" class="divider__annotation"/>
+        <appui:ActionButton name="TopicEntryOptionButton" tooltip="@Annotation:Options" icon="ellipsis" quiet="true" class="button__topic-entry-option"/>
     </ui:VisualElement>
 </ui:UXML>

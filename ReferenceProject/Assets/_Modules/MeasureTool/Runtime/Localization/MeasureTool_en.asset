@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: MeasureTool_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 8eb2735d8f73b4a4eac3389fed3a28cf, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 225092378624
+    m_Localized: 'Distance:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 427803090944
+    m_Localized: 'Name:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 542022377472
+    m_Localized: Enter a name...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 859606687744
+    m_Localized: Clear
+    m_Metadata:
+      m_Items: []
+  - m_Id: 654966306709504
+    m_Localized: Save
+    m_Metadata:
+      m_Items: []
+  - m_Id: 655053812473856
+    m_Localized: Cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1375766126592
+    m_Localized: 'Measurement Options:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1746492268544
+    m_Localized: Delete
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5386313474048
+    m_Localized: Measure Tool
+    m_Metadata:
+      m_Items: []
+  - m_Id: 277985614438400
+    m_Localized: 'Unit:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 330726919446528
+    m_Localized: Meters
+    m_Metadata:
+      m_Items: []
+  - m_Id: 330798679793664
+    m_Localized: Feet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 330857936920576
+    m_Localized: Inches
+    m_Metadata:
+      m_Items: []
+  - m_Id: 343334183575552
+    m_Localized: Feet & Inches
+    m_Metadata:
+      m_Items: []
+  - m_Id: 633958631809024
+    m_Localized: Centimeters
+    m_Metadata:
+      m_Items: []
+  - m_Id: 655106979471360
+    m_Localized: Apply
+    m_Metadata:
+      m_Items: []
+  - m_Id: 655162302341120
+    m_Localized: Discard
+    m_Metadata:
+      m_Items: []
+  - m_Id: 664662128271360
+    m_Localized: Edit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6510811243769856
+    m_Localized: View
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

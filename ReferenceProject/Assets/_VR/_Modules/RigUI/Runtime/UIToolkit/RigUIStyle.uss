@@ -65,7 +65,7 @@
 
 .rigui-main-bar-button
 {
-    width: var(--rigui-button-size);
+    min-width: var(--rigui-button-size);
     height: var(--rigui-button-size);
     border-radius: var(--rigui-border-radius);
     margin: var(--rigui-button-margin);
@@ -79,6 +79,26 @@
     border-radius: var(--rigui-border-radius);
     margin: var(--rigui-button-margin);
     border-width: 0px;
+}
+
+.rigui-do-nothing-button{
+    min-width: var(--rigui-button-size);
+    height: var(--rigui-button-size);
+    border-radius: var(--rigui-border-radius);
+    margin: var(--rigui-button-margin);
+    border-width: 0px;
+    background-color: rgba(0,0,0,0);
+}
+
+.is-selected.rigui-do-nothing-button,
+.rigui-do-nothing-button:hover,
+.is-selected.rigui-do-nothing-button:hover,
+.rigui-do-nothing-button:active {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.rigui-do-nothing-button .appui-button .appui-icon{
+    --unity-image-tint-color: var(--appui-foregrounds-200);
 }
 
 .rigui-panel{

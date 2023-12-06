@@ -16,7 +16,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
             string searchPlaceHolder = null, string searchbarName = null)
         {
             m_SearchModule = searchModule;
-            OnSearchWordChanged = onSearchWordChanged;
+            SearchWordChanged = onSearchWordChanged;
 
             if (string.IsNullOrEmpty(searchbarName))
                 searchbarName = k_SearchBarName;
@@ -35,7 +35,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
             m_Searchbar.RegisterValueChangingCallback(OnSearchBarValueChanging);
         }
 
-        public event Action OnSearchWordChanged;
+        public event Action SearchWordChanged;
 
         public void UnregisterCallbacks()
         {
@@ -46,7 +46,7 @@ namespace Unity.ReferenceProject.SearchSortFilter
         void OnSearchBarValueChanging(ChangingEvent<string> evt)
         {
             m_SearchModule.searchString = evt.newValue;
-            OnSearchWordChanged?.Invoke();
+            SearchWordChanged?.Invoke();
         }
     }
 }

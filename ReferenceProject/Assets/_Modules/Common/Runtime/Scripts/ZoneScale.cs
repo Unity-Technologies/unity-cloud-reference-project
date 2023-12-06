@@ -20,14 +20,13 @@ namespace Unity.ReferenceProject.Common
 
         float m_CurrentScale;
         float m_CurrentVelocity;
-        Camera m_StreamingCamera;
+        ICameraProvider m_CameraProvider;
 
         [Inject]
-        public void Setup(Camera streamingCamera)
+        public void Setup(ICameraProvider cameraProvider)
         {
-            m_StreamingCamera = streamingCamera;
+            m_CameraProvider = cameraProvider;
         }
-
         void OnEnable()
         {
             m_CurrentScale = 0.0f;
@@ -36,12 +35,12 @@ namespace Unity.ReferenceProject.Common
 
         void LateUpdate()
         {
-            if (m_StreamingCamera == null)
+            var cameraTransform = m_CameraProvider.Camera.transform;
+            
+            if (cameraTransform == null)
                 return;
 
-            var mainCameraTransform = m_StreamingCamera.transform;
-
-            var cameraPosition = mainCameraTransform.position;
+            var cameraPosition = cameraTransform.position;
             var deltaToCamera = cameraPosition - transform.position;
 
             var targetScale = m_Size * deltaToCamera.magnitude * 0.1f;

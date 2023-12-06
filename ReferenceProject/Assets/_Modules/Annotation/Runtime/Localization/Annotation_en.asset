@@ -40,7 +40,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 345794580475904
-    m_Localized: Goto
+    m_Localized: Go to
     m_Metadata:
       m_Items: []
   - m_Id: 346853331857408
@@ -48,7 +48,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 718364391665664
-    m_Localized: '{0:1 reply|{} replies}'
+    m_Localized: '{0:Add a comment|1 comment|{} comments}'
     m_Metadata:
       m_Items:
       - rid: 2811153394649792515
@@ -96,10 +96,23 @@ MonoBehaviour:
     m_Localized: Topics
     m_Metadata:
       m_Items: []
+  - m_Id: 34076286400847872
+    m_Localized: Click on any surface of your model to add a new Topic.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 59451784091738112
+    m_Localized: Text are limit to {} characters
+    m_Metadata:
+      m_Items:
+      - rid: 2811153394649792515
+  - m_Id: 62356151154667520
+    m_Localized: Unknown
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:
     - rid: 2811153394649792515
       type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
-        m_Entries: 0070623e598d0200
+        m_Entries: 0070623e598d020000200d281537d300

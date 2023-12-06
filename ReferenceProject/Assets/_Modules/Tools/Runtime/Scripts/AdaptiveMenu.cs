@@ -112,11 +112,18 @@ namespace Unity.ReferenceProject.Tools
             m_PopoverActionButtons.Clear();
             m_VisibleActionButtons.Clear();
 
+            bool isLastButton = false;
+            bool popoverIsEmpty = true;
+            
             foreach (var button in m_ButtonsToolbar)
             {
                 currentSize += m_SizeButton;
-                    
-                if (currentSize + m_SizeButton > sizeMax)
+                if (button == m_ButtonsToolbar.Last())
+                {
+                    isLastButton = true;
+                }
+                
+                if (currentSize + m_SizeButton > sizeMax && ((isLastButton && !popoverIsEmpty) || !isLastButton))
                 {
                     if (button.selected && m_VisibleActionButtons.Count > 0)
                     {
@@ -129,6 +136,7 @@ namespace Unity.ReferenceProject.Tools
                     {
                         m_PopoverActionButtons.Add(button);
                     }
+                    popoverIsEmpty = false;
                 }
                 else
                 {

@@ -1,5 +1,5 @@
 using System;
-using Unity.Cloud.Common;
+using Unity.Cloud.Assets;
 using Unity.Cloud.DataStreaming.Runtime;
 using Unity.ReferenceProject.Common;
 using UnityEngine;
@@ -13,41 +13,42 @@ namespace Unity.ReferenceProject.DataStreaming
         [SerializeField]
         UIDocument m_UIDocument;
 
-        ISceneEvents m_SceneEvents;
-        IDataStreamer m_DataStreamer;
+        IAssetEvents m_AssetEvents;
+        IStage m_Stage;
 
         [Inject]
-        public void Setup(ISceneEvents sceneEvents, IDataStreamerProvider dataStreamerProvider)
+        public void Setup(IAssetEvents sceneEvents, IDataStreamerProvider dataStreamerProvider)
         {
-            m_SceneEvents = sceneEvents;
-            m_SceneEvents.SceneOpened += OnSceneOpened;
-            m_SceneEvents.SceneClosed += OnSceneClosed;
-            
-            m_DataStreamer = dataStreamerProvider.DataStreamer;
+            m_AssetEvents = sceneEvents;
+            m_AssetEvents.AssetLoaded += OnAssetLoaded;
+            m_AssetEvents.AssetUnloaded += OnAssetUnloaded;
+
+            dataStreamerProvider.DataStreamer.StageCreated.Subscribe(stage => m_Stage = stage);
+            dataStreamerProvider.DataStreamer.StageDestroyed.Subscribe(() => m_Stage = null);
         }
-        
+
         void OnDestroy()
         {
-            m_SceneEvents.SceneOpened -= OnSceneOpened;
-            m_SceneEvents.SceneClosed -= OnSceneClosed;
+            m_AssetEvents.AssetLoaded -= OnAssetLoaded;
+            m_AssetEvents.AssetUnloaded -= OnAssetUnloaded;
 
-            OnSceneClosed();
+            OnAssetUnloaded();
         }
 
         void OnEnable()
         {
-            SetIndicatorVisibility(m_SceneEvents.IsSceneOpened);
+            SetIndicatorVisibility(m_AssetEvents.IsAssetLoaded);
         }
 
-        void OnSceneOpened(IScene obj)
+        void OnAssetLoaded(IAsset asset, IDataset dataset)
         {
-            m_DataStreamer.StreamingStateChanged += OnStreamingStateChanged;
+            m_Stage.StreamingStateChanged.Subscribe(OnStreamingStateChanged);
             SetIndicatorVisibility(true);
         }
-        
-        void OnSceneClosed()
+
+        void OnAssetUnloaded()
         {
-            m_DataStreamer.StreamingStateChanged -= OnStreamingStateChanged;
+            m_Stage?.StreamingStateChanged.Unsubscribe(OnStreamingStateChanged);
             SetIndicatorVisibility(false);
         }
 
@@ -60,7 +61,7 @@ namespace Unity.ReferenceProject.DataStreaming
         {
             if (m_UIDocument == null || m_UIDocument.rootVisualElement == null)
                 return;
-            
+
             Utils.SetVisible(m_UIDocument.rootVisualElement, visible);
         }
     }

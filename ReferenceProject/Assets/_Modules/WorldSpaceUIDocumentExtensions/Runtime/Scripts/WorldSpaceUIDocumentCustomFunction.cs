@@ -55,11 +55,11 @@ namespace Unity.ReferenceProject.WorldSpaceUIDocumentExtensions
             }
         }
 
-        void SetCustomFunction(Transform controllerTransfrom)
+        void SetCustomFunction(Transform controllerTransform)
         {
             m_WorldSpaceUIDocument.customRayFunc = () =>
             {
-                return new Ray(controllerTransfrom.position, controllerTransfrom.forward);
+                return new Ray(controllerTransform.position, controllerTransform.forward);
             };
         }
     }

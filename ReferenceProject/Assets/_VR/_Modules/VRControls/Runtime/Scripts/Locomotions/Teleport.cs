@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
 using Zenject;
 
-// TODO: UI Blocking?
 // TODO: "Blink" while moving.
 
 namespace Unity.ReferenceProject.VR.VRControls
@@ -97,7 +95,7 @@ namespace Unity.ReferenceProject.VR.VRControls
             go.transform.localRotation = Quaternion.identity;
 
             var rayInteractor = transform.parent.GetComponent<XRRayInteractor>();
-            m_TeleportVisuals.xrRayInteractor = rayInteractor;
+            m_TeleportVisuals.XRRayInteractor = rayInteractor;
         }
 
         void Update()
@@ -123,9 +121,9 @@ namespace Unity.ReferenceProject.VR.VRControls
                     m_TeleportVisuals.SetVisible(false);
                     if (CanBeginLocomotion() && !m_Moving && m_TeleportVisuals.gameObject.activeSelf)
                     {
-                        if (m_TeleportVisuals.targetPosition.HasValue && m_TeleportVisuals.targetRotation.HasValue)
+                        if (m_TeleportVisuals.TargetPosition.HasValue && m_TeleportVisuals.TargetRotation.HasValue)
                         {
-                            StartCoroutine(MoveTowardTarget(m_TeleportVisuals.targetPosition.Value, m_TeleportVisuals.targetRotation.Value));
+                            StartCoroutine(MoveTowardTarget(m_TeleportVisuals.TargetPosition.Value, m_TeleportVisuals.TargetRotation.Value));
                         }
 
                         m_TeleportVisuals.PlayRayAnim(m_TeleportMoveDelay);
@@ -205,7 +203,7 @@ namespace Unity.ReferenceProject.VR.VRControls
 
                 var stepBackDirection = -mainCamera.transform.forward;
                 stepBackDirection.y = 0f;
-                xrRigTransform.position = xrRigTransform.position + stepBackDirection * (m_StepBackDistance /* * this.GetViewerScale() */);
+                xrRigTransform.position += stepBackDirection * (m_StepBackDistance /* * this.GetViewerScale() */);
 
                 EndLocomotion();
             }

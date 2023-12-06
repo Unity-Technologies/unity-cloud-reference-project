@@ -46,8 +46,9 @@ namespace Unity.ReferenceProject
             {
                 try
                 {
-                    var info = await appInfoProvider.GetAppInfoAsync(appId);
-
+                    var organisationId = UnityCloudPlayerSettings.Instance.AppOrganizationID;
+                    var info = await appInfoProvider.GetAppInfoAsync(new OrganizationId(organisationId), new AppId(appId));
+                    
                     if (UnityCloudPlayerSettings.Instance.AppName != info.Name ||
                         UnityCloudPlayerSettings.Instance.AppDisplayName != info.DisplayName)
                     {

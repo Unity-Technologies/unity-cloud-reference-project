@@ -45,11 +45,11 @@ namespace Unity.ReferenceProject.Annotation
         }
         Material m_Material;
 
-        // Indicator positionning
+        // Indicator positioning
         Vector3 m_WorldPosition;
         Vector3? m_RelativePosition;
 
-        // Camera positionning
+        // Camera positioning
         Vector3 m_CameraWorldPosition;
         Quaternion m_CameraWorldRotation;
         Vector3? m_CameraRelativePosition;
@@ -61,6 +61,7 @@ namespace Unity.ReferenceProject.Annotation
         static readonly int k_IdBackgroundColor = Shader.PropertyToID("_BackgroundColor");
         static readonly int k_IdMiddleColor = Shader.PropertyToID("_MiddleColor");
         static readonly int k_IdDepthAvailable = Shader.PropertyToID("_DepthAvailable");
+        static readonly int k_IdSelectedBackgroundColor = Shader.PropertyToID("_SelectedColor");
 
         public ITopic Topic
         {
@@ -158,7 +159,7 @@ namespace Unity.ReferenceProject.Annotation
 
             SetPosition();
             SetUnselectedColor();
-            UpdateColor(m_UnSelectedBackgroundColor, m_UnSelectedMiddleColor);
+            UpdateColor(m_UnSelectedBackgroundColor, m_UnSelectedMiddleColor, m_UnSelectedBackgroundColor);
 
             Destroy(worldLocalCameraGo);
             Destroy(worldIndicatorGo);
@@ -174,16 +175,17 @@ namespace Unity.ReferenceProject.Annotation
 
         void OnSelectedChanged()
         {
-            var backColor = m_IsSelected ? m_SelectedBackgroundColor : m_UnSelectedBackgroundColor;
+            var selectedBackgroundColor = m_IsSelected ? m_SelectedBackgroundColor : m_UnSelectedBackgroundColor;
             var midColor = m_IsSelected ? m_SelectedMiddleColor : m_UnSelectedMiddleColor;
 
-            UpdateColor(backColor, midColor);
+            UpdateColor(m_UnSelectedBackgroundColor, midColor, selectedBackgroundColor);
         }
 
-        void UpdateColor(Color backgroundColor, Color middleColor)
+        void UpdateColor(Color backgroundColor, Color middleColor, Color secondBackgroundColor)
         {
             Material.SetColor(k_IdBackgroundColor, backgroundColor);
             Material.SetColor(k_IdMiddleColor, middleColor);
+            Material.SetColor(k_IdSelectedBackgroundColor, secondBackgroundColor);
         }
 
         void SetPosition()

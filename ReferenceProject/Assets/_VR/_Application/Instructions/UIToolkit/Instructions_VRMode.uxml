@@ -1,35 +1,37 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
-    <Style src="project://database/Assets/_Application/NavigationModeManager/NavigationModes/WalkMode/UIToolkit/InstructionsStyle.uss?fileID=7433441132597879392&amp;guid=a150b698576572b4abce03740c4e235d&amp;type=3#InstructionsStyle" />
-    <appui:PageView wrap="true" skip-animation-threshold="3" direction="Horizontal" class="vr-instructions-page-view">
+    <Style src="/Assets/_Application/NavigationModes/UIToolkit/InstructionsStyle.uss" />
+    <Style src="InstructionsVRStyle.uss" />
+    <Style src="InstructionsPanelVRStyle.uss" />
+    <appui:PageView wrap="true" skip-animation-threshold="3" direction="Horizontal" class="page-view__instruction-size--vr">
         <appui:SwipeViewItem>
-            <ui:VisualElement style="flex-direction: row;">
+            <ui:VisualElement class="row">
                 <ui:VisualElement name="Fly" class="container__instruction_block">
-                    <ui:VisualElement name="Keys" class="container__instruction-keys" style="height: 118px;">
-                        <ui:Image class="vr-instructions--controller"/>
-                        <ui:Image class="vr-instructions--arrow vr-instructions-arrow-right-position"/>
-                        <ui:Image class="vr-instructions--arrow vr-instructions-arrow-up-position"/>
-                        <ui:Image class="vr-instructions--arrow vr-instructions-arrow-left-position"/>
-                        <ui:Image class="vr-instructions--arrow vr-instructions-arrow-down-position"/>
-                        <appui:Text text="@InstructionsVR:LeftId" size="M" class="vr-instructions-identifier-position"/>
+                    <ui:VisualElement name="Keys" class="container__instruction-keys">
+                        <ui:Image class="image__instruction-vr-controller"/>
+                        <ui:Image class="image__instruction-vr-arrow image__instruction-vr-arrow-right-position"/>
+                        <ui:Image class="image__instruction-vr-arrow image__instruction-vr-arrow-up-position"/>
+                        <ui:Image class="image__instruction-vr-arrow image__instruction-vr-arrow-left-position"/>
+                        <ui:Image class="image__instruction-vr-arrow image__instruction-vr-arrow-down-position"/>
+                        <appui:Text text="@InstructionsVR:LeftId" size="M" class="image__instruction-vr-identifier-position"/>
                     </ui:VisualElement>
                     <appui:Text text="@InstructionsVR:FlyAround" name="KeysDescription" size="S" class="text__instruction-description" />
                     <appui:Text text="@InstructionsVR:FlyAroundDetails" name="KeysDescription" size="XS" class="text__instruction-description" />
                 </ui:VisualElement>
                 <ui:VisualElement name="FlyUpDown" class="container__instruction_block">
-                    <ui:VisualElement name="Keys" class="container__instruction-keys" style="height: 118px;">
-                        <ui:Image class="vr-instructions--controller"/>
-                        <ui:Image class="vr-instructions--button vr-instructions-button-primary-position"/>
-                        <ui:Image class="vr-instructions--button vr-instructions-button-secondary-position"/>
-                        <appui:Text text="@InstructionsVR:LeftId" size="M" class="vr-instructions-identifier-position"/>
+                    <ui:VisualElement name="Keys" class="container__instruction-keys">
+                        <ui:Image class="image__instruction-vr-controller"/>
+                        <ui:Image class="image__instruction-vr-button image__instruction-vr-button-primary-position"/>
+                        <ui:Image class="image__instruction-vr-button image__instruction-vr-button-secondary-position"/>
+                        <appui:Text text="@InstructionsVR:LeftId" size="M" class="image__instruction-vr-identifier-position"/>
                     </ui:VisualElement>
                     <appui:Text text="@InstructionsVR:FlyUpDown" name="KeysDescription" size="S" class="text__instruction-description" />
                     <appui:Text text="@InstructionsVR:FlyUpDownDetails" name="KeysDescription" size="XS" class="text__instruction-description" />
                 </ui:VisualElement>
                 <ui:VisualElement name="FlyFaster" class="container__instruction_block">
-                    <ui:VisualElement name="Keys" class="container__instruction-keys" style="height: 118px;">
-                        <ui:Image class="vr-instructions--controller"/>
-                        <ui:Image class="vr-instructions--trigger-button vr-instructions-trigger-position"/>
-                        <appui:Text text="@InstructionsVR:LeftId" size="M" class="vr-instructions-identifier-position"/>
+                    <ui:VisualElement name="Keys" class="container__instruction-keys">
+                        <ui:Image class="image__instruction-vr-controller"/>
+                        <ui:Image class="image__instruction-vr--trigger-button image__instruction-vr-trigger-position"/>
+                        <appui:Text text="@InstructionsVR:LeftId" size="M" class="image__instruction-vr-identifier-position"/>
                     </ui:VisualElement>
                     <appui:Text text="@InstructionsVR:FlyUpDown" name="KeysDescription" size="S" class="text__instruction-description" />
                     <appui:Text text="@InstructionsVR:FlyUpDownDetails" name="KeysDescription" size="XS" class="text__instruction-description" />
@@ -37,27 +39,27 @@
             </ui:VisualElement>
         </appui:SwipeViewItem>
         <appui:SwipeViewItem>
-            <ui:VisualElement style="flex-direction: row;">
-                <ui:VisualElement name="Teleport" class="container__instruction_block" style="width: 180px;">
-                    <ui:VisualElement name="Keys" class="container__instruction-keys" style="height: 118px;">
-                        <ui:VisualElement class="vr-instructions-reverse">
-                            <ui:Image class="vr-instructions--controller"/>
-                            <ui:Image class="vr-instructions--arrow vr-instructions-arrow-up-position"/>
-                            <ui:Image class="vr-instructions--line-pointer vr-instructions-line-pointer-position"/>
+            <ui:VisualElement class="row">
+                <ui:VisualElement name="Teleport" class="container__instruction_block">
+                    <ui:VisualElement name="Keys" class="container__instruction-keys">
+                        <ui:VisualElement class="image__instruction-vr-reverse">
+                            <ui:Image class="image__instruction-vr-controller"/>
+                            <ui:Image class="image__instruction-vr-arrow image__instruction-vr-arrow-up-position"/>
+                            <ui:Image class="image__instruction-vr-line-pointer image__instruction-vr-line-pointer-position"/>
                         </ui:VisualElement>
-                        <appui:Text text="@InstructionsVR:RightId" size="M" class="vr-instructions-identifier-position"/>
+                        <appui:Text text="@InstructionsVR:RightId" size="M" class="image__instruction-vr-identifier-position"/>
                     </ui:VisualElement>
                     <appui:Text text="@InstructionsVR:Teleport" name="KeysDescription" size="S" class="text__instruction-description" />
                     <appui:Text text="@InstructionsVR:TeleportDetails" name="KeysDescription" size="XS" class="text__instruction-description" />
                 </ui:VisualElement>
-                <ui:VisualElement name="Rotate" class="container__instruction_block" style="width: 105px;">
-                    <ui:VisualElement name="Keys" class="container__instruction-keys" style="height: 118px;">
-                        <ui:VisualElement class="vr-instructions-reverse">
-                            <ui:Image class="vr-instructions--controller"/>
-                            <ui:Image class="vr-instructions--arrow vr-instructions-arrow-right-position"/>
-                            <ui:Image class="vr-instructions--arrow vr-instructions-arrow-left-position"/>
+                <ui:VisualElement name="Rotate" class="container__instruction_block">
+                    <ui:VisualElement name="Keys" class="container__instruction-keys">
+                        <ui:VisualElement class="image__instruction-vr-reverse">
+                            <ui:Image class="image__instruction-vr-controller"/>
+                            <ui:Image class="image__instruction-vr-arrow image__instruction-vr-arrow-right-position"/>
+                            <ui:Image class="image__instruction-vr-arrow image__instruction-vr-arrow-left-position"/>
                         </ui:VisualElement>
-                        <appui:Text text="@InstructionsVR:RightId" size="M" class="vr-instructions-identifier-position"/>
+                        <appui:Text text="@InstructionsVR:RightId" size="M" class="image__instruction-vr-identifier-position"/>
                     </ui:VisualElement>
                     <appui:Text text="@InstructionsVR:Rotate" name="KeysDescription" size="S" class="text__instruction-description" />
                     <appui:Text text="@InstructionsVR:RotateDetails" name="KeysDescription" size="XS" class="text__instruction-description" />
@@ -65,28 +67,39 @@
             </ui:VisualElement>
         </appui:SwipeViewItem>
         <appui:SwipeViewItem>
-            <ui:VisualElement style="flex-direction: row;">
-                <ui:VisualElement name="Back" class="container__instruction_block" style="width: 130px;">
-                    <ui:VisualElement name="Keys" class="container__instruction-keys" style="height: 118px;">
-                        <ui:VisualElement class="vr-instructions-reverse">
-                            <ui:Image class="vr-instructions--controller"/>
-                            <ui:Image class="vr-instructions--arrow vr-instructions-arrow-down-position"/>
+            <ui:VisualElement class="row">
+                <ui:VisualElement name="Back" class="container__instruction_block">
+                    <ui:VisualElement name="Keys" class="container__instruction-keys">
+                        <ui:VisualElement class="image__instruction-vr-reverse">
+                            <ui:Image class="image__instruction-vr-controller"/>
+                            <ui:Image class="image__instruction-vr-arrow image__instruction-vr-arrow-down-position"/>
                         </ui:VisualElement>
-                        <appui:Text text="@InstructionsVR:RightId" size="M" class="vr-instructions-identifier-position"/>
+                        <appui:Text text="@InstructionsVR:RightId" size="M" class="image__instruction-vr-identifier-position"/>
                     </ui:VisualElement>
                     <appui:Text text="@InstructionsVR:Back" name="KeysDescription" size="S" class="text__instruction-description" />
                     <appui:Text text="@InstructionsVR:BackDetails" name="KeysDescription" size="XS" class="text__instruction-description" />
                 </ui:VisualElement>
-                <ui:VisualElement name="Reset" class="container__instruction_block" style="width: 130px;">
-                    <ui:VisualElement name="Keys" class="container__instruction-keys" style="height: 118px">
-                        <ui:VisualElement class="vr-instructions-reverse">
-                            <ui:Image class="vr-instructions--controller"/>
-                            <ui:Image class="vr-instructions--button vr-instructions-button-primary-position"/>
+                <ui:VisualElement name="Reset" class="container__instruction_block">
+                    <ui:VisualElement name="Keys" class="container__instruction-keys">
+                        <ui:VisualElement class="image__instruction-vr-reverse">
+                            <ui:Image class="image__instruction-vr-controller"/>
+                            <ui:Image class="image__instruction-vr-button image__instruction-vr-button-primary-position"/>
                         </ui:VisualElement>
-                        <appui:Text text="@InstructionsVR:RightId" size="M" class="vr-instructions-identifier-position"/>
+                        <appui:Text text="@InstructionsVR:RightId" size="M" class="image__instruction-vr-identifier-position"/>
                     </ui:VisualElement>
                     <appui:Text text="@InstructionsVR:Reset" name="KeysDescription" size="S" class="text__instruction-description" />
                     <appui:Text text="@InstructionsVR:ResetDetails" name="KeysDescription" size="XS" class="text__instruction-description" />
+                </ui:VisualElement>
+                <ui:VisualElement name="Microphone" class="container__instruction_block">
+                    <ui:VisualElement name="Keys" class="container__instruction-keys">
+                        <ui:VisualElement class="image__instruction-vr-reverse">
+                            <ui:Image class="image__instruction-vr-controller"/>
+                            <ui:Image class="image__instruction-vr-button image__instruction-vr-button-secondary-position"/>
+                        </ui:VisualElement>
+                        <appui:Text text="@InstructionsVR:RightId" size="M" class="image__instruction-vr-identifier-position"/>
+                    </ui:VisualElement>
+                    <appui:Text text="@InstructionsVR:Microphone" name="KeysDescription" size="S" class="text__instruction-description" />
+                    <appui:Text text="@InstructionsVR:MicrophoneDetails" name="KeysDescription" size="XS" class="text__instruction-description" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </appui:SwipeViewItem>

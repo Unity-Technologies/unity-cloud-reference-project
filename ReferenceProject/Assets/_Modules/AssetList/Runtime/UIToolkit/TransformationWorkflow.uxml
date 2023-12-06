@@ -1,0 +1,19 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <Style src="TransformationWorkflowStyle.uss" />
+    <ui:VisualElement name="MainContainer" class="container__transformation-workflow-main">
+        <ui:VisualElement name="DatasetSelection" class="container__transformation-workflow-dropdown-selection">
+            <ui:Label text="Dataset"/>
+            <appui:Dropdown name="DatasetDropdown" class="dropdown__transformation-workflow-dataset" />
+        </ui:VisualElement>
+        <ui:VisualElement name="FileSelection" class="container__transformation-workflow-dropdown-selection">
+            <ui:Label text="File"/>
+            <appui:Dropdown name="FileDropdown" class="dropdown__transformation-workflow-dataset" />
+        </ui:VisualElement>
+        <ui:ScrollView class="scroll-view__transformation-workflow" mode="VerticalAndHorizontal" >
+            <ui:VisualElement name="TransformationContainer" />
+        </ui:ScrollView>
+        <appui:Quote name="TransformationRunningMessage">
+            <appui:Text text="@AssetList:TransformationAlreadyRunning" />
+        </appui:Quote>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.ReferenceProject.Common;
 using UnityEngine;
 using Zenject;
 
@@ -8,18 +9,18 @@ namespace Unity.ReferenceProject.Presence
     {
         [SerializeField]
         Quaternion m_RotationOffset;
-        
-        Transform m_Target;
+
+        ICameraProvider m_CameraProvider;
 
         [Inject]
-        void Setup(Camera streamingCamera)
+        void Setup(ICameraProvider cameraProvider)
         {
-            m_Target = streamingCamera.transform;
+            m_CameraProvider = cameraProvider;
         }
 
         void LateUpdate()
         {
-            var rotation = m_Target.transform.rotation * m_RotationOffset;
+            var rotation = m_CameraProvider.Camera.transform.rotation * m_RotationOffset;
             transform.LookAt(transform.position + rotation * Vector3.forward, rotation * Vector3.up);
         }
     }

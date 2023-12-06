@@ -1,0 +1,98 @@
+.no-shrink {
+    flex-shrink: 0;
+}
+
+.row {
+    flex-direction: row;
+}
+
+.container__instruction-keys {
+    align-items: center;
+    justify-content: flex-end;
+    height: 56px;
+    flex-direction: column;
+}
+
+.text__instruction-description {
+    margin-top: 5px;
+    -unity-text-align: upper-center;
+}
+
+.container__instruction_block {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.button__instruction {
+    margin-left: 2px;
+    margin-right: 2px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.pageview__instruction-size{
+    width: 325px; 
+    height: 100px
+}
+
+.container__instruction-key-wasd {
+    justify-content: flex-end;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.container__instruction-key-bottom-row {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.text__instruction_or {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.container__instruction-key-arrows {
+    flex-direction: column;
+    align-items: center;
+    width: 100px;
+    flex-shrink: 0;
+}
+
+.image__instruction-size {
+    height: 56px;
+    width: 56px;
+}
+
+.image__color {
+    --unity-image-tint-color: var(--appui-foregrounds-200);
+}
+
+.image__mouse--right-hold-drag {
+    --unity-image: url("../Sprites/MouseNavigations.png#Mouse_RightHoldDrag");
+}
+
+.image__mouse--wheel-hold-drag {
+    --unity-image: url("../Sprites/MouseNavigations.png#MouseNavigations_WheelHoldDrag");
+}
+
+.image__mouse--scrollwheel {
+    --unity-image: url("../Sprites/MouseNavigations.png#MouseNavigations_ScrolWheel");
+}
+
+.image__mouse--left-hold-drag {
+    --unity-image: url("../Sprites/MouseNavigations.png#MouseNavigations_LeftHoldDrag");
+}
+
+.image__touch--one-finger {
+    --unity-image: url("../Sprites/NavigationMobile@1_5x.png#NavigationMobile@1_5x_0");
+}
+
+.image__touch--two-fingers {
+    --unity-image: url("../Sprites/NavigationMobile@1_5x.png#NavigationMobile@1_5x_1");
+}
+
+.image__touch--pinch {
+    --unity-image: url("../Sprites/NavigationMobile@1_5x.png#NavigationMobile@1_5x_2");
+}

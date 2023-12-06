@@ -6,6 +6,8 @@ using Unity.ReferenceProject.DataStores;
 using UnityEngine.UIElements;
 using Unity.ReferenceProject.Tools;
 using Unity.AppUI.UI;
+using Unity.Cloud.Assets;
+using Unity.ReferenceProject.AssetManager;
 using Zenject;
 using TextField = Unity.AppUI.UI.TextField;
 
@@ -24,17 +26,17 @@ namespace Unity.ReferenceProject.DeepLinking
         string m_OpenURLButtonElement = "open-url-button";
 
         IDeepLinkingController m_DeepLinkingController;
-        PropertyValue<IScene> m_ActiveScene;
+        PropertyValue<IAsset> m_SelectedAsset;
         IAppMessaging m_AppMessaging;
         IClipboard m_Clipboard;
 
         TextField m_UrlTextField;
 
         [Inject]
-        public void Setup(IDeepLinkingController deepLinkingController, PropertyValue<IScene> sceneListStore, IAppMessaging appMessaging, IClipboard clipboard)
+        public void Setup(IDeepLinkingController deepLinkingController, AssetManagerStore assetManagerStore, IAppMessaging appMessaging, IClipboard clipboard)
         {
             m_DeepLinkingController = deepLinkingController;
-            m_ActiveScene = sceneListStore;
+            m_SelectedAsset = assetManagerStore.GetProperty<IAsset>(nameof(AssetManagerViewModel.Asset));
             m_AppMessaging = appMessaging;
             m_Clipboard = clipboard;
         }
@@ -56,7 +58,8 @@ namespace Unity.ReferenceProject.DeepLinking
 
             var shareLinkButton = root.Q<ActionButton>(m_GenerateURLButtonElement);
             shareLinkButton.clickable.clicked += OnShareLinkClicked;
-            shareLinkButton.SetEnabled(m_ActiveScene.GetValue() != null);
+            
+            shareLinkButton.SetEnabled(m_SelectedAsset.GetValue() != null);
 
             m_UrlTextField = root.Q<TextField>(m_URLTextElement);
 
@@ -69,9 +72,9 @@ namespace Unity.ReferenceProject.DeepLinking
                 openLinkButton.SetEnabled(!string.IsNullOrWhiteSpace(evt.newValue));
             });
 
-            m_ActiveScene.ValueChanged += scene =>
+            m_SelectedAsset.ValueChanged += asset =>
             {
-                shareLinkButton.SetEnabled(scene != null);
+                shareLinkButton.SetEnabled(asset != null);
             };
 
             return root;
@@ -81,7 +84,7 @@ namespace Unity.ReferenceProject.DeepLinking
         {
             try
             {
-                var uri = await m_DeepLinkingController.GenerateUri(m_ActiveScene.GetValue());
+                var uri = await m_DeepLinkingController.GenerateUri(m_SelectedAsset.GetValue().Descriptor);
                 if (m_Clipboard.CopyText(uri.ToString()))
                 {
                     m_AppMessaging.ShowSuccess("@DeepLinking:GenerateLinkSuccess");

@@ -1,50 +1,50 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
-    <Style src="project://database/Assets/_Application/NavigationModeManager/NavigationModes/WalkMode/UIToolkit/InstructionsStyle.uss?fileID=7433441132597879392&amp;guid=a150b698576572b4abce03740c4e235d&amp;type=3#InstructionsStyle" />
-    <appui:PageView wrap="true" skip-animation-threshold="3" direction="Horizontal" style="width: 325px; height: 100px">
+    <Style src="../../UIToolkit/InstructionsStyle.uss" />
+    <appui:PageView wrap="true" skip-animation-threshold="3" direction="Horizontal" class="pageview__instruction-size">
         <appui:SwipeViewItem>
-            <ui:VisualElement style="flex-direction: row;">
-                <ui:VisualElement name="LookAround" class="container__instruction_block" style="flex-shrink: 0;">
+            <ui:VisualElement class="row">
+                <ui:VisualElement name="LookAround" class="container__instruction_block no-shrink" >
                     <ui:VisualElement name="Keys" class="container__instruction-keys">
-                        <ui:Image style="background-image: url(&apos;project://database/Assets/_Application/NavigationModes/Sprites/MouseNavigations.png?fileID=1086704430&amp;guid=7638156e70d07174a81ccef0e671b2ac&amp;type=3#Mouse_RightHoldDrag&apos;); height: 56px; width: 60px;" />
+                        <ui:Image class="image__instruction-size image__color image__mouse--right-hold-drag" />
                     </ui:VisualElement>
                     <appui:Text text="@Instructions:Look_Around" name="KeysDescription" size="XS" class="text__instruction-description" />
                 </ui:VisualElement>
-                <ui:VisualElement name="Pan" class="container__instruction_block" style="flex-shrink: 0;">
+                <ui:VisualElement name="Pan" class="container__instruction_block no-shrink">
                     <ui:VisualElement name="Keys" class="container__instruction-keys">
-                        <ui:Image style="background-image: url(&apos;project://database/Assets/_Application/NavigationModes/Sprites/MouseNavigations.png?fileID=-496102092&amp;guid=7638156e70d07174a81ccef0e671b2ac&amp;type=3#MouseNavigations_WheelHoldDrag&apos;); height: 56px; width: 56px;" />
+                        <ui:Image class="image__instruction-size image__color image__mouse--wheel-hold-drag" />
                     </ui:VisualElement>
                     <appui:Text text="@Instructions:Pan" name="KeysDescription" size="XS" class="text__instruction-description" />
                 </ui:VisualElement>
-                <ui:VisualElement name="Zoom" class="container__instruction_block" style="flex-shrink: 0;">
+                <ui:VisualElement name="Zoom" class="container__instruction_block no-shrink">
                     <ui:VisualElement name="Keys" class="container__instruction-keys">
-                        <ui:Image style="background-image: url(&apos;project://database/Assets/_Application/NavigationModes/Sprites/MouseNavigations.png?fileID=-281618374&amp;guid=7638156e70d07174a81ccef0e671b2ac&amp;type=3#MouseNavigations_ScrolWheel&apos;); height: 56px; width: 56px;" />
+                        <ui:Image class="image__instruction-size image__color image__mouse--scrollwheel" />
                     </ui:VisualElement>
                     <appui:Text text="@Instructions:Zoom" name="KeysDescription" size="XS" class="text__instruction-description" />
                 </ui:VisualElement>
-                <ui:VisualElement name="Orbit" class="container__instruction_block" style="flex-shrink: 0;">
+                <ui:VisualElement name="Orbit" class="container__instruction_block no-shrink">
                     <ui:VisualElement name="Keys" class="container__instruction-keys">
-                        <ui:Image style="background-image: url(&apos;project://database/Assets/_Application/NavigationModes/Sprites/MouseNavigations.png?fileID=-1857925909&amp;guid=7638156e70d07174a81ccef0e671b2ac&amp;type=3#MouseNavigations_LeftHoldDrag&apos;); height: 56px; width: 56px;" />
+                        <ui:Image class="image__instruction-size image__color image__mouse--left-hold-drag" />
                     </ui:VisualElement>
                     <appui:Text text="@Instructions:Orbit" name="KeysDescription" size="XS" class="text__instruction-description" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </appui:SwipeViewItem>
         <appui:SwipeViewItem>
-            <ui:VisualElement style="flex-direction: row;">
-                <ui:VisualElement name="Walk" class="container__instruction_block" style="flex-shrink: 0;">
-                    <ui:VisualElement name="Keys" class="container__instruction-keys" style="flex-direction: row;">
-                        <ui:VisualElement name="Keys" class="container__instruction-keys" style="flex-shrink: 0; justify-content: flex-end; flex-direction: column; align-items: center;">
+            <ui:VisualElement class="row">
+                <ui:VisualElement name="Walk" class="container__instruction_block no-shrink">
+                    <ui:VisualElement name="Keys" class="container__instruction-keys row">
+                        <ui:VisualElement name="Keys" class="container__instruction-keys container__instruction-key-wasd">
                             <appui:Button focusable="false" title="w" picking-mode="Ignore" name="W" size="S" class="button__instruction" />
-                            <ui:VisualElement style="align-items: center; justify-content: flex-end; flex-direction: row;">
+                            <ui:VisualElement class="container__instruction-key-bottom-row">
                                 <appui:Button focusable="false" title="A" picking-mode="Ignore" name="A" size="S" class="button__instruction" />
                                 <appui:Button focusable="false" title="S" picking-mode="Ignore" name="S" size="S" class="button__instruction" />
                                 <appui:Button focusable="false" title="D" picking-mode="Ignore" name="D" size="S" class="button__instruction" />
                             </ui:VisualElement>
                         </ui:VisualElement>
-                        <appui:Text text="@Instructions:Or" size="XS" style="margin-right: 5px; margin-left: 5px;" />
-                        <ui:VisualElement name="Keys" class="container__instruction-keys" style="flex-shrink: 0; justify-content: center; flex-direction: column; align-items: center; width: 100px;">
+                        <appui:Text text="@Instructions:Or" size="XS" class="text__instruction_or" />
+                        <ui:VisualElement name="Keys" class="container__instruction-keys container__instruction-key-arrows">
                             <appui:Button focusable="false" title="↑" picking-mode="Ignore" name="W" size="S" class="button__instruction" />
-                            <ui:VisualElement style="align-items: center; justify-content: flex-end; flex-direction: row;">
+                            <ui:VisualElement class="container__instruction-key-bottom-row">
                                 <appui:Button focusable="false" title="←" picking-mode="Ignore" name="A" size="S" class="button__instruction" />
                                 <appui:Button focusable="false" title="↓" picking-mode="Ignore" name="S" size="S" class="button__instruction" />
                                 <appui:Button focusable="false" title="→" picking-mode="Ignore" name="D" size="S" class="button__instruction" />
@@ -53,10 +53,10 @@
                     </ui:VisualElement>
                     <appui:Text text="@Instructions:Move_Around" name="KeysDescription" size="XS" class="text__instruction-description" />
                 </ui:VisualElement>
-                <ui:VisualElement name="MoveUpDown" class="container__instruction_block" style="flex-shrink: 0;">
-                    <ui:VisualElement name="Keys" class="container__instruction-keys" style="flex-direction: column; align-items: center; justify-content: flex-end;">
-                        <appui:Button focusable="false" title="Q" picking-mode="Ignore" name="D" size="S" class="button__instruction" />
-                        <appui:Button focusable="false" title="E" picking-mode="Ignore" name="S" size="S" class="button__instruction" />
+                <ui:VisualElement name="MoveUpDown" class="container__instruction_block no-shrink">
+                    <ui:VisualElement name="Keys" class="container__instruction-keys, container__instruction-key-wasd">
+                        <appui:Button focusable="false" title="Q" picking-mode="Ignore" name="Q" size="S" class="button__instruction" />
+                        <appui:Button focusable="false" title="E" picking-mode="Ignore" name="E" size="S" class="button__instruction" />
                     </ui:VisualElement>
                     <appui:Text text="@Instructions:Move_Up_Down" name="KeysDescription" size="XS" class="text__instruction-description" />
                 </ui:VisualElement>

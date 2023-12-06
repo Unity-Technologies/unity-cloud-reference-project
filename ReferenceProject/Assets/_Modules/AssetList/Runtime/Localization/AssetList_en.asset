@@ -1,0 +1,208 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: AssetList_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: e8565366f83a70e4f8b8c053e9f1fb16, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 8708235264
+    m_Localized: "Projects\t"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9825782931456
+    m_Localized: Organizations
+    m_Metadata:
+      m_Items: []
+  - m_Id: 301643938471936
+    m_Localized: Open
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1825930525962240
+    m_Localized: All Assets
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465052524339200
+    m_Localized: Status
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2467793934016512
+    m_Localized: Source project
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2467850460651520
+    m_Localized: Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2467873911005184
+    m_Localized: System Tags
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2467948326346752
+    m_Localized: 'Portal Metadata '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2468016634781696
+    m_Localized: System Metadata
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2468041813188608
+    m_Localized: Preview File
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2468079599673344
+    m_Localized: Authoring Info
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2468107177222144
+    m_Localized: Storage Id
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2468389609070592
+    m_Localized: Created By
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2468421359951872
+    m_Localized: Created
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2468433158529024
+    m_Localized: Updated By
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2468456617271296
+    m_Localized: Updated
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2470054986833920
+    m_Localized: Tags
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2470177284349952
+    m_Localized: Id
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2470231382482944
+    m_Localized: Version
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2470306934480896
+    m_Localized: Description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2470376836751360
+    m_Localized: Type
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2472249325051904
+    m_Localized: Published
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2472293692399616
+    m_Localized: Draft
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2472393231622144
+    m_Localized: Deleted
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2472433849262080
+    m_Localized: Withdrawn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2472652116647936
+    m_Localized: Other
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2472739345588224
+    m_Localized: 2D Asset
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2474269184417792
+    m_Localized: 3D Model
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2524212485758976
+    m_Localized: Filters
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2524311567802368
+    m_Localized: Search
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2807090574598144
+    m_Localized: 'Sort by:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2900664167243776
+    m_Localized: Assets List
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2893244573736960
+    m_Localized: Empty
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6793486118580224
+    m_Localized: No assets found. Select another project or modify streamable filter.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8290299728261120
+    m_Localized: Streamable...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10524802060283904
+    m_Localized: No Result
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12010605953314816
+    m_Localized: No Transformation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12011209488494592
+    m_Localized: Start New Transformation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12011435897024512
+    m_Localized: Transformation Successfully Started
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12340795111874560
+    m_Localized: A Transformation into streamable is already running on this Asset.
+      Wait until it finishes before starting a new one.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13093678950359040
+    m_Localized: Not Streamable
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13043390619901952
+    m_Localized: Script
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13043439819087872
+    m_Localized: Audio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13080924230049792
+    m_Localized: "Material\t"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13081021940555776
+    m_Localized: Video
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

@@ -5,14 +5,12 @@
 
 @import url("/Assets/_Application/UIToolkit/MainStyle.uss");
 @import url("/Assets/_Modules/Tools/Runtime/UIToolkit/ToolPanelStyle.uss");
-@import url("/Assets/_Modules/Identity/Runtime/UIToolkit/IdentityStyle.uss");
-@import url("/Assets/_Modules/ScenesList/Runtime/UIToolkit/SceneListStyle.uss");
 @import url("/Assets/_Modules/SearchSortFilter/Runtime/UIToolkit/SortArrows.uss");
-@import url("/Assets/_Modules/Metadata/Runtime/UIToolkit/MetadataDisplayStyle.uss");
-@import url("/Assets/_Modules/Instructions/Runtime/UIToolkit/InstructionsPanelStyle.uss");
-@import url("/Assets/_Modules/Presence/Runtime/UIToolkit/AvatarBadgeContainerStyle.uss");
-@import url("/Assets/_Modules/Annotation/Runtime/UIToolkit/AnnotationStyle.uss");
 @import url("/Assets/_Modules/Navigation/Runtime/Sprites/CustomAppUIIcon.uss");
+@import url("/Assets/_Modules/Presence/Runtime/UIToolkit/AvatarBadges/AvatarBadgesContainerStyle.uss");
 
 
-VisualElement {}
+
+
+
+

@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI" >
+    <Style src="WalkModeSettingsStyle.uss" />
+    <ui:VisualElement name="SettingsList" class="container__settings-list">
+        <appui:SliderFloat name="ControllerHeightSlider" filled="true" fill-offset="0.5" label="@WalkMode:ControllerHeight" tick-count="3" tick-label="true" class="slider-float__margin"/>
+        <appui:SliderFloat name="WalkSpeedSlider" filled="true" fill-offset="0.5" label="@WalkMode:WalkSpeed" tick-count="3" tick-label="true" class="slider-float__margin"/>
+        <appui:SliderFloat name="SprintSpeedSlider" filled="true" fill-offset="0.5" label="@WalkMode:SprintSpeed" tick-count="3" tick-label="true" class="slider-float__margin"/>
+        <appui:SliderFloat name="JumpForceSlider" filled="true" fill-offset="0.5" label="@WalkMode:JumpForce" tick-count="3" tick-label="true" />
+    </ui:VisualElement>
+</ui:UXML>

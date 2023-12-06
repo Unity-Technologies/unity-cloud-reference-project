@@ -8,16 +8,11 @@ namespace Unity.ReferenceProject.DataStores
 
     public struct PropertyDelegates<TValue>
     {
-        public readonly GetValue<TValue> GetValue;
-        public readonly SetValue<TValue> SetValue;
-        public readonly SetValueAction<TValue> SetValueAction;
+        public GetValue<TValue> GetValue { get; set; }
 
-        public PropertyDelegates(GetValue<TValue> getValue, SetValue<TValue> setValue, SetValueAction<TValue> setValueAction)
-        {
-            GetValue = getValue;
-            SetValue = setValue;
-            SetValueAction = setValueAction;
-        }
+        public SetValue<TValue> SetValue { get; set; }
+
+        public SetValueAction<TValue> SetValueAction { get; set; }
     }
 
     public class PropertyValue<TValue>
@@ -26,8 +21,8 @@ namespace Unity.ReferenceProject.DataStores
         readonly PropertyDelegates<TValue> m_PropertyDelegates;
         readonly INotifyPropertyChanged m_NotifyPropertyChanged;
 
-        public event Action<TValue> ValueChanged;
-
+        public Action<TValue> ValueChanged { get; set; }
+        
         public PropertyValue(string propertyName, PropertyDelegates<TValue> delegates, INotifyPropertyChanged notifyPropertyChanged)
         {
             m_PropertyDelegates = delegates;
@@ -40,7 +35,7 @@ namespace Unity.ReferenceProject.DataStores
         {
             m_NotifyPropertyChanged.OnPropertyChanged -= OnPropertyChanged;
         }
-
+        
         void OnPropertyChanged(string propertyName)
         {
             if (propertyName == m_PropertyName)

@@ -1,0 +1,14 @@
+{
+    "name": "Unity.Geospatial.Unit",
+    "rootNamespace": "Unity.Geospatial.Unit",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

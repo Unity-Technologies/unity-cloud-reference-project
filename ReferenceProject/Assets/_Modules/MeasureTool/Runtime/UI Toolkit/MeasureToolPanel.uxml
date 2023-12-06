@@ -1,0 +1,32 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <Style src="MeasureToolPanel.uss" />
+    <ui:VisualElement name="main_panel">
+        <ui:VisualElement name="container__menu-panel" class="container__menu-panel">
+            <ui:VisualElement name="line_creator_container" class="container__line-creator">
+                <ui:VisualElement name="line_creator_name_container" class="container__line-creator-name">
+                    <appui:Text name="line_creator_name_label" text="@MeasureTool:Name" />
+                    <appui:TextField name="line_creator_name_value" text="Measure Line" placeholder="@MeasureTool:NamePlaceHolder" class="text-field__line-creator-name-value" />
+                </ui:VisualElement>
+                <ui:VisualElement name="line_creator_distance_text_container" class="container__line-creator-distance">
+                    <appui:Text name="line_creator_distance_label" text="@MeasureTool:Distance" />
+                    <appui:Text name="line_creator_distance_value" />
+                </ui:VisualElement>
+                <ui:VisualElement name="line_creator_unit_container" class="container__line-creator-unit">
+                    <appui:Text name="line_creator_unit_label" text="@MeasureTool:Unit" />
+                    <appui:Dropdown focusable="true" name="line_creator_unit_dropdown" class="dropdown__line-creator-unit" />
+                </ui:VisualElement>
+                <ui:VisualElement name="line_creator_confirmation_container" class="container__line-creator-confirmation">
+                    <appui:ActionButton name="line_creator_confirmation_clear" label="@MeasureTool:Clear" class="button__line-creator-confirmation"/>
+                    <appui:ActionButton name="line_creator_confirmation_save" label="@MeasureTool:Save" class="button__line-creator-confirmation" />
+                </ui:VisualElement>
+                <ui:VisualElement name="line_creator_edit_confirmation_container" class="container__line-creator-edit-confirmation">
+                    <appui:ActionButton name="line_creator_edit_confirmation_discard" label="@MeasureTool:Discard" class="button__line-creator-confirmation"/>
+                    <appui:ActionButton name="line_creator_edit_confirmation_apply" label="@MeasureTool:Apply" class="button__line-creator-confirmation" />
+                </ui:VisualElement>
+                <ui:VisualElement name="line_list_container" class="container__line-list">
+                    <ui:ScrollView name="line_list_scrollview" class="scrollview__line-list"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

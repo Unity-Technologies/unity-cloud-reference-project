@@ -11,7 +11,7 @@ namespace Unity.ReferenceProject.Presence
 {
     public class AvatarBadgesContainer : VisualElement
     {
-        static readonly string m_AvatarsContainerUssClassName = "avatar-badge-container";
+        static readonly string k_AvatarBadgesContainerUssClassName = "container__avatar-badges";
         static readonly string k_AvatarBadgeUssClassName = "avatar-badge";
         internal static readonly string PlusSignName = "plus-sign";
 
@@ -33,11 +33,11 @@ namespace Unity.ReferenceProject.Presence
 
         public AvatarBadgesContainer(ColorPalette avatarColorPalette)
         {
-            name = "avatar-badges-container";
+            name = k_AvatarBadgesContainerUssClassName;
             MaxParticipantsCount = 2;
             m_AvatarColorPalette = avatarColorPalette;
             RegisterCallback<DetachFromPanelEvent>(_ => UnbindRoomWithoutNotify());
-            AddToClassList(m_AvatarsContainerUssClassName);
+            AddToClassList(k_AvatarBadgesContainerUssClassName);
         }
 
         public void BindRoom(RoomCached room)
@@ -68,9 +68,9 @@ namespace Unity.ReferenceProject.Presence
         {
             Clear();
 
-            if (!ClassListContains(m_AvatarsContainerUssClassName))
+            if (!ClassListContains(k_AvatarBadgesContainerUssClassName))
             {
-                ToggleInClassList(m_AvatarsContainerUssClassName);
+                ToggleInClassList(k_AvatarBadgesContainerUssClassName);
             }
 
             if (room == null)

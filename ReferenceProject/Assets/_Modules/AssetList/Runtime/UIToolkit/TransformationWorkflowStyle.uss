@@ -1,0 +1,21 @@
+.scroll-view__transformation-workflow{
+    margin-top: 10px;
+    height: 150px;
+    background-color: rgba(0,0,0,0.2);
+    padding: 10px;
+}
+
+.container__transformation-workflow-dropdown-selection{
+    flex-direction: row;
+    margin-bottom: 10px;
+}
+
+.container__transformation-workflow-dropdown-selection .unity-label{
+    width: 100px;
+}
+
+.button__transformation-workflow-start{
+    width: 80%;
+    align-self: center;
+    margin-top: 20px;
+}

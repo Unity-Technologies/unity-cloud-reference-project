@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <Style src="CameraViewSwitchToolStyle.uss" />
+    <appui:ActionButton name="ActionButton" icon="notnull" quiet="true" class="button__camera-switch-tool" />
+</ui:UXML>

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using Unity.ReferenceProject.DataStores;
+using Unity.ReferenceProject.InputSystem.VR;
 using Unity.ReferenceProject.VR.RigUI;
-using Unity.ReferenceProject.VR.UIInputBlockerVR;
 using Unity.ReferenceProject.WorldSpaceUIDocumentExtensions;
 using Unity.XR.CoreUtils;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Zenject;
+using UnityInputSystem = UnityEngine.InputSystem.InputSystem;
 
 namespace Unity.ReferenceProject.VR
 {
@@ -27,6 +29,8 @@ namespace Unity.ReferenceProject.VR
         [SerializeField]
         List<GameObject> m_Controllers = new ();
 
+        Mouse m_Mouse;
+        
         public override void InstallBindings()
         {
             Container.Bind<IRigUIController>().FromInstance(m_RigUIController).AsSingle();
@@ -35,7 +39,7 @@ namespace Unity.ReferenceProject.VR
 
             var controllerList = new ControllerList();
             controllerList.Controllers = m_Controllers;
-            Container.Bind<IControllerList>().FromInstance(controllerList).AsSingle();
+            Container.Bind<IVRControllerList>().FromInstance(controllerList).AsSingle();
 
             var controllerStore = gameObject.AddComponent<ControllerStore>();
             var controlProperty = controllerStore.GetProperty<IControllerInfo>(nameof(ControllerViewModel.ControllerInfo));
@@ -45,6 +49,16 @@ namespace Unity.ReferenceProject.VR
             var menuTypeStore = gameObject.AddComponent<MenuTypeStore>();
             var menuTypeProperty = menuTypeStore.GetProperty<MenuType>(nameof(MenuTypeViewModel.MenuType));
             Container.Bind<PropertyValue<MenuType>>().FromInstance(menuTypeProperty);
+
+            // Necessary for VR keyboard
+            m_Mouse = UnityInputSystem.AddDevice<Mouse>();
+            Container.Bind<Mouse>().FromInstance(m_Mouse).AsSingle();
+        }
+
+        void OnDestroy()
+        {
+            Container.Bind<IVRControllerList>().FromInstance(null);
+            UnityInputSystem.RemoveDevice(m_Mouse);
         }
     }
 }

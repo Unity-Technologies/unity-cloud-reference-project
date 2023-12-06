@@ -1,5 +1,6 @@
 ﻿using System;
-using Unity.Cloud.Common;
+using Unity.Cloud.Assets;
+using Unity.ReferenceProject.AssetManager;
 using Unity.ReferenceProject.DataStores;
 using Unity.ReferenceProject.DataStreaming;
 using Unity.ReferenceProject.DeepLinking;
@@ -7,7 +8,6 @@ using Unity.ReferenceProject.Messaging;
 using Unity.ReferenceProject.Tools;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using Zenject;
 
 namespace Unity.ReferenceProject.VR
@@ -24,21 +24,21 @@ namespace Unity.ReferenceProject.VR
         IDataStreamController m_DataStreamController;
         IAppMessaging m_AppMessaging;
         IToolUIManager m_ToolUIManager;
-        
+
         IDeepLinkingController m_DeepLinkingController;
-        PropertyValue<IScene> m_ActiveScene;
+        PropertyValue<IAsset> m_SelectedAsset;
         Uri m_Uri;
         DeepLinkData m_DeepLinkData;
 
         [Inject]
-        public void Setup(IDataStreamController dataStreamController, IAppMessaging appMessaging, IToolUIManager toolUIManager, 
-            IDeepLinkingController deepLinkingController, PropertyValue<IScene> sceneListStore, DeepLinkData deepLinkData)
+        public void Setup(IDataStreamController dataStreamController, IAppMessaging appMessaging, IToolUIManager toolUIManager,
+            IDeepLinkingController deepLinkingController, AssetManagerStore assetManagerStore, DeepLinkData deepLinkData)
         {
             m_DataStreamController = dataStreamController;
             m_AppMessaging = appMessaging;
             m_ToolUIManager = toolUIManager;
             m_DeepLinkingController = deepLinkingController;
-            m_ActiveScene = sceneListStore;
+            m_SelectedAsset = assetManagerStore.GetProperty<IAsset>(nameof(AssetManagerViewModel.Asset));
             m_DeepLinkData = deepLinkData;
         }
 
@@ -46,7 +46,7 @@ namespace Unity.ReferenceProject.VR
         {
             base.Awake();
 
-            if (!m_DeepLinkData.EnableSwitchToDesktop) 
+            if (!m_DeepLinkData.EnableSwitchToDesktop)
             {
                 gameObject.SetActive(false);
             }
@@ -65,11 +65,11 @@ namespace Unity.ReferenceProject.VR
 
         async void OnReturnToDesktop()
         {
-            m_DataStreamController.Close();
-            
+            m_DataStreamController.Unload();
+
             try
             {
-                m_Uri = await m_DeepLinkingController.GenerateUri(m_ActiveScene.GetValue());
+                m_Uri = await m_DeepLinkingController.GenerateUri(m_SelectedAsset.GetValue().Descriptor);
             }
             catch (Exception ex)
             {

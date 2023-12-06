@@ -1,10 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Threading;
 using System.Threading.Tasks;
-using Unity.Cloud.Common;
 using Unity.Cloud.Presence;
 using UnityEngine;
 
@@ -26,17 +22,17 @@ namespace Unity.ReferenceProject.Presence.Tests.Runtime
             m_Server.ChangeParticipantStatus += ChangeParticipantStatus;
         }
         
-        public Task StartMonitoringAsync(BaseRoom room, IRetryPolicy retryPolicy, CancellationToken cancellationToken)
+        public Task StartMonitoringAsync(params BaseRoom[] rooms)
         {
             ConnectionStatusChanged?.Invoke(ConnectionStatus);
             
-            m_Server.StartToMonitorRoom(room.RoomId);
+            m_Server.StartToMonitorRoom(rooms[0].RoomId);
             return Task.CompletedTask;
         }
 
-        public Task StopMonitoringAsync(BaseRoom room, IRetryPolicy retryPolicy, CancellationToken cancellationToken)
+        public Task StopMonitoringAsync(params BaseRoom[] rooms)
         {
-            m_Server.StopToMonitorRoom(room.RoomId);
+            m_Server.StopToMonitorRoom(rooms[0].RoomId);
             return Task.CompletedTask;
         }
 

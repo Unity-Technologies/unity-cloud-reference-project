@@ -34,6 +34,14 @@ MonoBehaviour:
     m_Localized: Retry
     m_Metadata:
       m_Items: []
+  - m_Id: 94935165987614720
+    m_Localized: Logging out...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 94935527381430272
+    m_Localized: Successfully logged out
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

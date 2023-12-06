@@ -48,7 +48,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 718364391665664
-    m_Localized: "{0:1 r\xE9ponse|{} r\xE9ponses}"
+    m_Localized: '{0:Ajouter un commentaire|1 commentaire|{} commentaires}'
     m_Metadata:
       m_Items:
       - rid: 2811153394649792516
@@ -96,10 +96,24 @@ MonoBehaviour:
     m_Localized: Sujets
     m_Metadata:
       m_Items: []
+  - m_Id: 34076286400847872
+    m_Localized: "Cliquez sur une des surfaces de votre mod\xE8le pour ajouter un
+      nouveau Sujet."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 59451784091738112
+    m_Localized: "Le texte est limit\xE9 \xE0 {} charact\xE8res"
+    m_Metadata:
+      m_Items:
+      - rid: 2811153394649792516
+  - m_Id: 62356151154667520
+    m_Localized: Inconnu
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:
     - rid: 2811153394649792516
       type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
-        m_Entries: 0070623e598d0200
+        m_Entries: 0070623e598d020000200d281537d300

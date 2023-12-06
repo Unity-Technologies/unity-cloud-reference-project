@@ -20,7 +20,7 @@ namespace Unity.ReferenceProject.UITableListView
         SearchModule<object> m_SearchModule;
         HighlightModule m_HighlightModule;
         
-        public event Action OnRefresh;
+        public event Action Refresh;
         public int ServicePriority => m_ServicePriority;
         
         void OnDestroy() => ClearService();
@@ -35,7 +35,7 @@ namespace Unity.ReferenceProject.UITableListView
             m_SearchModule = new SearchModule<object>();
             
             // Search UI setup
-            m_SearchUI = new SearchUI(m_SearchModule, root, OnRefresh, null, m_SearchBarName);
+            m_SearchUI = new SearchUI(m_SearchModule, root, Refresh, null, m_SearchBarName);
             // Highlight setup
             m_HighlightModule = new HighlightModule(m_SearchModule);
         }

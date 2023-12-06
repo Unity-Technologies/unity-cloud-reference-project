@@ -1,0 +1,52 @@
+.keyboard-background {
+    background-color: var(--appui-backgrounds-50);
+    border-radius: 10px;
+    padding: 16px;
+    flex-direction: column;
+}
+
+.keyboard-textfield
+{
+    
+}
+
+.keyboard-row {
+    flex-direction: row;
+    justify-content: center;
+}
+
+.keyboard-key {
+    border-radius: 3px;
+    margin: 5px;
+    padding: 5px;
+    width: 32px;
+    height: 32px;
+}
+
+.keyboard-extended-character-panel {
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 3px;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.keyboard-extended-character-key-row {
+    flex-direction: row;
+    justify-content: center;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.keyboard-extended-character-key
+{
+    background-color: var(--appui-backgrounds-200);
+    border-width: 0;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.keyboard-extended-character-key.hover
+{
+    background-color: var(--appui-accent-100);
+}

@@ -19,7 +19,7 @@ namespace Unity.ReferenceProject.ObjectSelection
             }
         }
 
-        public event Action<bool> OnActivate;
+        public event Action<bool> SetActivated;
 
         public void Subscribe(MonoBehaviour listener)
         {
@@ -44,7 +44,7 @@ namespace Unity.ReferenceProject.ObjectSelection
 
         void DispatchEvent()
         {
-            OnActivate?.Invoke(m_Listeners.Count > 0);
+            SetActivated?.Invoke(m_Listeners.Count > 0);
         }
     }
     

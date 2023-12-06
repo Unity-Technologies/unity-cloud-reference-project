@@ -1,7 +1,10 @@
 {
     "name": "Unity.ReferenceProject.Common.Runtime",
     "rootNamespace": "Unity.ReferenceProject.Common",
-    "references": [],
+    "references": [
+        "GUID:fe25561d224ed4743af4c60938a59d0b",
+        "GUID:18a3ee135d24342f7ae628142b5114cb"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

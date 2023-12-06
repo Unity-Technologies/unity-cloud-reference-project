@@ -2,7 +2,7 @@
     flex-grow: 1;
 }
 
-.loading-indicator {
+.container__loading-indicator {
     position: absolute;
     left: 20%;
     right: 20%;

@@ -17,18 +17,15 @@ namespace Unity.ReferenceProject.Common
                 Debug.LogWarning($"{nameof(ColorPalette)} doesn't contain any color. Return color: {nameof(Color.grey)}");
                 return Color.grey;
             }
-            
+
             if (index < 0)
             {
                 index *= -1;
             }
 
-            return m_Colors[index % GetColorCount()];
+            return m_Colors[index % Count];
         }
 
-        public int GetColorCount()
-        {
-            return m_Colors.Length;
-        }
+        public int Count => m_Colors.Length;
     }
 }

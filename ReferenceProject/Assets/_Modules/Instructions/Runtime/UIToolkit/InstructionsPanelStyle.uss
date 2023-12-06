@@ -1,4 +1,4 @@
-.panel-instruction {
+.container__panel-instruction {
     align-self: center;
     border-radius: 10px;
     position: absolute;
@@ -10,6 +10,27 @@
     background-color: var(--appui-transparent-backgrounds-500);
 }
 
-.divider--empty > .appui-divider__content {
+.button__panel-instruction-close {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+
+.heading__panel-instruction {
+    flex-grow: 1; 
+    flex-shrink: 1; 
+    margin-right: 15px;
+}
+
+.flex{
+    display: flex;
+}
+
+.container__panel-instruction-instructions {
+    align-items: center; 
+    justify-content: center;
+}
+
+.divider__empty > .appui-divider__content {
     background-color: rgba(0, 0, 0, 0);
 }

@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <ui:Style src="AnnotationStyle.uss" />
+    <ui:VisualElement name="TextInputContainer" class="container__text-input">
+        <appui:TextField name="TextInputTitle" placeholder="@Annotation:AddTitle" class="text-field__title" />
+        <appui:TextArea name="TextInputMessage" class="text-area__message" />
+        <ui:VisualElement name="TextInputButtons" class="container__text-input-buttons">
+            <appui:ActionButton name="TextInputCancel" quiet="true" icon="x" tooltip="@Annotation:Cancel" class="button__text-input-cancel" />
+            <appui:ActionButton name="TextInputSubmit" icon="send" tooltip="@Annotation:Submit" class="button__text-input-submit" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

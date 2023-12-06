@@ -1,0 +1,460 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4369720386d0ce34f8f6af734ae49372, type: 3}
+  m_Name: SpecialCharacter 2
+  m_EditorClassIdentifier: 
+  m_KeyRows:
+  - Keys:
+    - Type: 0
+      Character: 49
+      Icon: {fileID: 21300000, guid: eae18d31f354e4382ad047ecad6eff61, type: 3}
+      Size: 1
+      Layout: {fileID: 11400000, guid: 5c08e42e426a2864c9783f72908e8998, type: 2}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 50
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 51
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 52
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 53
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 54
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 55
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 56
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 57
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 48
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+  - Keys:
+    - Type: 0
+      Character: 60
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 62
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 171
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 187
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 8804
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 8805
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 177
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 8776
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 189
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 188
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+  - Keys:
+    - Type: 0
+      Character: 126
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 124
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 176
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 178
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 8319
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 8730
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 247
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 8729
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 8734
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 960
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+  - Keys:
+    - Type: 1
+      Character: 97
+      Icon: {fileID: 21300000, guid: eae18d31f354e4382ad047ecad6eff61, type: 3}
+      Size: 1.5
+      Layout: {fileID: 11400000, guid: 889c589c943dc514b82f921ff10dea19, type: 2}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 1
+      Text: 2/2
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 162
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 163
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 165
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 8364
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 191
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 931
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 0
+      Character: 181
+      Icon: {fileID: 0}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 3
+      Character: 9688
+      Icon: {fileID: 21300000, guid: 91cdb936bd11614499a35bfff6f90ba2, type: 3}
+      Size: 1.5
+      Layout: {fileID: 0}
+      AsciiCode: 0
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+  - Keys:
+    - Type: 4
+      Character: 92
+      Icon: {fileID: 21300000, guid: 35c85e2df32c34fc6b32a2b30928d4d5, type: 3}
+      Size: 1.5
+      Layout: {fileID: 0}
+      AsciiCode: 10
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 1
+      Character: 92
+      Icon: {fileID: 21300000, guid: 35c85e2df32c34fc6b32a2b30928d4d5, type: 3}
+      Size: 1.5
+      Layout: {fileID: 11400000, guid: b6f684765b14b6243a1684d7a0220ba0, type: 2}
+      AsciiCode: 10
+      FunctionalKeyType: 0
+      UseText: 1
+      Text: ABC
+      ReturnMainLayout: 0
+    - Type: 2
+      Character: 32
+      Icon: {fileID: 21300000, guid: ff1a196c378ef4ee7b59c81fd914c58a, type: 3}
+      Size: 5
+      Layout: {fileID: 11400000}
+      AsciiCode: 32
+      FunctionalKeyType: 0
+      UseText: 1
+      Text: 
+      ReturnMainLayout: 0
+    - Type: 3
+      Character: 92
+      Icon: {fileID: 21300000, guid: ff5e8ea5b9bd34d0aa4670ca2133bd53, type: 3}
+      Size: 1
+      Layout: {fileID: 0}
+      AsciiCode: 10
+      FunctionalKeyType: 1
+      UseText: 1
+      Text: Del
+      ReturnMainLayout: 0
+    - Type: 2
+      Character: 92
+      Icon: {fileID: 21300000, guid: 23bd6ebdbea74f746a0c6d172cdf9432, type: 3}
+      Size: 2
+      Layout: {fileID: 0}
+      AsciiCode: 10
+      FunctionalKeyType: 0
+      UseText: 0
+      Text: 
+      ReturnMainLayout: 0
