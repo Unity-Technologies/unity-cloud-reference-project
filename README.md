@@ -11,6 +11,10 @@
 
 The Unity Cloud Reference Project is a fully functional collaborative design review tool for 3D assets. It's a Unity project that you can build on to create your own custom viewer application. It is actively developed and built so that you can easily upgrade to get improvements and new features Unity publishes to GitHub.
 
+## Getting Started Video
+
+[<img src="ReferenceProject/Packages/Documentation~/images/video_thumb_play.jpg" alt="Watch Video" width="60%" >](https://youtu.be/WTCf5geMghw?i=JfyKVNuC9T1PV6oI)
+
 ## Contents
 
 - [Unity Cloud Reference Project](#unity-cloud-reference-project)
@@ -54,7 +58,7 @@ The Unity Cloud Reference Project is a Unity project intended as a starting poin
 
 ## Documentation
 
-For a deep dive into the Unity Cloud Reference Project, visit our [documentation site](https://docs.unity.com/cloud/en-us/creator-sdks/referenceProject).
+For a deep dive into the Unity Cloud Reference Project, visit our [documentation site](https://docs.unity.com/cloud/en-us/creator-sdks/referenceProject/get_started).
 
 ## License
 
