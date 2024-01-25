@@ -58,7 +58,7 @@ The Unity Cloud Reference Project is a Unity project intended as a starting poin
 
 ## Documentation
 
-For a deep dive into the Unity Cloud Reference Project, visit our [documentation site](https://docs.unity.com/cloud/en-us/creator-sdks/referenceProject/get_started).
+For a deep dive into the Unity Cloud Reference Project, visit our [documentation site](https://docs.unity.com/cloud/en-us/creator-sdks/reference-project).
 
 ## License
 
