@@ -105,6 +105,9 @@ namespace Unity.ReferenceProject.AppCamera
                     m_MovingSpeed = 0;
                 }
             }
+            
+            if(m_CameraProvider.Camera == null)
+                return;
 
             var cameraTransform = m_CameraProvider.Camera.transform;
             

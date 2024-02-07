@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +7,7 @@ using UnityEngine;
 using Unity.Cloud.Annotation;
 using Unity.Cloud.Annotation.Runtime;
 using Unity.Cloud.Assets;
+using Unity.Cloud.Identity;
 using Unity.ReferenceProject.Common;
 using Unity.ReferenceProject.DataStores;
 using Unity.ReferenceProject.DataStreaming;
@@ -16,17 +17,15 @@ using Unity.ReferenceProject.InputSystem;
 using UnityEngine.UIElements;
 using Zenject;
 using UnityEngine.InputSystem;
-using Unity.ReferenceProject.InputSystem.VR;
-using UnityEngine.XR.Interaction.Toolkit;
 
 namespace Unity.ReferenceProject.Annotation
 {
     public class AnnotationToolUIController : ToolUIController
     {
-        const string k_MouseSelectActionKey = "<Mouse>/leftButton";
-        const string k_TouchSelectActionKey = "<Touchscreen>/primaryTouch/tap";
-        const string k_MouseSelectAction = "ClickAction";
-        const string k_TouchSelectAction = "TouchAction";
+        static readonly string k_MouseSelectActionKey = "<Mouse>/leftButton";
+        static readonly string k_TouchSelectActionKey = "<Touchscreen>/primaryTouch/tap";
+        static readonly string k_MouseSelectAction = "ClickAction";
+        static readonly string k_TouchSelectAction = "TouchAction";
 
         [SerializeField]
         TopicPanelController m_TopicPanel;
@@ -48,13 +47,11 @@ namespace Unity.ReferenceProject.Annotation
         INavigationManager m_NavigationManager;
         ObjectSelectionActivator m_ObjectSelectionActivator;
         PropertyValue<IObjectSelectionInfo> m_ObjectSelectionProperty;
+        IAssetEvents m_AssetEvents;
 
         InputScheme m_InputScheme;
-        InputScheme[] m_InputSchemeVR;
-        Dictionary<InputAction, XRRayInteractor> m_ActionToVRControllers;
-
-        Ray m_SelectionRay;
-        bool m_SelectionStarted;
+        protected Ray m_SelectionRay;
+        protected bool m_SelectionStarted;
 
         [Inject]
         void Setup(
@@ -65,8 +62,8 @@ namespace Unity.ReferenceProject.Annotation
             ObjectSelectionActivator objectSelectionActivator,
             ICameraProvider cameraProvider,
             INavigationManager navigationManager,
-            IVRControllerList vrControllers,
-            IAssetEvents assetEvents)
+            IAssetEvents assetEvents,
+            IOrganizationRepository organizationRepository)
         {
             m_Controller = annotationController;
             m_IndicatorManager = indicatorManager;
@@ -75,39 +72,17 @@ namespace Unity.ReferenceProject.Annotation
             m_CameraProvider = cameraProvider;
             m_NavigationManager = navigationManager;
             m_InputManager = inputManager;
-            SetupInputs(vrControllers);
-
-            assetEvents.AssetLoaded += OnAssetLoaded;
-            assetEvents.AssetUnloaded += OnAssetUnloaded;
-        }
-
-        void OnAssetLoaded(IAsset asset, IDataset dataset)
-        {
-            m_Controller.Initialize(dataset.Descriptor);
-        }
-
-        void OnAssetUnloaded()
-        {
-            m_Controller.Shutdown();
-        }
-
-        void SetupInputs(IVRControllerList vrControllers)
-        {
-            if (vrControllers == null)
-            {
-                SetupRegularInputs();
-            }
-            else
-            {
-                m_ActionToVRControllers = new Dictionary<InputAction, XRRayInteractor>();
-                vrControllers.GetSelectActionFromControllers(m_ActionToVRControllers);
-                SetupVRInputs(vrControllers);
-            }
+            m_AssetEvents = assetEvents;
         }
 
         protected override void Awake()
         {
             base.Awake();
+
+            SetupInputs();
+
+            m_AssetEvents.AssetLoaded += OnAssetLoaded;
+            m_AssetEvents.AssetUnloaded += OnAssetUnloaded;
 
             m_Controller.Initialized += OnInitialized;
             m_Controller.TopicCreatedOrUpdated += OnTopicCreatedOrUpdated;
@@ -116,47 +91,6 @@ namespace Unity.ReferenceProject.Annotation
             m_WorkingIndicator = m_IndicatorManager.GetEmptyIndicator();
             m_WorkingIndicator.SetSelected(true);
             m_WorkingIndicator.gameObject.SetActive(false);
-        }
-
-        void SetupRegularInputs()
-        {
-            InputAction clickAction = new InputAction(k_MouseSelectAction, InputActionType.Button, k_MouseSelectActionKey, "");
-            InputAction touchAction = new InputAction(k_TouchSelectAction, InputActionType.Button, k_TouchSelectActionKey, "");
-
-            m_InputScheme = m_InputManager.GetOrCreateInputScheme(InputSchemeType.Annotation, InputSchemeCategory.Tools, new InputAction[] { clickAction, touchAction });
-
-            m_InputScheme[k_MouseSelectAction].OnStarted += AnnotationSelectionStarted;
-            m_InputScheme[k_MouseSelectAction].OnCanceled += AnnotationSelectionCanceled;
-            m_InputScheme[k_MouseSelectAction].OnPerformed += PerformSelection;
-            m_InputScheme[k_MouseSelectAction].IsUIPointerCheckEnabled = true;
-
-            m_InputScheme[k_TouchSelectAction].OnStarted += AnnotationSelectionStarted;
-            m_InputScheme[k_TouchSelectAction].OnCanceled += AnnotationSelectionCanceled;
-            m_InputScheme[k_TouchSelectAction].OnPerformed += PerformSelection;
-            m_InputScheme[k_TouchSelectAction].IsUIPointerCheckEnabled = true;
-        }
-
-        void SetupVRInputs(IVRControllerList vrControllers)
-        {
-            List<InputScheme> inputSchemes = new List<InputScheme>();
-
-            foreach (GameObject controller in vrControllers.Controllers)
-            {
-                ActionBasedController xrController = controller.GetComponent<ActionBasedController>();
-                XRRayInteractor xrRayInteractor = controller.GetComponent<XRRayInteractor>();
-
-                if (xrController == null || xrRayInteractor == null)
-                    continue;
-
-                InputScheme inputScheme = m_InputManager.GetOrCreateInputScheme(InputSchemeType.Other, InputSchemeCategory.Tools, new InputAction[] { xrController.selectAction.action });
-                inputScheme[xrController.selectAction.action.name].OnStarted += AnnotationSelectionStartedVR;
-                inputScheme[xrController.selectAction.action.name].OnCanceled += AnnotationSelectionCanceled;
-                inputScheme[xrController.selectAction.action.name].OnPerformed += PerformSelection;
-                inputScheme[xrController.selectAction.action.name].IsUIPointerCheckEnabled = true;
-                inputSchemes.Add(inputScheme);
-            }
-
-            m_InputSchemeVR = inputSchemes.ToArray();
         }
 
         protected override void OnDestroy()
@@ -168,14 +102,6 @@ namespace Unity.ReferenceProject.Annotation
             m_Controller.Shutdown();
 
             m_InputScheme?.Dispose();
-
-            if (m_InputSchemeVR != null)
-            {
-                foreach (InputScheme inputScheme in m_InputSchemeVR)
-                {
-                    inputScheme.Dispose();
-                }
-            }
         }
 
         protected override VisualElement CreateVisualTree(VisualTreeAsset template)
@@ -194,14 +120,6 @@ namespace Unity.ReferenceProject.Annotation
             m_IndicatorManager.SetIndicatorsVisible();
             EnableObjectSelection();
             m_InputScheme?.SetEnable(true);
-
-            if (m_InputSchemeVR != null)
-            {
-                foreach (InputScheme inputScheme in m_InputSchemeVR)
-                {
-                    inputScheme.SetEnable(true);
-                }
-            }
 
             m_TopicPanel.TopicSelected += OnTopicSelected;
             m_TopicPanel.TopicDeleted += OnTopicDeleted;
@@ -231,14 +149,6 @@ namespace Unity.ReferenceProject.Annotation
             DisableObjectSelection();
             m_InputScheme?.SetEnable(false);
 
-            if (m_InputSchemeVR != null)
-            {
-                foreach (InputScheme inputScheme in m_InputSchemeVR)
-                {
-                    inputScheme.SetEnable(false);
-                }
-            }
-
             m_TopicPanel.TopicSelected -= OnTopicSelected;
             m_TopicPanel.TopicDeleted -= OnTopicDeleted;
             m_TopicPanel.TopicEdited -= OnTopicEdited;
@@ -254,36 +164,71 @@ namespace Unity.ReferenceProject.Annotation
             m_CommentPanel.CommentSubmitted -= OnSubmitAddComment;
         }
 
+        void OnAssetLoaded(IAsset asset, IDataset dataset)
+        {
+            m_Controller.Initialize(dataset.Descriptor);
+            RefreshPermission();
+        }
+
+        void OnAssetUnloaded()
+        {
+            m_Controller.Shutdown();
+        }
+
+        protected void SetupInputs()
+        {
+            InputAction clickAction = new InputAction(k_MouseSelectAction, InputActionType.Button, k_MouseSelectActionKey, "");
+            InputAction touchAction = new InputAction(k_TouchSelectAction, InputActionType.Button, k_TouchSelectActionKey, "");
+
+            m_InputScheme = m_InputManager.GetOrCreateInputScheme(InputSchemeType.Annotation, InputSchemeCategory.Tools, new InputAction[] { clickAction, touchAction });
+
+            m_InputScheme[k_MouseSelectAction].OnStarted += AnnotationSelectionStarted;
+            m_InputScheme[k_MouseSelectAction].OnCanceled += AnnotationSelectionCanceled;
+            m_InputScheme[k_MouseSelectAction].OnPerformed += PerformSelection;
+            m_InputScheme[k_MouseSelectAction].IsUIPointerCheckEnabled = true;
+
+            m_InputScheme[k_TouchSelectAction].OnStarted += AnnotationSelectionStarted;
+            m_InputScheme[k_TouchSelectAction].OnCanceled += AnnotationSelectionCanceled;
+            m_InputScheme[k_TouchSelectAction].OnPerformed += PerformSelection;
+            m_InputScheme[k_TouchSelectAction].IsUIPointerCheckEnabled = true;
+        }
+
         void EnableObjectSelection()
         {
-            // Activate Selection tool
-            if (m_ObjectSelectionActivator != null)
+            if (m_Controller.CheckPermissions(AnnotationsPermission.Create))
             {
-                m_ObjectSelectionActivator.Subscribe(this);
-            }
-            else
-            {
-                Debug.LogError($"Null reference to {nameof(ObjectSelectionActivator)} on {nameof(AnnotationToolUIController)}");
-            }
+                // Activate Selection tool
+                if (m_ObjectSelectionActivator != null)
+                {
+                    m_ObjectSelectionActivator.Subscribe(this);
+                }
+                else
+                {
+                    Debug.LogError($"Null reference to {nameof(ObjectSelectionActivator)} on {nameof(AnnotationToolUIController)}");
+                }
 
-            if (m_ObjectSelectionProperty != null)
-            {
-                m_ObjectSelectionProperty.ValueChanged -= OnObjectSelectionChanged;
-                m_ObjectSelectionProperty.ValueChanged += OnObjectSelectionChanged;
+                if (m_ObjectSelectionProperty != null)
+                {
+                    m_ObjectSelectionProperty.ValueChanged -= OnObjectSelectionChanged;
+                    m_ObjectSelectionProperty.ValueChanged += OnObjectSelectionChanged;
+                }
             }
         }
 
         void DisableObjectSelection()
         {
-            if (m_ObjectSelectionProperty != null)
+            if (m_Controller.CheckPermissions(AnnotationsPermission.Create))
             {
-                m_ObjectSelectionProperty.ValueChanged -= OnObjectSelectionChanged;
+                if (m_ObjectSelectionProperty != null)
+                {
+                    m_ObjectSelectionProperty.ValueChanged -= OnObjectSelectionChanged;
+                }
+
+                // Disable selection tool
+                m_ObjectSelectionActivator?.Unsubscribe(this);
+
+                m_WorkingIndicator.gameObject.SetActive(false);
             }
-
-            // Disable selection tool
-            m_ObjectSelectionActivator?.Unsubscribe(this);
-
-            m_WorkingIndicator.gameObject.SetActive(false);
         }
 
         void OnInitialized(IEnumerable<ITopic> topics)
@@ -524,22 +469,12 @@ namespace Unity.ReferenceProject.Annotation
             m_SelectionStarted = true;
         }
 
-        void AnnotationSelectionCanceled(InputAction.CallbackContext _)
+        protected void AnnotationSelectionCanceled(InputAction.CallbackContext _)
         {
             m_SelectionStarted = false;
         }
 
-        void AnnotationSelectionStartedVR(InputAction.CallbackContext context)
-        {
-            m_SelectionStarted = true;
-
-            if (m_ActionToVRControllers.TryGetValue(context.action, out XRRayInteractor controller))
-            {
-                m_SelectionRay = new Ray(controller.transform.position, controller.transform.forward);
-            }
-        }
-
-        void PerformSelection(InputAction.CallbackContext context)
+        protected void PerformSelection(InputAction.CallbackContext context)
         {
             if (!m_SelectionStarted)
                 return;
@@ -602,6 +537,23 @@ namespace Unity.ReferenceProject.Annotation
         {
             m_NavigationManager.TryTeleport(topic.WorldCameraTransform.Position.ToVector3(),
                 topic.WorldCameraTransform.Rotation.ToQuaternion().eulerAngles);
+        }
+
+        void RefreshPermission()
+        {
+            if (InitialToolState == ToolState.Active && !m_Controller.CheckPermissions(AnnotationsPermission.Read))
+            {
+                SetToolState(ToolState.Inactive);
+            }
+
+            m_TopicPanel.SetPermissions(
+                m_Controller.CheckPermissions(AnnotationsPermission.Edit),
+                m_Controller.CheckPermissions(AnnotationsPermission.Delete));
+
+            m_CommentPanel.SetPermissions(
+                m_Controller.CheckPermissions(AnnotationsPermission.CreateComment),
+                m_Controller.CheckPermissions(AnnotationsPermission.EditComment),
+                m_Controller.CheckPermissions(AnnotationsPermission.DeleteComment));
         }
     }
 }

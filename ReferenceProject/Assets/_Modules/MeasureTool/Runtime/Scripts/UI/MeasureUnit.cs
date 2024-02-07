@@ -4,18 +4,8 @@ using Unity.Geospatial.Unit;
 
 namespace Unity.ReferenceProject.MeasureTool
 {
-    public enum MeasureFormat
-    {
-        Meters = 0,
-        Centimeters = 1,
-        Feet = 2,
-        Inches = 3,
-        FeetAndInches = 4
-    }
-    
     public static class MeasureUnit
     {
-
         static readonly Dictionary<MeasureFormat, Length> k_UnitsLookUp = new ()
         {
             { MeasureFormat.Meters, Si.Meter },

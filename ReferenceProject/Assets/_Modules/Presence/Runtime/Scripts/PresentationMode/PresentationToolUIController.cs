@@ -30,15 +30,17 @@ namespace Unity.ReferenceProject.Presence
         Divider m_Divider;
         
         IPresenceStreamingRoom m_PresenceStreamingRoom;
+        IPresenceRoomsManager m_PresenceRoomsManager;
         PresentationStatus m_PresentationStatus;
         readonly List<IParticipant> m_Participants = new ();
         static readonly string k_CollaboratorDataUssClassName = "container__collaborator-data";
-        
+
         [Inject]
-        void SetUp(PresentationManager presentationManager, IPresenceStreamingRoom presenceStreamingRoom)
+        void SetUp(PresentationManager presentationManager, IPresenceStreamingRoom presenceStreamingRoom, IPresenceRoomsManager presenceRoomsManager)
         {
             m_PresentationManager = presentationManager;
             m_PresenceStreamingRoom = presenceStreamingRoom;
+            m_PresenceRoomsManager = presenceRoomsManager;
         }
 
         protected override void Awake()
@@ -87,7 +89,7 @@ namespace Unity.ReferenceProject.Presence
             
             UpdateUI();
         }
-        
+
         void OnPresentationEvent(PresentationStatus presentationStatus)
         {
             m_PresentationStatus = presentationStatus;
@@ -196,6 +198,11 @@ namespace Unity.ReferenceProject.Presence
             
             return root;
         }
+        
+        void CheckPermissions()
+        {
+            m_StartPresentationButton.SetEnabled(m_PresenceRoomsManager.CheckPermissions(PresencePermission.StartPresentation));
+        }
 
         void UpdateUI()
         {
@@ -225,6 +232,8 @@ namespace Unity.ReferenceProject.Presence
                     break;
             }
 
+            CheckPermissions();
+            
             SetToolState(m_PresentationStatus != PresentationStatus.NoRoom ? ToolState.Active : ToolState.Inactive);
         }
     }

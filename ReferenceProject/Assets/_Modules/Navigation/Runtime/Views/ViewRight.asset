@@ -13,8 +13,5 @@ MonoBehaviour:
   m_Name: ViewRight
   m_EditorClassIdentifier: 
   m_Icon: {fileID: 21300000, guid: da883ac274411d94ab2f745dff5b708b, type: 3}
-  m_ViewName: Right
-  m_UseDefaultView: 0
+  m_ViewName: '@Navigation:Right'
   m_AngleRotation: {x: 0, y: -90, z: 0}
-  afficherNom: 0
-  nom: 

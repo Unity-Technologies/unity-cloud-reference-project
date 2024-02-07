@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8154059812622983129}
   - component: {fileID: 8154059812622983128}
-  - component: {fileID: 8154059812622983130}
   m_Layer: 0
   m_Name: '[ Deep Linking ]'
   m_TagString: Untagged
@@ -25,13 +24,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8154059812622983131}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8154059812622983128
 MonoBehaviour:
@@ -46,17 +45,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_NextState: {fileID: 0}
---- !u!114 &8154059812622983130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8154059812622983131}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bebecef6e0ae3f4bb82b8b5d616a792, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ActivationUrl: 
-  m_ActivateAtStartUp: 0
+  m_OpenLinkSuccessString: '@DeepLinking:OpenLinkSuccess'
+  m_AssetAlreadyOpenedString: '@DeepLinking:SceneAlreadyOpen'

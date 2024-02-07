@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Unity.Cloud.Assets;
 using Unity.Cloud.Common;
 using Unity.Cloud.DataStreaming.Runtime;
@@ -35,7 +33,7 @@ namespace Unity.ReferenceProject.DataStreaming
 
     public class DataStreamerController : IDataStreamerProvider, IDataStreamController, IDataStreamControllerWithObserver, IAssetEvents
     {
-        public IDataStreamer DataStreamer { get; } = IDataStreamer.Create();
+        public IDataStreamer DataStreamer { get; }
         public event Action<IAsset, IDataset> AssetLoaded;
         public event Action AssetUnloaded;
 
@@ -45,9 +43,33 @@ namespace Unity.ReferenceProject.DataStreaming
 
         ICameraObserver m_CameraObserver;
 
+        IStage m_Stage;
+
+        readonly DataStreamerSettings m_DataStreamerSettings;
+
         public DataStreamerController(IServiceHttpClient serviceHttpClient)
         {
             m_ServiceHttpClient = serviceHttpClient;
+            m_DataStreamerSettings = CreateDataStreamSettings();
+
+            DataStreamer = IDataStreamer.Create();
+            DataStreamer.StageCreated.Subscribe(OnStageCreated);
+        }
+
+        static DataStreamerSettings CreateDataStreamSettings()
+        {
+            var builder = DataStreamerSettingsBuilder
+                .CreateDefaultBuilder();
+            
+            // WebGL and iOS are crashing around the 2-3 Gb mark, 
+            // this is generally plenty for most needs at the time
+#if UNITY_WEBGL || UNITY_IOS
+            builder.ConfigureDefaultResourceLimiter(x => x
+                .SetMaxVertexCount(50000 * 200)
+                .SetMaxTexelCount(1024 * 1024 * 200));
+#endif
+
+            return builder.Build();
         }
 
         public async void Load(IAsset asset)
@@ -65,20 +87,9 @@ namespace Unity.ReferenceProject.DataStreaming
             
             var dataset = await StreamableAssetHelper.FindStreamableDataset(asset);
 
-            var builder = DataStreamerSettingsBuilder
-                .CreateDefaultBuilder()
-                .SetModel(dataset, m_ServiceHttpClient);
-            
-            // WebGL and iOS are crashing around the 2-3 Gb mark, 
-            // this is generally plenty for most needs at the time
-#if UNITY_WEBGL || UNITY_IOS
-            builder.ConfigureDefaultResourceLimiter(x => x
-                .SetMaxVertexCount(50000 * 200)
-                .SetMaxTexelCount(1024 * 1024 * 200));
-#endif
 
-            DataStreamer.StageCreated.Subscribe(OnStageCreated);
-            DataStreamer.Open(builder.Build());
+            var stage = DataStreamer.Open(m_DataStreamerSettings);
+            stage.Models.Add((config) => config.FromDataset(dataset, m_ServiceHttpClient));
 
             IsAssetLoaded = true;
             AssetLoaded?.Invoke(asset, dataset);
@@ -97,12 +108,37 @@ namespace Unity.ReferenceProject.DataStreaming
         
         void OnStageCreated(IStage stage)
         {
-            stage.Observers.Add(m_CameraObserver);
+            if (m_Stage != null && m_CameraObserver != null)
+            {
+                RemoveStageObserver(m_Stage, m_CameraObserver);
+            }
+            
+            m_Stage = stage;
+            AddStageObserver(m_Stage, m_CameraObserver);
         }
 
         public void SetCameraObserver(ICameraObserver cameraObserver)
         {
+            RemoveStageObserver(m_Stage, m_CameraObserver);
+            AddStageObserver(m_Stage, cameraObserver);
+            
             m_CameraObserver = cameraObserver;
+        }
+        
+        static void RemoveStageObserver(IStage stage, IStageObserver stageObserver)
+        {
+            if(stage == null || stageObserver == null)
+                return;
+            
+            stage.Observers.Remove(stageObserver);
+        }
+        
+        static void AddStageObserver(IStage stage, IStageObserver stageObserver)
+        {
+            if(stage == null || stageObserver == null)
+                return;
+            
+            stage.Observers.Add(stageObserver);
         }
     }
 }

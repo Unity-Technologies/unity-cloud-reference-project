@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.ReferenceProject.AppCamera;
 using UnityEngine;
 using Unity.ReferenceProject.Navigation;
 
-namespace Unity.ReferenceProject
+namespace Unity.ReferenceProject.Application
 {
     public class FollowNavigationMode : NavigationMode
     {

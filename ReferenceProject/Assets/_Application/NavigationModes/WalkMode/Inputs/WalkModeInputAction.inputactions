@@ -340,6 +340,17 @@
                 },
                 {
                     "name": "",
+                    "id": "c70bbe2e-f289-4175-acc9-33791d2a297f",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Camera Rotate Action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "4adb86bc-9636-4d66-9416-bced43535027",
                     "path": "<Mouse>/leftButton",
                     "interactions": "MultiTap(tapDelay=0.3)",

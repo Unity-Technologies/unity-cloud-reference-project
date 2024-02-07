@@ -12,7 +12,7 @@ namespace Unity.ReferenceProject
         uint m_Order;
 
         IAppLocalization m_AppLocalization;
-        DropdownSettings m_DropdownSettings;
+        DropdownSetting m_DropdownSetting;
 
         IGlobalSettings m_GlobalSettings;
 
@@ -30,7 +30,7 @@ namespace Unity.ReferenceProject
 
         void OnDisable()
         {
-            m_GlobalSettings.RemoveSetting(m_DropdownSettings);
+            m_GlobalSettings.RemoveSetting(m_DropdownSetting);
         }
 
         void AddSetting()
@@ -38,8 +38,8 @@ namespace Unity.ReferenceProject
             m_AppLocalization.LocalizationLoaded -= AddSetting;
             var locales = m_AppLocalization.Locales;
             var languages = locales.Select(l => l.LocaleName).ToArray();
-            m_DropdownSettings = new DropdownSettings("@ReferenceProject:Settings_Language", languages, OnSettingChanged, SelectedValue);
-            m_GlobalSettings.AddSetting(m_DropdownSettings, m_Order);
+            m_DropdownSetting = new DropdownSetting("@ReferenceProject:Settings_Language", languages, OnSettingChanged, SelectedValue);
+            m_GlobalSettings.AddSetting(m_DropdownSetting, m_Order);
         }
 
         int SelectedValue()

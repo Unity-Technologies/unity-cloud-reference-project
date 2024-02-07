@@ -1,8 +1,7 @@
 ﻿using System;
 using Unity.ReferenceProject.Settings;
 using UnityEngine;
-using Unity.AppUI.UI;
-using UnityEngine.Events;
+using Unity.ReferenceProject.Stats;
 using UnityEngine.UIElements;
 using Zenject;
 
@@ -11,44 +10,20 @@ namespace Unity.ReferenceProject
     public class StatsDisplay : MonoBehaviour
     {
         [SerializeField]
-        UIDocument m_UIDocument;
-
-        [SerializeField]
-        float m_TargetFrameRate = 60.0f;
-
-        [SerializeField]
-        Gradient m_ColorGradient;
-
-        [SerializeField]
-        FrameRateCalculator m_FrameRateCalculator = new();
-
-        [Header("UXML")]
-        [SerializeField]
-        string m_FrameRateElement = "fps-header";
-
-        [SerializeField]
-        string m_MinFrameRateElement = "fps-min-header";
-
-        [SerializeField]
-        string m_MaxFrameRateElement = "fps-max-header";
+        GlobalStatsUIController m_GlobalStatsUIController;
 
         [Header("Localization")]
         [SerializeField]
-        string m_FrameRateString = "@ReferenceProject:Settings_FrameRate";
+        string m_DisplayStatsString = "@ReferenceProject:DisplayStats";
 
         public event Action<bool> OnShowPanel;
-        public bool IsEnabled => m_IsEnabled;
+        public bool IsEnabled { get; private set; }
 
-        Heading m_FrameRateHeader;
         IGlobalSettings m_GlobalSettings;
-        bool m_IsEnabled;
-        Heading m_MaxFrameRateHeader;
-        Heading m_MinFrameRateHeader;
 
-        VisualElement m_RootVisualElement;
         ToggleSetting m_ToggleSetting;
 
-        static readonly string s_StatsPrefKey = "ReferenceProject-StatsProject-Enabled";
+        static readonly string k_StatsPrefKey = "ReferenceProject-StatsProject-Enabled";
 
         [Inject]
         void Setup(IGlobalSettings settings)
@@ -58,89 +33,49 @@ namespace Unity.ReferenceProject
 
         void Awake()
         {
-            if (m_UIDocument != null)
-            {
-                InitUIToolkit(m_UIDocument);
-            }
-
-            m_ToggleSetting = new ToggleSetting(m_FrameRateString, OnSettingChanged, ToggledValue);
-        }
-
-        void Update()
-        {
-            if (m_IsEnabled)
-            {
-                m_FrameRateCalculator.Update(Time.deltaTime);
-            }
+            m_ToggleSetting = new ToggleSetting(m_DisplayStatsString, OnSettingChanged, ToggledValue);
         }
 
         void OnEnable()
         {
             m_GlobalSettings.AddSetting(m_ToggleSetting);
-            m_IsEnabled = PlayerPrefs.GetFloat(s_StatsPrefKey, 0.0f) != 0.0f;
-            ShowPanel(m_IsEnabled);
+            IsEnabled = PlayerPrefs.GetInt(k_StatsPrefKey, 0) != 0;
+            ShowStats(IsEnabled);
         }
 
         void OnDisable()
         {
             m_GlobalSettings.RemoveSetting(m_ToggleSetting);
-            PlayerPrefs.SetFloat(s_StatsPrefKey, m_IsEnabled ? 1.0f : 0.0f);
-        }
-
-        public void InitUIToolkit(UIDocument uiDocument)
-        {
-            var root = m_RootVisualElement = uiDocument.rootVisualElement;
-
-            m_FrameRateHeader = root.Q<Heading>(m_FrameRateElement);
-            m_MinFrameRateHeader = root.Q<Heading>(m_MinFrameRateElement);
-            m_MaxFrameRateHeader = root.Q<Heading>(m_MaxFrameRateElement);
-
-            m_FrameRateCalculator.FrameRateRefreshed += OnFrameRateRefreshed;
+            PlayerPrefs.SetInt(k_StatsPrefKey, IsEnabled ? 1 : 0);
         }
 
         public void ClosePanel()
         {
             m_ToggleSetting.SetValueWithoutNotify(false);
-            m_IsEnabled = false;
-            ShowPanel(false);
+            IsEnabled = false;
+            ShowStats(false);
         }
 
         public bool ToggledValue()
         {
-            return m_IsEnabled;
+            return IsEnabled;
         }
 
         void OnSettingChanged(bool value)
         {
-            m_IsEnabled = value;
-            ShowPanel(value);
+            IsEnabled = value;
+            ShowStats(value);
         }
 
-        void ShowPanel(bool value)
+        void ShowStats(bool value)
         {
-            SetVisible(m_RootVisualElement, value);
+            m_GlobalStatsUIController.IsDisplayed = value;
             OnShowPanel?.Invoke(value);
         }
 
-        void OnFrameRateRefreshed(int fps, int minFps, int maxFps)
+        public void InitWithUIDocument(UIDocument document)
         {
-            UpdateHeader(m_FrameRateHeader, fps);
-            UpdateHeader(m_MinFrameRateHeader, minFps);
-            UpdateHeader(m_MaxFrameRateHeader, maxFps);
-        }
-
-        static void SetVisible(VisualElement element, bool visible)
-        {
-            if (element != null)
-            {
-                element.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
-            }
-        }
-
-        void UpdateHeader(Heading header, int fps)
-        {
-            header.text = fps.ToString();
-            header.style.color = m_ColorGradient.Evaluate(fps / m_TargetFrameRate);
+            m_GlobalStatsUIController.CreateVisualTree(document);
         }
     }
 }

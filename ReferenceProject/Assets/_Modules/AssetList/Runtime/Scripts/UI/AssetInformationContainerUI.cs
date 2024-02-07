@@ -21,13 +21,13 @@ namespace Unity.ReferenceProject.AssetList
         static readonly string k_ChipUssClassName = "chip__asset-information";
         static readonly string k_EmptyText = "@AssetList:Empty";
         static readonly string k_ChipOrnamentsUssClassName = "chip__asset-information-ornament";
-        static readonly string k_ContainerChipOrnamentUssClassName = "container__asset-information-ornament"; 
+        static readonly string k_ContainerChipOrnamentUssClassName = "container__asset-information-ornament";
 
         public AssetInformationContainerUI(string title, object value)
         {
             m_Title = title;
             var valueText = new Text();
-            
+
             if (string.IsNullOrEmpty(value?.ToString()))
             {
                 valueText.text = k_EmptyText;
@@ -40,9 +40,9 @@ namespace Unity.ReferenceProject.AssetList
 
             m_ValueUIElement = valueText;
         }
-        
+
         public AssetInformationContainerUI(string title, AssetType value)
-        { 
+        {
             m_Title = title;
             var valueText = new Text();
             if (string.IsNullOrEmpty(value.ToString()))
@@ -51,20 +51,22 @@ namespace Unity.ReferenceProject.AssetList
                 valueText.AddToClassList(k_EmptyTextUssClassName);
                 m_ValueUIElement = valueText;
             }
-            else{
+            else
+            {
                 valueText.text = "@AssetList:" + value;
                 m_ValueUIElement = valueText;
             }
         }
-        
-        public AssetInformationContainerUI(string title, string value, Texture2D statusCircle)
+
+        public AssetInformationContainerUI(string title, string value, string icon)
         {
             m_Title = title;
             var statusChip = new Chip
             {
-                label = "@AssetList:"+value,
-                ornament = new Image { 
-                    image = statusCircle
+                label = "@AssetList:" + value,
+                ornament = new Icon
+                {
+                    iconName = icon
                 }
             };
             statusChip.ornament.AddToClassList(k_ChipOrnamentsUssClassName);
@@ -72,7 +74,13 @@ namespace Unity.ReferenceProject.AssetList
             AddStyleStatusChip(value, statusChip);
             m_ValueUIElement.Add(statusChip);
         }
-        
+
+        public AssetInformationContainerUI(string title, VisualElement value)
+        {
+            m_Title = title;
+            m_ValueUIElement.Add(value);
+        }
+
         public AssetInformationContainerUI(string title, IEnumerable<string> enumerable)
         {
             m_Title = title;
@@ -147,7 +155,7 @@ namespace Unity.ReferenceProject.AssetList
         void AddStyleStatusChip(string value, Chip statusChip)
         {
             statusChip.AddToClassList(k_ChipUssClassName);
-            
+
             switch (value)
             {
                 case "Published":

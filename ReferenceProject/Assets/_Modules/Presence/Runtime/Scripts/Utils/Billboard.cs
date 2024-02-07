@@ -20,6 +20,9 @@ namespace Unity.ReferenceProject.Presence
 
         void LateUpdate()
         {
+            if(m_CameraProvider.Camera == null)
+                return;
+            
             var rotation = m_CameraProvider.Camera.transform.rotation * m_RotationOffset;
             transform.LookAt(transform.position + rotation * Vector3.forward, rotation * Vector3.up);
         }

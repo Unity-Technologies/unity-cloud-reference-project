@@ -1,16 +1,14 @@
-.container__asset-grid-item{
+.container__asset-grid-item {
     flex-grow: 1;
     border-width: 2px;
     border-color: rgba(0,0,0,0);
     border-radius: var(--appui-alias-control-border-radius);
-    margin-right: 8px;
-    margin-bottom: 8px;
     background-color: var(--appui-backgrounds-50);
     justify-content: center;
     align-items: center;
 }
 
-.container__asset-grid-item.is-selected{
+.appui-grid-view__item.is-selected .container__asset-grid-item{
     border-color: var(--appui-accent-100);
 }
 

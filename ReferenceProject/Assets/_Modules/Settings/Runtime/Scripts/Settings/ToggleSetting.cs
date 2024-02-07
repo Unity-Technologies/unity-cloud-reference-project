@@ -37,8 +37,7 @@ namespace Unity.ReferenceProject.Settings
 
             m_Toggle = new Toggle
             {
-                label = null,
-                size = Size.L
+                label = null
             };
 
             m_Toggle.RegisterValueChangedCallback(b => m_Action.Invoke(b.newValue));

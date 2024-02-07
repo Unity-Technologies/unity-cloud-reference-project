@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <Style src="CollectionGridItemStyle.uss" />
+    <ui:VisualElement name="Root">
+        <ui:VisualElement name="GridItem" class="container__collection-grid-item">
+            <ui:VisualElement name="Header" class="container__collection-grid-item-header">
+                <appui:Icon name="Icon" size="S" icon-name="squares-four" class="icon__collection-grid-item-icon" />
+                <appui:Text name="Name" class="text__collection-grid-item-name" />
+            </ui:VisualElement>
+            <appui:Text name="AssetCount" text="@AssetList:AssetCount" class="text__collection-grid-item-asset-count" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -380,8 +380,8 @@ namespace Unity.ReferenceProject.VR.VRControls
                 {
                     // Find hit index
                     hitIndex = start + secondResult.Index;
-                    hitPosition = secondResult.RaycastResult.Point;
-                    m_HitNormal = secondResult.RaycastResult.Normal;
+                    hitPosition = secondResult.PickerResult.Point;
+                    m_HitNormal = secondResult.PickerResult.Normal;
                 }
             }
 

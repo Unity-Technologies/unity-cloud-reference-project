@@ -1,3 +1,10 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
-    <appui:ActionButton quiet="true" size="S" class="button__project-list-item" />
+    <Style src="AssetListStyle.uss" />
+    <ui:VisualElement name="Root" class="container__project-list-item">
+        <appui:ActionButton quiet="true" icon="cube" size="S" class="button__project-list-item" />
+        <ui:VisualElement name="CollectionsContainer" class="container__project-list-item-collections">
+            <appui:Divider vertical="true" />
+            <ui:VisualElement name="CollectionsList" class="container__project-list-item-collections-list"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
 </ui:UXML>

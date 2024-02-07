@@ -9,6 +9,7 @@ using Unity.AppUI.UI;
 using Unity.Cloud.Assets;
 using Unity.Cloud.Common;
 using Unity.ReferenceProject.Common;
+using Unity.ReferenceProject.DataStreaming;
 using Unity.ReferenceProject.Messaging;
 using Unity.ReferenceProject.UIPanel;
 using UnityEngine;
@@ -21,6 +22,11 @@ namespace Unity.ReferenceProject.AssetList
     {
         [SerializeField]
         VisualTreeAsset m_VisualTreeAsset;
+
+        [SerializeField]
+        bool m_HideNonSourceDatasets = true;
+        
+        static readonly string k_SourceDatasetName = "Sources"; // This is a convention in the Asset Manager
         
         TransformationWorkflowController m_TransformationWorkflowController;
 
@@ -32,13 +38,16 @@ namespace Unity.ReferenceProject.AssetList
 
         AlertDialog m_Dialog;
 
+        Label m_AssetName;
+        
         Dropdown m_DatasetDropdown;
         Dropdown m_FilesDropdown;
 
         VisualElement m_Transformations;
         Coroutine m_RefreshTransformationState;
 
-        VisualElement m_TransformationRunning;
+        MessageUIHelper m_MessageUIHelper;
+        
 
         static readonly float k_RefreshTransformationsStateInterval = 2.0f;
 
@@ -78,25 +87,55 @@ namespace Unity.ReferenceProject.AssetList
             datasetsCallback?.Invoke(datasets);
         }
 
+        enum MessageType
+        {
+            None,
+            Help,
+            IsRunning,
+            IsOverride
+        }
+        
+        class MessageUIHelper
+        {
+            readonly VisualElement m_TransformationMessageHelp;
+            readonly VisualElement m_TransformationMessageIsRunning;
+            readonly VisualElement m_TransformationMessageIsOverride;
+            
+            public MessageUIHelper(VisualElement root)
+            {
+                m_TransformationMessageHelp = root.Q("TransformationHelpMessage");
+                m_TransformationMessageIsRunning = root.Q("TransformationIsRunningMessage");
+                m_TransformationMessageIsOverride = root.Q("TransformationIsOverrideMessage");
+            }
+            
+            public void ShowMessage(MessageType messageType)
+            {
+                Utils.SetVisible(m_TransformationMessageHelp, messageType == MessageType.Help);
+                Utils.SetVisible(m_TransformationMessageIsRunning, messageType == MessageType.IsRunning);
+                Utils.SetVisible(m_TransformationMessageIsOverride, messageType == MessageType.IsOverride);
+            } 
+        }
+        
         AlertDialog CreateDialog()
         {
             var root = m_VisualTreeAsset.Instantiate();
 
+            m_AssetName = root.Q<Label>("AssetName");
+            
             m_DatasetDropdown = root.Q<Dropdown>("DatasetDropdown");
             m_FilesDropdown = root.Q<Dropdown>("FileDropdown");
 
             m_Transformations = root.Q("TransformationContainer");
 
-            m_TransformationRunning = root.Q("TransformationRunningMessage");
-            
-            Utils.SetVisible(m_TransformationRunning, false);
+            m_MessageUIHelper = new MessageUIHelper(root);
+            m_MessageUIHelper.ShowMessage(MessageType.None);
 
             var dialog = new AlertDialog
             {
-                title =  "@AssetList:GenerateStreamable"
+                title = "@AssetList:PrepareForDataStreaming"
             };
             
-            dialog.SetCancelAction(0, "@ReferenceProject:Dismiss");
+            dialog.SetCancelAction(0, "@ReferenceProject:Close");
             
             dialog.SetPrimaryAction(1, "@AssetList:StartTransformation", async () =>
             {
@@ -109,7 +148,7 @@ namespace Unity.ReferenceProject.AssetList
                 }
                 catch (Exception e)
                 {
-                    m_AppMessaging.ShowError($"Failed to start transformation: {e.Message}");
+                    m_AppMessaging.ShowError($"Failed to start transformation: {e.Message}", true);
                 }
             });
             
@@ -158,7 +197,7 @@ namespace Unity.ReferenceProject.AssetList
             {
                 m_Dialog ??= CreateDialog();
 
-                m_Dialog.title = asset.Name;
+                m_AssetName.text = asset.Name;
 
                 m_DatasetDropdown.SetEnabled(false);
                 m_FilesDropdown.SetEnabled(false);
@@ -166,7 +205,9 @@ namespace Unity.ReferenceProject.AssetList
                 _ = GetDatasets(asset, datasets =>
                 {
                     m_DatasetDropdown.SetEnabled(true);
-                    m_DatasetDropdown.sourceItems = datasets;
+                    m_DatasetDropdown.sourceItems = m_HideNonSourceDatasets ?
+                        datasets.Where(d => d.Name == k_SourceDatasetName).ToList() : datasets;
+                    
                     if (datasets.Count > 0)
                     {
                         m_DatasetDropdown.selectedIndex = 0;
@@ -175,6 +216,7 @@ namespace Unity.ReferenceProject.AssetList
                 });
 
                 m_Transformations.Clear();
+                m_MessageUIHelper.ShowMessage(MessageType.None);
 
                 Modal.Build(m_MainUIPanel.Panel, m_Dialog).Show();
 
@@ -214,11 +256,14 @@ namespace Unity.ReferenceProject.AssetList
             {
                 m_Transformations.Clear();
                 m_Dialog.isPrimaryActionDisabled = true;
-                Utils.SetVisible(m_TransformationRunning, false);
+                m_MessageUIHelper.ShowMessage(MessageType.None);
 
                 var transformations = JsonConvert.DeserializeObject<List<TransformationData>>(currentJobs);
 
                 var assetTransformations = transformations.Where(t => t.assetId == asset.Descriptor.AssetId.ToString());
+
+                var isStreamable = await StreamableAssetHelper.IsStreamable(asset);
+                var isRunning = false;
 
                 if (assetTransformations.Any())
                 {
@@ -227,7 +272,7 @@ namespace Unity.ReferenceProject.AssetList
                         if (t.IsRunning() && m_Dialog.isPrimaryActionDisabled)
                         {
                             m_Dialog.isPrimaryActionDisabled = false;
-                            Utils.SetVisible(m_TransformationRunning, true);
+                            isRunning = true;
                         }
 
                         m_Transformations.Add(new TransformationDataElement(t));
@@ -237,11 +282,21 @@ namespace Unity.ReferenceProject.AssetList
                 {
                     m_Transformations.Add(new Heading("@AssetList:NoTransformation") { size = HeadingSize.XXS });
                 }
+
+                if (isRunning)
+                {
+                    m_MessageUIHelper.ShowMessage(MessageType.IsRunning);
+                }
+                else
+                {
+                    m_MessageUIHelper.ShowMessage(isStreamable ? MessageType.IsOverride : MessageType.Help);
+                }
+                
             }
             catch (Exception e)
             {
                 Debug.LogException(e);
-                m_AppMessaging.ShowError($"Failed to deserialize transformation data : {e.Message}");
+                m_AppMessaging.ShowError($"Failed to deserialize transformation data : {e.Message}", true);
             }
         }
 
@@ -273,14 +328,7 @@ namespace Unity.ReferenceProject.AssetList
 
             void Refresh(TransformationData data)
             {
-                if (data.IsRunning())
-                {
-                    m_Info.text = $"{data.inputFiles.FirstOrDefault()} | {data.status} ({data.progress}%)";
-                }
-                else
-                {
-                    m_Info.text = $"{data.inputFiles.FirstOrDefault()} | {data.status}";
-                }
+                m_Info.text = $"{data.inputFiles.FirstOrDefault()} | {data.status}";
             }
         }
     }

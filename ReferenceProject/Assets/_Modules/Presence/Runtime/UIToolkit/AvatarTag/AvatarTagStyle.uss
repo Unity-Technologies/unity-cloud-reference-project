@@ -17,6 +17,10 @@
     width: 40px;
 }
 
+.avatar__avatar-tag-badge-text{
+    color : var(--appui-color-white);
+}
+
 .container__avatar-tag-name {
     background-color: rgb(38, 38, 38);
     flex-grow: 1;
@@ -29,7 +33,7 @@
 
 .heading__avatar-tag-name {
     font-size: 10px;
-    color: rgb(210, 210, 210);
+    color: var(--appui-color-white);
 }
 
 .image__avatar-tag-pin {

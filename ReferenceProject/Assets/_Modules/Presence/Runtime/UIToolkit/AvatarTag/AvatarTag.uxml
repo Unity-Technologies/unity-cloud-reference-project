@@ -3,7 +3,7 @@
     <ui:VisualElement class="container__avatar-tag-main">
         <ui:VisualElement class="container__avatar-tag-content">
             <appui:Avatar name="avatar-tag-badge" size="L" text="AB" class="avatar__avatar-tag-badge">
-                <appui:Text name="avatar-tag-badge-text"/>
+                <appui:Text name="avatar-tag-badge-text" class="avatar__avatar-tag-badge-text"/>
             </appui:Avatar>
             <ui:VisualElement name="avatar-tag-name-container" class="container__avatar-tag-name">
                 <appui:Heading name="avatar-tag-name" size="S" text="USERNAME" class="heading__avatar-tag-name" />

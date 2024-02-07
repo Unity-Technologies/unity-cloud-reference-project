@@ -48,7 +48,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 718364391665664
-    m_Localized: '{0:Ajouter un commentaire|1 commentaire|{} commentaires}'
+    m_Localized: '{0:1 commentaire|{} commentaires}'
     m_Metadata:
       m_Items:
       - rid: 2811153394649792516
@@ -108,6 +108,10 @@ MonoBehaviour:
       - rid: 2811153394649792516
   - m_Id: 62356151154667520
     m_Localized: Inconnu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 66966951311863808
+    m_Localized: Ajouter un commentaire
     m_Metadata:
       m_Items: []
   references:

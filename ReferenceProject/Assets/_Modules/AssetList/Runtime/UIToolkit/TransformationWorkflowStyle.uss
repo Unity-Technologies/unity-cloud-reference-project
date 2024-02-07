@@ -5,17 +5,30 @@
     padding: 10px;
 }
 
-.container__transformation-workflow-dropdown-selection{
+.container__transformation-workflow-entry{
     flex-direction: row;
     margin-bottom: 10px;
 }
 
-.container__transformation-workflow-dropdown-selection .unity-label{
+.container__transformation-workflow-entry .unity-text-element{
     width: 100px;
+}
+
+.container__transformation-workflow-entry .unity-label{
+    width: 100px;
+    margin-left: 0;
 }
 
 .button__transformation-workflow-start{
     width: 80%;
     align-self: center;
     margin-top: 20px;
+}
+
+.message__transformation-workflow{
+    margin-top: 10px;
+}
+
+.message__transformation-workflow--warning{
+    border-left-color: #daa520;
 }

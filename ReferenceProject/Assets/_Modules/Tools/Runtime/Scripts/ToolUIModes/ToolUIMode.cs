@@ -34,7 +34,7 @@ namespace Unity.ReferenceProject.Tools
             Button = button;
             ToolUIController = toolUIController;
             ToolUIController.SetCloseAction(CloseTool);
-            ToolUIController.ButtonStateChanged += OnButtonStateChanged;
+            ToolUIController.ToolStateChanged += OnToolStateChanged;
 
             return CreateVisualTreeInternal();
         }
@@ -56,7 +56,7 @@ namespace Unity.ReferenceProject.Tools
             ToolUIController.InvokeToolClosed();
         }
 
-        void OnButtonStateChanged(ToolUIController.ToolState state)
+        void OnToolStateChanged(ToolUIController.ToolState state)
         {
             switch (state)
             {

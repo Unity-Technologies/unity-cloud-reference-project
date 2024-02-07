@@ -26,6 +26,7 @@
     margin: 2px;
     padding-bottom: 4px;
     padding-top: 4px;
+    color: var(--appui-color-white);
 }
 
 .button__follow{

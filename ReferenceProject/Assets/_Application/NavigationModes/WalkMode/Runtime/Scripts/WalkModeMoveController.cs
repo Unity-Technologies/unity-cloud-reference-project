@@ -97,7 +97,7 @@ namespace Unity.ReferenceProject.WalkController
         CharacterController m_Controller;
         IObjectPicker m_Picker;
         Task m_GetGroundTask;
-        RaycastResult m_DownCastResult;
+        PickerResult m_DownCastResult;
         Vector3 m_MoveDirectionInput;
         Vector3 m_PlayerVelocity;
         IAppMessaging m_AppMessaging;
@@ -271,7 +271,7 @@ namespace Unity.ReferenceProject.WalkController
         {
             try
             {
-                m_DownCastResult = await m_Picker.RaycastAsync(new Ray(GetDownCastFirePosition(), Vector3.down)); 
+                m_DownCastResult = await m_Picker.PickAsync(new Ray(GetDownCastFirePosition(), Vector3.down)); 
             }
             catch (Exception e)
             {

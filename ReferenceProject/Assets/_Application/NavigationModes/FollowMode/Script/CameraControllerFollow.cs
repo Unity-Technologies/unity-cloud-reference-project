@@ -1,11 +1,8 @@
 using Unity.ReferenceProject.Common;
-using Unity.ReferenceProject.Presence;
-using Unity.ReferenceProject.InputSystem;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using Zenject;
 
-namespace Unity.ReferenceProject
+namespace Unity.ReferenceProject.Application
 {
     public class CameraControllerFollow : MonoBehaviour
     {

@@ -1,5 +1,5 @@
 {
-    "name": "ReferenceProjectInputAction",
+    "name": "FlyModeInputAction",
     "maps": [
         {
             "name": "Navigation",
@@ -100,6 +100,24 @@
                     "type": "Button",
                     "id": "e9a70f87-846e-48e2-9333-bb166cb2dab2",
                     "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Moving Action Gamepad",
+                    "type": "Value",
+                    "id": "252f072e-378f-44c9-86e8-fc9cef7e282c",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "WorldOrbit Action Gamepad",
+                    "type": "Value",
+                    "id": "db28f65e-cd7c-4a74-9632-f386e8b9b8f0",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -543,6 +561,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Teleport Click Action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "166ea5cf-a4c9-44cc-89fa-81ff732d8bd3",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Moving Action Gamepad",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ab8f4557-3ce7-480b-a761-52998a3c4aad",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "WorldOrbit Action Gamepad",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

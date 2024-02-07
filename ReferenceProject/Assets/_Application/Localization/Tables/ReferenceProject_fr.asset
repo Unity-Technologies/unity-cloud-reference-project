@@ -19,7 +19,7 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 611231595655168
-    m_Localized: Images par seconde
+    m_Localized: Statistiques
     m_Metadata:
       m_Items: []
   - m_Id: 611842047242240
@@ -112,6 +112,10 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 96746919168286720
     m_Localized: Annuler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 102886368155430912
+    m_Localized: Fermer
     m_Metadata:
       m_Items: []
   references:

@@ -34,8 +34,9 @@ namespace Unity.ReferenceProject.AppCamera
         readonly DeltaCalculator m_PanDelta = new ();
         readonly DeltaCalculator m_WorldOrbitDelta = new ();
         readonly DeltaCalculator m_ZoomDelta = new ();
-
+        
         public InputActionWrapper MovingAction { get; set; }
+        public InputActionWrapper MovingActionGamepad { get; set; }
 
         public void Reset()
         {
@@ -69,26 +70,43 @@ namespace Unity.ReferenceProject.AppCamera
             m_Camera.ApplyTransform(newPosition, newEulerAngle, newForward);
         }
 
-        public void UpdateMovingAction()
+        public void UpdateMovingActions()
         {
-            if (MovingAction == null)
-                return;
-
-            if(MovingAction.AttachedScheme.IsSchemeEligibleForInputs() && 
-                MovingAction.AttachedScheme.IsActionEligibleForTrigger(MovingAction) &&
-                MovingAction.InputAction.inProgress)
+            if(MovingAction != null && 
+               MovingAction.AttachedScheme.IsSchemeEligibleForInputs() && 
+               MovingAction.AttachedScheme.IsActionEligibleForTrigger(MovingAction) && 
+               MovingAction.InputAction.inProgress)
             {
                 var val = MovingAction.InputAction.ReadValue<Vector3>();
-                if (val != m_LastMovingAction)
-                {
-                    m_LastMovingAction = val;
-                    m_Camera.MoveInLocalDirection(val, LookAtConstraint.Follow);
-                }
+                UpdateMoving(val);
+                return;
             }
-            else if (m_LastMovingAction != Vector3.zero)
+            
+            if (MovingActionGamepad != null && 
+                MovingActionGamepad.AttachedScheme.IsSchemeEligibleForInputs() &&
+                MovingActionGamepad.AttachedScheme.IsActionEligibleForTrigger(MovingActionGamepad) &&
+                MovingActionGamepad.InputAction.inProgress)
+            {
+                var horizontal = MovingActionGamepad.InputAction.ReadValue<Vector2>();
+                var val = new Vector3(horizontal.x,m_LastMovingAction.z, horizontal.y);
+                UpdateMoving(val);
+                return;
+            }
+            
+            if ((MovingAction != null || MovingActionGamepad != null) && 
+                m_LastMovingAction != Vector3.zero)
             {
                 m_Camera.MoveInLocalDirection(Vector3.zero, LookAtConstraint.Follow);
                 m_LastMovingAction = Vector3.zero;
+            }
+        }
+
+        void UpdateMoving(Vector3 value)
+        {
+            if (value != m_LastMovingAction)
+            {
+                m_LastMovingAction = value;
+                m_Camera.MoveInLocalDirection(value, LookAtConstraint.Follow);
             }
         }
 

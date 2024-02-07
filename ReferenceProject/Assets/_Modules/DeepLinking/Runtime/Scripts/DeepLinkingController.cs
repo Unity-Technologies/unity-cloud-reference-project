@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Unity.Cloud.AppLinking;
 using Unity.Cloud.Common;
 using Unity.Cloud.DeepLinking;
 using Unity.ReferenceProject.Identity;

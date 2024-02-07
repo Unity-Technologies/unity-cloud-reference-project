@@ -4,6 +4,12 @@ using UnityEngine;
 
 namespace Unity.ReferenceProject.MeasureTool
 {
+    public enum MeasureMode
+    {
+        TwoPoint = 0,
+        Orthogonal = 1
+    }
+    
     [Serializable]
     public class MeasureLineData
     {
@@ -12,7 +18,13 @@ namespace Unity.ReferenceProject.MeasureTool
         public string Name { get; set; }
 
         public Color Color { get; set; } = new(0.78f, 0.42f, 0.0f);
+        
+        public MeasureMode MeasureMode { get; set; } = MeasureMode.TwoPoint;
 
+        public MeasureFormat MeasureFormat { get; set; }
+
+        public bool HasMeasureFormatOverride { get; set; }
+        
         public float DistanceInMeters
         {
             get
@@ -43,6 +55,15 @@ namespace Unity.ReferenceProject.MeasureTool
             Name = k_DefaultName;
             m_Anchors = new List<IAnchor>();
         }
+        
+        public MeasureLineData(MeasureFormat measureFormat, bool hasMeasureFormatOverride)
+        {
+            Id = Guid.NewGuid().ToString();
+            Name = k_DefaultName;
+            m_Anchors = new List<IAnchor>();
+            MeasureFormat = measureFormat;
+            HasMeasureFormatOverride =  hasMeasureFormatOverride;
+        }
 
         public MeasureLineData(IEnumerable<IAnchor> anchors)
         {
@@ -52,7 +73,7 @@ namespace Unity.ReferenceProject.MeasureTool
 
         public static MeasureLineData Clone(MeasureLineData other)
         {
-            var clone = new MeasureLineData(other.Id, other.Anchors)
+            var clone = new MeasureLineData(other.Id, other.Anchors, other.MeasureFormat, other.HasMeasureFormatOverride)
             {
                 Name = other.Name,
                 Color = other.Color,
@@ -61,10 +82,12 @@ namespace Unity.ReferenceProject.MeasureTool
             return clone;
         }
 
-        MeasureLineData(string id, IEnumerable<IAnchor> anchors)
+        MeasureLineData(string id, IEnumerable<IAnchor> anchors, MeasureFormat measureFormat, bool hasMeasureFormatOverride)
         {
             m_Anchors = new List<IAnchor>(anchors);
             Id = id;
+            MeasureFormat = measureFormat;
+            HasMeasureFormatOverride = hasMeasureFormatOverride;
         }
 
         public override bool Equals(object obj)

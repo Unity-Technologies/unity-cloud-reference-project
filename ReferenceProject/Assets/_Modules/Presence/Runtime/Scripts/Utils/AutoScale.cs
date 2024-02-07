@@ -32,6 +32,9 @@ namespace Unity.ReferenceProject.Presence
 
         void LateUpdate()
         {
+            if(m_CameraProvider.Camera == null)
+                return;
+            
             var distance = Vector3.Distance(m_CameraProvider.Camera.transform.position,transform.position);
             var scale = Mathf.Clamp(m_ScaleFactor * distance, m_MinScaleFactor, m_MaxScaleFactor);
             transform.localScale = m_OriginalScale * scale;

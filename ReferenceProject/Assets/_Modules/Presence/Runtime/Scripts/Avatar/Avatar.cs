@@ -45,6 +45,9 @@ namespace Unity.ReferenceProject.Presence
             if (m_Participant.IsOwner)
             {
                 // Set up the owner Avatar and the INetcodeParticipant to follow the camera
+                if(m_CameraProvider.Camera == null)
+                    return;
+
                 var cameraTransform = m_CameraProvider.Camera.transform;
                 transform.SetPositionAndRotation(cameraTransform.position, cameraTransform.rotation);
                 m_Participant.SetParticipantTransform(cameraTransform.position, cameraTransform.rotation);

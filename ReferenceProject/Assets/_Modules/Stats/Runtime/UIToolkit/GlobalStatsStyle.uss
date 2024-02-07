@@ -1,0 +1,4 @@
+.container__global-stat-entry {
+    overflow: visible;
+    margin: 5px;
+}

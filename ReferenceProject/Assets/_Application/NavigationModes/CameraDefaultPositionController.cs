@@ -127,11 +127,15 @@ namespace Unity.ReferenceProject
 
         async Task<bool> ProcessDefaultVolumeOfInterestAsync()
         {
-            var bounds = await m_Stage.GetWorldBoundsAsync();
+            var doubleBounds = await m_Stage.GetWorldBoundsAsync();
             
             if (m_CameraProvider.Camera == null) // Camera might have been destroyed since last loop.
                 return false;
 
+            var c = doubleBounds.Center;
+            var s = doubleBounds.Size;
+            
+            var bounds = new Bounds(new Vector3((float)c.x, (float)c.y, (float)c.z), new Vector3((float)s.x, (float)s.y, (float)s.z));
             SetView(bounds, m_CameraProvider.Camera);
 
             return true;

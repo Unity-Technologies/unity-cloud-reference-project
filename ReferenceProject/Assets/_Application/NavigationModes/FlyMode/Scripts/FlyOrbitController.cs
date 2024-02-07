@@ -44,8 +44,10 @@ namespace Unity.ReferenceProject.Application
         bool m_IsTeleporting;
         bool m_IsValidStart;
 
-        // Keyboard and Mouse
+        // Keyboard & Mouse & Gamepad
         static readonly string k_MovingAction = "Moving Action";
+        static readonly string k_MovingActionGamepad = "Moving Action Gamepad";
+        static readonly string k_WorldOrbitActionGamepad = "WorldOrbit Action Gamepad";
         static readonly string k_OrbitAction = "Orbit Action";
         static readonly string k_WorldOrbitAction = "WorldOrbit Action";
         static readonly string k_PanStart = "Pan Start";
@@ -57,7 +59,7 @@ namespace Unity.ReferenceProject.Application
         static readonly string k_PanGestureAction = "Pan Gesture Action";
         static readonly string k_ZoomGestureAction = "Zoom Gesture Action";
         static readonly string k_OrbitGestureAction = "Orbit Gesture Action";
-
+        
         IObjectPicker m_ObjectPicker;
         ICameraProvider m_CameraProvider;
         IInputManager m_InputManager;
@@ -152,6 +154,15 @@ namespace Unity.ReferenceProject.Application
             m_InputScheme[k_ZoomGestureAction].IsEnabled = true;
             m_InputScheme[k_PanGestureAction].IsEnabled = true;
             m_InputScheme[k_OrbitGestureAction].IsEnabled = true;
+
+            // Gamepad
+            m_CameraController.MovingActionGamepad = m_InputScheme[k_MovingActionGamepad];
+            
+            m_InputScheme[k_MovingActionGamepad].IsUISelectionCheckEnabled = true;
+            m_InputScheme[k_MovingActionGamepad].IsEnabled = true;
+            
+            m_InputScheme[k_WorldOrbitActionGamepad].OnPerformed += (context) => { m_CameraController.OnWorldOrbit(context);};
+            m_InputScheme[k_WorldOrbitActionGamepad].IsEnabled = true;
         }
 
         void ResetInputs()
@@ -164,6 +175,9 @@ namespace Unity.ReferenceProject.Application
 
             // Keyboard and Mouse
             m_CameraController.MovingAction = null;
+            
+            // Mobile Gamepad
+            m_CameraController.MovingActionGamepad = null;
         }
 
         void ResetCameraTransform()
@@ -178,7 +192,7 @@ namespace Unity.ReferenceProject.Application
             if (!m_IsInputsEnabled)
                 return;
 
-            m_CameraController.UpdateMovingAction();
+            m_CameraController.UpdateMovingActions();
         }
 
         public void EnableInputs()
@@ -215,7 +229,7 @@ namespace Unity.ReferenceProject.Application
             {
                 var currentCamera = m_CameraProvider.Camera;
                 var ray = currentCamera.ScreenPointToRay(screenPosition);
-                var raycastResult = await m_ObjectPicker.RaycastAsync(ray);
+                var raycastResult = await m_ObjectPicker.PickAsync(ray);
                 if (raycastResult.HasIntersected)
                 {
                     m_IsTeleporting = true;

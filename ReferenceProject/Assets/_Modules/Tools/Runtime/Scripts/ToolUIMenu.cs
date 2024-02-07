@@ -38,12 +38,16 @@ namespace Unity.ReferenceProject.Tools
 
     public class ToolUIMenu : MonoBehaviour
     {
+    
+        [SerializeField]
+        PopoverPlacement m_TooltipPlacement = PopoverPlacement.Bottom;
+        
         [SerializeField]
         List<StyleSheet> m_AdditionalStyles;
 
         [SerializeField]
         List<ToolData> m_ToolData;
-        
+
         VisualElement m_Root;
         List<ActionButton> m_ButtonsToolbar;
         VisualElement m_PanelContainer;
@@ -110,6 +114,7 @@ namespace Unity.ReferenceProject.Tools
 
             var button = CreateActionButton(toolUIController, toolData.ButtonStyleClass);
             button.name = toolUIController.DisplayName;
+            button.SetPreferredTooltipPlacement(m_TooltipPlacement);
             buttonContainer.Add(button);
 
             var handler = toolData.ToolUIMode.CreateHandler();

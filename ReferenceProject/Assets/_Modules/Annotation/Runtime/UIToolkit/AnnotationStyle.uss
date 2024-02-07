@@ -69,8 +69,9 @@
 }
 
 .text__topic-entry-reply {
+    flex-grow: 0;
+    flex-shrink: 0;
     margin-top: 8px;
-    max-width: 100px;
     color: var(--appui-accent-50);
 }
 
@@ -197,10 +198,14 @@ text__comment-separator{
     padding: 8px;
     margin-top: 16px;
     margin-right: 4px;
-    flex-shrink: 1;
+    flex-shrink: 0;
     border-radius: 8px;
     border-width: 1px;
     border-color: var(--appui-base-500);
+}
+
+#TopicList .container__text-input{
+    max-height: 80%;
 }
 
 .text-field__title {
@@ -219,7 +224,7 @@ text__comment-separator{
     flex-direction: row;
     margin-top: 4px;
     justify-content: flex-end;
-    flex-grow: 1;
+    flex-shrink: 0;
 }
 
 .button__text-input-cancel{
@@ -278,4 +283,8 @@ text__comment-separator{
 
 .appui-icon--send--regular {
     --unity-image: url("../Sprites/send@2x.png");
+}
+
+.appui-icon--comment--regular {
+    --unity-image: url("../Sprites/comment@2x.png");
 }

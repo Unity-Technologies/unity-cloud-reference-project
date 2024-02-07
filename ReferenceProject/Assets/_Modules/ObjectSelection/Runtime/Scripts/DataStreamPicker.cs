@@ -28,13 +28,13 @@ namespace Unity.ReferenceProject.ObjectSelection
             dataStreamerProvider.DataStreamer.StageDestroyed.Subscribe(() => m_Stage = null);
         }
 
-        public async Task<RaycastResult> RaycastAsync(Ray ray, float maxDistance = k_MaxDistance)
+        public async Task<PickerResult> PickAsync(Ray ray, float maxDistance = k_MaxDistance)
         {
-            var raycastResult = await m_Stage.RaycastAsync(ray, maxDistance);
+            var raycastResult = new PickerResult(await m_Stage.RaycastAsync(ray, maxDistance));
             return raycastResult;
         }
 
-        public async Task<PathRaycastResult> PickFromPathAsync(Vector3[] points)
+        public async Task<PathPickerResult> PickFromPathAsync(Vector3[] points)
         {
             List<RayData> rays = new List<RayData>();
             for (int i = 0; i < points.Length - 2; i++)
@@ -47,21 +47,21 @@ namespace Unity.ReferenceProject.ObjectSelection
                 rays.Add(rayData);
             }
 
-            var tasks = rays.Select(r => RaycastAsync(r.Ray, r.Distance));
+            var tasks = rays.Select(r => PickAsync(r.Ray, r.Distance));
             var results = await Task.WhenAll(tasks);
             for(int i=0; i<results.Length; i++)
             {
                 if (results[i].HasIntersected)
                 {
-                    return new PathRaycastResult
+                    return new PathPickerResult
                     {
                         Index = i,
-                        RaycastResult = results[i]
+                        PickerResult = results[i]
                     };
                 }
             }
 
-            return new PathRaycastResult {Index = -1, RaycastResult = RaycastResult.Invalid};
+            return new PathPickerResult {Index = -1, PickerResult = PickerResult.Invalid};
         }
     }
 }

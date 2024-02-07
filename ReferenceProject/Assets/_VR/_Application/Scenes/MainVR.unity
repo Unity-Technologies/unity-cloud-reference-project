@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028377, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1347,9 +1347,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6244ca3ec3eee8e41b87da942d1dec78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_VisualTreeAsset: {fileID: 9197481963319205126, guid: 1c7acccce0ab3f540b819c23f5c8adaf,
+  m_VisualTreeAsset: {fileID: 9197481963319205126, guid: c469cd2bf08e0224398894796ee0aff8,
     type: 3}
-  m_Size: {x: 130, y: 200}
+  m_Size: {x: 250, y: 130}
   m_Position: {x: 0.2, y: -0.176, z: 0}
 --- !u!1001 &1236355561
 PrefabInstance:
@@ -1957,6 +1957,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1025399340594311970, guid: b5de23870725a9f46b2808a5c85628c9,
+        type: 3}
+      propertyPath: m_UIDocument
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3929586680976920741, guid: b5de23870725a9f46b2808a5c85628c9,
         type: 3}
       propertyPath: m_UIDocument
@@ -2023,9 +2028,10 @@ PrefabInstance:
       value: '[ Settings ]'
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 3929586680976920742, guid: b5de23870725a9f46b2808a5c85628c9, type: 3}
-    - {fileID: 3929586680976920743, guid: b5de23870725a9f46b2808a5c85628c9, type: 3}
+    - {fileID: 0}
     - {fileID: 3929586681822635281, guid: b5de23870725a9f46b2808a5c85628c9, type: 3}
+    - {fileID: 2680286612812205079, guid: b5de23870725a9f46b2808a5c85628c9, type: 3}
+    - {fileID: 3929586680976920743, guid: b5de23870725a9f46b2808a5c85628c9, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:

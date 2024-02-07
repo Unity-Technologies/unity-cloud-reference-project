@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ba641b8b259fbc42ad23a5ef5a0c457, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TooltipPlacement: 16
   m_AdditionalStyles: []
   m_ToolData:
   - m_ToolUIMode: {fileID: 11400000, guid: 74a746158b1dbd5408bfb07d1f488845, type: 2}
@@ -99,6 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ba641b8b259fbc42ad23a5ef5a0c457, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TooltipPlacement: 16
   m_AdditionalStyles: []
   m_ToolData:
   - m_ToolUIMode: {fileID: 11400000, guid: 098abf4ccceebb94e86b60ce5e163bc5, type: 2}
@@ -162,6 +164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ba641b8b259fbc42ad23a5ef5a0c457, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TooltipPlacement: 16
   m_AdditionalStyles: []
   m_ToolData:
   - m_ToolUIMode: {fileID: 11400000, guid: 098abf4ccceebb94e86b60ce5e163bc5, type: 2}
@@ -231,6 +234,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2519940840245280051}
   - {fileID: 4118221191167517316}
   - {fileID: 2383800100823293070}
   m_Father: {fileID: 0}
@@ -300,6 +304,85 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccad1904cf6e49deb6cde4c2f2f2d1ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &434119540203184847
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4118221191880965646}
+    m_Modifications:
+    - target: {fileID: 2665829422133436412, guid: 2f1cc4b0b75ab48d6a1b1c61d6b755de,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2665829422133436412, guid: 2f1cc4b0b75ab48d6a1b1c61d6b755de,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2665829422133436412, guid: 2f1cc4b0b75ab48d6a1b1c61d6b755de,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2665829422133436412, guid: 2f1cc4b0b75ab48d6a1b1c61d6b755de,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2665829422133436412, guid: 2f1cc4b0b75ab48d6a1b1c61d6b755de,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2665829422133436412, guid: 2f1cc4b0b75ab48d6a1b1c61d6b755de,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2665829422133436412, guid: 2f1cc4b0b75ab48d6a1b1c61d6b755de,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2665829422133436412, guid: 2f1cc4b0b75ab48d6a1b1c61d6b755de,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2665829422133436412, guid: 2f1cc4b0b75ab48d6a1b1c61d6b755de,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2665829422133436412, guid: 2f1cc4b0b75ab48d6a1b1c61d6b755de,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4297249486369222980, guid: 2f1cc4b0b75ab48d6a1b1c61d6b755de,
+        type: 3}
+      propertyPath: m_Name
+      value: GamepadController
+      objectReference: {fileID: 0}
+    - target: {fileID: 4297249486369222980, guid: 2f1cc4b0b75ab48d6a1b1c61d6b755de,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2f1cc4b0b75ab48d6a1b1c61d6b755de, type: 3}
+--- !u!4 &2519940840245280051 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2665829422133436412, guid: 2f1cc4b0b75ab48d6a1b1c61d6b755de,
+    type: 3}
+  m_PrefabInstance: {fileID: 434119540203184847}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &476413884550328048
 PrefabInstance:
   m_ObjectHideFlags: 0

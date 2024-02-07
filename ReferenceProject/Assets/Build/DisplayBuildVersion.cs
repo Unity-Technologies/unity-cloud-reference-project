@@ -45,8 +45,9 @@ namespace Unity.DTReferenceProject
             
             if (m_ReferenceProjectVersion != null)
             {
-                sb.Append(" ");
+                sb.Append(" (");
                 sb.Append(m_ReferenceProjectVersion.text.Trim());
+                sb.Append(")");
             }
 
 #if USE_GIT_INFO

@@ -8,6 +8,13 @@ namespace Unity.ReferenceProject.Common
 {
     public static class Utils
     {
+        public static readonly string k_UserRole = "user";
+        public static readonly string k_ManagerRole = "manager";
+        public static readonly string k_OwnerRole = "owner";
+        public static readonly string k_ContributorRole = "Asset Manager Contributor";
+        public static readonly string k_ConsumerRole = "Asset Manager Consumer";
+        public static readonly string k_ViewerRole = "Asset Manager Viewer";
+        
         public static bool IsInLayerMask(LayerMask layerMask, int layer)
         {
             return layerMask == (layerMask | (1 << layer));

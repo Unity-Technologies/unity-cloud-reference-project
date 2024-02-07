@@ -20,7 +20,7 @@ namespace Unity.ReferenceProject
 
         protected string m_CurrentTheme;
 
-        DropdownSettings m_DropdownSettings;
+        DropdownSetting m_DropdownSetting;
         IGlobalSettings m_GlobalSettings;
         IMainUIPanel m_MainUIPanel;
 
@@ -33,7 +33,7 @@ namespace Unity.ReferenceProject
 
         void Awake()
         {
-            m_DropdownSettings = new DropdownSettings("@ReferenceProject:Settings_Theme", m_ThemeIds.Select(x=>$"@ReferenceProject:{x}").ToArray(), OnSettingChanged, SelectedValue);
+            m_DropdownSetting = new DropdownSetting("@ReferenceProject:Settings_Theme", m_ThemeIds.Select(x=>$"@ReferenceProject:{x}").ToArray(), OnSettingChanged, SelectedValue);
             m_CurrentTheme = PlayerPrefs.GetString(k_ThemePrefKey, m_ThemeIds[0]);
         }
 
@@ -46,13 +46,13 @@ namespace Unity.ReferenceProject
         {
             if (m_GlobalSettings != null)
             {
-                m_GlobalSettings.AddSetting(m_DropdownSettings, m_Order);
+                m_GlobalSettings.AddSetting(m_DropdownSetting, m_Order);
             }
         }
 
         void OnDisable()
         {
-            m_GlobalSettings.RemoveSetting(m_DropdownSettings);
+            m_GlobalSettings.RemoveSetting(m_DropdownSetting);
             PlayerPrefs.SetString(k_ThemePrefKey, m_CurrentTheme);
         }
 

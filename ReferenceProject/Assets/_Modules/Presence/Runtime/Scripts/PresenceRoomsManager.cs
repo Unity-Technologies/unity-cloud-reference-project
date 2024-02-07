@@ -3,35 +3,56 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Unity.Cloud.Assets;
 using Unity.Cloud.Common;
-using Unity.Cloud.Identity;
 using Unity.Cloud.Presence;
 using Unity.Cloud.Presence.Runtime;
 using Unity.ReferenceProject.Identity;
+using Unity.ReferenceProject.Permissions;
 using UnityEngine;
 using Zenject;
 
 namespace Unity.ReferenceProject.Presence
 {
+    public enum PresencePermission
+    {
+        CreateRoom,
+        JoinRoom,
+        ListRooms,
+        MonitorRooms,
+        StartPresentation,
+        UseCommunication,
+    }
+
     public interface IPresenceRoomsManager
     {
         Task<bool> JoinRoomAsync(OrganizationId organizationId, AssetId assetId, object instance);
         Room GetRoomForAsset(AssetId assetId);
+        void AddRoomForAsset(AssetId assetId, Room room);
+        Task<Room> GetRoomAsync(OrganizationId organizationId, AssetId assetId);
+        Task<Room> CreateRoomAsync(OrganizationId organizationId, AssetId assetId);
         Task<bool> LeaveRoomAsync(Room room);
+        Task SubscribeForMonitoring(Room room, object instance);
         Task UnsubscribeFromMonitoring(Room room, object instance);
-
         void RegisterOnDisconnect(Func<Task> callback);
         void UnRegisterOnDisconnect(Func<Task> callback);
+        bool CheckPermissions(PresencePermission permission);
     }
 
     public sealed class PresenceRoomsManager : MonoBehaviour, IPresenceRoomsManager
     {
+        static readonly string k_PresenceCreateRoomPermission = "cmp.presence.create_room";
+        static readonly string k_PresenceJoinRoomPermission = "cmp.presence.join_room";
+        static readonly string k_PresenceListRoomsPermission = "cmp.presence.list_rooms";
+        static readonly string k_PresenceMonitorRoomsPermission = "cmp.presence.monitor_rooms";
+        static readonly string k_PresenceStartPresentationPermission = "cmp.presence.start_presentation";
+        static readonly string k_PresenceUseCommunicationPermission = "cmp.presence.use_communication";
+
         ICloudSession m_Session;
         readonly Dictionary<AssetId, Room> m_Rooms = new();
+
         IRoomProvider<Room> m_RoomProvider;
         IPresenceManager m_PresenceManager;
-        IAssetRepository m_AssetRepository;
+        IPermissionsController m_PermissionsController;
 
         Task m_LeaveRoomTask;
         Task m_JoinRoomTask;
@@ -45,46 +66,25 @@ namespace Unity.ReferenceProject.Presence
         readonly HashSet<Func<Task>> m_DisconnectCallbacks = new();
 
         // Cancels only tasks in this script. It will not cancel Room.StartMonitoring or Room.StopMonitoring task 
-        readonly CancellationTokenSource m_LocalCancellationTokenSource = new ();
+        readonly CancellationTokenSource m_LocalCancellationTokenSource = new();
 
         bool m_Destroyed;
 
         [Inject]
-        public void Setup(ICloudSession session, IRoomProvider<Room> roomProvider, IPresenceManager presenceManager, IAssetRepository assetRepository)
+        public void Setup(ICloudSession session, IRoomProvider<Room> roomProvider, IPresenceManager presenceManager, IPermissionsController permissionsController)
         {
             m_Session = session;
             m_RoomProvider = roomProvider;
             m_PresenceManager = presenceManager;
-            m_AssetRepository = assetRepository;
+            m_PermissionsController = permissionsController;
             m_Session.RegisterLoggedInCallback(ConnectToPresenceServer);
             m_Session.RegisterLoggingOutCallback(DisconnectFromPresenceServer);
         }
-        
+
         async void OnEnable()
         {
             if (m_Session.State == SessionState.LoggedIn)
                 await ConnectToPresenceServer();
-        }
-
-        async Task ConnectToPresenceServer()
-        {
-            if (m_PresenceManager.PresenceRoomsConnectionState != ConnectionState.Disconnected)
-                return;
-
-            await m_PresenceManager.ConnectPresenceRoomsAsync(new ExponentialBackoffRetryPolicy(), m_LocalCancellationTokenSource.Token);
-        }
-
-        async Task DisconnectFromPresenceServer()
-        {
-            if (m_PresenceManager.PresenceRoomsConnectionState != ConnectionState.Connected)
-                return;
-
-            foreach (Func<Task> callback in m_DisconnectCallbacks)
-            {
-                await callback.Invoke();
-            }
-
-            await m_PresenceManager.DisconnectPresenceRoomsAsync();
         }
 
         async void OnDisable()
@@ -110,31 +110,25 @@ namespace Unity.ReferenceProject.Presence
             m_Session.UnRegisterLoggingOutCallback(DisconnectFromPresenceServer);
         }
 
-        async Task GetRoomsForOrganizationAsync(OrganizationId organizationId)
+        async Task ConnectToPresenceServer()
         {
-            m_Rooms.Clear();
+            if (m_PresenceManager.PresenceRoomsConnectionState != ConnectionState.Disconnected)
+                return;
 
-            var cancellationToken = new CancellationTokenSource().Token;
-            var projects = m_AssetRepository.ListAssetProjectsAsync(organizationId, 
-                new Pagination(nameof(IProject.Name), Range.All), cancellationToken);
+            await m_PresenceManager.ConnectPresenceRoomsAsync(new ExponentialBackoffRetryPolicy(), m_LocalCancellationTokenSource.Token);
+        }
 
-            await foreach (var project in projects.WithCancellation(cancellationToken))
+        async Task DisconnectFromPresenceServer()
+        {
+            if (m_PresenceManager.PresenceRoomsConnectionState != ConnectionState.Connected)
+                return;
+
+            foreach (Func<Task> callback in m_DisconnectCallbacks)
             {
-                var assets = project.SearchAssetsAsync(
-                    new AssetSearchFilter(),
-                    new Pagination(nameof(IAsset.Name), Range.All),
-                    cancellationToken);
-
-                await foreach (var asset in assets.WithCancellation(cancellationToken))
-                {
-                    var assetId = asset.Descriptor.AssetId;
-                    var rooms = await m_RoomProvider.GetRoomsAsync(organizationId.ToString(), "dataset", assetId.ToString(), asset.Name);
-                    if (rooms.Any())
-                    {
-                        m_Rooms[assetId] = rooms[0];
-                    }
-                }
+                await callback.Invoke();
             }
+
+            await m_PresenceManager.DisconnectPresenceRoomsAsync();
         }
 
         async Task MonitorRoom(Room room, object instance, bool isSubscribe, CancellationToken cancellationToken)
@@ -238,7 +232,7 @@ namespace Unity.ReferenceProject.Presence
 
         public async Task SubscribeForMonitoring(Room room, object instance)
         {
-            if (m_Destroyed) // Stops execution if this gameObject already destroyed
+            if (m_Destroyed || !CheckPermissions(PresencePermission.MonitorRooms)) // Stops execution if this gameObject already destroyed || user doesn't have permission
                 return;
 
             await MonitorRoom(room, instance, true, m_LocalCancellationTokenSource.Token);
@@ -248,8 +242,38 @@ namespace Unity.ReferenceProject.Presence
         {
             if (m_Destroyed) // Stops execution if this gameObject already destroyed
                 return;
-            
+
             await MonitorRoom(room, instance, false, m_LocalCancellationTokenSource.Token);
+        }
+
+        public async Task<Room> GetRoomAsync(OrganizationId organizationId, AssetId assetId)
+        {
+            if (!CheckPermissions(PresencePermission.ListRooms))
+                return null;
+
+            try
+            {
+                var assetIdStr = assetId.ToString();
+                var rooms = await m_RoomProvider.GetRoomsAsync(organizationId.ToString(), "asset", assetIdStr, assetIdStr).ConfigureAwait(false);
+                return rooms.FirstOrDefault();
+            }
+            catch (Exception e)
+            {
+                if (e.GetType().Name == "NotFoundException")
+                    return null;
+
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public async Task<Room> CreateRoomAsync(OrganizationId organizationId, AssetId assetId)
+        {
+            if (!CheckPermissions(PresencePermission.CreateRoom))
+                return null;
+
+            var assetIdStr = assetId.ToString();
+            return await m_RoomProvider.CreateRoomAsync(organizationId.ToString(), new RoomCreationParams(assetIdStr, assetIdStr, "asset")).ConfigureAwait(false);
         }
 
         public async Task<bool> JoinRoomAsync(OrganizationId organizationId, AssetId assetId, object instance)
@@ -260,35 +284,23 @@ namespace Unity.ReferenceProject.Presence
                 return false;
             }
 
-            if (m_JoinRoomTask != null && !m_JoinRoomTask.IsCompleted)
+            if (m_JoinRoomTask is { IsCompleted: false } || !CheckPermissions(PresencePermission.JoinRoom))
             {
-                Debug.LogError($"Can't join room for asset id '{assetId}' because previous join process still in progress.");
                 return false;
             }
 
             if (!m_Rooms.ContainsKey(assetId))
             {
-                var assetIdStr = assetId.ToString();
-                var room = await m_RoomProvider.CreateRoomAsync(organizationId.ToString(),
-                    new RoomCreationParams(assetIdStr, assetIdStr, "asset")).ConfigureAwait(false);
-                
+                var room = CheckPermissions(PresencePermission.CreateRoom) ? await CreateRoomAsync(organizationId, assetId) : await GetRoomAsync(organizationId, assetId);
+
+                if (room == null)
+                    return false;
+
                 m_Rooms.Add(assetId, room);
             }
 
             // You need first to monitor the room events
-            if (!m_Subscribers.ContainsKey(m_Rooms[assetId]))
-            {
-                m_Subscribers.Add(m_Rooms[assetId], new HashSet<object>());
-            }
-            else
-            {
-                m_Subscribers[m_Rooms[assetId]].Add(instance);
-            }
-
-            if (!m_MonitorRooms.Contains(m_Rooms[assetId]))
-            {
-                await StartMonitoringRoomAsync(m_Rooms[assetId]);
-            }
+            await SubscribeForMonitoring(m_Rooms[assetId], instance);
 
             m_JoinRoomTask = m_Rooms[assetId].JoinAsync();
             await m_JoinRoomTask;
@@ -315,6 +327,7 @@ namespace Unity.ReferenceProject.Presence
         }
 
         public Room GetRoomForAsset(AssetId assetId) => m_Rooms.TryGetValue(assetId, out var room) ? room : null;
+        public void AddRoomForAsset(AssetId assetId, Room room) => m_Rooms[assetId] = room;
 
         static CancellationToken GetCancellationToken(ref CancellationTokenSource cancellationToken)
         {
@@ -340,6 +353,27 @@ namespace Unity.ReferenceProject.Presence
         public void UnRegisterOnDisconnect(Func<Task> callback)
         {
             m_DisconnectCallbacks.Remove(callback);
+        }
+
+        public bool CheckPermissions(PresencePermission permission)
+        {
+            switch (permission)
+            {
+                case PresencePermission.CreateRoom:
+                    return m_PermissionsController.Permissions.Contains(k_PresenceCreateRoomPermission);
+                case PresencePermission.JoinRoom:
+                    return m_PermissionsController.Permissions.Contains(k_PresenceJoinRoomPermission);
+                case PresencePermission.ListRooms:
+                    return m_PermissionsController.Permissions.Contains(k_PresenceListRoomsPermission);
+                case PresencePermission.MonitorRooms:
+                    return m_PermissionsController.Permissions.Contains(k_PresenceMonitorRoomsPermission);
+                case PresencePermission.StartPresentation:
+                    return m_PermissionsController.Permissions.Contains(k_PresenceStartPresentationPermission);
+                case PresencePermission.UseCommunication:
+                    return m_PermissionsController.Permissions.Contains(k_PresenceUseCommunicationPermission);
+                default:
+                    return false;
+            }
         }
     }
 }
