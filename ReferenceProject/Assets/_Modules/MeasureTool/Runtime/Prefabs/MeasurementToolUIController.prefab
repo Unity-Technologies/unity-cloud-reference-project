@@ -150,7 +150,7 @@ MonoBehaviour:
   m_Icon: {fileID: 21300000, guid: 4135bab1183f42f449f1a8b3395a5121, type: 3}
   m_Template: {fileID: 9197481963319205126, guid: feb47b9869a6a7c40b957554dbab4fed,
     type: 3}
-  m_HideButtonAtStart: 0
+  m_InitialToolState: 1
   m_MeasurementToolController: {fileID: 6078638430785297305}
   m_MeasureListUIController: {fileID: 6099450462576109387}
 --- !u!114 &6099450462656769014

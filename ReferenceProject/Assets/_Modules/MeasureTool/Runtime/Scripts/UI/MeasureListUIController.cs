@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -42,6 +43,7 @@ namespace Unity.ReferenceProject.MeasureTool
         VisualElement m_NameContainer;
         TextField m_NameField;
         VisualElement m_LineListContainer;
+        Dropdown m_UnitDropdown;
         readonly List<IMeasureListItem> m_MeasureListItems = new();
 
         IAppMessaging m_Messaging;
@@ -52,6 +54,7 @@ namespace Unity.ReferenceProject.MeasureTool
         MeasureLineData m_LastEditedLineData;
 
         IDataset m_CurrentDataset;
+        IAppUnit m_IAppUnit;
 
         public string Name
         {
@@ -60,16 +63,19 @@ namespace Unity.ReferenceProject.MeasureTool
         }
 
         [Inject]
-        public void Setup(MeasureLinePersistence persistence, IAssetEvents assetEvents, IAppMessaging messaging)
+        public void Setup(MeasureLinePersistence persistence, IAssetEvents assetEvents, IAppMessaging messaging,
+        IAppUnit appUnit)
         {
             m_Persistence = persistence;
             m_AssetEvents = assetEvents;
             m_Messaging = messaging;
+            m_IAppUnit = appUnit;
         }
 
         void Awake()
         {
             m_MeasurementToolController.MeasureDataChanged += OnMeasureDataChanged;
+            m_MeasurementToolController.SystemUnitChanged += OnSystemMeasureChanged;
             m_AssetEvents.AssetLoaded += OnAssetLoaded;
             m_AssetEvents.AssetUnloaded += OnAssetUnloaded;
         }
@@ -98,7 +104,8 @@ namespace Unity.ReferenceProject.MeasureTool
             m_ApplyButton = rootVisualElement.Q<ActionButton>("line_creator_edit_confirmation_apply");
             m_DiscardButton = rootVisualElement.Q<ActionButton>("line_creator_edit_confirmation_discard");
             m_NameField = rootVisualElement.Q<TextField>("line_creator_name_value");
-
+            m_UnitDropdown = rootVisualElement.Q<Dropdown>("line_creator_unit_dropdown");
+            
             m_SaveButton.clicked += OnSave;
             m_ClearButton.clicked += OnClear;
             m_ApplyButton.clicked += OnApply;
@@ -167,6 +174,11 @@ namespace Unity.ReferenceProject.MeasureTool
         void EnableApplyButton(bool value)
         {
             m_ApplyButton.SetEnabled(value);
+        }
+        
+        void EnableDropDown(bool value)
+        {
+            m_UnitDropdown.SetEnabled(value);
         }
 
         void OnMeasureDataChanged(MeasureLineData lineData)
@@ -240,6 +252,7 @@ namespace Unity.ReferenceProject.MeasureTool
         {
             UnselectAll();
             EnableClearButton(false);
+            EnableDropDown(false);
             var oldSelectedItem = m_MeasureListItems.Find(item => item.Id == m_SelectedLine?.Id);
 
             if (lineData.Id == m_SelectedLine?.Id)
@@ -273,6 +286,8 @@ namespace Unity.ReferenceProject.MeasureTool
 
             m_SelectedLine.Name = GetMeasureName();
             m_SelectedLine.Color = m_SavedMeasureColor;
+            m_SelectedLine.MeasureFormat = m_MeasurementToolController.CurrentMeasureFormat;
+            m_SelectedLine.HasMeasureFormatOverride = m_MeasurementToolController.hasMeasureFormatOverride;
 
             await m_Persistence.SaveLine(descriptor, m_SelectedLine);
             var lineList = await m_Persistence.GetLines(descriptor);
@@ -285,10 +300,19 @@ namespace Unity.ReferenceProject.MeasureTool
             if (m_SelectedLine == null)
                 return;
 
+            var measureFormatValue = m_MeasurementToolController.CurrentMeasureFormat;
+            var isAsSystem = m_UnitDropdown.value.First() == 0;
+            if (isAsSystem)
+            {
+                measureFormatValue = m_IAppUnit.GetSystemUnit();
+            }
+                
             var line = new MeasureLineData(m_SelectedLine.Anchors)
             {
                 Name = GetMeasureName(),
-                Color = m_SavedMeasureColor
+                Color = m_SavedMeasureColor,
+                MeasureFormat = measureFormatValue,
+                HasMeasureFormatOverride = !isAsSystem
             };
 
             await m_Persistence.SaveLine(descriptor, line);
@@ -403,6 +427,7 @@ namespace Unity.ReferenceProject.MeasureTool
 
             EnableClearButton(false);
             EnableSaveButton(false);
+            EnableDropDown(false);
             UnselectAll();
         }
 
@@ -458,6 +483,38 @@ namespace Unity.ReferenceProject.MeasureTool
             }
 
             return true;
+        }
+
+        async void OnSystemMeasureChanged(MeasureFormat systemMeasureFormat, MeasureLineData selectedLine)
+        {
+            var measureLinesDataMeasureFormatAsSystem = m_MeasureListItems.Select(
+                measureListItem => measureListItem.Data).Where(measureLineData => !measureLineData.HasMeasureFormatOverride);
+            
+            foreach (var measureLineData in measureLinesDataMeasureFormatAsSystem)
+            {
+                measureLineData.MeasureFormat = systemMeasureFormat;
+                await m_Persistence.SaveLine(m_CurrentDataset.Descriptor, measureLineData);
+            }
+            
+            List<MeasureLineData> linesToUpdate = null;
+            
+            if (selectedLine is { HasMeasureFormatOverride: false })
+            {
+                selectedLine.MeasureFormat = systemMeasureFormat;
+                linesToUpdate = new List<MeasureLineData> { selectedLine };
+            }
+            
+            var lineList = await m_Persistence.GetLines(m_CurrentDataset.Descriptor);
+            if (lineList.Data != null && lineList.Data.Any())
+            {
+                linesToUpdate ??= new List<MeasureLineData>();
+                linesToUpdate.AddRange(lineList.Data);
+            }
+
+            if (linesToUpdate != null && linesToUpdate.Any())
+            {
+                m_MeasurementToolController.UpdateLines(linesToUpdate);
+            }
         }
     }
 }

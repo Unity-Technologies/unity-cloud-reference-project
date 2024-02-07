@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <Style src="StatsDisplayStyles.uss" />
+    <ui:VisualElement name="stats-entries" picking-mode="Ignore" class="container__stats-entries" />
+</ui:UXML>

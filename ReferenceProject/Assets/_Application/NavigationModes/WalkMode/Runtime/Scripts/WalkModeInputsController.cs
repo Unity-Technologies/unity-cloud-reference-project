@@ -106,7 +106,7 @@ namespace Unity.ReferenceProject.WalkController
 
             m_WalkModeCameraController.InternalLockUpdate(isCursorLocked);
         }
-
+        
         void CameraRotated(InputAction.CallbackContext c)
         {
             m_CameraRotated = true;
@@ -181,7 +181,8 @@ namespace Unity.ReferenceProject.WalkController
             m_CameraRotateAction = m_InputScheme[k_CameraRotateAction];
             m_CameraRotateAction.Reset();
             m_CameraRotateAction.IsEnabled = true;
-            m_CameraRotateAction.IsUIPointerCheckEnabled = true;
+            m_CameraRotateAction.IsUIPointerCheckEnabled = false;
+            m_CameraRotateAction.IsUISelectionCheckEnabled = false;
             m_CameraRotateAction.OnPerformed += CameraRotated;
             m_CameraRotateAction.OnCanceled += CameraStopRotation;
 
@@ -252,7 +253,7 @@ namespace Unity.ReferenceProject.WalkController
             try
             {
                 var ray = m_CameraProvider.Camera.ScreenPointToRay(mousePosition);
-                var raycastResult = await m_ObjectPicker.RaycastAsync(ray);
+                var raycastResult = await m_ObjectPicker.PickAsync(ray);
                 if (raycastResult.HasIntersected)
                 {
                     m_IsTeleporting = true;

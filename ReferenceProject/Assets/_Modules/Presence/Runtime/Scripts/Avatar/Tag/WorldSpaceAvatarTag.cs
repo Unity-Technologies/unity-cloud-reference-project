@@ -21,10 +21,10 @@ namespace Unity.ReferenceProject.Presence
         [Header("UXML")]
         [SerializeField]
         string m_NameContainerElement = "avatar-tag-name-container";
-        
+
         [SerializeField]
         string m_HeaderElement = "avatar-tag-name";
-        
+
         [SerializeField]
         string m_AvatarBadgeElement = "avatar-tag-badge";
 
@@ -56,11 +56,10 @@ namespace Unity.ReferenceProject.Presence
             m_Header = root.Q<Heading>(m_HeaderElement);
             m_AvatarBadge = root.Q<Unity.AppUI.UI.Avatar>(m_AvatarBadgeElement);
             m_AvatarInitials = root.Q<Unity.AppUI.UI.Text>(m_AvatarBadgeTextElement);
-            
+
             // Because it's using world space, element can still be clipped over other UI.
             // Make sure every element is ignoring picking so this issue never happen.
             DisablePickingRecursive(root);
-
         }
 
         static void DisablePickingRecursive(VisualElement element)
@@ -89,6 +88,9 @@ namespace Unity.ReferenceProject.Presence
 
         void Update()
         {
+            if(m_CameraProvider.Camera == null)
+                return;
+            
             if ((transform.position - m_CameraProvider.Camera.transform.position).sqrMagnitude <= m_ShowNameDistance * m_ShowNameDistance)
             {
                 m_NameContainer.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
@@ -126,17 +128,16 @@ namespace Unity.ReferenceProject.Presence
         {
             m_AvatarBadge.backgroundColor = color;
         }
-        
+
         public override void SetVoiceStatus(VoiceStatus status)
         {
             switch (status)
             {
                 case VoiceStatus.Unsupported:
-                    
+
                     break;
-                
+
                 case VoiceStatus.NotConnected:
-                case VoiceStatus.NoRoom:
 
                     break;
 

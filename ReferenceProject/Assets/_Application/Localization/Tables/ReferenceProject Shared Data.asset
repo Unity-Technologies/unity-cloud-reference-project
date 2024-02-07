@@ -16,7 +16,7 @@ MonoBehaviour:
   m_TableCollectionNameGuidString: 744679d1a0309714f85d968ebbfd23ae
   m_Entries:
   - m_Id: 611231595655168
-    m_Key: Settings_FrameRate
+    m_Key: DisplayStats
     m_Metadata:
       m_Items: []
   - m_Id: 611842047242240
@@ -109,6 +109,10 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 96746919168286720
     m_Key: Cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 102886368155430912
+    m_Key: Close
     m_Metadata:
       m_Items: []
   m_Metadata:

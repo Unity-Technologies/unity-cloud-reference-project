@@ -142,7 +142,7 @@ namespace Unity.ReferenceProject.ObjectSelection
         void OnSetActivatedTool(bool isEnable)
         {
             if (!isEnable)
-                DispatchSelection(RaycastResult.Invalid);
+                DispatchSelection(PickerResult.Invalid);
             m_InputScheme?.SetEnable(isEnable);
             if(m_InputSchemeVR != null)
             {
@@ -182,13 +182,13 @@ namespace Unity.ReferenceProject.ObjectSelection
         {
             try
             {
-                var raycastResult = await m_Picker.RaycastAsync(ray);
+                var pickerResult = await m_Picker.PickAsync(ray);
 
                 // Check if we hit something closer than the raycast result
-                if (Physics.Raycast(ray, out RaycastHit hit) && hit.distance < raycastResult.Distance)
+                if (Physics.Raycast(ray, out RaycastHit hit) && hit.distance < pickerResult.Distance)
                     return;
 
-                DispatchSelection(raycastResult);
+                DispatchSelection(pickerResult);
             }
             catch (Exception e)
             {
@@ -196,10 +196,10 @@ namespace Unity.ReferenceProject.ObjectSelection
             }
         }
 
-        void DispatchSelection(RaycastResult raycastResult)
+        void DispatchSelection(PickerResult pickResult)
         {
-            var data = new ObjectSelectionInfo(raycastResult.HasIntersected, raycastResult.InstanceId,
-                raycastResult.Point, raycastResult.Normal);
+            var data = new ObjectSelectionInfo(pickResult.HasIntersected, pickResult.InstanceId, 
+                pickResult.Point, pickResult.Normal);
             m_SelectedGameObjectInfo.SetValue(data);
         }
     }

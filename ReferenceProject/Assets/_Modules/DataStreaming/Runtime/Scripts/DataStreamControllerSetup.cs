@@ -19,7 +19,16 @@ namespace Unity.ReferenceProject.DataStreaming
         void Setup(IDataStreamControllerWithObserver dataStreamController, ICameraProvider cameraProvider)
         {
             dataStreamController.SetCameraObserver(StageObserverFactory.CreateCameraObserver(cameraProvider.Camera, m_ScreenSpaceError));
-            cameraProvider.CameraChanged += cam => dataStreamController.SetCameraObserver(StageObserverFactory.CreateCameraObserver(cam, m_ScreenSpaceError)); 
+            cameraProvider.CameraChanged += cam =>
+            {
+                if (cam == null)
+                {
+                    Debug.LogWarning($"No camera to create an observer!");
+                    return;
+                }
+                
+                dataStreamController.SetCameraObserver(StageObserverFactory.CreateCameraObserver(cam, m_ScreenSpaceError));
+            }; 
         }
     }
 }

@@ -1,15 +1,24 @@
-default_platform(:ios)
 
 app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
 app_name = "#{app_identifier}"
 
-MY_DEV_PROFILE = "match Development #{app_identifier}"
-RELEASE_PROFILE = "Unity Cloud Reference App"
+MY_DEV_PROFILE = "match Development com.unity.cloud.reference-projec"
+RELEASE_PROFILE = "match Development com.unity.cloud.reference-projec"
 RELEASE_TYPE = "development"
 GYM_RELEASE_TYPE = "development"
+MY_TEAM = "BVPN9UFA9B"
+XCODE_PROJ = "./Builds/iOS/Unity-iPhone.xcodeproj"
+
 # Unity
-MY_TEAM = "BVPN9UFA9B"        
 platform :ios do
+    default_platform(:ios)
+    
+    app_store_connect_api_key(
+        key_id: ENV["APPSTORE_CONNECT_API_KEY_ID"],
+        issuer_id: ENV["APPSTORE_CONNECT_API_ISSUER_ID"],
+        key_content: ENV["APPSTORE_CONNECT_API_KEY"],
+    )
+
     lane :test do        
         buildNum = latest_testflight_build_number(            
             live: false,
@@ -29,7 +38,7 @@ platform :ios do
             readonly: true,
             generate_apple_certs: false,
             git_url: "git@github.com:Unity-Technologies/fastlane_certificates.git",            
-            keychain_password: "bokken",
+            keychain_password: ENV["KEYCHAIN_PASSWORD"],
             verbose: true,
             output_path: "./certs",
             platform: "ios"
@@ -52,7 +61,6 @@ platform :ios do
     desc "Makes the build!"
     lane :run_build do |options|
         begin
-        XCODE_PROJ = "./Builds/iOS/Unity-iPhone.xcodeproj"
         #if any of these options aren't set, assume we're running a local build
         if !options[:RELEASE_TYPE] || !options[:GYM_RELEASE_TYPE]
             options[:RELEASE_TYPE] = "development"
@@ -67,7 +75,7 @@ platform :ios do
             readonly: true,
             generate_apple_certs: false,
             git_url: "git@github.com:Unity-Technologies/fastlane_certificates.git",            
-            keychain_password: "bokken",            
+            keychain_password: ENV["KEYCHAIN_PASSWORD"],
             verbose: true,
         )
         
@@ -76,7 +84,7 @@ platform :ios do
             use_automatic_signing: false,
             profile_name: "#{RELEASE_PROFILE}",
             path: "#{XCODE_PROJ}",
-            code_sign_identity: "Apple Distribution: Unity Technologies ApS (BVPN9UFA9B)",
+            code_sign_identity: "iPhone Distribution: Unity Technologies ApS (BVPN9UFA9B)",
             targets: "Unity-iPhone",
         )        
         update_code_signing_settings(
@@ -110,15 +118,24 @@ platform :ios do
                 # },
             },
         )        
+
         rescue => ex
             UI.message(ex)
         end
     end    
 
+    desc "publish build to testflight"
+    lane :publish_to_testflight do
+        pilot(
+            app_identifier: "#{app_identifier}",
+            ipa: "./Builds/Unity Cloud Reference Project.ipa"
+        )
+    end
+
     desc "Update Build Number"
     lane :increment do
         ver = get_version_number(
-            xcodeproj: "Unity-iPhone.xcodeproj",
+            xcodeproj: "#{XCODE_PROJ}",
             target: "Unity-iPhone",
         )
         x = app_store_build_number(
@@ -128,14 +145,32 @@ platform :ios do
             version: ver,
         )
         increment_build_number(
-            xcodeproj: "Unity-iPhone.xcodeproj",
+            xcodeproj: "#{XCODE_PROJ}",
             build_number: x + 1,
         )
         buildNum = get_build_number(
-            xcodeproj: "Unity-iPhone.xcodeproj", 
+            xcodeproj: "#{XCODE_PROJ}",
         )
         message = "Finished Unity Build, Beginning XCode Build"
         UI.message(message)    
+    end
+end
 
+platform :mac do
+    default_platform(:mac)
+    lane :get_certs do
+        match(
+            force_for_new_devices: true,
+            type: "development",
+            app_identifier: "#{app_identifier}",
+            git_branch: "#{app_identifier}",
+            readonly: true,
+            generate_apple_certs: false,
+            git_url: "git@github.com:Unity-Technologies/fastlane_certificates.git",            
+            keychain_password: ENV["KEYCHAIN_PASSWORD"],
+            verbose: true,
+            output_path: "./certs",
+            skip_provisioning_profiles: true,
+        )      
     end
 end

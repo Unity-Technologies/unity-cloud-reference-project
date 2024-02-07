@@ -77,12 +77,13 @@ namespace Unity.ReferenceProject.VR
             panel.DismissRequested += OnCloseButtonClicked;
             panel.DockRequested += OnDockButtonClicked;
             appUIPanel.Add(panel);
-
-            var fpsEntries = root.Q("fps-entries");
-            fpsEntries.style.bottom = fpsEntries.style.right = new StyleLength(0f);
-            fpsEntries.style.position = Position.Relative;
-            fpsEntries.style.marginLeft = fpsEntries.style.marginRight = new StyleLength(0f);
-            m_StatsDisplay.InitUIToolkit(document);
+            
+            var container = root.Q("stats-entries");
+            container.style.bottom = container.style.right = new StyleLength(0f);
+            container.style.position = Position.Relative;
+            container.style.marginLeft = container.style.marginRight = new StyleLength(0f);
+            
+            m_StatsDisplay.InitWithUIDocument(document);
         }
 
         void OnCloseButtonClicked()

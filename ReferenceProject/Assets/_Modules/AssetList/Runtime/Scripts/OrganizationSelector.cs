@@ -37,8 +37,7 @@ namespace Unity.ReferenceProject.AssetList
             {
                 placeholder = "@AssetList:Search"
             };
-            m_SearchBar.validateValue += OnValidateSearchValue;
-            
+
             m_Container.Add(m_SearchBar);
 
             m_OrganizationList = new ScrollView();
@@ -53,6 +52,8 @@ namespace Unity.ReferenceProject.AssetList
             m_NoResultElement.AddToClassList("text__organization-list-no-result");
             
             m_Container.Add(m_NoResultElement);
+            
+            m_SearchBar.validateValue += OnValidateSearchValue;
         }
 
         bool OnValidateSearchValue(string arg)

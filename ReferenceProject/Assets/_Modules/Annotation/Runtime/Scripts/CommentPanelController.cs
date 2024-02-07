@@ -57,6 +57,7 @@ namespace Unity.ReferenceProject.Annotation
         static readonly string k_NoTitleUssClassStyle = "container__text-input--hidden";
         static readonly string k_SelectedUssClassStyle = "container__comment-entry--selected";
 
+        ScrollView m_CommentScrollView;
         VisualElement m_CommentsPanel;
         VisualElement m_CommentTopicContainer;
         VisualElement m_CommentContainer;
@@ -69,8 +70,11 @@ namespace Unity.ReferenceProject.Annotation
         TextArea m_FocusedTextArea;
 
         ITopic m_CurrentTopic;
-        IComment m_EditedComment;
         KeyboardHandler m_KeyboardHandler;
+
+        bool m_CanCreate;
+        bool m_CanEdit;
+        bool m_CanDelete;
 
         IAuthenticatedUserInfoProvider m_UserInfoProvider;
         IAppMessaging m_AppMessaging;
@@ -112,6 +116,7 @@ namespace Unity.ReferenceProject.Annotation
 
         public void Initialize(VisualElement rootVisualElement)
         {
+            m_CommentScrollView = rootVisualElement.Q<ScrollView>("CommentScrollView");
             m_CommentsPanel = rootVisualElement.Q("CommentList");
             m_CommentTopicContainer = rootVisualElement.Q("CommentTopicContainer");
             m_CommentSeparator = rootVisualElement.Q("CommentSeparator");
@@ -124,7 +129,7 @@ namespace Unity.ReferenceProject.Annotation
             var backButton = rootVisualElement.Q<ActionButton>("BackButton");
             backButton.clicked += () => BackClicked?.Invoke();
 
-            m_CommentTextInput = m_TextInputTemplate.Instantiate();
+            m_CommentTextInput = m_TextInputTemplate.Instantiate().Q("TextInputContainer");
             m_CommentTextInput.AddToClassList(k_NoTitleUssClassStyle);
             m_CommentTextArea = m_CommentTextInput.Q<TextArea>("TextInputMessage");
             m_CommentTextArea.placeholder = m_CommentPlaceholder;
@@ -142,6 +147,13 @@ namespace Unity.ReferenceProject.Annotation
             {
                 m_KeyboardHandler.RegisterRootVisualElement(m_CommentTextArea);
             }
+        }
+
+        public void SetPermissions(bool canCreate, bool canEdit, bool canDelete)
+        {
+            m_CanCreate = canCreate;
+            m_CanEdit = canEdit;
+            m_CanDelete = canDelete;
         }
 
         public bool IsOpen()
@@ -167,6 +179,7 @@ namespace Unity.ReferenceProject.Annotation
             var topicEntry = CreateTopicEntry(topic);
             m_CommentTopicContainer.Add(topicEntry);
 
+            VisualElement lastElement = null;
             if (!comments.Any())
             {
                 Common.Utils.SetVisible(m_CommentSeparator, false);
@@ -181,6 +194,7 @@ namespace Unity.ReferenceProject.Annotation
                     var comment = comments.ElementAt(i);
                     var commentUI = CreateCommentEntry(comment);
                     m_CommentContainer.Add(commentUI);
+                    lastElement = commentUI;
 
                     if (i == size - 1)
                     {
@@ -190,7 +204,14 @@ namespace Unity.ReferenceProject.Annotation
                 }
             }
 
-            m_CommentContainer.Add(m_CommentTextInput);
+            if (m_CanCreate)
+            {
+                m_CommentContainer.Add(m_CommentTextInput);
+                lastElement = m_CommentTextInput;
+            }
+
+            StartCoroutine(Common.Utils.WaitAFrame(() => { m_CommentScrollView.ScrollTo(lastElement); }));
+
             ResetTextInput();
         }
 
@@ -208,8 +229,6 @@ namespace Unity.ReferenceProject.Annotation
             void ResetEntry()
             {
                 CancelEdit -= ResetEntry;
-                m_EditedComment = null;
-
                 commentEntryContainer.RemoveFromClassList(k_SelectedUssClassStyle);
                 commentTextInput.UnregisterCallback<FocusInEvent>(UIFocused);
                 commentTextInput.UnregisterCallback<FocusOutEvent>(UIUnFocused);
@@ -217,7 +236,7 @@ namespace Unity.ReferenceProject.Annotation
                 Common.Utils.SetVisible(commentTextInputContainer, false);
                 optionButton.SetEnabled(true);
 
-                Common.Utils.SetVisible(m_CommentTextInput, true);
+                Common.Utils.SetVisible(m_CommentTextInput, m_CanCreate);
             }
 
             commentTextInput.validateValue += ValidateLength;
@@ -230,7 +249,7 @@ namespace Unity.ReferenceProject.Annotation
 
             UpdateCommentEntry(commentEntry, comment);
 
-            var isUserAuthor = comment.Author.FullName == m_UserInfoProvider.GetUserInfo(AuthenticatedUserInfoClaims.Id);
+            var isUserAuthor = comment.Author.FullName == m_UserInfoProvider.GetUserInfo(AuthenticatedUserInfoClaims.Name);
 
             optionButton.clicked += () =>
             {
@@ -241,9 +260,11 @@ namespace Unity.ReferenceProject.Annotation
                 var deleteButton = Utils.OptionButton(m_OptionButtonTemplate,"delete", m_Delete, () =>
                 {
                     popover.Dismiss();
+                    // Hide the comment entry before deleting it to avoid user manipulating it while it's being deleted
+                    Utils.Hide(commentEntry);
                     CommentDeleted?.Invoke(comment);
                 });
-                deleteButton.SetEnabled(isUserAuthor);
+                deleteButton.SetEnabled(isUserAuthor && m_CanDelete);
                 contentView.Add(deleteButton);
 
                 var editButton = Utils.OptionButton(m_OptionButtonTemplate,"pen", m_Edit, () =>
@@ -252,7 +273,6 @@ namespace Unity.ReferenceProject.Annotation
                     commentTextInput.RegisterCallback<FocusOutEvent>(UIUnFocused);
 
                     CancelEdit?.Invoke();
-                    m_EditedComment = comment;
                     Common.Utils.SetVisible(m_CommentTextInput, false);
 
                     popover.Dismiss();
@@ -264,7 +284,7 @@ namespace Unity.ReferenceProject.Annotation
 
                     CancelEdit += ResetEntry;
                 });
-                editButton.SetEnabled(isUserAuthor);
+                editButton.SetEnabled(isUserAuthor && m_CanEdit);
                 contentView.Add(editButton);
 
                 popover.Show();
@@ -347,7 +367,7 @@ namespace Unity.ReferenceProject.Annotation
         void ResetTextInput()
         {
             m_CommentTextArea.value = string.Empty;
-            Common.Utils.SetVisible(m_CommentTextInput, true);
+            Common.Utils.SetVisible(m_CommentTextInput, m_CanCreate);
         }
 
         void UIFocused(FocusInEvent ev)

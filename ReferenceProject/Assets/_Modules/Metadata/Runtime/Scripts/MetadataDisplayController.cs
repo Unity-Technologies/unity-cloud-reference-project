@@ -16,6 +16,7 @@ using Unity.ReferenceProject.DataStreaming;
 using Unity.ReferenceProject.Messaging;
 using UnityEngine.UIElements;
 using Zenject;
+using MetadataObject = Unity.Cloud.Metadata.MetadataObject;
 using Utils = Unity.ReferenceProject.Common.Utils;
 
 namespace Unity.ReferenceProject.Metadata

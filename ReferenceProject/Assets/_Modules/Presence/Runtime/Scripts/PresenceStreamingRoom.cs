@@ -42,7 +42,7 @@ namespace Unity.ReferenceProject.Presence
             m_AssetEvents = assetEvents;
             m_SessionProvider = sessionProvider;
 
-            if(enabled)
+            if (enabled)
             {
                 m_PresenceRoomsManager.RegisterOnDisconnect(LeaveRoom);
             }
@@ -57,22 +57,23 @@ namespace Unity.ReferenceProject.Presence
 
         void OnDestroy()
         {
-            if(m_AssetEvents != null)
+            if (m_AssetEvents != null)
             {
                 m_AssetEvents.AssetLoaded -= OnAssetLoaded;
                 m_AssetEvents.AssetUnloaded -= OnAssetUnloaded;
             }
 
-            if(m_SessionProvider != null)
+            if (m_SessionProvider != null)
             {
                 m_SessionProvider.SessionChanged -= OnRoomSessionChanged;
             }
+
             m_PresenceRoomsManager?.UnRegisterOnDisconnect(LeaveRoom);
         }
 
         void OnEnable()
         {
-            if(m_PresenceRoomsManager != null)
+            if (m_PresenceRoomsManager != null)
             {
                 m_PresenceRoomsManager.RegisterOnDisconnect(LeaveRoom);
             }
@@ -107,9 +108,17 @@ namespace Unity.ReferenceProject.Presence
             {
                 m_CurrentRoom = (Room)session.Room;
                 m_CurrentRoom.ParticipantAdded += OnParticipantAdded;
+
+                if (m_CurrentRoom.ConnectedParticipants is { Count: > 0 })
+                {
+                    var self = m_CurrentRoom.ConnectedParticipants.FirstOrDefault(p => p.IsSelf);
+                    m_Session.UserData.UpdateBadgeColor(self == null ? Color.grey : m_AvatarColorPalette.GetColor(self.ColorIndex));
+                }
+
                 RoomJoined?.Invoke(m_CurrentRoom);
             }
         }
+
         void OnParticipantAdded(IParticipant participant)
         {
             if (participant.IsSelf)
@@ -120,16 +129,10 @@ namespace Unity.ReferenceProject.Presence
 
         async Task LeaveRoom()
         {
-            var isRoomLeft = false;
-            
-            if(m_CurrentRoom != null)
+            if (m_CurrentRoom != null)
             {
-                isRoomLeft = await m_PresenceRoomsManager.LeaveRoomAsync(m_CurrentRoom);
+                await m_PresenceRoomsManager.LeaveRoomAsync(m_CurrentRoom);
                 await m_PresenceRoomsManager.UnsubscribeFromMonitoring(m_CurrentRoom, this);
-            }           
-
-            if (isRoomLeft)
-            {
                 m_CurrentRoom = null;
             }
         }

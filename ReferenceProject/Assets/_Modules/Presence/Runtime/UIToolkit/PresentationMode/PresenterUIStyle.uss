@@ -24,10 +24,9 @@
     margin: 2px;
     padding-bottom: 4px;
     padding-top: 4px;
-    color: var(--appui-primary-50);
+    color: var(--appui-color-white);
 }
 
 .container__presenter-height{
     height: 100%;
-    padding-top: 46px;
 }

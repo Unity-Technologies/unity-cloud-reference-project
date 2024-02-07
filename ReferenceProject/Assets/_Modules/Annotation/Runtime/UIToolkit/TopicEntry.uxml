@@ -23,7 +23,9 @@
                     <appui:ActionButton name="TextInputSubmit" icon="send" tooltip="@Annotation:Submit" class="button__text-input-submit" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <appui:Text name="TopicEntryReply" size="XS" text="@Annotation:Reply" class="text__topic-entry-reply"/>
+            <ui:VisualElement class="row">
+                <appui:Text name="TopicEntryReply" size="XS" text="@Annotation:Reply" class="text__topic-entry-reply"/>
+            </ui:VisualElement>
         </ui:VisualElement>
         <appui:Divider name="TopicEntryDivider" class="divider__annotation"/>
         <appui:ActionButton name="TopicEntryOptionButton" tooltip="@Annotation:Options" icon="ellipsis" quiet="true" class="button__topic-entry-option"/>

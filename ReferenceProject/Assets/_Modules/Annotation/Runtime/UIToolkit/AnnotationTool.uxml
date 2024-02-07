@@ -14,7 +14,7 @@
                 <appui:ActionButton name="GotoButton" icon="focus-object" quiet="true" tooltip="@Annotation:Goto" class="button__comment-header-goto" />
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:ScrollView class="grow">
+        <ui:ScrollView name="CommentScrollView" class="grow">
             <ui:VisualElement name="CommentTopicContainer" class="container__comment-list-topic" />
             <ui:VisualElement name="CommentSeparator" class="container__comment-separator">
                 <appui:Text name="CommentNumberReply" text="@Annotation:Reply" size="XS" class="text__comment-separator" />

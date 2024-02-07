@@ -33,12 +33,12 @@ namespace Unity.ReferenceProject.Presence
             m_PresentationManager.PresentationStopped += OnPresentationStopped;
         }
 
-        private void OnDestroy()
+        void OnDestroy()
         {
             if(m_PresentationManager)
             {
-                m_PresentationManager.PresentationStarted += OnPresentationStarted;
-                m_PresentationManager.PresentationStopped += OnPresentationStopped;
+                m_PresentationManager.PresentationStarted -= OnPresentationStarted;
+                m_PresentationManager.PresentationStopped -= OnPresentationStopped;
             }
         }
 

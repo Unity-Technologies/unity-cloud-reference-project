@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Unity.AppUI.UI;
 using Unity.ReferenceProject.Common;
 using Unity.ReferenceProject.ObjectSelection;
@@ -12,6 +13,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using Zenject;
 using Unity.ReferenceProject.InputSystem;
+using Unity.ReferenceProject.Messaging;
 
 namespace Unity.ReferenceProject.MeasureTool
 {
@@ -33,10 +35,12 @@ namespace Unity.ReferenceProject.MeasureTool
         MeasurementViewer m_MeasurementViewer;
 
         public event Action<MeasureLineData> MeasureDataChanged;
+        public event Action<MeasureFormat, MeasureLineData> SystemUnitChanged;
 
         readonly double m_Tolerance = 0.1f;
 
         Dropdown m_UnitDropdown;
+        Dropdown m_ModeDropdown;
         Text m_PanelMeasureText;
         ActionButton m_ApplyButton;
         ActionButton m_SaveButton;
@@ -45,12 +49,15 @@ namespace Unity.ReferenceProject.MeasureTool
         DraggableButton m_DraggableButton;
 
         const string k_MeasureToolSelectInputPath = "Select";
-        readonly string[] k_UnitNames = { "@MeasureTool:Meter", "@MeasureTool:Centimeter", "@MeasureTool:Foot", "@MeasureTool:Inch", "@MeasureTool:FootInch" };
-
+        readonly List<string> k_ModeNames = new List<string>();
+        
+        const string k_InfiniteOrthogonalWarning = "@MeasureTool:InfiniteOrthogonal";
+        
         bool m_OnDrag;
         MeasureLineData m_LastEditedLine;
         MeasureLineData m_SelectedLine;
         ICameraProvider m_CameraProvider;
+        IAppMessaging m_AppMessaging;
 
         PropertyValue<GameObject> m_SelectedCursor;
 
@@ -63,10 +70,10 @@ namespace Unity.ReferenceProject.MeasureTool
         IMainUIPanel m_MainUIPanel;
         ObjectSelectionActivator m_ObjectSelectionActivator;
         IObjectPicker m_Picker;
-        PropertyValue<MeasureFormat> m_MeasureFormat;
         PropertyValue<IObjectSelectionInfo> m_SelectionInfo;
 
         IInputManager m_InputManager;
+        IAppUnit m_AppUnit;
         InputScheme m_InputScheme;
         bool m_MeasureSelectStarted = false;
         Vector2 m_PointerPosition;
@@ -74,11 +81,18 @@ namespace Unity.ReferenceProject.MeasureTool
         public GameObject GameObject => gameObject;
 
         bool m_DestroyWhenDoneEditing;
-
+        
+        MeasureFormat[] m_MeasureFormats;
+        MeasureFormat m_CurrentMeasureFormat;
+        public MeasureFormat CurrentMeasureFormat => m_CurrentMeasureFormat;
+        bool m_HasMeasureFormatOverride;
+        public bool hasMeasureFormatOverride => m_HasMeasureFormatOverride;
+        string[] m_DropdownOptions;
+        
         [Inject]
-        public void Setup(ICameraProvider cameraProvider, MeasureToolDataStore dataStore, IMainUIPanel mainUIPanel,
-            ObjectSelectionActivator objectSelectionActivator, PropertyValue<IObjectSelectionInfo> selectionInfo,
-            IObjectPicker picker, IInputManager inputManager)
+        public void Setup(ICameraProvider cameraProvider, MeasureToolDataStore dataStore, IMainUIPanel mainUIPanel, //NOSONAR
+            ObjectSelectionActivator objectSelectionActivator, PropertyValue<IObjectSelectionInfo> selectionInfo, //NOSONAR
+            IObjectPicker picker, IInputManager inputManager, IAppMessaging appMessaging, IAppUnit appUnit) //NOSONAR
         {
             m_CameraProvider = cameraProvider;
             m_MainUIPanel = mainUIPanel;
@@ -86,23 +100,29 @@ namespace Unity.ReferenceProject.MeasureTool
             m_SelectionInfo = selectionInfo;
             m_Picker = picker;
             m_InputManager = inputManager;
+            m_AppMessaging = appMessaging;
 
             m_SelectedCursor = dataStore.GetProperty<GameObject>(nameof(MeasureToolViewModel.SelectedCursor));
-            m_MeasureFormat = dataStore.GetProperty<MeasureFormat>(nameof(MeasureToolViewModel.MeasureFormat));
 
             var anchorPicker = new ObjectPickerAnchorSelector();
             m_CursorsController.Setup(m_SelectedCursor, anchorPicker, selectionInfo);
+            
+            m_AppUnit = appUnit;
         }
 
         void Awake()
         {
             m_SelectedCursor.ValueChanged += OnSelectedCursorChanged;
+            m_AppUnit.SystemUnitChanged += OnGlobalSystemUnitChanged;
+            m_MeasureFormats = m_AppUnit.GetMeasureFormat();
+            
             InitializeInputs();
         }
 
         void OnDestroy()
         {
             m_UnitDropdown.UnregisterValueChangedCallback(OnUnitChanged);
+            m_ModeDropdown.UnregisterValueChangedCallback(OnModeChanged);
             m_DiscardButton.clickable.clicked -= OnDiscard;
 
             m_SelectedCursor.ValueChanged -= OnSelectedCursorChanged;
@@ -142,6 +162,7 @@ namespace Unity.ReferenceProject.MeasureTool
         public void InitializeUI(VisualElement root)
         {
             m_UnitDropdown = root.Q<Dropdown>("line_creator_unit_dropdown");
+            m_ModeDropdown = root.Q<Dropdown>("line_creator_mode_dropdown");
             m_ClearButton = root.Q<ActionButton>("line_creator_confirmation_clear");
             m_SaveButton = root.Q<ActionButton>("line_creator_confirmation_save");
             m_ApplyButton = root.Q<ActionButton>("line_creator_edit_confirmation_apply");
@@ -150,6 +171,7 @@ namespace Unity.ReferenceProject.MeasureTool
             m_PanelMeasureText = root.Q<Text>("line_creator_distance_value");
 
             m_UnitDropdown.RegisterValueChangedCallback(OnUnitChanged);
+            m_ModeDropdown.RegisterValueChangedCallback(OnModeChanged);
 
             m_DiscardButton.clickable.clicked += OnDiscard;
 
@@ -176,24 +198,93 @@ namespace Unity.ReferenceProject.MeasureTool
 
         void SetupUnitDropdown()
         {
-            for (int i = 0; i < k_UnitNames.Length; i++)
+            var unitFormat = m_AppUnit.GetMeasureFormat();
+            m_DropdownOptions = new string[unitFormat.Length + 1];
+            m_DropdownOptions[0] = "@MeasureTool:AsSystem";
+
+            for (var i = 1; i <= unitFormat.Length; i++)
             {
-                m_UnitDropdown.bindItem = (item, i) => item.label = k_UnitNames[i];
-                m_UnitDropdown.sourceItems = k_UnitNames;
+                m_DropdownOptions[i] = $"@MeasureTool:{unitFormat[i-1]}";
             }
 
-            m_UnitDropdown.value = new[] { 0 };
+            foreach (var unit in m_DropdownOptions)
+            {
+                m_UnitDropdown.bindItem = (item, index) => item.label = m_DropdownOptions[index];
+                m_UnitDropdown.sourceItems = m_DropdownOptions;
+            }
+
+            m_UnitDropdown.value = new[] { Array.IndexOf(m_DropdownOptions,"@MeasureTool:" + m_AppUnit.GetSystemUnit()) };
+        }
+        
+        void SetupModeDropdown()
+        {
+            foreach (var mode in Enum.GetValues(typeof(MeasureMode)))
+            {
+                var modeName = "@MeasureTool:" + Enum.GetName(typeof(MeasureMode), mode);
+                k_ModeNames.Add(modeName);
+            }
+            
+            for (int i = 0; i < k_ModeNames.Count; i++)
+            {
+                m_ModeDropdown.bindItem = (item, i) => item.label = k_ModeNames[i];
+                m_ModeDropdown.sourceItems = k_ModeNames;
+            }
+            
+            m_ModeDropdown.value = new[] { 0 };
         }
 
         void SetupOptions()
         {
             SetupUnitDropdown();
+            SetupModeDropdown();
         }
 
         void OnUnitChanged(ChangeEvent<IEnumerable<int>> changeEvent)
         {
-            m_MeasureFormat.SetValue((MeasureFormat)changeEvent.newValue.First());
+            m_ApplyButton.SetEnabled(true);
+            MeasureFormat newMeasureFormat;
+            
+            if (changeEvent.newValue.First() == 0)
+            {
+                newMeasureFormat = m_AppUnit.GetSystemUnit();
+                m_HasMeasureFormatOverride = false;
+            }
+            else
+            { 
+                newMeasureFormat = m_MeasureFormats[changeEvent.newValue.First()-1];
+                m_HasMeasureFormatOverride = true;
+            }
+            
+            m_CurrentMeasureFormat = m_SelectedLine.MeasureFormat = newMeasureFormat;
+            m_SelectedLine.HasMeasureFormatOverride = m_HasMeasureFormatOverride;
+            
             UpdatePanelText();
+        }
+        
+        void OnGlobalSystemUnitChanged(MeasureFormat measureFormat)
+        { 
+            m_CurrentMeasureFormat = measureFormat;
+            SystemUnitChanged?.Invoke(measureFormat, m_SelectedLine);
+            if (m_SelectedLine != null)
+            {
+                m_UnitDropdown.SetValueWithoutNotify(new[] { Array.IndexOf(m_MeasureFormats, m_SelectedLine.
+                MeasureFormat)});
+                UpdatePanelText();
+            }
+            UpdateDropdown();
+        }
+
+        async void OnModeChanged(ChangeEvent<IEnumerable<int>> changeEvent)
+        {
+            var lineData = m_SelectedLine;
+            lineData.MeasureMode = (MeasureMode)changeEvent.newValue.First();
+            SetMeasureData(lineData);
+            await HandleOrthogonalMode();
+        }
+
+        MeasureMode GetModeDropdownValue()
+        {
+            return (MeasureMode)m_ModeDropdown.value.First();
         }
 
         void OnDiscard()
@@ -204,12 +295,13 @@ namespace Unity.ReferenceProject.MeasureTool
                 m_LastEditedLine = null;
             }
 
-            Edit(new MeasureLineData());
+            Edit(new MeasureLineData(m_AppUnit.GetSystemUnit(), true));
         }
 
         public void StartNewLine()
         {
-            Edit(new MeasureLineData());
+            m_UnitDropdown.SetValueWithoutNotify(new[] {0}); 
+            Edit(new MeasureLineData(m_AppUnit.GetSystemUnit(), true));
             Clear();
         }
 
@@ -223,8 +315,24 @@ namespace Unity.ReferenceProject.MeasureTool
 
             m_ObjectSelectionActivator.Subscribe(this);
             m_SelectionInfo.ValueChanged += OnSelectionInfoChangedWhileSelecting;
+            UpdateDropdown();
         }
 
+        void UpdateDropdown()
+        {
+            if(m_SelectedLine == null || m_UnitDropdown == null)
+                return;
+                
+            if (!m_SelectedLine.HasMeasureFormatOverride)
+            {
+                m_UnitDropdown.SetValueWithoutNotify(new[] { 0 });
+            }
+            else
+            {
+                m_UnitDropdown.SetValueWithoutNotify(new[] { Array.IndexOf(m_DropdownOptions, "@MeasureTool:" + m_SelectedLine.
+                MeasureFormat)}); 
+            }
+        }
         void OnSelectionInfoChangedWhileSelecting(IObjectSelectionInfo selectionInfo)
         {
             if (selectionInfo == null || float.IsNaN(selectionInfo.SelectedPosition.x))
@@ -354,7 +462,7 @@ namespace Unity.ReferenceProject.MeasureTool
             draggablePoint.y -= m_CursorOffset.y;
 
             var ray = m_CameraProvider.Camera.ScreenPointToRay(draggablePoint);
-            var result = await m_Picker.RaycastAsync(ray);
+            var result = await m_Picker.PickAsync(ray);
 
             if (result.HasIntersected)
             {
@@ -362,7 +470,7 @@ namespace Unity.ReferenceProject.MeasureTool
             }
         }
 
-        void OnSelectedCursorChanged(GameObject cursor)
+        async void OnSelectedCursorChanged(GameObject cursor)
         {
             if (m_DraggableButton == null)
                 return;
@@ -376,16 +484,46 @@ namespace Unity.ReferenceProject.MeasureTool
 
             if (m_SelectedLine != null && m_SelectedLine.Anchors != null)
             {
-                m_ClearButton.SetEnabled(m_SelectedLine.Anchors.Count > 0);
+                m_ClearButton.SetEnabled(m_SelectedLine.Anchors.Count > 0);  
                 m_SaveButton.SetEnabled(m_SelectedLine.Anchors.Count > 1);
+                m_UnitDropdown.SetEnabled(m_SelectedLine.Anchors.Count > 0);
+                
+                await HandleOrthogonalMode();
             }
             else
             {
                 m_ClearButton.SetEnabled(false);
                 m_SaveButton.SetEnabled(false);
+                m_UnitDropdown.SetEnabled(false);
             }
         }
-
+        
+        async Task HandleOrthogonalMode()
+        {
+            var dropdownVal = GetModeDropdownValue();
+            if (m_SelectedLine.MeasureMode != dropdownVal)
+            {
+                m_SelectedLine.MeasureMode = dropdownVal;
+                SetMeasureData(m_SelectedLine);
+            }
+            
+            var anchors = m_SelectedLine.Anchors;
+            if (anchors.Count == 1 && m_SelectedLine.MeasureMode == MeasureMode.Orthogonal)
+            {
+                var raycast = await m_Picker.PickAsync(new Ray(anchors[0].Position, anchors[0].Normal));
+                if (raycast.HasIntersected)
+                {
+                    m_CursorsController.CreateAnchorAtWorldPosition(raycast.Point, raycast.Normal);
+                }
+                else
+                {
+                    m_AppMessaging.ShowWarning(k_InfiniteOrthogonalWarning);
+                }
+            }
+            
+            m_ModeDropdown.SetEnabled(anchors.Count < 2); 
+        }
+        
         void OnDown(Vector3 position)
         {
             m_OnDrag = true;
@@ -398,10 +536,11 @@ namespace Unity.ReferenceProject.MeasureTool
             OnDragPositionDataChanged(position);
         }
 
-        void OnUp(Vector3 position)
+        async void OnUp(Vector3 position)
         {
             m_OnDrag = false;
             OnDragPositionDataChanged(position);
+            await HandleOrthogonalMode();
         }
 
         void SetDraggablePosition(Vector2 screenPos)
@@ -417,7 +556,16 @@ namespace Unity.ReferenceProject.MeasureTool
 
         void UpdatePanelText()
         {
-            m_PanelMeasureText.text = m_SelectedLine != null ? m_SelectedLine.GetFormattedDistanceString(m_MeasureFormat.GetValue()) : string.Empty;
+            m_PanelMeasureText.text = m_SelectedLine != null ? m_SelectedLine.
+            GetFormattedDistanceString(m_SelectedLine.MeasureFormat) : string.Empty;
+        }
+
+        public void UpdateLines(List<MeasureLineData> lines)
+        {
+            foreach (var measureLineData in lines)
+            {
+                m_MeasurementViewer.UpdateLines(measureLineData);
+            }
         }
     }
 }

@@ -15,6 +15,10 @@
                     <appui:Text name="line_creator_unit_label" text="@MeasureTool:Unit" />
                     <appui:Dropdown focusable="true" name="line_creator_unit_dropdown" class="dropdown__line-creator-unit" />
                 </ui:VisualElement>
+                <ui:VisualElement name="line_creator_mode_container" class="container__line-creator-unit">
+                    <appui:Text name="line_creator_mode_label" text="@MeasureTool:Mode" />
+                    <appui:Dropdown focusable="true" name="line_creator_mode_dropdown" class="dropdown__line-creator-unit" />
+                </ui:VisualElement>
                 <ui:VisualElement name="line_creator_confirmation_container" class="container__line-creator-confirmation">
                     <appui:ActionButton name="line_creator_confirmation_clear" label="@MeasureTool:Clear" class="button__line-creator-confirmation"/>
                     <appui:ActionButton name="line_creator_confirmation_save" label="@MeasureTool:Save" class="button__line-creator-confirmation" />

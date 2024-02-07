@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Unity.ReferenceProject.DataStores;
 using UnityEngine;
 using Zenject;
 
@@ -10,8 +9,6 @@ namespace Unity.ReferenceProject.MeasureTool
     {
         [SerializeField]
         MeasureSegment m_MeasureSegmentPrefab;
-
-        PropertyValue<MeasureFormat> m_MeasureFormat;
 
         DiContainer m_DiContainer;
 
@@ -25,19 +22,8 @@ namespace Unity.ReferenceProject.MeasureTool
 
         [Inject]
         public void Setup(MeasureToolDataStore dataStore, DiContainer container)
-        {
-            m_MeasureFormat = dataStore.GetProperty<MeasureFormat>(nameof(MeasureToolViewModel.MeasureFormat));
+        { 
             m_DiContainer = container;
-        }
-
-        void OnEnable()
-        {
-            m_MeasureFormat.ValueChanged += OnMeasureFormatChanged;
-        }
-
-        void OnDisable()
-        {
-            m_MeasureFormat.ValueChanged -= OnMeasureFormatChanged;
         }
 
         public void AddMeasureLineData(MeasureLineData targetData)
@@ -53,20 +39,29 @@ namespace Unity.ReferenceProject.MeasureTool
 
             m_Measurements[targetData.Id] = measurementInfo;
 
-            ApplyMeasureLineData(measurementInfo.measureSegment, measurementInfo.Data, m_MeasureFormat.GetValue());
+            ApplyMeasureLineData(measurementInfo.measureSegment, measurementInfo.Data, targetData.MeasureFormat);
         }
 
-        void OnMeasureFormatChanged(MeasureFormat format)
+        public void UpdateLines(MeasureLineData targetData)
         {
-            foreach (var info in m_Measurements.Values)
+            if (targetData == null)
+                return;
+                
+            if (!m_Measurements.ContainsKey(targetData.Id))
+                return;
+            
+            var measurementInfo = new MeasurementInfo
             {
-                info.measureSegment.SetLabelText(info.Data.GetFormattedDistanceString(format));
-            }
+                Data = targetData,
+                measureSegment = m_Measurements.TryGetValue(targetData.Id, out var info) ? info.measureSegment : m_DiContainer.InstantiatePrefabForComponent<MeasureSegment>(m_MeasureSegmentPrefab)
+            };
+
+            m_Measurements[targetData.Id] = measurementInfo;
         }
 
-        void OnMeasureLineDataChanged(MeasureSegment measureSegment, MeasureLineData data)
+        static void OnMeasureLineDataChanged(MeasureSegment measureSegment, MeasureLineData data)
         {
-            ApplyMeasureLineData(measureSegment, data, m_MeasureFormat.GetValue());
+            ApplyMeasureLineData(measureSegment, data, data.MeasureFormat);
             measureSegment.SetVisible(data.Anchors.Count >= 2);
         }
 

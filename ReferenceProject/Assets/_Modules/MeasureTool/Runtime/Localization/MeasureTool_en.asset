@@ -19,11 +19,11 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 225092378624
-    m_Localized: 'Distance:'
+    m_Localized: Distance
     m_Metadata:
       m_Items: []
   - m_Id: 427803090944
-    m_Localized: 'Name:'
+    m_Localized: Name
     m_Metadata:
       m_Items: []
   - m_Id: 542022377472
@@ -55,27 +55,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 277985614438400
-    m_Localized: 'Unit:'
-    m_Metadata:
-      m_Items: []
-  - m_Id: 330726919446528
-    m_Localized: Meters
-    m_Metadata:
-      m_Items: []
-  - m_Id: 330798679793664
-    m_Localized: Feet
-    m_Metadata:
-      m_Items: []
-  - m_Id: 330857936920576
-    m_Localized: Inches
-    m_Metadata:
-      m_Items: []
-  - m_Id: 343334183575552
-    m_Localized: Feet & Inches
-    m_Metadata:
-      m_Items: []
-  - m_Id: 633958631809024
-    m_Localized: Centimeters
+    m_Localized: Units
     m_Metadata:
       m_Items: []
   - m_Id: 655106979471360
@@ -92,6 +72,46 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 6510811243769856
     m_Localized: View
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33364848032079872
+    m_Localized: Mode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33364930869583872
+    m_Localized: Two Points
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33365092069269504
+    m_Localized: Orthogonal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33729162475724800
+    m_Localized: 'Infinite line: Please choose another point.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31547921792032768
+    m_Localized: Meters
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31548081163001856
+    m_Localized: Centimeters
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31548152310980608
+    m_Localized: Feet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31548238633951232
+    m_Localized: Inches
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31548370645475328
+    m_Localized: Feet and inches
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31554595147800576
+    m_Localized: As system
     m_Metadata:
       m_Items: []
   references:

@@ -1,8 +1,7 @@
-using Unity.ReferenceProject.Annotation;
 using UnityEngine;
 using Zenject;
 
-namespace Unity.ReferenceProject
+namespace Unity.ReferenceProject.Annotation
 {
     public class AnnotationInstaller : MonoInstaller
     {

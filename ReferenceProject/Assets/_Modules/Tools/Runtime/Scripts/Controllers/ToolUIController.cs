@@ -39,9 +39,11 @@ namespace Unity.ReferenceProject.Tools
         public event Action ToolPointerCaptureOut;
         public event Action<Sprite> IconChanged;
 
+        public event Action<ToolState> ToolStateChanged;
+
+        protected ToolState InitialToolState => m_InitialToolState;
+
         Action m_CloseAction;
-        
-        public event Action<ToolState> ButtonStateChanged;
 
         static readonly string k_ActionButtonIconUssClassName = "appui-actionbutton__icon";
 
@@ -115,7 +117,7 @@ namespace Unity.ReferenceProject.Tools
 
         protected void SetToolState(ToolState state)
         {
-            ButtonStateChanged?.Invoke(state);
+            ToolStateChanged?.Invoke(state);
         }
 
         protected virtual VisualElement CreateVisualTree(VisualTreeAsset template)

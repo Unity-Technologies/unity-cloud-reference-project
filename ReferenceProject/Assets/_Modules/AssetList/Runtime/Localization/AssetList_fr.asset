@@ -16,10 +16,11 @@ MonoBehaviour:
     m_Code: fr
   m_SharedData: {fileID: 11400000, guid: e8565366f83a70e4f8b8c053e9f1fb16, type: 2}
   m_Metadata:
-    m_Items: []
+    m_Items:
+    - rid: 9156205310049255428
   m_TableData:
   - m_Id: 8708235264
-    m_Localized: Projets
+    m_Localized: Projet
     m_Metadata:
       m_Items: []
   - m_Id: 9825782931456
@@ -155,12 +156,12 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 6793486118580224
-    m_Localized: "Aucun asset trouv\xE9. S\xE9lectionnez un autre projet ou modifiez
-      le filtre streamable."
+    m_Localized: "Aucun Asset trouv\xE9. S\xE9lectionnez un autre projet ou modifiez
+      le filtre Streamable."
     m_Metadata:
       m_Items: []
   - m_Id: 8290299728261120
-    m_Localized: Streamable...
+    m_Localized: Convertir en Streamable
     m_Metadata:
       m_Items: []
   - m_Id: 10524802060283904
@@ -180,8 +181,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 12340795111874560
-    m_Localized: "Une transformation en Streamable est d\xE9j\xE0 en cours sur cette
-      Asset. Veuillez attendre que celle-ci finisse avant d'en lancer une nouvelle."
+    m_Localized: Cet Asset est en cours de transformation. Veuillez atteindre avant
+      d'essayer de lancer une nouvelle transformation.
     m_Metadata:
       m_Items: []
   - m_Id: 13093678950359040
@@ -204,6 +205,61 @@ MonoBehaviour:
     m_Localized: "Vid\xE9o"
     m_Metadata:
       m_Items: []
+  - m_Id: 17036441882357760
+    m_Localized: Projets
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18471422060032000
+    m_Localized: "Lancer une nouvelle Transformation g\xE9n\xE9rera une version Streamable
+      de cet Asset."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18478262680449024
+    m_Localized: "Lancer une nouvelle Transformation \xE9crasera la version Streamable
+      actuelle de cet Asset."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18510143048282112
+    m_Localized: "Pr\xE9parer pour le Streaming"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19587857599590400
+    m_Localized: "Aucun projet trouv\xE9. S\xE9lectionnez une autre organisation."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19866098494136320
+    m_Localized: Fichier
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18076320430977024
+    m_Localized: Type d'asset
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18076393168596992
+    m_Localized: Collection
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18076658290552832
+    m_Localized: "Date de cr\xE9ation"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19502898021036032
+    m_Localized: Appliquer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19503100505255936
+    m_Localized: Effacer tout
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27930241693544448
+    m_Localized: '{0:1 asset|{} assets}'
+    m_Metadata:
+      m_Items:
+      - rid: 9156205310049255428
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 9156205310049255428
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 0070a226683a6300

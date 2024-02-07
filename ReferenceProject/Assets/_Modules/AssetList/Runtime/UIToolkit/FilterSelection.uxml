@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
+    <Style src="AssetListStyle.uss" />
+    <ui:VisualElement name="RootVisualElement" class="container__filter_selection_popover">
+        <ui:VisualElement name="SelectionContent" class="container__filter_selection"/>
+        <appui:Divider name="Divider" class="divider__filter_selection"/>
+        <ui:VisualElement name="Footer" class="container__filter_selection_footer">
+            <appui:Button name="ApplyButton" size="S" variant="Accent" title="@AssetList:Apply" class="button__filter_selection_apply"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Reflection;
 using System.Text;
+using Unity.Cloud.AppLinking;
 using Unity.Cloud.Assets;
 using Unity.Cloud.Common;
 using Unity.Cloud.Common.Runtime;
 using Unity.Cloud.DeepLinking;
-using Unity.Cloud.DeepLinking.Runtime;
+using Unity.Cloud.AppLinking.Runtime;
 using Unity.Cloud.Identity;
 using Unity.Cloud.Identity.Runtime;
 using Unity.Cloud.Presence;
@@ -50,14 +51,14 @@ namespace Unity.ReferenceProject
 
             // TODO: update to use UnityServicesServiceHostResolver when identity is deployed to UCF
             var compositeAuthenticatorSettings = new CompositeAuthenticatorSettingsBuilder(httpClient, PlatformSupportFactory.GetAuthenticationPlatformSupport(), serviceHostResolver, playerSettings)
-                .AddDefaultBrowserAuthenticatedAccessTokenProvider(playerSettings, playerSettings)
-                .AddDefaultPkceAuthenticator(playerSettings, playerSettings)
+                .AddDefaultBrowserAuthenticatedAccessTokenProvider(playerSettings)
+                .AddDefaultPkceAuthenticator(playerSettings)
                 .Build();
 
             m_CompositeAuthenticator = new CompositeAuthenticator(compositeAuthenticatorSettings);
 
             ApiSourceVersion apiVersionOriginal = ApiSourceVersion.GetApiSourceVersionForAssembly(assembly);
-            var serviceHttpClient = new ServiceHttpClient(httpClient, m_CompositeAuthenticator, playerSettings).WithApiSourceHeaders(apiVersionOriginal.Name, apiVersionOriginal.Version + GetFormatedPlatformStr());
+            var serviceHttpClient = new ServiceHttpClient(httpClient, m_CompositeAuthenticator, playerSettings).WithApiSourceHeaders(apiVersionOriginal.Name, apiVersionOriginal.Version + GetFormattedPlatformStr());
             var organizationRepository = new AuthenticatorOrganizationRepository(serviceHttpClient, serviceHostResolver);
             var assetRepository = AssetRepositoryFactory.Create(serviceHttpClient, serviceHostResolver);
 
@@ -75,8 +76,8 @@ namespace Unity.ReferenceProject
             var deepLinkProvider = new DeepLinkProvider(serviceHttpClient,
                 queryArguments,
                 serviceHostResolver,
-                new UriActivationPlatformSupport(),
-                playerSettings, playerSettings
+                new UnityRuntimeUrlProcessor(),
+                playerSettings
             );
             Container.Bind<IQueryArgumentsProcessor>().FromInstance(queryArguments).AsSingle();
             Container.Bind<IDeepLinkProvider>().FromInstance(deepLinkProvider).AsSingle();
@@ -84,9 +85,11 @@ namespace Unity.ReferenceProject
             var clipboard = ClipboardFactory.Create();
             Container.Bind<IClipboard>().FromInstance(clipboard).AsSingle();
 
-            m_MonitoringClient = new ServiceMessagingClient(WebSocketClientFactory.Create(), m_CompositeAuthenticator, playerSettings);
-            m_JoinerClient = new ServiceMessagingClient(WebSocketClientFactory.Create(), m_CompositeAuthenticator, playerSettings);
-            var presenceManager = new PresenceManager(m_CompositeAuthenticator, serviceHttpClient, serviceHostResolver);
+            var webSocketClientFactory = new WebSocketClientFactory();
+            
+            m_MonitoringClient = new ServiceMessagingClient(webSocketClientFactory.Create(), m_CompositeAuthenticator, playerSettings);
+            m_JoinerClient = new ServiceMessagingClient(webSocketClientFactory.Create(), m_CompositeAuthenticator, playerSettings);
+            var presenceManager = new PresenceManager(m_CompositeAuthenticator, serviceHttpClient, serviceHostResolver, playerSettings);
             Container.Bind(typeof(IPresenceManager), typeof(IRoomProvider<Room>), typeof(ISessionProvider)).FromInstance(presenceManager).AsSingle();
             Container.Bind<IPresentationService>().FromInstance(presenceManager.PresentationService).AsSingle();
 #if USE_VIVOX
@@ -95,7 +98,7 @@ namespace Unity.ReferenceProject
 #endif
         }
 
-        string GetFormatedPlatformStr()
+        static string GetFormattedPlatformStr()
         {
             /* Event Format is as follow :
                 

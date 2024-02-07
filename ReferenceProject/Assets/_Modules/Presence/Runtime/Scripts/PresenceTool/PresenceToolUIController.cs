@@ -59,7 +59,7 @@ namespace Unity.ReferenceProject.Presence
 
         protected override void OnDestroy()
         {
-            if(m_FollowManager != null)
+            if (m_FollowManager != null)
             {
                 m_FollowManager.EnterFollowMode -= OnEnterFollowMode;
                 m_FollowManager.ExitFollowMode -= OnExitFollowMode;
@@ -130,6 +130,14 @@ namespace Unity.ReferenceProject.Presence
             m_VoiceAvatarsBadgesContainer.BindRoom(cachedRoom);
             m_VoiceAvatarsBadgesContainer.BindVoiceManager(m_VoiceManager);
 
+            foreach (var participant in room.ConnectedParticipants)
+            {
+                if (participant.IsSelf)
+                    continue;
+
+                AddParticipant(participant);
+            }
+            
             RefreshVisualTree();
 
             CurrentRoom.ParticipantAdded += OnParticipantAdded;
@@ -138,7 +146,7 @@ namespace Unity.ReferenceProject.Presence
 
         protected void OnRoomLeft(Room room)
         {
-            if(room != null)
+            if (room != null)
             {
                 foreach (var participant in room.ConnectedParticipants)
                 {
@@ -171,6 +179,11 @@ namespace Unity.ReferenceProject.Presence
         }
 
         protected void OnParticipantAdded(IParticipant participant)
+        {
+            AddParticipant(participant);
+        }
+
+        void AddParticipant(IParticipant participant)
         {
             if (participant.IsSelf)
                 return;
@@ -245,7 +258,6 @@ namespace Unity.ReferenceProject.Presence
                     break;
 
                 case VoiceStatus.NotConnected:
-                case VoiceStatus.NoRoom:
                     if (CurrentRoom == null)
                         break;
                     foreach (var participant in CurrentRoom.ConnectedParticipants)

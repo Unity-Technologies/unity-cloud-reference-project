@@ -1,11 +1,12 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
     <Style src="AssetListStyle.uss" />
     <Style src="AssetGridItemStyle.uss" />
+    <Style src="CollectionGridItemStyle.uss" />
     <ui:VisualElement name="MainContainer" class="container__asset-main container__asset-main--init-state">
         <ui:VisualElement name="ProjectContainer" class="container__asset-project">
-            <appui:Heading name="ProjectTitle" text="@AssetList:Project" class="text__asset-project" />
-            <ui:ScrollView name="ProjectScrollView" class="scroll-view__asset-project-list">
-                <appui:ActionGroup name="ProjectGroup" selection-type="Single" vertical="true" quiet="true" class="action-group__asset-project-group" />
+            <appui:Heading name="ProjectTitle" text="@AssetList:Projects" class="text__asset-project" />
+            <ui:ScrollView name="ProjectScrollView" horizontal-scroller-visibility="Hidden" class="scroll-view__asset-project-list">
+                <ui:VisualElement name="ProjectListContainer" class="container__asset-project-list" />
             </ui:ScrollView>
         </ui:VisualElement>
         <ui:VisualElement name="Content" class="container__asset-content">
@@ -16,10 +17,12 @@
             <ui:VisualElement name="AssetsContainer" class="container__asset-assets">
                 <ui:VisualElement name="AssetListContainer" class="container__asset-list">
                     <appui:SearchBar name="SearchBar" placeholder="@AssetList:Search" class="searchfield__asset-search" />
-                    <ui:VisualElement name="AssetFunctionBar" class="container_asset-function-bar">
-                        <ui:VisualElement name="FilterContainer" class="container_asset-filter">
+                    <ui:VisualElement name="AssetFunctionBar" class="container__asset-function-bar">
+                        <ui:VisualElement name="FilterContainer" class="container__asset-filter">
                             <appui:ActionButton name="FilterStreamableButton" label="Streamable" class="button__asset-filter-streamable" />
                             <appui:Button name="FilterButton" size="S" title="@AssetList:Filter" leading-icon="plus" class="button__asset-filter" />
+                            <ui:VisualElement name="FilterChipContainer" class="container__asset-filter-chips"/>
+                            <appui:Button name="ClearFilterButton" size="S" title="@AssetList:ClearAll" variant="Accent" quiet="true" class="button__asset-clear-filter" />
                         </ui:VisualElement>
                         <ui:VisualElement name="ViewOptions" class="container__asset-view-options">
                             <ui:VisualElement name="SortOptions" class="container__asset-sort-options">
@@ -34,10 +37,12 @@
                             </appui:ActionGroup>
                         </ui:VisualElement>
                     </ui:VisualElement>
+                    <appui:Text name="ProjectWarningMessage" text="@AssetList:WarningMessageNoProjects" class="text__project-warning-message"/>
                     <appui:Text name="AssetWarningMessage" text="@AssetList:WarningMessageNoAssets" class="text__asset-warning-message"/>
+                    <appui:GridView name="CollectionGrid" class="grid-view__collection-grid" />
                     <appui:GridView name="AssetGrid" class="grid-view__asset-grid" />
                 </ui:VisualElement>
-                <appui:Drawer name="AssetPanel" anchor="right" swipeable="false" swipe-area-width="0" class="drawer__asset-panel">
+                <appui:Drawer name="AssetPanel" anchor="Right" swipeable="false" swipe-area-width="0" elevation="0" class="drawer__asset-panel">
                     <ui:VisualElement name="AssetPanelContainer" class="container__asset-panel">
                         <ui:VisualElement name="AssetPanelHeader" class="container__asset-panel-header">
                             <ui:VisualElement name="ButtonContainer" class="container__asset-buttons">

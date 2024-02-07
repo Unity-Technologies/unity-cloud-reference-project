@@ -156,7 +156,7 @@ namespace Unity.ReferenceProject.Navigation
         public void ChangeCameraView(CameraViewData cameraViewData)
         {
             var bound = m_DataStreamBound.GetBound();
-            if(cameraViewData is CameraViewDataDefault  && ((CameraViewDataDefault)cameraViewData).UseDefaultView)
+            if (cameraViewData is CameraViewDataDefault { UseDefaultView: true })
             { 
                 TryTeleport(m_DefaultCameraPosition, m_DefaultCameraRotation);
             }

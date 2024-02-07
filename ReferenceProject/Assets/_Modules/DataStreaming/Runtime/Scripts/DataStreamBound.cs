@@ -1,6 +1,4 @@
-using System.Threading.Tasks;
 using Unity.Cloud.Assets;
-using Unity.Cloud.Common;
 using Unity.Cloud.DataStreaming.Runtime;
 using UnityEngine;
 using Zenject;
@@ -30,23 +28,16 @@ namespace Unity.ReferenceProject.DataStreaming
             dataStreamerProvider.DataStreamer.StageDestroyed.Subscribe(() => m_Stage = null);
         }
 
-        void OnAssetLoad(IAsset asset, IDataset dataset)
+        async void OnAssetLoad(IAsset asset, IDataset dataset)
         {
-            m_Stage.StreamingStateChanged.Subscribe(OnStreamingStateChanged);
+            m_TotalBound = (Bounds) await m_Stage.GetWorldBoundsAsync();
         }
 
         void OnAssetUnload()
         {
-            if (m_Stage != null)
-            {
-                m_Stage.StreamingStateChanged.Unsubscribe(OnStreamingStateChanged);
-            }
+            m_TotalBound = default;
         }
-
-        async void OnStreamingStateChanged(StreamingState state)
-        {
-            m_TotalBound = await m_Stage.GetWorldBoundsAsync();
-        }
+        
 
         public Bounds GetBound()
         {
@@ -55,7 +46,7 @@ namespace Unity.ReferenceProject.DataStreaming
 
         public float GetDistanceFromCenter(Camera cam)
         {
-            return CameraUtilities.GetDistanceFromCenterToFit(m_TotalBound, k_BoundsFillRatio, cam.fieldOfView, cam.fieldOfView);
+            return CameraUtilities.GetDistanceFromCenterToFit(m_TotalBound, k_BoundsFillRatio, cam.fieldOfView, cam.aspect);
         }
 
         public float GetDistanceVisibleFromCenter(Camera cam)

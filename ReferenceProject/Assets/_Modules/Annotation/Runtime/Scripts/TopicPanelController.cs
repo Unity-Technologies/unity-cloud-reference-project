@@ -51,6 +51,12 @@ namespace Unity.ReferenceProject.Annotation
         [SerializeField]
         string m_TextTooLong = "@Annotation:TextTooLong";
 
+        [SerializeField]
+        string m_Reply = "@Annotation:Reply";
+
+        [SerializeField]
+        string m_AddReply = "@Annotation:AddReply";
+
         public event Action<ITopic> TopicSelected;
         public event Action<ITopic> TopicDeleted;
         public event Action<ITopic> TopicEdited;
@@ -60,6 +66,8 @@ namespace Unity.ReferenceProject.Annotation
         public event Action CancelClicked;
 
         Action CancelEdit;
+
+        public AnnotationsPermission Permissions { get; set; }
 
         VisualElement m_TopicPanel;
         ScrollView m_TopicContainer;
@@ -72,6 +80,9 @@ namespace Unity.ReferenceProject.Annotation
 
         KeyboardHandler m_KeyboardHandler;
         ITopic m_EditedTopic;
+
+        bool m_CanEdit;
+        bool m_CanDelete;
 
         readonly Dictionary<TopicId, VisualElement> m_TopicVisualElements = new();
 
@@ -100,7 +111,7 @@ namespace Unity.ReferenceProject.Annotation
             m_TopicPanel = rootVisualElement.Q("TopicList");
             m_TopicContainer = rootVisualElement.Q<ScrollView>("TopicListContainer");
 
-            m_TopicTextInputContainer = m_TextInputTemplate.Instantiate();
+            m_TopicTextInputContainer = m_TextInputTemplate.Instantiate().Q("TextInputContainer");
             m_TopicTitle = m_TopicTextInputContainer.Q<AppUI.UI.TextField>("TextInputTitle");
             m_TopicTitle.validateValue += ValidateLength;
             m_TopicTitle.validateValue += ValidateSubmitState;
@@ -118,10 +129,18 @@ namespace Unity.ReferenceProject.Annotation
             var cancelButton = m_TopicTextInputContainer.Q<ActionButton>("TextInputCancel");
             cancelButton.clicked += OnCancelPressed;
 
+            m_TopicPanel.hierarchy.Add(m_TopicTextInputContainer);
+
             if (m_KeyboardHandler != null)
             {
                 m_KeyboardHandler.RegisterRootVisualElement(m_TopicTextInputContainer);
             }
+        }
+
+        public void SetPermissions(bool canEdit, bool canDelete)
+        {
+            m_CanEdit = canEdit;
+            m_CanDelete = canDelete;
         }
 
         public void Show()
@@ -148,14 +167,14 @@ namespace Unity.ReferenceProject.Annotation
             }
             else
             {
-                for (int i = 0; i < size; i++)
+                for (int i = size-1; i >= 0; i--)
                 {
                     var topic = topics.ElementAt(i);
                     var topicEntry = CreateTopicEntry(topic);
                     m_TopicContainer.Add(topicEntry);
                     m_TopicVisualElements.Add(topic.Id, topicEntry);
 
-                    if (i == size - 1)
+                    if (i == 0)
                     {
                         m_LastTopicEntry = topicEntry;
                         var divider = topicEntry.Q("TopicEntryDivider");
@@ -164,7 +183,6 @@ namespace Unity.ReferenceProject.Annotation
                 }
             }
 
-            m_TopicContainer.Add(m_TopicTextInputContainer);
             ResetTextInput();
         }
 
@@ -184,19 +202,17 @@ namespace Unity.ReferenceProject.Annotation
             var topicEntry = CreateTopicEntry(topic);
             m_TopicContainer.Add(topicEntry);
             m_TopicVisualElements.Add(topic.Id, topicEntry);
+            topicEntry.SendToBack();
 
             // Update dividers
-            if (m_LastTopicEntry != null)
+            if (m_LastTopicEntry == null)
             {
-                var divider = m_LastTopicEntry.Q("TopicEntryDivider");
-                Utils.Show(divider);
                 m_LastTopicEntry = topicEntry;
-                divider = topicEntry.Q("TopicEntryDivider");
+                var divider = topicEntry.Q("TopicEntryDivider");
                 Utils.Hide(divider);
             }
 
-            m_TopicTextInputContainer.BringToFront();
-            StartCoroutine(WaitNextFrameAndScrollTo(topicEntry));
+            StartCoroutine(Common.Utils.WaitAFrame(() => m_TopicContainer.ScrollTo(topicEntry)));
         }
 
         public void RemoveTopicEntry(TopicId topicId)
@@ -211,7 +227,7 @@ namespace Unity.ReferenceProject.Annotation
                     var size = m_TopicContainer.childCount;
                     if (size > 0)
                     {
-                        m_LastTopicEntry = m_TopicContainer.ElementAt(size - 2); // -1 for the text input container
+                        m_LastTopicEntry = m_TopicContainer.ElementAt(0);
                         var divider = m_LastTopicEntry.Q("TopicEntryDivider");
                         Utils.Hide(divider);
                     }
@@ -227,16 +243,7 @@ namespace Unity.ReferenceProject.Annotation
         public void AddTopic()
         {
             ResetTextInput();
-
-            if (Common.Utils.IsVisible(m_TopicTextInputContainer))
-            {
-                m_TopicContainer.ScrollTo(m_TopicTextInputContainer);
-            }
-            else
-            {
-                Common.Utils.SetVisible(m_TopicTextInputContainer, true);
-                StartCoroutine(WaitNextFrameAndScrollTo(m_TopicTextInputContainer));
-            }
+            Common.Utils.SetVisible(m_TopicTextInputContainer, true);
         }
 
         public void ResetTextInput()
@@ -306,8 +313,7 @@ namespace Unity.ReferenceProject.Annotation
 
             var replyPressable = new Pressable();
             reply.AddManipulator(replyPressable);
-            replyPressable.clicked += () =>
-            {
+            replyPressable.clicked += () => {
                 ReplySelected?.Invoke(topic);
             };
 
@@ -317,12 +323,21 @@ namespace Unity.ReferenceProject.Annotation
                 contentView.style.alignItems = Align.Stretch;
                 var popover = Popover.Build(optionButton, contentView);
 
+                var commentButton = Utils.OptionButton(m_OptionButtonTemplate, "comment", m_AddReply, () =>
+                {
+                    popover.Dismiss();
+                    ReplySelected?.Invoke(topic);
+                });
+                contentView.Add(commentButton);
+
                 var deleteButton = Utils.OptionButton(m_OptionButtonTemplate,"delete", m_Delete, () =>
                 {
                     TopicDeleted?.Invoke(topic);
+                    // Hide topic entry before removing it from the list to avoid user manipulating it while it's being removed
+                    Utils.Hide(topicEntry);
                     popover.Dismiss();
                 });
-                deleteButton.SetEnabled(isUserAuthor);
+                deleteButton.SetEnabled(isUserAuthor && m_CanDelete);
                 contentView.Add(deleteButton);
 
                 var editButton = Utils.OptionButton(m_OptionButtonTemplate,"pen", m_Edit, () =>
@@ -349,7 +364,7 @@ namespace Unity.ReferenceProject.Annotation
 
                     CancelEdit += ResetEntry;
                 });
-                editButton.SetEnabled(isUserAuthor);
+                editButton.SetEnabled(isUserAuthor && m_CanEdit);
                 contentView.Add(editButton);
 
                 popover.Show();
@@ -424,8 +439,16 @@ namespace Unity.ReferenceProject.Annotation
             var count = comments.Count();
 
             Utils.Show(reply);
-            var localisedText = reply.Q<LocalizedTextElement>();
-            localisedText.variables = new object[] { count };
+            if (count == 0)
+            {
+                reply.text = m_AddReply;
+            }
+            else
+            {
+                reply.text = m_Reply;
+                var localisedText = reply.Q<LocalizedTextElement>();
+                localisedText.variables = new object[] { count };
+            }
         }
 
         void OnSubmitPressed()
@@ -488,12 +511,6 @@ namespace Unity.ReferenceProject.Annotation
         {
             m_FocusedTextInput = null;
             m_InputManager.IsUIFocused = false;
-        }
-
-        IEnumerator WaitNextFrameAndScrollTo(VisualElement element)
-        {
-            yield return null;
-            m_TopicContainer.ScrollTo(element);
         }
     }
 }

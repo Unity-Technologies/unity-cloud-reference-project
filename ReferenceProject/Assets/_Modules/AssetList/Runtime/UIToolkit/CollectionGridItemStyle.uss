@@ -1,0 +1,45 @@
+.container__collection-grid-item {
+    flex-grow: 1;
+    border-width: 1px;
+    border-color: var(--appui-base-200);
+    border-radius: var(--appui-alias-control-border-radius);
+    flex-direction: column;
+}
+
+.container__collection-grid-item:hover {
+    border-color: var(--appui-base-500);
+    background-color: var(--appui-backgrounds-100);
+}
+
+.container__collection-grid-item-header {
+    flex-direction: row;
+    margin: 4px;
+    margin-left: 8px;
+}
+
+.text__collection-grid-item-name {
+    margin-left: 4px;
+    flex-shrink: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    -unity-text-overflow-position: end;
+    text-overflow: ellipsis;
+}
+
+.text__collection-grid-item-asset-count {
+    align-self: flex-start;
+    margin-left: 8px;
+    border-radius: 4px;
+    padding: 4px;
+    background-color: var(--appui-base-300);
+    color: var(--appui-foregrounds-50);
+}
+
+.container__collection-grid-item:hover .text__collection-grid-item-asset-count {
+    background-color: var(--appui-base-500);
+    color: var(--appui-foregrounds-200);
+}
+
+.appui-icon--squares-four--regular {
+    --unity-image: url("../Sprites/squares-four@2x.png");
+}

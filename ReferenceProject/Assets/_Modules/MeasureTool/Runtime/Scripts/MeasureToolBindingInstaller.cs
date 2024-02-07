@@ -11,7 +11,7 @@ namespace Unity.ReferenceProject.MeasureTool
             var dataStore = gameObject.AddComponent<MeasureToolDataStore>();
             Container.Bind<MeasureToolDataStore>().FromInstance(dataStore).AsSingle();
 
-            var persistence = new MeasureLinePersistence($"{UnityEngine.Application.persistentDataPath}/api");
+            var persistence = new MeasureLinePersistence($"{Application.persistentDataPath}/api");
             Container.Bind<MeasureLinePersistence>().FromInstance(persistence);
         }
     }

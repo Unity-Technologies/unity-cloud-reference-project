@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Unity.Cloud.Annotation;
 using Unity.Cloud.Annotation.Runtime;
-using Unity.Cloud.Assets;
 using Unity.Cloud.Common;
-using Unity.ReferenceProject.AssetManager;
-using Unity.ReferenceProject.DataStores;
-using Unity.ReferenceProject.DataStreaming;
 using Unity.ReferenceProject.Messaging;
+using Unity.ReferenceProject.Permissions;
 using UnityEngine;
 using Zenject;
 
@@ -23,6 +21,17 @@ namespace Unity.ReferenceProject.Annotation
         public Vector3 IndicatorPosition { get; set; }
     }
 
+    public enum AnnotationsPermission
+    {
+        Read,
+        Create,
+        Delete,
+        Edit,
+        CreateComment,
+        EditComment,
+        DeleteComment
+    }
+
     public interface IAnnotationController
     {
         public void Initialize(DatasetDescriptor datasetDescriptor);
@@ -35,6 +44,7 @@ namespace Unity.ReferenceProject.Annotation
         public void CreateComment(ITopic topic, string comment);
         public void UpdateComment(ITopic topic, IComment comment, string newContent);
         public void DeleteComment(ITopic topic, IComment comment);
+        public bool CheckPermissions(AnnotationsPermission permission);
 
         public event Action<IEnumerable<ITopic>> Initialized;
         public event Action<ITopic> TopicCreatedOrUpdated;
@@ -45,29 +55,39 @@ namespace Unity.ReferenceProject.Annotation
     {
         IAnnotationRepository m_AnnotationRepository;
 
-        IServiceHttpClient m_ServiceHttpClient;
-        IServiceHostResolver m_ServiceHostResolver;
-        IAppMessaging m_AppMessaging;
-
         public static readonly int k_TextMaxChar = 512;
+        static readonly string k_AnnotationsReadPermission = "cmp.annotations.read";
+        static readonly string k_AnnotationsCreatePermission = "cmp.annotations.create";
+        static readonly string k_AnnotationsEditPermission = "cmp.annotations.update";
+        static readonly string k_AnnotationsDeletePermission = "cmp.annotations.delete";
+        static readonly string k_AnnotationsCreateCommentPermission = "cmp.annotations.create_comment";
+        static readonly string k_AnnotationsEditCommentPermission = "cmp.annotations.update_comment";
+        static readonly string k_AnnotationsDeleteCommentPermission = "cmp.annotations.delete_comment";
 
         public event Action<IEnumerable<ITopic>> Initialized;
         public event Action<ITopic> TopicCreatedOrUpdated;
         public event Action<TopicId> TopicRemoved;
 
+        IServiceHttpClient m_ServiceHttpClient;
+        IServiceHostResolver m_ServiceHostResolver;
+        IAppMessaging m_AppMessaging;
+        IPermissionsController m_PermissionsController;
+
         [Inject]
-        public void Setup(IServiceHttpClient serviceHttpClient, IServiceHostResolver cloudConfiguration, IAppMessaging appMessaging)
+        public void Setup(IServiceHttpClient serviceHttpClient, IServiceHostResolver cloudConfiguration,
+            IAppMessaging appMessaging, IPermissionsController permissionsController)
         {
             m_ServiceHttpClient = serviceHttpClient;
             m_ServiceHostResolver = cloudConfiguration;
             m_AppMessaging = appMessaging;
+            m_PermissionsController = permissionsController;
         }
 
         public void Initialize(DatasetDescriptor datasetDescriptor)
         {
             try
             {
-                InitializeAsync(datasetDescriptor).ConfigureAwait(false);
+                _ = InitializeAsync(datasetDescriptor);
             }
             catch (Exception e)
             {
@@ -178,6 +198,29 @@ namespace Unity.ReferenceProject.Annotation
             var commentCreationBuilder = new CommentCreationBuilder();
             commentCreationBuilder.SetText(comment);
             CreateCommentAsync(topic, commentCreationBuilder.GetCommentCreation()).ConfigureAwait(false);
+        }
+
+        public bool CheckPermissions(AnnotationsPermission permission)
+        {
+            switch (permission)
+            {
+                case AnnotationsPermission.Read:
+                    return m_PermissionsController.Permissions.Contains(k_AnnotationsReadPermission);
+                case AnnotationsPermission.Create:
+                    return m_PermissionsController.Permissions.Contains(k_AnnotationsCreatePermission);
+                case AnnotationsPermission.Delete:
+                    return m_PermissionsController.Permissions.Contains(k_AnnotationsDeletePermission);
+                case AnnotationsPermission.Edit:
+                    return m_PermissionsController.Permissions.Contains(k_AnnotationsEditPermission);
+                case AnnotationsPermission.CreateComment:
+                    return m_PermissionsController.Permissions.Contains(k_AnnotationsCreateCommentPermission);
+                case AnnotationsPermission.EditComment:
+                    return m_PermissionsController.Permissions.Contains(k_AnnotationsEditCommentPermission);
+                case AnnotationsPermission.DeleteComment:
+                    return m_PermissionsController.Permissions.Contains(k_AnnotationsDeleteCommentPermission);
+                default:
+                    return false;
+            }
         }
 
         async Task CreateCommentAsync(ITopic topic, ICommentCreation commentCreation)

@@ -14,7 +14,7 @@ namespace Unity.ReferenceProject.Presence
         static readonly string k_MicrophoneIconName = "microphone2x";
         static readonly string k_MicrophoneSlashIconName = "microphone-slash2x";
         readonly VoiceLevelIndicator m_VoiceLevelIndicator;
-        
+
         public VoiceLevelMicrophoneButton(bool muted, Action clickEvent = null)
             : base("", clickEvent)
         {

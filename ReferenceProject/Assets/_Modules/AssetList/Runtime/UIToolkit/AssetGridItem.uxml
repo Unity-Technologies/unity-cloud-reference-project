@@ -1,14 +1,16 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:appui="Unity.AppUI.UI">
     <Style src="AssetGridItemStyle.uss" />
-    <ui:VisualElement name="GridItem" class="container__asset-grid-item">
-        <ui:VisualElement name="NotStreamableBadge" class="container__asset_not_streamable_badge">
-            <appui:Icon icon-name="info" />
-            <appui:Heading text="@AssetList:AssetIsNotStreamable" size="XXS" />
-        </ui:VisualElement>
-        <ui:Image name="Thumbnail" class="image__asset_grid_item_thumbnail" />
-        <appui:LinearProgress name="Progress" class="linear-progress__asset-grid-item-progress" />
-        <ui:VisualElement name="NameContainer" class="container__asset-grid-item-name">
-            <appui:Text name="Name" size="XS" class="text__asset-grid-item-name" />
+    <ui:VisualElement name="Root">
+        <ui:VisualElement name="GridItem" class="container__asset-grid-item">
+            <ui:VisualElement name="NotStreamableBadge" class="container__asset_not_streamable_badge">
+                <appui:Icon icon-name="info" />
+                <appui:Heading text="@AssetList:AssetIsNotStreamable" size="XXS" />
+            </ui:VisualElement>
+            <ui:Image name="Thumbnail" class="image__asset_grid_item_thumbnail" />
+            <appui:LinearProgress name="Progress" class="linear-progress__asset-grid-item-progress" />
+            <ui:VisualElement name="NameContainer" class="container__asset-grid-item-name">
+                <appui:Text name="Name" size="XS" class="text__asset-grid-item-name" />
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

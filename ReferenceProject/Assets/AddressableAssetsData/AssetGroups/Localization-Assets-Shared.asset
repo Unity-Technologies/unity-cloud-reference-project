@@ -94,6 +94,12 @@ MonoBehaviour:
     m_ReadOnly: 1
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 602d5382a0f48b8458c7646f9b9c62ab
+    m_Address: Assets/_Modules/Navigation/Runtime/Localization/Navigation Shared
+      Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: 43a44370dc1e75e4f93979ee9a9034bd, type: 2}
   m_SchemaSet:

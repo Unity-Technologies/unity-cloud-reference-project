@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using Unity.Cloud.Presence;
 
 #if USE_VIVOX
+using System.Threading;
 using Unity.Services.Core;
 using Unity.Services.Vivox;
 using System.Threading.Tasks;
@@ -19,7 +20,6 @@ namespace Unity.ReferenceProject.Presence
     {
         Unsupported,
         NotConnected,
-        NoRoom,
         Connected
     }
 
@@ -33,6 +33,7 @@ namespace Unity.ReferenceProject.Presence
         VoiceStatus CurrentVoiceStatus { get; }
         bool Muted { get; set; }
         IVoiceParticipant GetVoiceParticipant(IParticipant participant);
+        void CheckPermissions();
     }
 
     public class VoiceManager : MonoBehaviour, IVoiceManager
@@ -61,11 +62,14 @@ namespace Unity.ReferenceProject.Presence
         IPresenceStreamingRoom m_PresenceStreamingRoom;
         IPresenceVivoxServiceComponents m_PresenceVivoxServiceComponents;
         ServicesInitializer m_ServicesInitializer;
+        CancellationTokenSource m_LeavingRoomCancellationToken;
+        IPresenceRoomsManager m_PresenceRoomsManager;
 
         [Inject]
-        void Setup(IPresenceStreamingRoom presenceStreamingRoom, IPresenceVivoxServiceComponents presenceVivoxServiceComponents, InitializationOptions initializationOptions, ServicesInitializer servicesInitializer)
+        void Setup(IPresenceRoomsManager presenceRoomsManager, IPresenceStreamingRoom presenceStreamingRoom, IPresenceVivoxServiceComponents presenceVivoxServiceComponents, InitializationOptions initializationOptions, ServicesInitializer servicesInitializer)
         {
             CurrentVoiceStatus = VoiceStatus.NotConnected;
+            m_PresenceRoomsManager = presenceRoomsManager;
             m_PresenceStreamingRoom = presenceStreamingRoom;
             m_PresenceVivoxServiceComponents = presenceVivoxServiceComponents;
             m_ServicesInitializer = servicesInitializer;
@@ -94,10 +98,10 @@ namespace Unity.ReferenceProject.Presence
 
         void OnEnable()
         {
+            CurrentVoiceStatus = VoiceStatus.NotConnected;
             m_PresenceVivoxServiceComponents.VoiceService.VoiceParticipantAdded += OnVoiceParticipantAdded;
             m_PresenceVivoxServiceComponents.VoiceService.VoiceParticipantRemoved += OnVoiceParticipantRemoved;
             m_PresenceVivoxServiceComponents.VoiceService.VoiceParticipantUpdated += OnVoiceParticipantUpdated;
-            
             m_PresenceStreamingRoom.RoomJoined += OnRoomJoined;
             m_PresenceStreamingRoom.RoomLeft += OnRoomLeft;
         }
@@ -110,44 +114,62 @@ namespace Unity.ReferenceProject.Presence
             m_PresenceVivoxServiceComponents.VoiceService.VoiceParticipantRemoved -= OnVoiceParticipantRemoved;
             m_PresenceVivoxServiceComponents.VoiceService.VoiceParticipantUpdated -= OnVoiceParticipantUpdated;
         }
-        
+
         void OnRoomJoined(Room room)
         {
-            CurrentVoiceStatus = VoiceStatus.NotConnected;
+            CheckPermissions();
+            if (CurrentVoiceStatus == VoiceStatus.Unsupported)
+                return;
+            m_LeavingRoomCancellationToken = new CancellationTokenSource();
             OnJoinVoice().ConfigureAwait(true);
         }
 
         void OnRoomLeft(Room room)
         {
+            if (CurrentVoiceStatus == VoiceStatus.Unsupported)
+                return;
             OnLeaveVoice().ConfigureAwait(true);
-            CurrentVoiceStatus = VoiceStatus.NoRoom;
         }
 
         void OnVoiceParticipantAdded(IEnumerable<IVoiceParticipant> voiceParticipants)
         {
+            if (CurrentVoiceStatus == VoiceStatus.Unsupported)
+                return;
             CurrentVoiceStatus = m_PresenceVivoxServiceComponents.VoiceService.SelfVoiceParticipant != null ? VoiceStatus.Connected : VoiceStatus.NotConnected;
             VoiceParticipantAdded?.Invoke(voiceParticipants);
         }
-        
+
         void OnVoiceParticipantRemoved(IEnumerable<IVoiceParticipant> voiceParticipants)
         {
+            if (CurrentVoiceStatus == VoiceStatus.Unsupported)
+                return;
             CurrentVoiceStatus = m_PresenceVivoxServiceComponents.VoiceService.SelfVoiceParticipant != null ? VoiceStatus.Connected : VoiceStatus.NotConnected;
             VoiceParticipantRemoved?.Invoke(voiceParticipants);
         }
 
         void OnVoiceParticipantUpdated(IEnumerable<IVoiceParticipant> voiceParticipants)
         {
+            if (CurrentVoiceStatus == VoiceStatus.Unsupported)
+                return;
             CurrentVoiceStatus = m_PresenceVivoxServiceComponents.VoiceService.SelfVoiceParticipant != null ? VoiceStatus.Connected : VoiceStatus.NotConnected;
             VoiceParticipantUpdated?.Invoke(voiceParticipants);
         }
 
         async Task OnJoinVoice()
         {
+            while (CurrentVoiceStatus == VoiceStatus.Connected)
+            {
+                await Task.Delay(1, m_LeavingRoomCancellationToken.Token);
+            }
+
             await m_PresenceVivoxServiceComponents.VoiceService.JoinAsync();
+            m_LeavingRoomCancellationToken.Dispose();
+            m_LeavingRoomCancellationToken = null;
         }
 
         async Task OnLeaveVoice()
         {
+            m_LeavingRoomCancellationToken?.Cancel();
             await m_PresenceVivoxServiceComponents.VoiceService.LeaveAsync().ContinueWith(t =>
             {
                 DisconnectedToVoice();
@@ -193,6 +215,16 @@ namespace Unity.ReferenceProject.Presence
             return m_PresenceVivoxServiceComponents.VoiceService.GetServiceParticipant((Participant)participant);
 #else
             return null;
+#endif
+        }
+        
+        public void CheckPermissions()
+        {
+#if USE_VIVOX
+            if (!m_PresenceRoomsManager.CheckPermissions(PresencePermission.UseCommunication))
+            {
+                CurrentVoiceStatus = VoiceStatus.Unsupported;
+            }
 #endif
         }
     }

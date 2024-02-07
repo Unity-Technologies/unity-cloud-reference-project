@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: ViewHome
   m_EditorClassIdentifier: 
   m_Icon: {fileID: 21300000, guid: dfb971aebfe09e04bb63cb10365e324d, type: 3}
-  m_ViewName: Home
+  m_ViewName: '@Navigation:Home'
   m_AngleRotation: {x: 0, y: 0, z: 0}
   m_UseDefaultView: 1

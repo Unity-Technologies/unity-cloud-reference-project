@@ -15,11 +15,13 @@ namespace Unity.ReferenceProject.MeasureTool
         MeasureListUIController m_MeasureListUIController;
 
         IInputManager m_InputManager;
+        IAppUnit m_AppUnit;
 
         [Inject]
-        void Setup(IInputManager inputManager)
+        void Setup(IInputManager inputManager, IAppUnit appUnit)
         {
             m_InputManager = inputManager;
+            m_AppUnit = appUnit;
         }
 
         protected override VisualElement CreateVisualTree(VisualTreeAsset template)
@@ -35,7 +37,7 @@ namespace Unity.ReferenceProject.MeasureTool
             m_MeasureListUIController.OnToolOpen();
             m_MeasurementToolController.StartNewLine();
 
-            var line = new MeasureLineData();
+            var line = new MeasureLineData(m_AppUnit.GetSystemUnit(), true);
             m_MeasurementToolController.Add(line);
             m_MeasurementToolController.Edit(line);
         }
