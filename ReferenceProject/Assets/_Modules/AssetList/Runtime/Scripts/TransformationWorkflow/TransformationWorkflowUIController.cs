@@ -26,7 +26,7 @@ namespace Unity.ReferenceProject.AssetList
         [SerializeField]
         bool m_HideNonSourceDatasets = true;
         
-        static readonly string k_SourceDatasetName = "Sources"; // This is a convention in the Asset Manager
+        static readonly string k_SourceDatasetName = "Source"; // This is a convention in the Asset Manager
         
         TransformationWorkflowController m_TransformationWorkflowController;
 
@@ -206,7 +206,7 @@ namespace Unity.ReferenceProject.AssetList
                 {
                     m_DatasetDropdown.SetEnabled(true);
                     m_DatasetDropdown.sourceItems = m_HideNonSourceDatasets ?
-                        datasets.Where(d => d.Name == k_SourceDatasetName).ToList() : datasets;
+                        datasets.Where(d => d.Name != null && d.Name.Contains(k_SourceDatasetName)).ToList() : datasets;
                     
                     if (datasets.Count > 0)
                     {
@@ -269,9 +269,8 @@ namespace Unity.ReferenceProject.AssetList
                 {
                     foreach (var t in assetTransformations)
                     {
-                        if (t.IsRunning() && m_Dialog.isPrimaryActionDisabled)
+                        if (t.IsRunning())
                         {
-                            m_Dialog.isPrimaryActionDisabled = false;
                             isRunning = true;
                         }
 
@@ -282,6 +281,8 @@ namespace Unity.ReferenceProject.AssetList
                 {
                     m_Transformations.Add(new Heading("@AssetList:NoTransformation") { size = HeadingSize.XXS });
                 }
+                
+                m_Dialog.isPrimaryActionDisabled = isRunning;
 
                 if (isRunning)
                 {
