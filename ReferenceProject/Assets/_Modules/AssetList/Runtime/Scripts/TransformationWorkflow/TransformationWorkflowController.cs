@@ -46,7 +46,7 @@ namespace Unity.ReferenceProject.AssetList
         public async Task StartTransformation(IDataset dataset, string file)
         {
             var descriptor = dataset.Descriptor;
-            var url = ConstructUrl($"projects/{descriptor.ProjectId}/assets/{descriptor.AssetId}/versions/1/datasets/{descriptor.DatasetId}/transformations/start/3d-data-streaming");
+            var url = ConstructUrl($"projects/{descriptor.ProjectId}/assets/{descriptor.AssetId}/versions/{descriptor.AssetVersion}/datasets/{descriptor.DatasetId}/transformations/start/3d-data-streaming");
 
             try
             {

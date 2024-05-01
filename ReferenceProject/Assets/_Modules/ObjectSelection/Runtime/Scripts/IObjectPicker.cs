@@ -1,18 +1,33 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Unity.Cloud.Common;
-using Unity.Cloud.DataStreaming.Runtime;
 using UnityEngine;
+using RaycastResult = Unity.Cloud.DataStreaming.Runtime.RaycastResult;
 
 namespace Unity.ReferenceProject.ObjectSelection
 {
-    public struct PathPickerResult
+    public interface IPickerResult
     {
-        public int Index { get; set; }
-        public PickerResult PickerResult { get; set; }
+        public Vector3 Point { get; }
+        public Vector3 Normal { get; }
+        public bool HasIntersected { get; }
+        public InstanceId InstanceId { get; }
+        public float Distance { get; }
+    }
+    
+    public interface IPathPickerResult
+    {
+        public int Index { get; }
+        public IPickerResult PickerResult { get; }
     }
 
-    public readonly struct PickerResult
+    public struct PathPickerResult : IPathPickerResult
+    {
+        public int Index { get; set; }
+        public IPickerResult PickerResult { get; set; }
+    }
+
+    public readonly struct PickerResult : IPickerResult
     {
         public static readonly PickerResult Invalid = new(RaycastResult.Invalid);
         
@@ -34,7 +49,7 @@ namespace Unity.ReferenceProject.ObjectSelection
 
     public interface IObjectPicker
     {
-        Task<PickerResult> PickAsync(Ray ray, float maxDistance = 1000f);
-        Task<PathPickerResult> PickFromPathAsync(Vector3[] points);
+        Task<IPickerResult> PickAsync(Ray ray, float maxDistance = 1000f);
+        Task<IPathPickerResult> PickFromPathAsync(Vector3[] points);
     }
 }

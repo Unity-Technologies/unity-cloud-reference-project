@@ -28,13 +28,13 @@ namespace Unity.ReferenceProject.ObjectSelection
             dataStreamerProvider.DataStreamer.StageDestroyed.Subscribe(() => m_Stage = null);
         }
 
-        public async Task<PickerResult> PickAsync(Ray ray, float maxDistance = k_MaxDistance)
+        public async Task<IPickerResult> PickAsync(Ray ray, float maxDistance = k_MaxDistance)
         {
             var raycastResult = new PickerResult(await m_Stage.RaycastAsync(ray, maxDistance));
             return raycastResult;
         }
 
-        public async Task<PathPickerResult> PickFromPathAsync(Vector3[] points)
+        public async Task<IPathPickerResult> PickFromPathAsync(Vector3[] points)
         {
             List<RayData> rays = new List<RayData>();
             for (int i = 0; i < points.Length - 2; i++)
