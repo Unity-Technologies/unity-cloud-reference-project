@@ -97,7 +97,7 @@ namespace Unity.ReferenceProject.WalkController
         CharacterController m_Controller;
         IObjectPicker m_Picker;
         Task m_GetGroundTask;
-        PickerResult m_DownCastResult;
+        IPickerResult m_DownCastResult;
         Vector3 m_MoveDirectionInput;
         Vector3 m_PlayerVelocity;
         IAppMessaging m_AppMessaging;

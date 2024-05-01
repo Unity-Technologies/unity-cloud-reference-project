@@ -135,7 +135,7 @@ PlayerSettings:
   vulkanEnableLateAcquireNextImage: 0
   vulkanEnableCommandBufferRecycling: 1
   loadStoreDebugModeEnabled: 0
-  bundleVersion: 0.4.1
+  bundleVersion: 0.4.2
   preloadedAssets:
   - {fileID: 8482996352975396597, guid: 5e000526ecb2d4747bf4ce80327ff334, type: 2}
   - {fileID: 11400000, guid: 0d693cc65d1393c4dbeb41e11b77f445, type: 2}
@@ -164,10 +164,10 @@ PlayerSettings:
     Standalone: com.UnityTechnologies.com.unity.template-starter-kit
     iPhone: com.unity.cloud.reference-project
   buildNumber:
-    Standalone: 20240202
-    VisionOS: 20240202
-    iPhone: 20240202
-    tvOS: 20240202
+    Standalone: 20240501
+    VisionOS: 20240501
+    iPhone: 20240501
+    tvOS: 20240501
   overrideDefaultApplicationIdentifier: 1
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 22

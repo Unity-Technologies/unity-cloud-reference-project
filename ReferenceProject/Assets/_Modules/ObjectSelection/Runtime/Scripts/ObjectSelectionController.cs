@@ -196,7 +196,7 @@ namespace Unity.ReferenceProject.ObjectSelection
             }
         }
 
-        void DispatchSelection(PickerResult pickResult)
+        void DispatchSelection(IPickerResult pickResult)
         {
             var data = new ObjectSelectionInfo(pickResult.HasIntersected, pickResult.InstanceId, 
                 pickResult.Point, pickResult.Normal);
