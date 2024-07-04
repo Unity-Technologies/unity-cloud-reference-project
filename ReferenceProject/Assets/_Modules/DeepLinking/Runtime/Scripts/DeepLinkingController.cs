@@ -10,10 +10,11 @@ namespace Unity.ReferenceProject.DeepLinking
 {
     public interface IDeepLinkingController : IDisposable
     {
-        event Action<DatasetDescriptor, bool> DeepLinkConsumed;
+        event Action<AssetDescriptor, bool> DeepLinkConsumed;
         event Action<Exception> LinkConsumptionFailed;
         Task<Uri> GenerateUri(AssetDescriptor assetDescriptor);
         Task<bool> TryConsumeUri(string url);
+        void ProcessQueryArguments();
     }
 
     public sealed class DeepLinkingController : IDeepLinkingController
@@ -44,7 +45,7 @@ namespace Unity.ReferenceProject.DeepLinking
             m_DeepLinkData.SetCameraReady += OnSetCameraReady;
         }
 
-        public event Action<DatasetDescriptor, bool> DeepLinkConsumed;
+        public event Action<AssetDescriptor, bool> DeepLinkConsumed;
         public event Action<Exception> LinkConsumptionFailed;
 
         public void Dispose()
@@ -78,36 +79,35 @@ namespace Unity.ReferenceProject.DeepLinking
             return false;
         }
 
+        public void ProcessQueryArguments()
+        {
+            if (m_CurrentDeepLinkInfo != null)
+            {
+                if (!string.IsNullOrEmpty(m_CurrentDeepLinkInfo.QueryArguments))
+                {
+                    m_QueryArgumentsProcessor.Process(m_CurrentDeepLinkInfo);                    
+                }
+                m_CurrentDeepLinkInfo = null;
+                m_DeepLinkData.DeepLinkIsProcessing = false;
+            }
+        }
+
         async Task<bool> TryConsumeUri(Uri uri)
         {
             if (uri == null)
                 return false;
 
-            m_DeepLinkData.DeepLinkIsProcessing = true;
             var deepLinkInfo = await m_DeepLinkProvider.GetDeepLinkInfoAsync(uri);
-            if (deepLinkInfo is { ResourceType: DeepLinkResourceType.Dataset })
+            if (deepLinkInfo is { ResourceType: DeepLinkResourceType.Asset })
             {
+                m_DeepLinkData.DeepLinkIsProcessing = true;
                 m_DeepLinkData.SetDeepLinkCamera = true;
 
-                // Move to utils
-                var splitId = deepLinkInfo.ResourceId.ToString().Split(',');
-
-                var organizationId = new OrganizationId(splitId[0]);
-                var projectId = new ProjectId(splitId[1]);
-                var assetId = new AssetId(splitId[2]);
-                var datasetId = new DatasetId(splitId[3]);
-
                 var hasNewSceneState = !string.IsNullOrEmpty(deepLinkInfo.QueryArguments);
-                if (hasNewSceneState)
-                {
-                    m_QueryArgumentsProcessor.Process(deepLinkInfo);
-                }
-
-                var datasetDescriptor = new DatasetDescriptor(new AssetDescriptor(new ProjectDescriptor(organizationId, projectId), assetId, new AssetVersion(0)), datasetId);
-
-                DeepLinkConsumed?.Invoke(datasetDescriptor, hasNewSceneState);
+                var assetDescriptor = deepLinkInfo.ResourceId.ToAssetDescriptor();
+                
+                DeepLinkConsumed?.Invoke(assetDescriptor, hasNewSceneState);
                 m_CurrentDeepLinkInfo = deepLinkInfo;
-
                 return true;
             }
 
@@ -116,10 +116,7 @@ namespace Unity.ReferenceProject.DeepLinking
 
         void OnSetCameraReady()
         {
-            if (m_CurrentDeepLinkInfo != null && !string.IsNullOrEmpty(m_CurrentDeepLinkInfo.QueryArguments))
-            {
-                m_QueryArgumentsProcessor.Process(m_CurrentDeepLinkInfo);
-            }
+            ProcessQueryArguments();
         }
 
         async Task TryConsumeForwardedDeepLink()
@@ -146,7 +143,10 @@ namespace Unity.ReferenceProject.DeepLinking
         {
             Debug.Log($"A link was received '{uri}'.");
             m_ForwardedDeepLink = uri;
-            await TryConsumeForwardedDeepLink();
+            if (m_Session.State == SessionState.LoggedIn)
+            {
+                await TryConsumeForwardedDeepLink();                
+            }
         }
 
         async void OnAuthenticationStateChanged(SessionState state)

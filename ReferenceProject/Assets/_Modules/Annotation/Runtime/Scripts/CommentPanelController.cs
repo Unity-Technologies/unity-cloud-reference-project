@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Unity.AppUI.UI;
 using Unity.Cloud.Annotation;
 using Unity.Cloud.Identity;
@@ -76,12 +77,12 @@ namespace Unity.ReferenceProject.Annotation
         bool m_CanEdit;
         bool m_CanDelete;
 
-        IAuthenticatedUserInfoProvider m_UserInfoProvider;
+        IUserInfoProvider m_UserInfoProvider;
         IAppMessaging m_AppMessaging;
         IInputManager m_InputManager;
 
         [Inject]
-        void Setup(IAuthenticatedUserInfoProvider userInfoProvider, IAppMessaging appMessaging, IInputManager inputManager)
+        void Setup(IUserInfoProvider userInfoProvider, IAppMessaging appMessaging, IInputManager inputManager)
         {
             m_UserInfoProvider = userInfoProvider;
             m_AppMessaging = appMessaging;
@@ -171,7 +172,7 @@ namespace Unity.ReferenceProject.Annotation
             Utils.Hide(m_CommentsPanel);
         }
 
-        public void ShowComments(ITopic topic, IEnumerable<IComment> comments)
+        public async Task ShowComments(ITopic topic, IReadOnlyCollection<IComment> comments)
         {
             m_CommentTopicContainer.Clear();
             m_CommentContainer.Clear();
@@ -189,10 +190,13 @@ namespace Unity.ReferenceProject.Annotation
                 var size = comments.Count();
                 Common.Utils.SetVisible(m_CommentSeparator, true);
                 m_CommentCounterText.variables = new object[] { size };
+
+                var userInfo = await Utils.GetCurrentUserInfoAsync(m_UserInfoProvider);
+
                 for (int i = 0; i < size; i++)
                 {
                     var comment = comments.ElementAt(i);
-                    var commentUI = CreateCommentEntry(comment);
+                    var commentUI = CreateCommentEntry(comment, Utils.IsSameUser(userInfo, comment.Author));
                     m_CommentContainer.Add(commentUI);
                     lastElement = commentUI;
 
@@ -215,7 +219,7 @@ namespace Unity.ReferenceProject.Annotation
             ResetTextInput();
         }
 
-        VisualElement CreateCommentEntry(IComment comment)
+        VisualElement CreateCommentEntry(IComment comment, bool isUserAuthor)
         {
             var commentEntry = m_CommentEntryTemplate.Instantiate();
             var commentEntryContainer = commentEntry.Q("CommentEntryContainer");
@@ -249,8 +253,6 @@ namespace Unity.ReferenceProject.Annotation
 
             UpdateCommentEntry(commentEntry, comment);
 
-            var isUserAuthor = comment.Author.FullName == m_UserInfoProvider.GetUserInfo(AuthenticatedUserInfoClaims.Name);
-
             optionButton.clicked += () =>
             {
                 var contentView = new VisualElement();
@@ -260,6 +262,7 @@ namespace Unity.ReferenceProject.Annotation
                 var deleteButton = Utils.OptionButton(m_OptionButtonTemplate,"delete", m_Delete, () =>
                 {
                     popover.Dismiss();
+
                     // Hide the comment entry before deleting it to avoid user manipulating it while it's being deleted
                     Utils.Hide(commentEntry);
                     CommentDeleted?.Invoke(comment);

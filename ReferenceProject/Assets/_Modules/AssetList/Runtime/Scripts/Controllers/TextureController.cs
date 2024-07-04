@@ -24,15 +24,8 @@ namespace Unity.ReferenceProject.AssetList
 
         public static async Task GetThumbnail(IAsset asset, int width, Action<Texture2D> thumbnailReadyCallback)
         {
-            var file = await asset.GetFileAsync(asset.PreviewFile, CancellationToken.None);
-            if (file == null)
-            {
-                thumbnailReadyCallback?.Invoke(null);
-                return;
-            }
-
             var key = asset.Descriptor.AssetId.ToString();
-            
+
             if (!s_TextureCache.TryGetValue(key, out var entry))
             {
                 // Create new download request
@@ -47,7 +40,7 @@ namespace Unity.ReferenceProject.AssetList
 
                 try
                 {
-                    var url = await GetUrl(file);
+                    var url = await asset.GetPreviewUrlAsync(CancellationToken.None);
                     if (url == null)
                     {
                         entry.IsDownloading = false;
@@ -66,7 +59,7 @@ namespace Unity.ReferenceProject.AssetList
                     {
                         entry.IsDownloading = false;
                         thumbnailReadyCallback?.Invoke(null);
-                        Debug.LogError($"Timed out downloading thumbnail for {file.Descriptor.Path}");
+                        Debug.LogError($"Timed out downloading thumbnail for asset {asset.Name}");
                         return;
                     }
                 }

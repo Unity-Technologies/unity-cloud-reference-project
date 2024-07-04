@@ -11,7 +11,7 @@ using Unity.AppUI.UI;
 using Unity.Cloud.Assets;
 using Unity.Cloud.Common;
 using Unity.Cloud.Metadata;
-using Unity.ReferenceProject.AssetManager;
+using Unity.Cloud.Metadata.AssetManager;
 using Unity.ReferenceProject.DataStreaming;
 using Unity.ReferenceProject.Messaging;
 using UnityEngine.UIElements;
@@ -172,18 +172,18 @@ namespace Unity.ReferenceProject.Metadata
 
         async void OnAssetLoaded(IAsset asset, IDataset dataset)
         {
-            var data = dataset.Descriptor;
-            await OnAssetLoadedAsync(data.ProjectId, data.AssetId, data.DatasetId);
+            await OnAssetLoadedAsync(dataset);
         }
 
-        async Task OnAssetLoadedAsync(ProjectId projectId, AssetId assetId, DatasetId datasetId)
+        async Task OnAssetLoadedAsync(IDataset dataset)
         {
-            await InitializeMetadataProviderAsync(projectId, assetId, datasetId);
+            await InitializeMetadataProviderAsync(dataset);
         }
 
-        Task InitializeMetadataProviderAsync(ProjectId projectId, AssetId assetId, DatasetId datasetId)
+        Task InitializeMetadataProviderAsync(IDataset dataset)
         {
-            m_MetadataRepository = new MetadataRepository(m_ServiceHttpClient, m_ServiceHostResolver, projectId, assetId, datasetId);
+            var factory = new MetadataRepositoryFactory();
+            m_MetadataRepository = factory.Create(dataset, m_ServiceHttpClient, m_ServiceHostResolver);
             return Task.CompletedTask;
         }
 
@@ -296,12 +296,13 @@ namespace Unity.ReferenceProject.Metadata
         async Task QueryMetadataForInstance(InstanceId id)
         {
             var query = m_MetadataRepository.Query();
-            query.SelectAll();
-            query.IncludedIn(id);
-            var result = await query.ExecuteAsync();
+            query.Select(MetadataPathCollection.All);
+            var result = await query.WhereInstanceEquals(id).GetFirstOrDefaultAsync(CancellationToken.None);
 
-            if (!result.TryGetValue(id, out MetadataObject metadataObjectList))
+            if (result == null)
                 return;
+
+            var metadataObjectList = result.Properties;
 
             foreach (var key in metadataObjectList.Keys)
             {

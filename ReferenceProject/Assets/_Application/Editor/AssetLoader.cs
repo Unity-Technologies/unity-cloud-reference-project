@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Unity.Cloud.Assets;
 using Unity.Cloud.Identity;
+using Unity.ReferenceProject.AssetList;
 using Unity.ReferenceProject.DataStreaming;
 using Unity.ReferenceProject.Identity;
 using UnityEditor;
@@ -26,6 +27,7 @@ namespace Unity.ReferenceProject.Editor
 
         IOrganizationRepository m_OrganizationRepository;
         IAssetRepository m_AssetRepository;
+        IAssetListController m_AssetListController;
         IDataStreamController m_DataStreamController;
         ICloudSession m_Session;
 
@@ -39,10 +41,11 @@ namespace Unity.ReferenceProject.Editor
 
         [Inject]
         public void Setup(ICloudSession session, IDataStreamController dataStreamController,
-            IOrganizationRepository organizationRepository, IAssetRepository assetRepository)
+            IOrganizationRepository organizationRepository, IAssetRepository assetRepository, IAssetListController assetListController)
         {
             m_OrganizationRepository = organizationRepository;
             m_AssetRepository = assetRepository;
+            m_AssetListController = assetListController;
             m_DataStreamController = dataStreamController;
             m_Session = session;
 
@@ -54,17 +57,28 @@ namespace Unity.ReferenceProject.Editor
 
         async Task OnLoggedIn()
         {
+            if (m_AssetListController.SelectedOrganization != null)
+            {
+                return;
+            }
+
             StatusReceiver.SetStatus($"{ObjectNames.NicifyVariableName(m_Session.State.ToString())}");
             IAsset foundAsset = null;
             IAsset firstFoundAsset = null;
             var cancellationToken = new CancellationTokenSource().Token;
-            var organizations = await m_OrganizationRepository.ListOrganizationsAsync();
+
+            var organizations = new List<IOrganization>();
+
+            await foreach (var organization in m_OrganizationRepository.ListOrganizationsAsync(Range.All, cancellationToken))
+            {
+                organizations.Add(organization);
+            }
 
             foreach (var organization in organizations)
             {
                 var projects = m_AssetRepository.ListAssetProjectsAsync(
                     organization.Id,
-                    new(nameof(IProject.Name), Range.All),
+                    Range.All,
                     cancellationToken);
 
                 Tuple<IAsset, IAsset> assetsFound = await SearchProjects(projects, cancellationToken);
@@ -100,10 +114,8 @@ namespace Unity.ReferenceProject.Editor
 
             await foreach (var project in projects)
             {
-                var assets = project.SearchAssetsAsync(
-                    new AssetSearchFilter(),
-                    new Pagination(nameof(IAsset.Name), Range.All),
-                    cancellationToken);
+                var assetQueryBuilder = project.QueryAssets().LimitTo(Range.All);
+                var assets = assetQueryBuilder.ExecuteAsync(cancellationToken);
 
                 if (!string.IsNullOrEmpty(m_AssetName))
                 {

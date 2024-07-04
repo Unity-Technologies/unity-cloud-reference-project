@@ -1,6 +1,8 @@
 using System;
+using System.Threading.Tasks;
 using Unity.AppUI.UI;
 using Unity.Cloud.Annotation;
+using Unity.Cloud.Identity;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Avatar = Unity.AppUI.UI.Avatar;
@@ -69,6 +71,27 @@ namespace Unity.ReferenceProject.Annotation
                 Show(topicDescription);
                 topicDescription.text = description;
             }
+        }
+
+        public static async Task<IUserInfo> GetCurrentUserInfoAsync(IUserInfoProvider userInfoProvider)
+        {
+            IUserInfo info = null;
+
+            try
+            {
+                info = await userInfoProvider.GetUserInfoAsync();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Unable to get current user information: {e}");
+            }
+
+            return info;
+        }
+
+        public static bool IsSameUser(IUserInfo userInfo, Author author)
+        {
+            return userInfo != null && userInfo.UserId.ToString() == author.Id.ToString();
         }
     }
 }

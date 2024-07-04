@@ -23,20 +23,20 @@ namespace Unity.ReferenceProject
     {
         [SerializeField]
         ServicesInitializer m_ServicesInitializer;
-        
+
         [SerializeField]
         LogLevel m_ServicesLogLevel = LogLevel.Warning;
-        
+
         CompositeAuthenticator m_CompositeAuthenticator;
         ServiceMessagingClient m_JoinerClient;
         ServiceMessagingClient m_MonitoringClient;
-
+        
         public override void InstallBindings()
         {
             // Unity Services Initialization
             Container.Bind<InitializationOptions>().To<InitializationOptions>().AsSingle();
             Container.Bind<ServicesInitializer>().FromInstance(m_ServicesInitializer).AsSingle();
-            
+
             foreach (var logOutput in LogOutputs.Outputs)
             {
                 logOutput.CurrentLevel = m_ServicesLogLevel;
@@ -59,7 +59,6 @@ namespace Unity.ReferenceProject
 
             ApiSourceVersion apiVersionOriginal = ApiSourceVersion.GetApiSourceVersionForAssembly(assembly);
             var serviceHttpClient = new ServiceHttpClient(httpClient, m_CompositeAuthenticator, playerSettings).WithApiSourceHeaders(apiVersionOriginal.Name, apiVersionOriginal.Version + GetFormattedPlatformStr());
-            var organizationRepository = new AuthenticatorOrganizationRepository(serviceHttpClient, serviceHostResolver);
             var assetRepository = AssetRepositoryFactory.Create(serviceHttpClient, serviceHostResolver);
 
             Container.Bind<ICloudSession>().FromInstance(new CloudSession(m_CompositeAuthenticator));
@@ -67,26 +66,26 @@ namespace Unity.ReferenceProject
             Container.Bind<IServiceHostResolver>().FromInstance(serviceHostResolver).AsSingle();
             Container.Bind<IAppIdProvider>().FromInstance(playerSettings).AsSingle();
             Container.Bind<IServiceHttpClient>().FromInstance(serviceHttpClient).AsSingle();
-            Container.Bind<IAuthenticatedUserInfoProvider>().FromInstance(m_CompositeAuthenticator).AsSingle();
+            Container.Bind<IUserInfoProvider>().FromInstance(m_CompositeAuthenticator).AsSingle();
             Container.Bind<IServiceAuthorizer>().FromInstance(m_CompositeAuthenticator).AsSingle();
-            Container.Bind<IOrganizationRepository>().FromInstance(organizationRepository).AsSingle();
+            Container.Bind<IOrganizationRepository>().FromInstance(m_CompositeAuthenticator).AsSingle();
             Container.Bind<IAssetRepository>().FromInstance(assetRepository).AsSingle();
 
-            var queryArguments = new QueryArgumentsProcessor();
+            var queryArgumentsProcessor = new QueryArgumentsProcessor();
             var deepLinkProvider = new DeepLinkProvider(serviceHttpClient,
-                queryArguments,
+                queryArgumentsProcessor,
                 serviceHostResolver,
                 new UnityRuntimeUrlProcessor(),
                 playerSettings
             );
-            Container.Bind<IQueryArgumentsProcessor>().FromInstance(queryArguments).AsSingle();
+            Container.Bind<IQueryArgumentsProcessor>().FromInstance(queryArgumentsProcessor).AsSingle();
             Container.Bind<IDeepLinkProvider>().FromInstance(deepLinkProvider).AsSingle();
             Container.Bind<IUrlRedirectionInterceptor>().FromInstance(UrlRedirectionInterceptor.GetInstance()).AsSingle();
             var clipboard = ClipboardFactory.Create();
             Container.Bind<IClipboard>().FromInstance(clipboard).AsSingle();
 
             var webSocketClientFactory = new WebSocketClientFactory();
-            
+
             m_MonitoringClient = new ServiceMessagingClient(webSocketClientFactory.Create(), m_CompositeAuthenticator, playerSettings);
             m_JoinerClient = new ServiceMessagingClient(webSocketClientFactory.Create(), m_CompositeAuthenticator, playerSettings);
             var presenceManager = new PresenceManager(m_CompositeAuthenticator, serviceHttpClient, serviceHostResolver, playerSettings);
@@ -101,7 +100,7 @@ namespace Unity.ReferenceProject
         static string GetFormattedPlatformStr()
         {
             /* Event Format is as follow :
-                
+
             {project name}@{version}_|_{target platform}_|_{editor platform}
 
             project name : set by ApiSourceVersion.Name

@@ -61,20 +61,21 @@ namespace Unity.ReferenceProject
                 SetCameraPosition
             );
             
-            m_QueryArgumentsProcessor.Register(m_QueryArgumentCameraTransformHandler, DeepLinkResourceType.Dataset);
+            m_QueryArgumentsProcessor.Register(m_QueryArgumentCameraTransformHandler, DeepLinkResourceType.Asset);
         }
 
         void OnDestroy()
         {
             m_AssetEvents.AssetLoaded -= OnAssetLoaded;
             m_AssetEvents.AssetUnloaded -= OnAssetUnloaded;
-            m_QueryArgumentsProcessor.Unregister(m_QueryArgumentCameraTransformHandler, DeepLinkResourceType.Dataset);
+            m_QueryArgumentsProcessor.Unregister(m_QueryArgumentCameraTransformHandler, DeepLinkResourceType.Asset);
         }
         
         static string Vector3UrlFormat(Vector3 v)
         {
             return $"{v.x},{v.y},{v.z}";
         }
+        
         public string GetCameraPosition()
         {
             var cameraTransform = m_CameraProvider.Camera.transform;

@@ -47,7 +47,7 @@ namespace Unity.ReferenceProject
 
             if (room == null)
             {
-                room = m_PresenceRoomsManager.CheckPermissions(PresencePermission.CreateRoom) ? await m_PresenceRoomsManager.CreateRoomAsync(obj.Descriptor.OrganizationGenesisId, assetId) : await m_PresenceRoomsManager.GetRoomAsync(obj.Descriptor.OrganizationGenesisId, assetId);
+                room = m_PresenceRoomsManager.CheckPermissions(PresencePermission.CreateRoom) ? await m_PresenceRoomsManager.CreateRoomAsync(obj.Descriptor.OrganizationId, assetId) : await m_PresenceRoomsManager.GetRoomAsync(obj.Descriptor.OrganizationId, assetId);
 
                 if (room == null)
                     return;

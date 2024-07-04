@@ -10,7 +10,7 @@ namespace Unity.ReferenceProject.AssetList
 
         public override void ClearFilter(AssetSearchFilter searchFilter)
         {
-            searchFilter.AuthoringInfo.Created.Clear();
+            searchFilter.Include().AuthoringInfo.Created.Clear();
         }
     }
 }
