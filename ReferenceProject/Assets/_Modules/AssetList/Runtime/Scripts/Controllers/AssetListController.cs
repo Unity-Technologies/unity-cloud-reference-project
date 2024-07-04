@@ -53,7 +53,7 @@ namespace Unity.ReferenceProject.AssetList
 
     public class AssetListController : IAssetListController
     {
-        static readonly Pagination k_DefaultPagination = new(nameof(IAsset.Name), Range.All);
+        static readonly Range k_DefaultPagination = Range.All;
         static readonly string k_SavedOrganizationIdKey = "SavedOrganizationId";
         static readonly string k_SavedProjectIdKey = "SavedProjectId";
         static readonly string k_OpenAssetPermission = "amc.assets.download";
@@ -63,7 +63,7 @@ namespace Unity.ReferenceProject.AssetList
         public IAssetProject SelectedProject { get; private set; }
         public IAsset SelectedAsset { get; private set; }
         public AssetSearchFilter Filters => m_Filters;
-        public bool IsCollectionSelected => m_Filters.Collections.Any();
+        public bool IsCollectionSelected { get; private set; }
 
         public event Action RefreshStarted;
         public event Action RefreshFinished;
@@ -94,15 +94,7 @@ namespace Unity.ReferenceProject.AssetList
             m_PermissionsController = permissionsController;
             m_ServiceHttpClient = serviceHttpClient;
 
-            m_Filters = new AssetSearchFilter
-            {
-                IncludedFields = new FieldsFilter
-                {
-                    AssetFields = AssetFields.all,
-                    DatasetFields = DatasetFields.systemMetadata,
-                    FileFields = FileFields.none,
-                },
-            };
+            m_Filters = new AssetSearchFilter();
 
             var lastSelectedOrganizationId = new OrganizationId(PlayerPrefs.GetString(k_SavedOrganizationIdKey));
             var lastSelectedProjectId = PlayerPrefs.GetString(k_SavedProjectIdKey);
@@ -123,8 +115,13 @@ namespace Unity.ReferenceProject.AssetList
                 CancelToken();
 
                 var projects = await GetAllProjectsInternal();
-                var projectIds = projects.Select(p => p.Descriptor.ProjectId);
-                var assets = m_AssetRepository.SearchAssetsAsync(SelectedOrganization.Id, projectIds, m_Filters, k_DefaultPagination, m_CancellationTokenSource.Token);
+                var projectDescriptors = projects.Select(p => p.Descriptor);
+
+                var assetQueryBuilder = m_AssetRepository.QueryAssets(projectDescriptors)
+                    .LimitTo(k_DefaultPagination)
+                    .SelectWhereMatchesFilter(m_Filters);
+
+                var assets = assetQueryBuilder.ExecuteAsync(m_CancellationTokenSource.Token);
 
                 NullifyToken();
 
@@ -157,7 +154,12 @@ namespace Unity.ReferenceProject.AssetList
             try
             {
                 CancelToken();
-                var assets = SelectedProject.SearchAssetsAsync(m_Filters, k_DefaultPagination, m_CancellationTokenSource.Token);
+
+                var assetQueryBuilder = SelectedProject.QueryAssets()
+                    .LimitTo(k_DefaultPagination)
+                    .SelectWhereMatchesFilter(m_Filters);
+
+                var assets = assetQueryBuilder.ExecuteAsync(m_CancellationTokenSource.Token);
                 NullifyToken();
                 return assets;
             }
@@ -241,6 +243,11 @@ namespace Unity.ReferenceProject.AssetList
 
         public async Task Refresh()
         {
+            if (SelectedOrganization != null)
+            {
+                return;
+            }
+            
             RefreshStarted?.Invoke();
             await RefreshOrganization();
             RefreshFinished?.Invoke();
@@ -265,8 +272,8 @@ namespace Unity.ReferenceProject.AssetList
 
         public void SelectCollection(IAssetCollection collection)
         {
-            m_Filters.Collections.Clear();
-            m_Filters.Collections.Add(collection.Descriptor.CollectionPath);
+            m_Filters.Collections.WhereContains(collection.Descriptor.Path);
+            IsCollectionSelected = true;
 
             var project = m_Projects[collection.Descriptor.ProjectDescriptor.ProjectId];
             SelectProject(project, false);
@@ -313,14 +320,23 @@ namespace Unity.ReferenceProject.AssetList
         async Task RefreshOrganization()
         {
             Loading?.Invoke(true);
-            var organizations = await m_OrganizationRepository.ListOrganizationsAsync();
+
+            CancelToken();
+
+            var organizations = new List<IOrganization>();
+
+            await foreach (var org in m_OrganizationRepository.ListOrganizationsAsync(Range.All, m_CancellationTokenSource.Token))
+            {
+                organizations.Add(org);
+            }
+
             OrganizationsPopulated?.Invoke(organizations);
 
             var savedOrganizationId = PlayerPrefs.GetString(k_SavedOrganizationIdKey);
             IOrganization lastOrganization = null;
             if (!string.IsNullOrEmpty(savedOrganizationId))
             {
-                lastOrganization = organizations.FirstOrDefault(o => o.Id.ToString() == savedOrganizationId);
+                lastOrganization = organizations.Find(o => o.Id.ToString() == savedOrganizationId);
                 if (lastOrganization != null)
                 {
                     await SelectOrganization(lastOrganization);
@@ -347,7 +363,7 @@ namespace Unity.ReferenceProject.AssetList
 
                 var projects = m_AssetRepository.ListAssetProjectsAsync(
                     SelectedOrganization.Id,
-                    new(nameof(IProject.Name), Range.All),
+                    Range.All,
                     m_CancellationTokenSource.Token);
 
                 var enumerator = projects.GetAsyncEnumerator(m_CancellationTokenSource.Token);
@@ -403,7 +419,8 @@ namespace Unity.ReferenceProject.AssetList
         {
             if (clearCollection)
             {
-                m_Filters.Collections.Clear();
+                m_Filters.Collections.WhereContains((IEnumerable<CollectionPath>)null);
+                IsCollectionSelected = false;
                 CollectionSelected?.Invoke(null);
             }
 

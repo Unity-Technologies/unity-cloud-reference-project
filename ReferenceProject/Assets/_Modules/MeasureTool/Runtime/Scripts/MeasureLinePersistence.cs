@@ -25,7 +25,7 @@ namespace Unity.ReferenceProject.MeasureTool
             var uri = GetUri(descriptor);
             return await GetLines(uri);
         }
-        
+
         public async Task<WebResponse<List<MeasureLineData>>> GetLines(string uri)
         {
             return await m_Api.GetAsync<List<MeasureLineData>>(uri);
@@ -51,7 +51,7 @@ namespace Unity.ReferenceProject.MeasureTool
                 var index = lineCollection.IndexOf(line);
                 lineCollection[index] = line;
             }
-            
+
             return await m_Api.UserPostAsync<List<MeasureLineData>, MeasureLineData>(uri, lineCollection);
         }
 
@@ -77,7 +77,7 @@ namespace Unity.ReferenceProject.MeasureTool
 
         string GetUri(DatasetDescriptor descriptor)
         {
-            return $"{m_BaseUri}/{descriptor.OrganizationGenesisId.ToString()}/{descriptor.ProjectId.ToString()}/{descriptor.AssetId.ToString()}/{k_MeasureDirectory}/lines.json";
+            return $"{m_BaseUri}/{descriptor.OrganizationId.ToString()}/{descriptor.ProjectId.ToString()}/{descriptor.AssetId.ToString()}/{k_MeasureDirectory}/lines.json";
         }
     }
 }

@@ -66,7 +66,7 @@ namespace Unity.ReferenceProject.AssetList
 
         [SerializeField]
         SearchController m_SearchController;
-        
+
         [SerializeField]
         string m_AssetManagerUrl = "https://cloud.unity.com/home";
 
@@ -120,7 +120,7 @@ namespace Unity.ReferenceProject.AssetList
         }
 
         void OnSearchValueChanged(string searchValue)
-        { 
+        {
             m_AssetGrid.UpdateWithSearchResult(searchValue);
         }
 
@@ -329,7 +329,7 @@ namespace Unity.ReferenceProject.AssetList
             var project = await m_AssetListController.GetProject(projectDescriptor);
 
             var projectId = project.Descriptor.ProjectId.ToString();
-            var url = $"{m_AssetManagerUrl}/organizations/{project.Descriptor.OrganizationGenesisId}/projects/{projectId}/assets";
+            var url = $"{m_AssetManagerUrl}/organizations/{project.Descriptor.OrganizationId}/projects/{projectId}/assets";
             _ = TextureController.GetProjectIcon(projectId, texture =>
             {
                 m_AssetInfoUIController.SetButtonProjectInfo(project.Name, url, texture, TextureController.GetProjectIconColor(projectId));
@@ -366,7 +366,7 @@ namespace Unity.ReferenceProject.AssetList
                 m_AssetGrid.Clear();
                 m_CollectionGrid.Clear();
 
-                if(m_RefreshCancellationTokenSource != null)
+                if (m_RefreshCancellationTokenSource != null)
                 {
                     m_RefreshCancellationTokenSource.Cancel();
                     m_RefreshCancellationTokenSource.Dispose();
@@ -398,18 +398,24 @@ namespace Unity.ReferenceProject.AssetList
                 if (!m_AssetListController.IsCollectionSelected && m_AssetListController.SelectedProject != null)
                 {
                     m_RefreshCancellationTokenSource = new CancellationTokenSource();
-                    var collections = await m_AssetListController.SelectedProject.ListCollectionsAsync(m_RefreshCancellationTokenSource.Token);
-                    if (collections != null && collections.Any())
+                    var collections = new List<IAssetCollection>();
+
+                    await foreach (var collection in m_AssetListController.SelectedProject.ListCollectionsAsync(Range.All, m_RefreshCancellationTokenSource.Token))
+                    {
+                        collections.Add(collection);
+                    }
+
+                    if (collections.Any())
                     {
                         var collectionInfos = new List<AssetCollectionInfo>();
                         var filter = new AssetSearchFilter();
                         foreach (var collection in collections)
                         {
-                            filter.Collections.Clear();
-                            filter.Collections.Add(collection.Descriptor.CollectionPath);
-                            var assetCount = await m_AssetListController.SelectedProject.CountAssetsAsync(filter, new AggregationParameters(AssetTypeSearchCriteria.SearchKey), m_RefreshCancellationTokenSource.Token);
-                            collectionInfos.Add(new AssetCollectionInfo { Collection = collection, AssetCount = assetCount.Total });
+                            filter.Collections.WhereContains(collection.Descriptor.Path);
+                            var assetCount = await m_AssetListController.SelectedProject.CountAssetsAsync(filter, m_RefreshCancellationTokenSource.Token);
+                            collectionInfos.Add(new AssetCollectionInfo { Collection = collection, AssetCount = assetCount });
                         }
+
                         m_CollectionGrid.Populate(collectionInfos);
                     }
                 }

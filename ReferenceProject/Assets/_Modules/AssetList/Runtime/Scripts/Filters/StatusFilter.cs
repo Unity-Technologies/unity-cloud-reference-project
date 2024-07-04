@@ -10,7 +10,7 @@ namespace Unity.ReferenceProject.AssetList
 
         public override void ClearFilter(AssetSearchFilter searchFilter)
         {
-            searchFilter.Status.Clear();
+            searchFilter.Include().Status.Clear();
         }
 
         protected override object GetAssetFilteredValue(IAsset asset)
@@ -21,7 +21,7 @@ namespace Unity.ReferenceProject.AssetList
         protected override void ApplySpecificFilter(AssetSearchFilter searchFilter, object value)
         {
             var status = (string)value;
-            searchFilter.Status.Include(status);
+            searchFilter.Include().Status.WithValue(status);
         }
 
         protected override string GetStringValue(object value)

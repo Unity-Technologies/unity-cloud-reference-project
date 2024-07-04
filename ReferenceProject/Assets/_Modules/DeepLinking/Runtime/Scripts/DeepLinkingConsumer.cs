@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Unity.Cloud.Assets;
 using Unity.Cloud.Common;
 using Unity.Cloud.Identity;
+using Unity.ReferenceProject.AssetList;
 using Unity.ReferenceProject.AssetManager;
 using Unity.ReferenceProject.Messaging;
 using Unity.ReferenceProject.StateMachine;
@@ -32,27 +33,25 @@ namespace Unity.ReferenceProject.DeepLinking
         [SerializeField]
         string m_OpenLinkSuccessString = "@DeepLinking:OpenLinkSuccess";
 
-        [FormerlySerializedAs("m_SceneAlreadyOpenedString")]
-        [SerializeField]
-        string m_AssetAlreadyOpenedString = "@DeepLinking:SceneAlreadyOpen";
-
         IAppStateController m_AppStateController;
         PropertyValue<IAsset> m_SelectedAsset;
         IAppMessaging m_AppMessaging;
         IDeepLinkingController m_DeepLinkingController;
-        
+
         IOrganizationRepository m_OrganizationRepository;
         IAssetRepository m_AssetRepository;
+        IAssetListController m_AssetListController;
 
         [Inject]
         public void Setup(IDeepLinkingController deepLinkingController, IAppStateController appStateController,
-            IOrganizationRepository organizationRepository, IAssetRepository assetRepository,
+            IOrganizationRepository organizationRepository, IAssetRepository assetRepository, IAssetListController assetListController,
             AssetManagerStore assetManagerStore, IAppMessaging appMessaging)
         {
             m_DeepLinkingController = deepLinkingController;
             m_AppStateController = appStateController;
             m_OrganizationRepository = organizationRepository;
             m_AssetRepository = assetRepository;
+            m_AssetListController = assetListController;
             m_SelectedAsset = assetManagerStore.GetProperty<IAsset>(nameof(AssetManagerViewModel.Asset));
             m_AppMessaging = appMessaging;
         }
@@ -67,57 +66,46 @@ namespace Unity.ReferenceProject.DeepLinking
             m_DeepLinkingController.DeepLinkConsumed -= OnDeepLinkConsumed;
         }
 
-        void OnDeepLinkConsumed(DatasetDescriptor datasetDescriptor, bool hasNewSceneState)
+        async void OnDeepLinkConsumed(AssetDescriptor assetDescriptor, bool haSceneState)
         {
-            _ = ProcessDescriptor(datasetDescriptor, hasNewSceneState);
+            await ProcessDescriptor(assetDescriptor, haSceneState);
         }
         
-        async Task ProcessDescriptor(DatasetDescriptor datasetDescriptor, bool hasNewSceneState)
+        async Task ProcessDescriptor(AssetDescriptor assetDescriptor, bool hasSceneState)
         {
             var selectedAsset = m_SelectedAsset.GetValue();
+            
+            var isOpeningNewAsset = selectedAsset == null || !selectedAsset.Descriptor.AssetId.Equals(assetDescriptor.AssetId);
+            var asset = await GetAssetAsync(assetDescriptor);
 
-            var isOpeningNewScene = selectedAsset.Descriptor != datasetDescriptor.AssetDescriptor;
-
-            if (isOpeningNewScene || hasNewSceneState)
+            if (isOpeningNewAsset)
             {
-                var asset = await GetAssetAsync(datasetDescriptor.AssetDescriptor);
+                // Switch organization if new asset does not belong to previous selected asset organization
+                // This is required to refresh the users permissions
+                if (selectedAsset == null || !selectedAsset.Descriptor.OrganizationId.Equals(assetDescriptor.OrganizationId))
+                {
+                    var organization = await m_OrganizationRepository.GetOrganizationAsync(assetDescriptor.OrganizationId);
+                    await m_AssetListController.SelectOrganization(organization);
+                }
 
                 m_AppMessaging.ShowMessage(m_OpenLinkSuccessString, false, asset.Name);
-                
+
                 m_AppStateController.PrepareTransition(m_NextState).OnBeforeEnter(() => m_SelectedAsset.SetValue(asset)).Apply();
             }
             else
             {
-                m_AppMessaging.ShowWarning(m_AssetAlreadyOpenedString, true, selectedAsset.Name);
+                if (hasSceneState)
+                {
+                    m_DeepLinkingController.ProcessQueryArguments();
+                }
             }
-        }
-        
-        async Task<IOrganization> GetOrganizationAsync(OrganizationId orgId)
-        {
-            var organizations = await m_OrganizationRepository.ListOrganizationsAsync();
-            return organizations.FirstOrDefault(o => o.Id == orgId)
-                ?? throw new InvalidArgumentException("Organization not found.");
-        }
-
-        async Task<IAssetProject> GetProjectAsync(ProjectDescriptor projectDescriptor)
-        {
-            var project = await m_AssetRepository.GetAssetProjectAsync(projectDescriptor, default)
-                ?? throw new InvalidArgumentException("Project not found.");
-            return project;
         }
 
         async Task<IAsset> GetAssetAsync(AssetDescriptor assetDescriptor)
         {
-            var asset = await m_AssetRepository.GetAssetAsync(assetDescriptor, new FieldsFilter(), default)
+            var asset = await m_AssetRepository.GetAssetAsync(assetDescriptor, default)
                 ?? throw new InvalidArgumentException("Asset not found.");
             return asset;
-        }
-
-        async Task<IDataset> GetDatasetAsync(DatasetDescriptor datasetDescriptor)
-        {
-            var dataset = await m_AssetRepository.GetDatasetAsync(datasetDescriptor, default, CancellationToken.None)
-                ?? throw new InvalidArgumentException("Dataset not found.");
-            return dataset;
         }
     }
 }

@@ -357,6 +357,9 @@ namespace Unity.ReferenceProject.Presence
 
         public bool CheckPermissions(PresencePermission permission)
         {
+            if (m_PermissionsController.Permissions == null)
+                return false;
+            
             switch (permission)
             {
                 case PresencePermission.CreateRoom:

@@ -102,7 +102,11 @@ namespace Unity.ReferenceProject.DeepLinking
 
         async void OnOpenUrlClicked()
         {
-            if (!await m_DeepLinkingController.TryConsumeUri(m_UrlTextField.value))
+            if (await m_DeepLinkingController.TryConsumeUri(m_UrlTextField.value))
+            {
+                m_UrlTextField.value = string.Empty;
+            }
+            else
             {
                 m_AppMessaging.ShowError("@DeepLinking:OpenLinkFail", true);
             }

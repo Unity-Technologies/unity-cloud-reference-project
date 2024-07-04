@@ -10,7 +10,7 @@ namespace Unity.ReferenceProject.AssetList
 
         public override void ClearFilter(AssetSearchFilter searchFilter)
         {
-            searchFilter.AuthoringInfo.UpdatedBy.Clear();
+            searchFilter.Include().AuthoringInfo.UpdatedBy.Clear();
         }
 
         protected override object GetAssetFilteredValue(IAsset asset)
@@ -21,7 +21,7 @@ namespace Unity.ReferenceProject.AssetList
         protected override void ApplySpecificFilter(AssetSearchFilter searchFilter, object value)
         {
             var userId = (string)value;
-            searchFilter.AuthoringInfo.UpdatedBy.Include(userId);
+            searchFilter.Include().AuthoringInfo.UpdatedBy.WithValue(userId);
         }
 
         protected override string GetStringValue(object value)

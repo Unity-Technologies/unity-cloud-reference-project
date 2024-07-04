@@ -202,6 +202,9 @@ namespace Unity.ReferenceProject.Annotation
 
         public bool CheckPermissions(AnnotationsPermission permission)
         {
+            if (m_PermissionsController.Permissions == null)
+                return false;
+
             switch (permission)
             {
                 case AnnotationsPermission.Read:

@@ -105,8 +105,14 @@ namespace Unity.ReferenceProject.AssetList
                 var projectButton = projectItem.Q<ActionButton>();
                 var collectionsContainer = projectItem.Q("CollectionsContainer");
                 var collectionsList = collectionsContainer.Q("CollectionsList");
-                var collections = await project.ListCollectionsAsync(CancellationToken.None);
-                if (collections != null && collections.Any())
+
+                var collections = new List<IAssetCollection>();
+                await foreach (var collection in project.ListCollectionsAsync(Range.All, CancellationToken.None))
+                {
+                    collections.Add(collection);
+                }
+
+                if (collections.Any())
                 {
                     var caret = new Button();
                     caret.quiet = true;
@@ -126,7 +132,7 @@ namespace Unity.ReferenceProject.AssetList
 
                         collectionButton.clicked += () => CollectionSelected?.Invoke(collection);
                         collectionsList.Add(collectionButton);
-                        m_Collections.TryAdd(collection.Descriptor.CollectionPath, collectionButton);
+                        m_Collections.TryAdd(collection.Descriptor.Path, collectionButton);
                     }
                 }
             }
@@ -166,7 +172,7 @@ namespace Unity.ReferenceProject.AssetList
             if (collection == null)
                 return;
 
-            if (m_Collections.TryGetValue(collection.Descriptor.CollectionPath, out var button))
+            if (m_Collections.TryGetValue(collection.Descriptor.Path, out var button))
             {
                 button.selected = true;
             }

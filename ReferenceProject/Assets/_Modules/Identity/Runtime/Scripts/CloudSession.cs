@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Cloud.Identity;
+using UnityEngine;
 
 namespace Unity.ReferenceProject.Identity
 {
@@ -22,26 +23,31 @@ namespace Unity.ReferenceProject.Identity
         public CloudSession(CompositeAuthenticator auth)
         {
             m_Authenticator = auth;
-            m_Authenticator.AuthenticationStateChanged += AuthenticatonStateChanged;
+            m_Authenticator.AuthenticationStateChanged += AuthenticationStateChanged;
         }
 
         public async Task Initialize()
         {
             await m_Authenticator.InitializeAsync();
-            UpdateUserData();
+            await UpdateUserData();
             m_Initialized = true;
         }
 
-        public void UpdateUserData()
+        async Task UpdateUserData()
         {
-            if(m_UserData == null)
+            if (m_Authenticator.AuthenticationState != AuthenticationState.LoggedIn)
+                return;
+
+            var userInfo = await m_Authenticator.GetUserInfoAsync();
+
+            if (m_UserData == null)
             {
-                m_UserData = new UserData(m_Authenticator.GetUserInfo(AuthenticatedUserInfoClaims.Id), m_Authenticator.GetUserInfo(AuthenticatedUserInfoClaims.Name), UnityEngine.Color.grey);
+                m_UserData = new UserData(userInfo.UserId.ToString(), userInfo.Name, UnityEngine.Color.grey);
             }
             else
             {
-                m_UserData.Id = m_Authenticator.GetUserInfo(AuthenticatedUserInfoClaims.Id);
-                m_UserData.Name = m_Authenticator.GetUserInfo(AuthenticatedUserInfoClaims.Name);
+                m_UserData.Id = userInfo.UserId.ToString();
+                m_UserData.Name = userInfo.Name;
             }
         }
 
@@ -62,7 +68,8 @@ namespace Unity.ReferenceProject.Identity
                 await ChangeState(SessionState.LoggedOut);
                 return true;
             }
-            else if(m_Authenticator.AuthenticationState == AuthenticationState.LoggedIn)
+
+            if (m_Authenticator.AuthenticationState == AuthenticationState.LoggedIn)
             {
                 await ChangeState(SessionState.LoggedIn);
                 return false;
@@ -71,17 +78,18 @@ namespace Unity.ReferenceProject.Identity
             return false;
         }
 
-        void AuthenticatonStateChanged(AuthenticationState state)
+        async void AuthenticationStateChanged(AuthenticationState state)
         {
             switch (state)
             {
                 case AuthenticationState.LoggedOut when m_state == SessionState.LoggedIn:
                     {
-                        _ = ChangeState(SessionState.LoggedOut);
-                    }break;
+                        await ChangeState(SessionState.LoggedOut);
+                    }
+                    break;
                 case AuthenticationState.LoggedIn when m_state == SessionState.LoggedOut:
                     {
-                        _ = FastLogIn();
+                        await FastLogIn();
                     }
                     break;
                 default: return;
@@ -91,7 +99,7 @@ namespace Unity.ReferenceProject.Identity
         async Task FastLogIn()
         {
             await ChangeState(SessionState.LoggingIn);
-            UpdateUserData();
+            await UpdateUserData();
             await ChangeState(SessionState.LoggedIn);
         }
 
@@ -107,7 +115,7 @@ namespace Unity.ReferenceProject.Identity
         {
             if (m_state != SessionState.LoggedOut || !m_Initialized)
                 return false;
-            
+
             await ChangeState(SessionState.LoggingIn);
 
             if(m_Authenticator.AuthenticationState == AuthenticationState.LoggedOut)
@@ -119,7 +127,7 @@ namespace Unity.ReferenceProject.Identity
                 UnityEngine.Debug.Log("Already loggedin");
             }
 
-            UpdateUserData();
+            await UpdateUserData();
 
             if (m_Authenticator.AuthenticationState == AuthenticationState.LoggedIn)
             {
@@ -172,7 +180,7 @@ namespace Unity.ReferenceProject.Identity
         async Task ChangeState(SessionState state)
         {
             m_state = state;
-            
+
             SessionStateChanged?.Invoke(m_state);
 
             switch (m_state)

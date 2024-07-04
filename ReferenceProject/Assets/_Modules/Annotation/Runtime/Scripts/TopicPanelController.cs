@@ -89,12 +89,12 @@ namespace Unity.ReferenceProject.Annotation
         static readonly string k_NoTopicStyle = "text__no-topic";
         static readonly string k_TopicEntrySelected = "container__topic-entry--selected";
 
-        IAuthenticatedUserInfoProvider m_UserInfoProvider;
+        IUserInfoProvider m_UserInfoProvider;
         IAppMessaging m_AppMessaging;
         IInputManager m_InputManager;
 
         [Inject]
-        void Setup(IAuthenticatedUserInfoProvider userInfoProvider, IAppMessaging appMessaging, IInputManager inputManager)
+        void Setup(IUserInfoProvider userInfoProvider, IAppMessaging appMessaging, IInputManager inputManager)
         {
             m_UserInfoProvider = userInfoProvider;
             m_AppMessaging = appMessaging;
@@ -153,13 +153,14 @@ namespace Unity.ReferenceProject.Annotation
             Utils.Hide(m_TopicPanel);
         }
 
-        public IEnumerator RefreshTopics(IEnumerable<ITopic> topics)
+        public async Task RefreshTopics(IReadOnlyCollection<ITopic> topics)
         {
             if (topics == null)
-                yield break;
+                return;
 
             m_TopicContainer.Clear();
             m_TopicVisualElements.Clear();
+
             var size = topics.Count();
             if (size == 0)
             {
@@ -167,10 +168,13 @@ namespace Unity.ReferenceProject.Annotation
             }
             else
             {
-                for (int i = size-1; i >= 0; i--)
+                var userInfo = await Utils.GetCurrentUserInfoAsync(m_UserInfoProvider);
+
+                for (int i = size - 1; i >= 0; i--)
                 {
                     var topic = topics.ElementAt(i);
-                    var topicEntry = CreateTopicEntry(topic);
+                    var topicEntry = CreateTopicEntry(topic, Utils.IsSameUser(userInfo, topic.CreationAuthor));
+
                     m_TopicContainer.Add(topicEntry);
                     m_TopicVisualElements.Add(topic.Id, topicEntry);
 
@@ -191,7 +195,7 @@ namespace Unity.ReferenceProject.Annotation
             return m_TopicVisualElements.ContainsKey(topic.Id);
         }
 
-        public void AddTopicEntry(ITopic topic)
+        public async Task AddTopicEntry(ITopic topic)
         {
             if (!m_TopicVisualElements.Any())
             {
@@ -199,7 +203,8 @@ namespace Unity.ReferenceProject.Annotation
                 m_TopicContainer.Clear();
             }
 
-            var topicEntry = CreateTopicEntry(topic);
+            var userInfo = await Utils.GetCurrentUserInfoAsync(m_UserInfoProvider);
+            var topicEntry = CreateTopicEntry(topic, Utils.IsSameUser(userInfo, topic.CreationAuthor));
             m_TopicContainer.Add(topicEntry);
             m_TopicVisualElements.Add(topic.Id, topicEntry);
             topicEntry.SendToBack();
@@ -261,7 +266,7 @@ namespace Unity.ReferenceProject.Annotation
             m_TopicContainer.Add(noTopic);
         }
 
-        VisualElement CreateTopicEntry(ITopic topic)
+        VisualElement CreateTopicEntry(ITopic topic, bool isUserAuthor)
         {
             var topicEntry = m_TopicEntryTemplate.Instantiate();
             var topicContainer = topicEntry.Q("TopicEntryContainer");
@@ -309,8 +314,6 @@ namespace Unity.ReferenceProject.Annotation
             topicContainer.focusable = true;
             topicContainer.AddManipulator(new Pressable());
 
-            var isUserAuthor = topic.CreationAuthor.FullName == m_UserInfoProvider.GetUserInfo(AuthenticatedUserInfoClaims.Name);
-
             var replyPressable = new Pressable();
             reply.AddManipulator(replyPressable);
             replyPressable.clicked += () => {
@@ -333,10 +336,12 @@ namespace Unity.ReferenceProject.Annotation
                 var deleteButton = Utils.OptionButton(m_OptionButtonTemplate,"delete", m_Delete, () =>
                 {
                     TopicDeleted?.Invoke(topic);
+
                     // Hide topic entry before removing it from the list to avoid user manipulating it while it's being removed
                     Utils.Hide(topicEntry);
                     popover.Dismiss();
                 });
+
                 deleteButton.SetEnabled(isUserAuthor && m_CanDelete);
                 contentView.Add(deleteButton);
 

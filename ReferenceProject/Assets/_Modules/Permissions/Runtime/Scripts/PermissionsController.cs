@@ -37,8 +37,9 @@ namespace Unity.ReferenceProject.Permissions
 
             m_Organization = organization;
             var permissions = await organization.ListPermissionsAsync();
-            m_OrganizationPermissions = permissions.ToArray();
-            m_Permissions = permissions.ToArray();
+
+            m_OrganizationPermissions = permissions.Select(p => p.ToString()).ToArray();
+            m_Permissions = permissions.Select(p => p.ToString()).ToArray();
         }
 
         public async Task SetProject(ProjectId projectId, CancellationToken cancellationToken = default)
@@ -52,12 +53,11 @@ namespace Unity.ReferenceProject.Permissions
                 return;
             }
 
-            var projectsAsync = m_Organization.ListProjectsAsync(Range.All, cancellationToken);
-            await foreach (var project in projectsAsync)
+            await foreach (var project in m_Organization.ListProjectsAsync(Range.All, cancellationToken))
             {
                 if (project.Descriptor.ProjectId == projectId)
                 {
-                    var permissions = await project.ListPermissionsAsync();
+                    var permissions = (await project.ListPermissionsAsync()).Select(p => p.ToString());
                     m_Permissions = m_OrganizationPermissions.Concat(permissions).ToArray();
                 }
             }

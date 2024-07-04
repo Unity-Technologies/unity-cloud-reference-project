@@ -34,9 +34,9 @@ namespace Unity.ReferenceProject
             m_AssetListController.AssetSelected -= OnAssetSelected;
         }
 
-        protected override void EnterStateInternal()
+        protected override async void EnterStateInternal()
         {
-            _ = m_AssetListController.Refresh();
+            await m_AssetListController.Refresh();
         }
 
         void OnAssetSelected(IAsset asset)

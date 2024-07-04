@@ -17,6 +17,7 @@ namespace Unity.ReferenceProject.AssetList
         }
 
         readonly List<Choice> m_Choices = new();
+        readonly HashSet<string> m_SelectedChoice = new();
 
         public string Label { get; set; }
         public bool IsUsed { get; private set; }
@@ -45,12 +46,14 @@ namespace Unity.ReferenceProject.AssetList
 
             foreach (var option in options)
             {
-                var isSelected = searchFilter.AllCriteria.Any(c => !c.IsEmpty() && c.IsMatch(option));
+                var label = GetStringValue(option);
+                var radio = new Radio
+                {
+                    emphasized = true,
+                    label = label,
+                    value = m_SelectedChoice.Contains(label)
+                };
 
-                var radio = new Radio();
-                radio.emphasized = true;
-                radio.label = GetStringValue(option);
-                radio.value = isSelected;
                 m_Choices.Add(new Choice { Radio = radio, Value = option });
                 radioGroup?.Add(radio);
             }
@@ -61,10 +64,12 @@ namespace Unity.ReferenceProject.AssetList
             IsUsed = true;
 
             filterChip.label = Label;
-            foreach (var choice in m_Choices)
+
+            m_SelectedChoice.Clear();
+
+            foreach (var choice in m_Choices.Where(choice => choice.Radio.value))
             {
-                if (!choice.Radio.value)
-                    continue;
+                m_SelectedChoice.Add(choice.Radio.label);
 
                 filterChip.label = string.Empty;
                 var label = filterChip.Q(Chip.labelUssClassName);

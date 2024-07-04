@@ -40,26 +40,25 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.cloud.annotation": {
-      "version": "1.0.0-pre.5",
+      "version": "1.0.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.cloud.common": "1.0.0-pre.5"
+        "com.unity.cloud.common": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.cloud.assets": {
-      "version": "1.0.0-exp.6",
+      "version": "1.2.0-exp.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.cloud.common": "1.0.0-pre.5",
-        "com.unity.editorcoroutines": "1.0.0"
+        "com.unity.cloud.common": "1.1.0"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.cloud.common": {
-      "version": "1.0.0-pre.5",
+      "version": "1.1.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -70,30 +69,30 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.cloud.data-streaming": {
-      "version": "1.0.0-pre.3",
+      "version": "1.2.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.cloud.common": "1.0.0-pre.5",
-        "com.unity.cloud.assets": "1.0.0-exp.6",
+        "com.unity.cloud.common": "1.0.0",
+        "com.unity.cloud.assets": "1.0.0",
         "com.unity.mathematics": "1.2.6",
         "com.unity.burst": "1.7.1",
-        "com.unity.cloud.gltfast": "6.0.1",
+        "com.unity.cloud.gltfast": "6.2.0",
         "com.unity.cloud.ktx": "3.2.2"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.cloud.deep-linking": {
-      "version": "1.0.0-pre.5",
+      "version": "1.0.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.cloud.common": "1.0.0-pre.5"
+        "com.unity.cloud.common": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.cloud.gltfast": {
-      "version": "6.0.1",
+      "version": "6.2.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -105,11 +104,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.cloud.identity": {
-      "version": "1.0.0-pre.5",
+      "version": "1.2.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.cloud.common": "1.0.0-pre.5"
+        "com.unity.cloud.common": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
@@ -130,11 +129,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.cloud.metadata": {
-      "version": "0.7.3",
+      "version": "0.9.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.cloud.common": "1.0.0-pre.5",
+        "com.unity.cloud.common": "1.0.0",
         "com.unity.nuget.newtonsoft-json": "3.0.2"
       },
       "url": "https://packages.unity.com"
@@ -169,13 +168,6 @@
         "com.unity.modules.physics": "1.0.0",
         "com.unity.modules.screencapture": "1.0.0"
       },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.editorcoroutines": {
-      "version": "1.0.0",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.ext.nunit": {

@@ -92,7 +92,7 @@ namespace Unity.ReferenceProject.Presence
                 Debug.LogError("Previous Room Not Left Yet");
                 return;
             }
-            
+
             await m_PresenceRoomsManager.JoinRoomAsync(organizationId, assetId, this);
         }
 
@@ -140,7 +140,7 @@ namespace Unity.ReferenceProject.Presence
         async void OnAssetLoaded(IAsset asset, IDataset dataset)
         {
             await LeaveRoom();
-            await JoinRoom(asset.Descriptor.OrganizationGenesisId, asset.Descriptor.AssetId);
+            await JoinRoom(asset.Descriptor.OrganizationId, asset.Descriptor.AssetId);
         }
 
         async void OnAssetUnloaded()

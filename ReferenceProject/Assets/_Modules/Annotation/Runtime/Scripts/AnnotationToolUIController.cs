@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -233,8 +234,9 @@ namespace Unity.ReferenceProject.Annotation
 
         void OnInitialized(IEnumerable<ITopic> topics)
         {
-            StartCoroutine(m_TopicPanel.RefreshTopics(topics));
-            m_IndicatorManager.SetIndicators(topics);
+            var topicList = topics.ToList();
+            _ = m_TopicPanel.RefreshTopics(topicList);
+            m_IndicatorManager.SetIndicators(topicList);
         }
 
         void OnTopicCreatedOrUpdated(ITopic topic)
@@ -248,7 +250,7 @@ namespace Unity.ReferenceProject.Annotation
             else
             {
                 m_IndicatorManager.AddIndicator(topic);
-                m_TopicPanel.AddTopicEntry(topic);
+                _ = m_TopicPanel.AddTopicEntry(topic);
             }
         }
 
@@ -329,7 +331,7 @@ namespace Unity.ReferenceProject.Annotation
             m_TopicPanel.SelectTopicEntry(topic);
         }
 
-        void ShowComments(IEnumerable<IComment> comments)
+        async Task ShowComments(IReadOnlyCollection<IComment> comments)
         {
             m_CommentPanel.Show();
             m_TopicPanel.Hide();
@@ -340,7 +342,7 @@ namespace Unity.ReferenceProject.Annotation
             m_CurrentTopic.CommentRemoved += UpdateCommentPanel;
             m_CurrentTopic.CommentUpdated += UpdateCommentPanel;
 
-            m_CommentPanel.ShowComments(m_CurrentTopic, comments);
+            await m_CommentPanel.ShowComments(m_CurrentTopic, comments);
         }
 
         void OnBackClicked()
@@ -373,7 +375,7 @@ namespace Unity.ReferenceProject.Annotation
         async Task UpdateCommentPanelTask()
         {
             var comments = await m_CurrentTopic.GetCommentsAsync();
-            ShowComments(comments.ToList());
+            await ShowComments(comments.ToList());
         }
 
         void AddTopic()
@@ -443,7 +445,7 @@ namespace Unity.ReferenceProject.Annotation
             }
 
             var comments = await topic.GetCommentsAsync();
-            ShowComments(comments);
+            await ShowComments(comments.ToList());
         }
 
         void OnSubmitAddComment(string text)

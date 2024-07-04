@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Threading.Tasks;
 using Unity.ReferenceProject.DeepLinking;
 using Unity.ReferenceProject.Identity;
 using Unity.ReferenceProject.StateMachine;
@@ -36,23 +37,39 @@ namespace Unity.ReferenceProject
         {
             if (!m_Session.Initialized)
             {
-                _ = m_Session.Initialize();
+                _ = InitializeSession();
             }
+
             StartCoroutine(WaitForInitialization());
+        }
+
+        async Task InitializeSession()
+        {
+            try
+            {
+                await m_Session.Initialize();
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                throw;
+            }
         }
 
         IEnumerator WaitForInitialization()
         {
-            float time = Time.realtimeSinceStartup;
-            while (!m_Session.Initialized)
+            var time = Time.realtimeSinceStartup;
+            while (!m_Session.Initialized && m_Session.State is not SessionState.LoggedIn and not SessionState.LoggedOut)
             {
                 yield return new WaitForEndOfFrame();
             }
-            float elapsed = Time.realtimeSinceStartup - time;
+
+            var elapsed = Time.realtimeSinceStartup - time;
             if (elapsed < m_MinimumDuration)
             {
                 yield return new WaitForSeconds(m_MinimumDuration - elapsed);
             }
+
             CheckLoginState();
         }
 
