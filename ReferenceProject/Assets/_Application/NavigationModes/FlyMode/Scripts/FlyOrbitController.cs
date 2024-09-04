@@ -3,6 +3,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using Unity.ReferenceProject.AppCamera;
 using Unity.ReferenceProject.Common;
+using Unity.ReferenceProject.DataStreaming;
 using Unity.ReferenceProject.Navigation;
 using Unity.ReferenceProject.ObjectSelection;
 using Unity.ReferenceProject.InputSystem;
@@ -59,15 +60,17 @@ namespace Unity.ReferenceProject.Application
         static readonly string k_PanGestureAction = "Pan Gesture Action";
         static readonly string k_ZoomGestureAction = "Zoom Gesture Action";
         static readonly string k_OrbitGestureAction = "Orbit Gesture Action";
-        
+
+        IDataStreamBound m_DataStreamBound;
         IObjectPicker m_ObjectPicker;
         ICameraProvider m_CameraProvider;
         IInputManager m_InputManager;
         InputScheme m_InputScheme;
 
         [Inject]
-        void Setup(IObjectPicker objectPicker, ICameraProvider cameraProvider, IInputManager inputManager)
+        void Setup(IDataStreamBound dataStreamBound, IObjectPicker objectPicker, ICameraProvider cameraProvider, IInputManager inputManager)
         {
+            m_DataStreamBound = dataStreamBound;
             m_ObjectPicker = objectPicker;
             m_CameraProvider = cameraProvider;
             m_InputManager = inputManager;
@@ -208,7 +211,8 @@ namespace Unity.ReferenceProject.Application
         public override void Teleport(Vector3 position, Vector3 eulerAngles)
         {
             var rotation = Quaternion.Euler(eulerAngles);
-            var lookAt = rotation * new Vector3(0.0f, 0.0f, (Vector3.zero - position).magnitude) + position;
+            var modelCenter = m_DataStreamBound.GetBound().center;
+            var lookAt = rotation * new Vector3(0.0f, 0.0f, (modelCenter - position).magnitude) + position;
             m_CameraController.ResetTo(position, eulerAngles, lookAt);
         }
 

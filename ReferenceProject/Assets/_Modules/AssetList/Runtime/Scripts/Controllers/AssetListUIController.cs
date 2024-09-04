@@ -16,19 +16,6 @@ using Button = Unity.AppUI.UI.Button;
 
 namespace Unity.ReferenceProject.AssetList
 {
-    [Serializable]
-    class AllProjectResponse
-    {
-        public List<AllProjectResponseItem> results { get; set; } = new();
-    }
-
-    [Serializable]
-    class AllProjectResponseItem
-    {
-        public string id { get; set; } = string.Empty;
-        public string iconUrl { get; set; } = string.Empty;
-    }
-
     public class AssetCollectionInfo
     {
         public IAssetCollection Collection { get; set; }
@@ -398,24 +385,19 @@ namespace Unity.ReferenceProject.AssetList
                 if (!m_AssetListController.IsCollectionSelected && m_AssetListController.SelectedProject != null)
                 {
                     m_RefreshCancellationTokenSource = new CancellationTokenSource();
-                    var collections = new List<IAssetCollection>();
+
+                    var collectionInfos = new List<AssetCollectionInfo>();
+                    var filter = new AssetSearchFilter();
 
                     await foreach (var collection in m_AssetListController.SelectedProject.ListCollectionsAsync(Range.All, m_RefreshCancellationTokenSource.Token))
                     {
-                        collections.Add(collection);
+                        filter.Collections.WhereContains(collection.Descriptor.Path);
+                        var assetCount = await m_AssetListController.SelectedProject.CountAssetsAsync(filter, m_RefreshCancellationTokenSource.Token);
+                        collectionInfos.Add(new AssetCollectionInfo { Collection = collection, AssetCount = assetCount });
                     }
 
-                    if (collections.Any())
+                    if (collectionInfos.Any())
                     {
-                        var collectionInfos = new List<AssetCollectionInfo>();
-                        var filter = new AssetSearchFilter();
-                        foreach (var collection in collections)
-                        {
-                            filter.Collections.WhereContains(collection.Descriptor.Path);
-                            var assetCount = await m_AssetListController.SelectedProject.CountAssetsAsync(filter, m_RefreshCancellationTokenSource.Token);
-                            collectionInfos.Add(new AssetCollectionInfo { Collection = collection, AssetCount = assetCount });
-                        }
-
                         m_CollectionGrid.Populate(collectionInfos);
                     }
                 }

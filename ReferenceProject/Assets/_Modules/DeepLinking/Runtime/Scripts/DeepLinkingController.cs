@@ -38,7 +38,6 @@ namespace Unity.ReferenceProject.DeepLinking
             m_DeepLinkProvider = linkProvider;
             m_Session = session;
 
-            m_Session.SessionStateChanged += OnAuthenticationStateChanged;
             m_UrlRedirectionInterceptor.DeepLinkForwarded += OnDeepLinkForwarded;
 
             m_DeepLinkData = deepLinkData;
@@ -50,7 +49,6 @@ namespace Unity.ReferenceProject.DeepLinking
 
         public void Dispose()
         {
-            m_Session.SessionStateChanged -= OnAuthenticationStateChanged;
             m_UrlRedirectionInterceptor.DeepLinkForwarded -= OnDeepLinkForwarded;
         }
 
@@ -128,14 +126,15 @@ namespace Unity.ReferenceProject.DeepLinking
 
             try
             {
-                if (await TryConsumeUri(m_ForwardedDeepLink))
-                {
-                    m_ForwardedDeepLink = null;
-                }
+                await TryConsumeUri(m_ForwardedDeepLink);
             }
             catch (Exception e)
             {
                 LinkConsumptionFailed?.Invoke(e);
+            }
+            finally
+            {
+                m_ForwardedDeepLink = null;
             }
         }
 
@@ -146,14 +145,6 @@ namespace Unity.ReferenceProject.DeepLinking
             if (m_Session.State == SessionState.LoggedIn)
             {
                 await TryConsumeForwardedDeepLink();                
-            }
-        }
-
-        async void OnAuthenticationStateChanged(SessionState state)
-        {
-            if (state == SessionState.LoggedIn)
-            {
-                await TryConsumeForwardedDeepLink();
             }
         }
     }

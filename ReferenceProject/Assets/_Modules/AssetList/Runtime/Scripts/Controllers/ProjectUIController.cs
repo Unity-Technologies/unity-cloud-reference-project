@@ -106,34 +106,33 @@ namespace Unity.ReferenceProject.AssetList
                 var collectionsContainer = projectItem.Q("CollectionsContainer");
                 var collectionsList = collectionsContainer.Q("CollectionsList");
 
-                var collections = new List<IAssetCollection>();
+                var isInitialized = false;
+
                 await foreach (var collection in project.ListCollectionsAsync(Range.All, CancellationToken.None))
                 {
-                    collections.Add(collection);
-                }
-
-                if (collections.Any())
-                {
-                    var caret = new Button();
-                    caret.quiet = true;
-                    caret.leadingIcon = k_CaretClose;
-                    caret.AddToClassList("button__project-list-item-caret");
-                    projectButton.hierarchy.Add(caret);
-                    caret.clicked += () => OnCaretClicked(caret, collectionsContainer);
-                    projectButton.clicked += () => OnCaretClicked(caret, collectionsContainer);
-
-                    foreach (var collection in collections)
+                    if (!isInitialized)
                     {
-                        var collectionButton = new ActionButton();
-                        collectionButton.quiet = true;
-                        collectionButton.AddToClassList("button__project-list-item-collection");
-                        collectionButton.label = collection.Name;
-                        collectionButton.tooltip = collection.Name;
-
-                        collectionButton.clicked += () => CollectionSelected?.Invoke(collection);
-                        collectionsList.Add(collectionButton);
-                        m_Collections.TryAdd(collection.Descriptor.Path, collectionButton);
+                        isInitialized = true;
+                        var caret = new Button
+                        {
+                            quiet = true,
+                            leadingIcon = k_CaretClose
+                        };
+                        caret.AddToClassList("button__project-list-item-caret");
+                        projectButton.hierarchy.Add(caret);
+                        caret.clicked += () => OnCaretClicked(caret, collectionsContainer);
+                        projectButton.clicked += () => OnCaretClicked(caret, collectionsContainer);
                     }
+
+                    var collectionButton = new ActionButton();
+                    collectionButton.quiet = true;
+                    collectionButton.AddToClassList("button__project-list-item-collection");
+                    collectionButton.label = collection.Name;
+                    collectionButton.tooltip = collection.Name;
+
+                    collectionButton.clicked += () => CollectionSelected?.Invoke(collection);
+                    collectionsList.Add(collectionButton);
+                    m_Collections.TryAdd(collection.Descriptor.Path, collectionButton);
                 }
             }
         }
