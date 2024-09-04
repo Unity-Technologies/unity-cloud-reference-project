@@ -10,13 +10,16 @@ namespace Unity.ReferenceProject.AssetList
 {
     public static class TextureController
     {
-        static readonly int k_TimeoutDelay = 10000;
-
         class TextureDownloadEntry
         {
-            public bool IsDownloading;
+            public bool IsDownloading = true;
             public Texture2D Texture2D;
             public readonly List<Action<Texture2D>> Listeners = new();
+
+            public TextureDownloadEntry(Action<Texture2D> listener)
+            {
+                Listeners.Add(listener);
+            }
         }
 
         static Dictionary<string, TextureDownloadEntry> s_TextureCache = new();
@@ -29,45 +32,25 @@ namespace Unity.ReferenceProject.AssetList
             if (!s_TextureCache.TryGetValue(key, out var entry))
             {
                 // Create new download request
-                entry = new TextureDownloadEntry { IsDownloading = true };
-
-                lock (entry.Listeners)
-                {
-                    entry.Listeners.Add(thumbnailReadyCallback);
-                }
-
+                entry = new TextureDownloadEntry(thumbnailReadyCallback);
                 s_TextureCache.Add(key, entry);
 
                 try
                 {
                     var url = await asset.GetPreviewUrlAsync(CancellationToken.None);
-                    if (url == null)
+                    if (url != null)
                     {
-                        entry.IsDownloading = false;
-                        thumbnailReadyCallback?.Invoke(null);
-                        return;
-                    }
-
-                    var resizedUrl = $"https://transformation.unity.com/api/images?url={Uri.EscapeDataString(url.ToString())}&width={width}";
-                    var taskTexture = DownloadTexture(resizedUrl);
-                    if (await Task.WhenAny(taskTexture) == taskTexture)
-                    {
-                        entry.Texture2D = taskTexture.Result;
-                        entry.IsDownloading = false;
-                    }
-                    else
-                    {
-                        entry.IsDownloading = false;
-                        thumbnailReadyCallback?.Invoke(null);
-                        Debug.LogError($"Timed out downloading thumbnail for asset {asset.Name}");
-                        return;
+                        var resizedUrl = $"https://transformation.unity.com/api/images?url={Uri.EscapeDataString(url.ToString())}&width={width}";
+                        entry.Texture2D = await DownloadTexture(resizedUrl);
                     }
                 }
                 catch (Exception e)
                 {
                     Debug.LogError($"Error getting thumbnail for {asset.Name}: {e}");
+                }
+                finally
+                {
                     OnTextureDownloaded(entry);
-                    thumbnailReadyCallback?.Invoke(null);
                 }
             }
             else if (entry.IsDownloading)
@@ -77,13 +60,11 @@ namespace Unity.ReferenceProject.AssetList
                 {
                     entry.Listeners.Add(thumbnailReadyCallback);
                 }
-
-                return;
             }
-
-            // Texture is ready
-            OnTextureDownloaded(entry);
-            thumbnailReadyCallback?.Invoke(entry.Texture2D);
+            else
+            {
+                thumbnailReadyCallback?.Invoke(entry.Texture2D);
+            }
         }
 
         public static void SetProjectIconUrl(string projectId, string iconUrl)
@@ -93,7 +74,7 @@ namespace Unity.ReferenceProject.AssetList
 
         public static async Task GetProjectIcon(string projectId, Action<Texture2D> textureReadyCallback)
         {
-            if(!s_ProjectIconUrl.TryGetValue(projectId, out var iconUrl) || string.IsNullOrEmpty(iconUrl))
+            if (!s_ProjectIconUrl.TryGetValue(projectId, out var iconUrl) || string.IsNullOrEmpty(iconUrl))
             {
                 textureReadyCallback?.Invoke(null);
                 return;
@@ -102,43 +83,20 @@ namespace Unity.ReferenceProject.AssetList
             if (!s_TextureCache.TryGetValue(iconUrl, out var entry))
             {
                 // Create new download request
-                entry = new TextureDownloadEntry { IsDownloading = true };
-
-                lock (entry.Listeners)
-                {
-                    entry.Listeners.Add(textureReadyCallback);
-                }
-
+                entry = new TextureDownloadEntry(textureReadyCallback);
                 s_TextureCache.Add(iconUrl, entry);
 
                 try
                 {
-                    if (string.IsNullOrEmpty(iconUrl))
-                    {
-                        entry.IsDownloading = false;
-                        textureReadyCallback?.Invoke(null);
-                        return;
-                    }
-
-                    var taskTexture = DownloadTexture(iconUrl);
-                    if (await Task.WhenAny(taskTexture) == taskTexture)
-                    {
-                        entry.Texture2D = taskTexture.Result;
-                        entry.IsDownloading = false;
-                    }
-                    else
-                    {
-                        entry.IsDownloading = false;
-                        textureReadyCallback?.Invoke(null);
-                        Debug.LogError($"Timed out downloading project icon for {iconUrl}");
-                        return;
-                    }
+                    entry.Texture2D = await DownloadTexture(iconUrl);
                 }
                 catch (Exception e)
                 {
                     Debug.LogError($"Error getting project icon for {iconUrl}: {e}");
+                }
+                finally
+                {
                     OnTextureDownloaded(entry);
-                    textureReadyCallback?.Invoke(null);
                 }
             }
             else if (entry.IsDownloading)
@@ -148,13 +106,11 @@ namespace Unity.ReferenceProject.AssetList
                 {
                     entry.Listeners.Add(textureReadyCallback);
                 }
-
-                return;
             }
-
-            // Texture is ready
-            OnTextureDownloaded(entry);
-            textureReadyCallback?.Invoke(entry.Texture2D);
+            else
+            {
+                textureReadyCallback?.Invoke(entry.Texture2D);
+            }
         }
 
         static readonly Color[] k_ProjectIconDefaultColors =
@@ -181,18 +137,6 @@ namespace Unity.ReferenceProject.AssetList
             return k_ProjectIconDefaultColors[colorIndex];
         }
 
-        static async Task<Uri> GetUrl(IFile file)
-        {
-            var taskUrl = file.GetDownloadUrlAsync(CancellationToken.None);
-            if (await Task.WhenAny(taskUrl, Task.Delay(k_TimeoutDelay)) == taskUrl)
-            {
-                return taskUrl.Result;
-            }
-
-            Debug.LogError($"Timed out getting thumbnail url for {file.Descriptor.Path}");
-            return null;
-        }
-
         static void OnTextureDownloaded(TextureDownloadEntry entry)
         {
             entry.IsDownloading = false;
@@ -209,16 +153,20 @@ namespace Unity.ReferenceProject.AssetList
         static async Task<Texture2D> DownloadTexture(string url)
         {
             using var uwr = new UnityWebRequest(url, UnityWebRequest.kHttpVerbGET);
-            uwr.downloadHandler = new DownloadHandlerTexture();
+            uwr.disposeDownloadHandlerOnDispose = true;
+
+            var textureHandler = new DownloadHandlerTexture();
+            uwr.downloadHandler = textureHandler;
 
             var operation = uwr.SendWebRequest();
 
-            while (!operation.isDone)
+            // Ensure that the operation and texture download are completed before attempting to use the texture
+            while (!operation.isDone || !textureHandler.isDone)
             {
                 await Task.Yield();
             }
 
-            return DownloadHandlerTexture.GetContent(uwr);
+            return textureHandler.texture;
         }
     }
 }

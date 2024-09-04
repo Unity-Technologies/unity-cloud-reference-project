@@ -85,14 +85,12 @@ namespace Unity.ReferenceProject.AssetList
         readonly IAssetRepository m_AssetRepository;
         readonly IOrganizationRepository m_OrganizationRepository;
         readonly IPermissionsController m_PermissionsController;
-        readonly IServiceHttpClient m_ServiceHttpClient;
 
-        public AssetListController(IAssetRepository assetRepository, IOrganizationRepository organizationRepository, IPermissionsController permissionsController, IServiceHttpClient serviceHttpClient)
+        public AssetListController(IAssetRepository assetRepository, IOrganizationRepository organizationRepository, IPermissionsController permissionsController)
         {
             m_AssetRepository = assetRepository;
             m_OrganizationRepository = organizationRepository;
             m_PermissionsController = permissionsController;
-            m_ServiceHttpClient = serviceHttpClient;
 
             m_Filters = new AssetSearchFilter();
 
@@ -213,15 +211,10 @@ namespace Unity.ReferenceProject.AssetList
         {
             CancelToken();
 
-            // Get Projects info
-            var url = $"https://services.unity.com/api/unity/legacy/v1/organizations/{SelectedOrganization.Id}/projects?limit=100";
-
-            var response = await m_ServiceHttpClient.GetAsync(url);
-            var allProjectResponse = await response.JsonDeserializeAsync<AllProjectResponse>();
-
-            foreach (var project in allProjectResponse.results)
+            var projectList = SelectedOrganization.ListProjectsAsync(Range.All);
+            await foreach (var project in projectList)
             {
-                TextureController.SetProjectIconUrl(project.id, project.iconUrl);
+                TextureController.SetProjectIconUrl(project.Descriptor.ProjectId.ToString(), project.IconUrl);
             }
 
             var projects = await GetAllProjectsInternal();

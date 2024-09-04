@@ -193,7 +193,7 @@ namespace Unity.ReferenceProject.AppCamera
         public void PanStart(Vector2 pos)
         {
             var frustumCorners = new Vector3[4];
-            var depth = -m_DesiredPosition.magnitude;
+            var depth = -Vector3.Distance(m_DesiredLookAt, m_DesiredPosition);
             m_CameraProvider.Camera.CalculateFrustumCorners(new Rect(0, 0, 1, 1), depth, Camera.MonoOrStereoscopicEye.Mono, frustumCorners);
             m_PanningScale = Mathf.Abs((frustumCorners[2].x - frustumCorners[1].x) / Screen.width);
         }

@@ -7,7 +7,6 @@ using Unity.Cloud.Common;
 using Unity.ReferenceProject.DataStreaming;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Zenject;
 using Button = Unity.AppUI.UI.Button;
 
 namespace Unity.ReferenceProject.AssetList
@@ -54,14 +53,6 @@ namespace Unity.ReferenceProject.AssetList
         public event Action OpenAssetButtonClicked;
         public event Action GenerateStreamableButtonClicked;
         public event Action<ProjectDescriptor> NeedProjectInfo;
-
-        IAssetRepository m_AssetRepository;
-
-        [Inject]
-        void Setup(IAssetRepository assetRepository)
-        {
-            m_AssetRepository = assetRepository;
-        }
 
         void OnDestroy()
         {
@@ -238,7 +229,8 @@ namespace Unity.ReferenceProject.AssetList
                                 enumerable);
                             break;
                         case AssetType assetType:
-                            infoContainer = new AssetInformationContainerUI(k_LocalizedAssetList, assetType);
+                            infoContainer = new AssetInformationContainerUI(k_LocalizedAssetList + propertyName,
+                                assetType.GetValueAsString());
                             break;
                         case string stringValue:
                             if (property.Name == "Status")

@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Unity.AppUI.UI;
-using Unity.Cloud.Assets;
 
 namespace Unity.ReferenceProject.AssetList
 {
@@ -39,23 +38,6 @@ namespace Unity.ReferenceProject.AssetList
             }
 
             m_ValueUIElement = valueText;
-        }
-
-        public AssetInformationContainerUI(string title, AssetType value)
-        {
-            m_Title = title;
-            var valueText = new Text();
-            if (string.IsNullOrEmpty(value.ToString()))
-            {
-                valueText.text = k_EmptyText;
-                valueText.AddToClassList(k_EmptyTextUssClassName);
-                m_ValueUIElement = valueText;
-            }
-            else
-            {
-                valueText.text = "@AssetList:" + value;
-                m_ValueUIElement = valueText;
-            }
         }
 
         public AssetInformationContainerUI(string title, string value, string icon)

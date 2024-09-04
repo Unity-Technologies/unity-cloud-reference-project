@@ -39,8 +39,6 @@ namespace Unity.ReferenceProject.AssetList
             }
         }
 
-        public List<ThumbnailPlaceholder> ThumbnailsPlaceholder => m_ThumbnailsPlaceholder;
-
         public Texture2D GetDefaultThumbnail(AssetType assetType)
         {
             if (m_TextureByAssetType.TryGetValue(assetType, out var placeholder))
