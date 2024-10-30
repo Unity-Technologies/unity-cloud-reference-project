@@ -1,7 +1,7 @@
 # Unity Cloud Reference Project
 
 [![UnityVersion](https://img.shields.io/badge/Unity%20Version:-2022.3%20LTS-57b9d3.svg?logo=unity&color=2196F3)](https://unity.com/releases/editor/whats-new/2022.3.0)
-[![LatestRelease](https://img.shields.io/badge/Latest%20Github%20Release:-v0.3.0-57b9d3.svg?logo=github&color=brightgreen)](https://github.com/Unity-Technologies/unity-cloud-reference-project/releases/tag/v0.3.0)
+[![LatestRelease](https://img.shields.io/badge/Latest%20Github%20Release:-v0.6.0-57b9d3.svg?logo=github&color=brightgreen)](https://github.com/Unity-Technologies/unity-cloud-reference-project/releases/tag/v0.6.0)
 
 <img src="ReferenceProject/Packages/Documentation~/images/ucrp_assets.jpg" width="32%" /> <img src="ReferenceProject/Packages/Documentation~/images/ucrp_collaborate.jpg" width="32%" /> <img src="ReferenceProject/Packages/Documentation~/images/ucrp_vr.jpg" width="32%" />
 
