@@ -1,5 +1,7 @@
 # Unity Cloud Reference Project
 
+> **Important**: Reference Project is deprecated and no longer supported or updated by Unity. Use the [Industry Viewer Template (IVT)](https://github.com/Unity-Technologies/unity-industry-viewer-template) for all new projects. The IVT is a modern, actively supported template that provides a robust, feature-rich foundation for building industrial and enterprise applications with Unity.
+
 [![UnityVersion](https://img.shields.io/badge/Unity%20Version:-2022.3%20LTS-57b9d3.svg?logo=unity&color=2196F3)](https://unity.com/releases/editor/whats-new/2022.3.0)
 [![LatestRelease](https://img.shields.io/badge/Latest%20Github%20Release:-v0.6.0-57b9d3.svg?logo=github&color=brightgreen)](https://github.com/Unity-Technologies/unity-cloud-reference-project/releases/tag/v0.6.0)
 
